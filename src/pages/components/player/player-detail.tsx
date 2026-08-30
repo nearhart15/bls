@@ -1,17 +1,5 @@
 /*
- * Player detail view © 2026
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Modern player detail © 2026
  */
 
 import type {FC} from "react";
@@ -50,9 +38,9 @@ interface StatTileProps {
 }
 const StatTile: FC<StatTileProps> = ({label, value}) => (
     <Col xs={6} sm={4} md={3} className="mb-2">
-        <div className="border border-secondary-subtle rounded-3 px-2 py-2 h-100 bg-body-secondary">
-            <div className="fs-xs text-body-secondary text-uppercase">{label}</div>
-            <div className="fs-5 fw-semibold text-body-emphasis">{value}</div>
+        <div className="bls-stat-tile">
+            <div className="bls-stat-label">{label}</div>
+            <div className="bls-stat-value">{value}</div>
         </div>
     </Col>
 );
@@ -70,8 +58,8 @@ const CareerStatsPanel: FC<CareerStatsProps> = ({stats}) => {
     }
 
     return (
-        <Card className="mb-3" border="primary">
-            <CardHeader className="bg-primary text-white">Career Stats (all tracked leagues)</CardHeader>
+        <Card className="mb-3">
+            <CardHeader className="bg-primary text-white">Career Stats</CardHeader>
             <CardBody>
                 <Row className="g-2">
                     <StatTile label="Games" value={stats.gameStats.count}/>
@@ -112,7 +100,7 @@ const SeasonStatsPanel: FC<SeasonStatsProps> = ({seasons}) => {
     }
 
     return (
-        <Card className="mb-3" border="secondary">
+        <Card className="mb-3">
             <CardHeader>By Season</CardHeader>
             <CardBody className="p-0">
                 <Table responsive hover size="sm" className="mb-0 bls-score-table">
@@ -131,7 +119,7 @@ const SeasonStatsPanel: FC<SeasonStatsProps> = ({seasons}) => {
                     <tbody>
                         {seasons.map((s) => (
                             <tr key={s.season}>
-                                <td className="text-nowrap fw-medium">{s.season}</td>
+                                <td className="text-nowrap fw-semibold">{s.season}</td>
                                 <td className="text-end">{s.leagues || "—"}</td>
                                 <td className="text-end">{s.games || "—"}</td>
                                 <td className="text-end">
@@ -165,7 +153,7 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
     }
 
     return (
-        <Card className="mb-3" border="secondary">
+        <Card className="mb-3">
             <CardHeader>League Appearances</CardHeader>
             <CardBody className="p-0">
                 <Table responsive hover size="sm" className="mb-0 bls-score-table">
@@ -223,21 +211,15 @@ const PlayerDetail: FC<PlayerDetailProps> = ({data}) => {
 
     return (
         <Container fluid="true" className="px-0">
-            <Card border="primary" className="mb-3">
-                <CardHeader className="d-flex flex-wrap align-items-center gap-2 justify-content-between">
-                    <span className="fs-4 fw-semibold mb-0">{player.name}</span>
+            <div className="bls-hero mb-3">
+                <h1 className="mb-1">{player.name}</h1>
+                <p>
+                    {appearances.length} league appearance{appearances.length === 1 ? "" : "s"}
                     {careerStats.gameStats.count > 0 && (
-                        <span className="fs-sm text-body-secondary">
-                            Career avg {numberFormat.format(careerStats.gameStats.average)}
-                        </span>
+                        <> · Career avg {numberFormat.format(careerStats.gameStats.average)}</>
                     )}
-                </CardHeader>
-                <CardBody className="py-2">
-                    <span className="text-body-secondary fs-sm">
-                        {appearances.length} league appearance{appearances.length === 1 ? "" : "s"} across tracked teams
-                    </span>
-                </CardBody>
-            </Card>
+                </p>
+            </div>
 
             <CareerStatsPanel stats={careerStats}/>
             <SeasonStatsPanel seasons={seasonStats}/>

@@ -1,142 +1,359 @@
 /*!
- * Copyright (c) 2025. Bindul Bhowmik
- * Dark mode + modern polish + link styles © 2026
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * BLS modern design system © 2026
  */
 
 @import "bootswatch/dist/lumen/variables";
 @import "bootstrap/scss/bootstrap";
 @import "bootswatch/dist/lumen/bootswatch";
 
-#btn-back-to-top {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 999;
-  opacity: 0.65;
-  border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+/* =========================================================
+   Design tokens
+   ========================================================= */
+:root,
+[data-bs-theme="light"] {
+  --bls-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --bls-radius: 1rem;
+  --bls-radius-sm: 0.625rem;
+  --bls-radius-lg: 1.25rem;
+  --bls-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+  --bls-shadow-lg: 0 4px 6px rgba(15, 23, 42, 0.04), 0 16px 40px rgba(15, 23, 42, 0.1);
+  --bls-accent: #2563eb;
+  --bls-accent-soft: rgba(37, 99, 235, 0.1);
+  --bls-surface: #ffffff;
+  --bls-surface-2: #f8fafc;
+  --bls-surface-3: #f1f5f9;
+  --bls-border: rgba(15, 23, 42, 0.08);
+  --bls-text: #0f172a;
+  --bls-text-muted: #64748b;
+  --bls-page-bg: #f1f5f9;
+  --bls-nav-bg: rgba(255, 255, 255, 0.8);
+  --bls-gradient: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
 }
 
-.fs-sm {
-  font-size: 0.875rem;
+[data-bs-theme="dark"] {
+  --bls-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --bls-shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.25), 0 16px 40px rgba(0, 0, 0, 0.45);
+  --bls-accent: #60a5fa;
+  --bls-accent-soft: rgba(96, 165, 250, 0.15);
+  --bls-surface: #1e293b;
+  --bls-surface-2: #0f172a;
+  --bls-surface-3: #334155;
+  --bls-border: rgba(148, 163, 184, 0.12);
+  --bls-text: #f1f5f9;
+  --bls-text-muted: #94a3b8;
+  --bls-page-bg: #0b1220;
+  --bls-nav-bg: rgba(15, 23, 42, 0.85);
+  --bls-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
 }
 
-.fs-xs {
-  font-size: 0.75rem;
-}
-
-.fs-xxs {
-  font-size: 0.625rem;
-}
-
-/* Smooth theme transitions */
+/* =========================================================
+   Base
+   ========================================================= */
 html {
-  transition: background-color 0.2s ease, color 0.2s ease;
+  scroll-behavior: smooth;
 }
 
 body {
-  transition: background-color 0.2s ease, color 0.2s ease;
-  letter-spacing: 0.01em;
+  font-family: var(--bls-font);
+  background: var(--bls-page-bg);
+  color: var(--bls-text);
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* ---- Modern polish ---- */
+h1, h2, h3, h4, h5, h6,
+.card-header,
+.navbar-brand {
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+/* =========================================================
+   App shell
+   ========================================================= */
+.bls-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.bls-shell {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1rem 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .bls-shell {
+    padding: 1.25rem 1.5rem 3rem;
+  }
+}
+
+.bls-main {
+  flex: 1;
+}
+
+/* =========================================================
+   Navbar
+   ========================================================= */
+.bls-nav {
+  position: sticky;
+  top: 0.75rem;
+  z-index: 1030;
+  background: var(--bls-nav-bg);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid var(--bls-border);
+  border-radius: var(--bls-radius-lg);
+  box-shadow: var(--bls-shadow);
+  padding: 0.35rem 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.bls-nav .navbar-brand {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--bls-text) !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bls-nav .navbar-brand img {
+  filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.35));
+}
+
+.bls-nav .nav-link {
+  color: var(--bls-text-muted) !important;
+  font-weight: 500;
+  font-size: 0.925rem;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.75rem !important;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.bls-nav .nav-link:hover,
+.bls-nav .nav-link:focus {
+  color: var(--bls-text) !important;
+  background: var(--bls-accent-soft);
+}
+
+.bls-nav .navbar-toggler {
+  border: 1px solid var(--bls-border);
+  border-radius: 0.5rem;
+}
+
+.bls-theme-btn {
+  border-radius: 999px !important;
+  border: 1px solid var(--bls-border) !important;
+  background: var(--bls-surface-2) !important;
+  color: var(--bls-text) !important;
+  padding: 0.35rem 0.75rem !important;
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+.bls-theme-btn:hover {
+  background: var(--bls-accent-soft) !important;
+  border-color: transparent !important;
+}
+
+/* =========================================================
+   Cards
+   ========================================================= */
 .card {
-  border-radius: 0.75rem;
+  background: var(--bls-surface);
+  border: 1px solid var(--bls-border) !important;
+  border-radius: var(--bls-radius) !important;
+  box-shadow: var(--bls-shadow);
   overflow: hidden;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .card-header {
-  border-bottom-width: 0;
+  background: transparent !important;
+  border-bottom: 1px solid var(--bls-border) !important;
+  padding: 0.9rem 1.15rem;
+  font-weight: 700;
+  color: var(--bls-text);
+}
+
+.card-header.bg-primary,
+.card-header.bg-dark,
+.card-header.bg-info {
+  background: var(--bls-gradient) !important;
+  border-bottom: none !important;
+  color: #fff !important;
+}
+
+.card-header.bg-primary *,
+.card-header.bg-dark *,
+.card-header.bg-info * {
+  color: #fff !important;
+}
+
+.card-body {
+  padding: 1rem 1.15rem;
+}
+
+.card-footer {
+  background: var(--bls-surface-2) !important;
+  border-top: 1px solid var(--bls-border) !important;
+  color: var(--bls-text-muted) !important;
+  font-size: 0.8rem;
+}
+
+.card-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* =========================================================
+   Lists & interactive rows
+   ========================================================= */
+.list-group-item {
+  background: transparent;
+  border-color: var(--bls-border) !important;
+  color: var(--bls-text);
+  padding: 0.85rem 1.15rem;
+  transition: background 0.15s ease;
+}
+
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+  background: var(--bls-accent-soft) !important;
+  color: var(--bls-text) !important;
+}
+
+.bls-link-row {
+  cursor: pointer;
+}
+
+.bls-link-text,
+a.bls-link,
+.bls-link {
+  color: var(--bls-accent) !important;
+  text-decoration: none !important;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0 1.5px;
+  transition: background-size 0.2s ease, color 0.15s ease;
 }
 
-.navbar {
-  border-radius: 0.75rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+.bls-link-text:hover,
+a.bls-link:hover,
+.bls-link:hover,
+.bls-link-row:hover .bls-link-text {
+  background-size: 100% 1.5px;
 }
 
+/* =========================================================
+   Tables
+   ========================================================= */
 .table {
   --bs-table-bg: transparent;
+  --bs-table-color: var(--bls-text);
+  --bs-table-striped-bg: var(--bls-surface-2);
+  --bs-table-hover-bg: var(--bls-accent-soft);
+  margin-bottom: 0;
 }
 
 .table > :not(caption) > * > * {
   vertical-align: middle;
+  border-color: var(--bls-border);
+  padding: 0.65rem 0.85rem;
 }
 
 .table thead th {
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  color: var(--bls-text-muted);
+  background: var(--bls-surface-2);
+  border-bottom-width: 1px;
 }
 
-/* Noticeable links */
-a.bls-link,
-.bls-link {
-  color: var(--bs-primary);
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-  font-weight: 500;
-}
-
-a.bls-link:hover,
-.bls-link:hover {
-  color: var(--bs-link-hover-color, var(--bs-primary));
-  text-decoration-thickness: 2px;
-}
-
-/* Player list rows look clearly interactive */
-.bls-link-row {
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-}
-
-.bls-link-row .bls-link-text {
-  color: var(--bs-primary);
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-}
-
-.bls-link-row:hover .bls-link-text {
-  text-decoration-thickness: 2px;
-}
-
-/* Score summary tables */
 .bls-score-table {
   border-collapse: separate;
   border-spacing: 0;
   overflow: hidden;
-  border-radius: 0.5rem;
+  border-radius: var(--bls-radius-sm);
 }
 
-.bls-score-table thead {
-  background-color: var(--bs-secondary-bg);
+/* =========================================================
+   Badges & buttons
+   ========================================================= */
+.badge {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 999px;
+  padding: 0.35em 0.7em;
 }
 
-.bls-score-table th,
-.bls-score-table td {
-  border-color: var(--bs-border-color-translucent) !important;
+.btn {
+  border-radius: 0.65rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
-/* Frame-by-frame score sheet */
+.btn-primary {
+  background: var(--bls-gradient) !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.btn-outline-primary,
+.btn-outline-secondary {
+  border-radius: 0.65rem;
+}
+
+/* =========================================================
+   Stat tiles
+   ========================================================= */
+.bls-stat-tile {
+  border: 1px solid var(--bls-border);
+  border-radius: var(--bls-radius-sm);
+  background: var(--bls-surface-2);
+  padding: 0.85rem 1rem;
+  height: 100%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bls-stat-tile:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--bls-shadow);
+}
+
+.bls-stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bls-text-muted);
+  margin-bottom: 0.2rem;
+}
+
+.bls-stat-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--bls-text);
+  line-height: 1.2;
+}
+
+/* =========================================================
+   Frame score sheet
+   ========================================================= */
 .bls-frame {
-  border: 1px solid var(--bs-border-color);
-  border-radius: 0.35rem;
+  border: 1px solid var(--bls-border);
+  border-radius: 0.4rem;
   overflow: hidden;
-  background-color: var(--bs-body-bg);
+  background: var(--bls-surface);
   min-width: 0;
 }
 
@@ -145,21 +362,21 @@ a.bls-link:hover,
   justify-content: space-evenly;
   align-items: center;
   gap: 0.1rem;
-  padding: 0.15rem 0.1rem;
-  min-height: 1.35rem;
+  padding: 0.2rem 0.1rem;
+  min-height: 1.4rem;
   font-size: 0.7rem;
-  color: var(--bs-body-color);
-  background-color: var(--bs-tertiary-bg);
+  color: var(--bls-text);
+  background: var(--bls-surface-2);
 }
 
 .bls-frame-cum {
   text-align: center;
   font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.15rem 0;
-  color: var(--bs-emphasis-color);
-  background-color: var(--bs-secondary-bg);
-  border-top: 1px solid var(--bs-border-color);
+  font-weight: 700;
+  padding: 0.2rem 0;
+  color: var(--bls-text);
+  background: var(--bls-surface-3);
+  border-top: 1px solid var(--bls-border);
 }
 
 .bls-frame-attrs {
@@ -171,57 +388,110 @@ a.bls-link:hover,
 
 .bls-game-header {
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.04em;
-  padding: 0.35rem 0.5rem;
-  margin-bottom: 0.5rem;
-  border-radius: 0.4rem;
-  color: var(--bs-emphasis-color);
-  background-color: var(--bs-secondary-bg);
+  padding: 0.4rem 0.6rem;
+  margin-bottom: 0.65rem;
+  border-radius: var(--bls-radius-sm);
+  color: var(--bls-text);
+  background: var(--bls-surface-2);
+  border: 1px solid var(--bls-border);
 }
 
 .bls-player-name {
   font-weight: 600;
-  color: var(--bs-emphasis-color);
+  color: var(--bls-text);
   display: flex;
   align-items: center;
   height: 100%;
   padding-right: 0.25rem;
 }
 
-/* Dark mode: slightly stronger borders and softer cards */
-[data-bs-theme="dark"] {
-  .card {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
-  }
+/* =========================================================
+   Page sections
+   ========================================================= */
+.bls-section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bls-text-muted);
+  margin-bottom: 0.75rem;
+}
 
-  .navbar {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
-  }
+.bls-hero {
+  border-radius: var(--bls-radius-lg);
+  background: var(--bls-gradient);
+  color: #fff;
+  padding: 1.5rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--bls-shadow-lg);
+}
 
-  .bls-frame {
-    border-color: rgba(255, 255, 255, 0.12);
-  }
+.bls-hero h1 {
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  font-weight: 800;
+  margin: 0 0 0.35rem;
+  color: #fff;
+}
 
-  .bls-frame-balls {
-    background-color: rgba(255, 255, 255, 0.04);
-  }
+.bls-hero p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
 
-  .bls-frame-cum {
-    background-color: rgba(255, 255, 255, 0.08);
-  }
+/* =========================================================
+   Footer
+   ========================================================= */
+.bls-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--bls-border);
+  text-align: center;
+  color: var(--bls-text-muted);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
 
-  .bls-game-header {
-    background-color: rgba(255, 255, 255, 0.08);
-  }
+.bls-footer .text-primary-emphasis {
+  color: var(--bls-accent) !important;
+  font-weight: 600;
+}
 
-  .table thead th {
-    background-color: rgba(255, 255, 255, 0.06);
-  }
+/* =========================================================
+   Utilities
+   ========================================================= */
+.fs-sm { font-size: 0.875rem; }
+.fs-xs { font-size: 0.75rem; }
+.fs-xxs { font-size: 0.625rem; }
 
-  a.bls-link,
-  .bls-link,
-  .bls-link-row .bls-link-text {
-    color: #6ea8fe;
-  }
+#btn-back-to-top {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 999;
+  opacity: 0.85;
+  border-radius: 999px;
+  box-shadow: var(--bls-shadow-lg);
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Soften Bootstrap primary borders used on cards */
+.border-primary {
+  border-color: var(--bls-border) !important;
+}
+
+.border-secondary,
+.border-secondary-subtle {
+  border-color: var(--bls-border) !important;
+}
+
+/* Prop/value rows from league summary */
+.border-bottom.border-secondary-subtle {
+  border-color: var(--bls-border) !important;
 }
