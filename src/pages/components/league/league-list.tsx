@@ -5,7 +5,7 @@ import {type FC, type ReactNode, useCallback} from "react";
 import {Link, type To} from "react-router";
 
 import {Badge, Card, CardBody, CardFooter, CardHeader, ListGroup, ListGroupItem} from 'react-bootstrap';
-import {ArrowRightShort, PlayCircleFill} from "react-bootstrap-icons";
+import {PlayCircleFill} from "react-bootstrap-icons";
 
 import {AvailableLeagues, LeagueInfo} from "../../../data/league/league-info";
 import {
@@ -62,7 +62,7 @@ const LeagueList :FC = ()=> {
     return (
         <Card className="mb-0 h-100">
             <CardHeader className="d-flex align-items-center justify-content-between">
-                <span>Leagues &amp; Teams</span>
+                <span>Leagues & Teams</span>
             </CardHeader>
             {isLoading && <div className="card-body"><Loader /></div>}
             {(error != null) && <ErrorDisplay message="Error loading leagues. Nothing else on the site will probably work." error={error}/>}
