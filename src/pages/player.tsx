@@ -52,7 +52,7 @@ const Player: FC = () => {
     const {playerId} = useParams();
 
     if (playerId) {
-        return <PlayerDetailPage playerId={playerId}/>;
+        return <PlayerDetailPage key={playerId} playerId={playerId}/>;
     }
 
     return (
