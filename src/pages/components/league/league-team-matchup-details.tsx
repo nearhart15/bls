@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
+ * Dark mode / modern frame sheet © 2026
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,14 +60,14 @@ interface FrameAttributeIconInfo {
     iconName: keyof typeof icons;
 }
 const FrameAttributeIcons  = new Map<FrameAttributes, FrameAttributeIconInfo>([
-    ["Hung", {attribute: "Hung", description: "Got Hung!", iconColor: "red", iconName: "Icon0CircleFill"}],
-    ["Star", {attribute: "Star", description: "Beer / Star Frame!", iconColor: "indigo", iconName: "Icon1CircleFill"}],
-    ["Gutter-Spare", {attribute: "Gutter-Spare", description: "Gutter - Spare!", iconColor: "teal", iconName: "Icon2CircleFill"}],
-    ["Turkey", {attribute: "Turkey", description: "Gobble Gobble... Turkey!", iconColor: "black", iconName: "Icon3CircleFill"}],
-    ["Split-Picked-Up", {attribute: "Split-Picked-Up", description: "Split 2 Spare!", iconColor: "cyan", iconName: "Icon4CircleFill"}],
-    ["Parking-Lot", {attribute: "Parking-Lot", description: "In the Parking Lot...", iconColor: "pink", iconName: "Icon5CircleFill"}],
-    ["Clean-Game", {attribute: "Clean-Game", description: "Clean Game!", iconColor: "green", iconName: "Icon8CircleFill"}],
-    ["Perfect-Game", {attribute: "Perfect-Game", description: "Perfect Game!!!", iconColor: "orange", iconName: "Icon9CircleFill"}],
+    ["Hung", {attribute: "Hung", description: "Got Hung!", iconColor: "#ff6b6b", iconName: "Icon0CircleFill"}],
+    ["Star", {attribute: "Star", description: "Beer / Star Frame!", iconColor: "#a78bfa", iconName: "Icon1CircleFill"}],
+    ["Gutter-Spare", {attribute: "Gutter-Spare", description: "Gutter - Spare!", iconColor: "#2dd4bf", iconName: "Icon2CircleFill"}],
+    ["Turkey", {attribute: "Turkey", description: "Gobble Gobble... Turkey!", iconColor: "#fbbf24", iconName: "Icon3CircleFill"}],
+    ["Split-Picked-Up", {attribute: "Split-Picked-Up", description: "Split 2 Spare!", iconColor: "#22d3ee", iconName: "Icon4CircleFill"}],
+    ["Parking-Lot", {attribute: "Parking-Lot", description: "In the Parking Lot...", iconColor: "#f472b6", iconName: "Icon5CircleFill"}],
+    ["Clean-Game", {attribute: "Clean-Game", description: "Clean Game!", iconColor: "#4ade80", iconName: "Icon8CircleFill"}],
+    ["Perfect-Game", {attribute: "Perfect-Game", description: "Perfect Game!!!", iconColor: "#fb923c", iconName: "Icon9CircleFill"}],
 ]);
 
 interface FrameScoreLabelInfo {
@@ -107,7 +108,6 @@ interface FrameAttributeIconProps {
     attribute: FrameAttributes;
 }
 const FrameAttributeIcon :FC<FrameAttributeIconProps> = ({attribute}: FrameAttributeIconProps) => {
-    // "Hung" | "Star" | "Turkey" | "Perfect-Game" | "Clean-Game" | "Gutter-Spare" | "Split-Picked-Up" | "Parking-Lot"
     const iconInfo = FrameAttributeIcons.get(attribute);
     return (<>
         {iconInfo && <OverlayWithTooltip tooltip={iconInfo.description}><Icon iconName={iconInfo.iconName} color={iconInfo.iconColor}/></OverlayWithTooltip>}
@@ -184,38 +184,36 @@ const TeamIndSeriesGameFramesV2 :FC<TeamIndSeriesGameFramesProps> = ({matchup, t
 
     const keyPrefix = "fd-wk-" + matchup.week.toString() + "-" + gameIdx.toString() + "-";
     return (<>
-        {playerNames && frames && hasAttributes && playerNames.map((pn, pi) => <div key={keyPrefix + pi.toString()}>
+        {playerNames && frames && hasAttributes && playerNames.map((pn, pi) => <div key={keyPrefix + pi.toString()} className="mb-2">
             {smallScreen &&
                 <Row key={keyPrefix + "pn-ss-" + pi.toString()}>
                     <Col className="col-md-2">
-                        <div className="h-100 d-flex align-items-center fs-sm">{pn}</div>
+                        <div className="bls-player-name fs-sm">{pn}</div>
                     </Col>
                 </Row>
             }
-            <Row>
+            <Row className="g-1 align-items-center">
                 {!smallScreen &&
                     <Col className="col-md-2" key={keyPrefix + "pn-nss-" + pi.toString()}>
-                        <div className="h-100 d-flex align-items-center">{pn}</div>
+                        <div className="bls-player-name">{pn}</div>
                     </Col>
                 }
                 <Col className="col-md-10">
                     <Stack direction="horizontal" gap={1}>
                         {pickFrames(frames[pi]).map(frame => (
-                            <div className="border rounded-1 border-dark-subtle border-opacity-10 h-100"
-                                 style={{width: frameDivW(frame), maxWidth: "45px"}}
+                            <div className="bls-frame"
+                                 style={{width: frameDivW(frame), maxWidth: "48px"}}
                                  key={keyPrefix + "pn-nss-" + pi.toString() + "-f-" + frame.number.toString()}>
-                                <Stack direction="vertical">
-                                    <Stack direction="horizontal" className="fs-xs justify-content-evenly">
-                                        {writeScoreLabelRow(frame)}
-                                    </Stack>
-                                    <div className="text-center border fs-sm p-0 bg-secondary">{frame.cumulativeScore}</div>
-                                    <div className="fs-xxs text-center">
-                                        {frame.attributes.map((a, i) =>
-                                            <FrameAttributeIcon attribute={a} key={keyPrefix + "pn-nss-" + pi.toString() + "-f-" + frame.number.toString() + "-att-" + i.toString()}/>
-                                        )}
-                                        {(!hasAttributes[pi] && frame.attributes.length == 0) && <>&nbsp;</>}
-                                    </div>
-                                </Stack>
+                                <div className="bls-frame-balls">
+                                    {writeScoreLabelRow(frame)}
+                                </div>
+                                <div className="bls-frame-cum">{frame.cumulativeScore}</div>
+                                <div className="bls-frame-attrs fs-xxs">
+                                    {frame.attributes.map((a, i) =>
+                                        <FrameAttributeIcon attribute={a} key={keyPrefix + "pn-nss-" + pi.toString() + "-f-" + frame.number.toString() + "-att-" + i.toString()}/>
+                                    )}
+                                    {(!hasAttributes[pi] && frame.attributes.length == 0) && <>&nbsp;</>}
+                                </div>
                             </div>
                         ))}
                     </Stack>
@@ -239,7 +237,7 @@ const TeamIndSeriesGameScoresSummary :FC<MatchupDetailsDisplayProps> = ({matchup
         return <></>;
     }
     return (<>
-        <Table size="sm" bordered striped responsive={true} className={`p-0 lh-1 my-1 text-end ${isBreakpointSmallerThan(currentBreakpoint, BS_BP_XS) ? "fs-xs" : ""}`}>
+        <Table size="sm" bordered striped responsive={true} className={`bls-score-table p-0 lh-1 my-1 text-end ${isBreakpointSmallerThan(currentBreakpoint, BS_BP_XS) ? "fs-xs" : ""}`}>
             <thead>
                 <tr>
                     <th>Player</th>
@@ -336,8 +334,8 @@ const MatchupDetailsDisplay: FC<MatchupDetailsDisplayProps> = ({leagueDetails, m
                                         {matchup.scores?.games.map((_game, g) =>
                                             <Col key={"frames-" + matchup.week.toString() + "-" + g.toString()}>
                                                 <Card className="my-1 mx-0 h-100">
-                                                    <CardBody className="p-1">
-                                                        <div className={`bg-secondary p-0 m-0 mb-md-2 text-center ${isBreakpointSmallerThan(currentBreakpoint, BS_BP_SM) ? "fs-sm" : "fs-6"}`}>
+                                                    <CardBody className="p-2">
+                                                        <div className={`bls-game-header ${isBreakpointSmallerThan(currentBreakpoint, BS_BP_SM) ? "fs-sm" : "fs-6"}`}>
                                                             Game {g + 1}
                                                         </div>
                                                         <TeamIndSeriesGameFramesV2 leagueDetails={leagueDetails}
@@ -351,7 +349,7 @@ const MatchupDetailsDisplay: FC<MatchupDetailsDisplayProps> = ({leagueDetails, m
                                         )}
                                     </Row>
                                 </CardBody>
-                                <CardFooter className="fs-xs text-center">
+                                <CardFooter className="fs-xs text-center text-body-secondary">
                                     <FrameAttributeIconLegend/>
                                 </CardFooter>
                             </CollapsibleContainer>
