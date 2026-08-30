@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
- * Dark mode additions © 2026
+ * Dark mode + player routes © 2026
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import {ThemeProvider} from "./pages/components/theme";
 import Layout from "./pages/layout";
 import Home from "./pages/home";
 import League from "./pages/league";
+import Player from "./pages/player";
 import NoPage from "./pages/nopage";
 import ScoreUtils from "./pages/score-utils";
 
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/" element={<Layout/>}>
                 <Route index element={<Home/>}/>
                 <Route path="/league/:leagueId?/:teamId?" element={<League/>}/>
+                <Route path="/player/:playerId?" element={<Player/>}/>
                 <Route path="/score-utils" element={<ScoreUtils/>}/>
                 <Route path="*" element={<NoPage/>}/>
             </Route>

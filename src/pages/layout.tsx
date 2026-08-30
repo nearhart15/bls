@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
- * Dark mode additions © 2026
+ * Dark mode + players nav © 2026
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ const Layout :FC = () => {
                                         <Nav.Link eventKey="league" as={Link} to="/league">Leagues</Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link eventKey="player" as={Link} to="/player" disabled>Players</Nav.Link>
+                                        <Nav.Link eventKey="player" as={Link} to="/player">Players</Nav.Link>
                                     </Nav.Item>
                                     <NavDropdown title="Utilities" id="utilities-navbar">
                                         <NavDropdown.Item eventKey="clear-cache" as={Link} to="#"

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
+ * Player links enabled © 2026
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +16,10 @@
  */
 
 import type {FC} from "react";
+import {Link} from "react-router";
 
-import {HourglassSplit} from "react-bootstrap-icons";
-import {Card, CardBody, CardFooter, CardHeader, CardText, CardTitle} from "react-bootstrap";
+import {PeopleFill} from "react-bootstrap-icons";
+import {Card, CardBody, CardFooter, CardHeader, ListGroup, ListGroupItem} from "react-bootstrap";
 
 import type {Players} from "../../../data/player/player-info";
 import {PLAYER_LIST_CACHE_CATEGORY, playerListFetcher} from "../../../data/player/player-api";
@@ -34,12 +36,28 @@ const PlayerList :FC = ()=> {
             {isLoading && <div className="card-body"><Loader /></div>}
             {(error != null) && <ErrorDisplay message="Error loading players. Lots of things on the site will probably not work." error={error}/>}
             {data &&
-                <CardBody className="border-primary">
-                    <CardTitle><HourglassSplit/> Player Stats (WIP)</CardTitle>
-                    <CardText>Future: links to individuals stats pages with numbers across leagues, like:</CardText>
-                    <ul>
-                        {data.players.map((player) => (<li key={player.id}><a href="#" className="card-link">{player.name}</a></li>))}
-                    </ul>
+                <CardBody className="border-primary p-0">
+                    <div className="px-3 pt-3 pb-2 text-body-secondary fs-sm d-flex align-items-center gap-2">
+                        <PeopleFill/> Stats across tracked leagues
+                    </div>
+                    <ListGroup variant="flush">
+                        {data.players.map((player) => (
+                            <ListGroupItem
+                                key={player.id}
+                                action
+                                as={Link}
+                                to={`/player/${player.id}`}
+                                className="d-flex justify-content-between align-items-center"
+                            >
+                                <span className="fw-medium">{player.name}</span>
+                                {player.lastBowled && (
+                                    <span className="fs-xs text-body-secondary">
+                                        {player.lastBowled.format("MMM D, YYYY")}
+                                    </span>
+                                )}
+                            </ListGroupItem>
+                        ))}
+                    </ListGroup>
                 </CardBody>
             }
             <CardFooter className="text-muted text-center">
