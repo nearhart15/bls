@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
+ * Dark mode contrast fixes © 2026
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -204,8 +205,8 @@ interface StatRowProps {
 }
 const StatRow :FC<StatRowProps> = ({defn, value, toolTipText} : StatRowProps)=> {
     return (
-        <Row className="border rounded-1 border-secondary">
-            <Col className="text-body-emphasis bg-secondary px-1">
+        <Row className="border rounded-1 border-secondary-subtle overflow-hidden">
+            <Col className="bg-body-secondary text-body-emphasis px-1">
                 {toolTipText && <OverlayTrigger overlay={
                     <Tooltip id={Math.random().toString()}>{toolTipText}</Tooltip>}>
                     <a href="#" onClick={(e) => { e.preventDefault(); }}>{defn}</a>
@@ -213,7 +214,7 @@ const StatRow :FC<StatRowProps> = ({defn, value, toolTipText} : StatRowProps)=> 
                 {!toolTipText && defn}
                 <span className="float-end">:</span>
             </Col>
-            <Col className="px-1">{value}</Col>
+            <Col className="px-1 text-body">{value}</Col>
         </Row>
     );
 }

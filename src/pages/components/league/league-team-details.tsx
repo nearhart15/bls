@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
+ * Dark mode contrast fixes © 2026
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,14 +70,17 @@ interface DataColRowProps {
     style?: DataColRowStyle;
 }
 const DataColRow :FC<DataColRowProps> = ({defn, value, doubleWidth = false, style = "Default"} : DataColRowProps)=> {
-    const rowBorder = style === "Success" ? "border-success-subtle" : "border-secondary";
-    const colDefnBackground = style === "Success" ? "bg-success-subtle" : "bg-secondary";
+    // Theme-aware backgrounds so labels stay readable in both light and dark mode
+    const rowBorder = style === "Success" ? "border-success-subtle" : "border-secondary-subtle";
+    const colDefnClass = style === "Success"
+        ? "bg-success-subtle text-success-emphasis"
+        : "bg-body-secondary text-body-emphasis";
     const mdColCount = doubleWidth ? 6 : 3;
     return (
         <Col xs={12} md={mdColCount}>
-            <Row className={`border rounded-1 ${rowBorder}`}>
-                <Col className={`text-body-emphasis ${colDefnBackground} px-1 ${doubleWidth ? 'col-auto' : ''}`}>{defn}<span className="float-end">:</span></Col>
-                <Col className={`px-1 ${doubleWidth ? 'col-auto' : ''}`}>{value}</Col>
+            <Row className={`border rounded-1 ${rowBorder} overflow-hidden`}>
+                <Col className={`${colDefnClass} px-1 ${doubleWidth ? 'col-auto' : ''}`}>{defn}<span className="float-end">:</span></Col>
+                <Col className={`px-1 text-body ${doubleWidth ? 'col-auto' : ''}`}>{value}</Col>
             </Row>
         </Col>
     );
