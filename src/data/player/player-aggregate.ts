@@ -213,8 +213,9 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
         });
     }
 
-    // Sort by average desc (nulls last), then name
+    // Sort by games played desc, then average desc, then name
     entries.sort((a, b) => {
+        if (b.games !== a.games) return b.games - a.games;
         if (a.average == null && b.average == null) return a.name.localeCompare(b.name);
         if (a.average == null) return 1;
         if (b.average == null) return -1;
