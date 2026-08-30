@@ -46,7 +46,7 @@ const PlayerList :FC = ()=> {
             {data &&
                 <CardBody className="border-primary p-0">
                     <div className="px-3 pt-3 pb-2 text-body-secondary fs-sm d-flex align-items-center gap-2">
-                        <PeopleFill/> All bowlers on tracked teams · sorted by average
+                        <PeopleFill/> All bowlers on tracked teams · sorted by games played
                     </div>
                     <ListGroup variant="flush">
                         {data.map((player) => (
