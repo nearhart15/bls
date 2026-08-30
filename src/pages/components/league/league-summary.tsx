@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
+ * Portrait/narrow layout improvements © 2026
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +41,15 @@ interface PropValueLineProps {
     prop: string;
     value: ReactNode;
 }
+/** Label + value row that stays readable on narrow/portrait widths */
 const PropValueLine :FC<PropValueLineProps> = ({ prop, value }: PropValueLineProps)=> {
-    return <Row><Col className="text-primary-emphasis">{prop}</Col><Col>: {value}</Col></Row>
+    return (
+        <div className="d-flex flex-wrap align-items-baseline column-gap-2 row-gap-0 py-1 border-bottom border-secondary-subtle">
+            <span className="text-primary-emphasis fw-medium text-nowrap">{prop}</span>
+            <span className="text-body-secondary user-select-none">:</span>
+            <span className="text-body flex-grow-1 text-break">{value}</span>
+        </div>
+    );
 }
 
 const LeagueSummaryInfo :FC<LeagueSummaryDataProps> = ({leagueDetails}: LeagueSummaryDataProps)=> {
@@ -71,17 +79,19 @@ const LeagueSummaryInfo :FC<LeagueSummaryDataProps> = ({leagueDetails}: LeagueSu
                 }/>
             }
             {leagueDetails.onlineScoring.map((o, i) =>
-                <Card border="info" className="mt-1 mb-1 p-0" key={"league-online-scoring-" + i.toString()}>
+                <Card border="info" className="mt-2 mb-1 p-0" key={"league-online-scoring-" + i.toString()}>
                     <CardHeader className="py-1 px-2">Online Scoring</CardHeader>
                     <CardBody className="py-1 px-2">
                         <PropValueLine prop="Platform" value={o.platform}/>
                         {o.leagueSecretary && <>
                             <PropValueLine prop="Center Id" value={o.leagueSecretary.centerId}/>
                             <PropValueLine prop="League Id" value={o.leagueSecretary.leagueId}/>
-                            {o.leagueSecretary.centerDashboardUrl &&
-                                <a href={o.leagueSecretary.centerDashboardUrl} target="_blank" rel="noreferrer" className="float-start">Center Dashboard</a>}
-                            {o.leagueSecretary.leagueDashboardUrl &&
-                                <a href={o.leagueSecretary.leagueDashboardUrl} target="_blank" rel="noreferrer" className="float-end">League Dashboard</a>}
+                            <div className="d-flex flex-wrap gap-3 mt-1">
+                                {o.leagueSecretary.centerDashboardUrl &&
+                                    <a href={o.leagueSecretary.centerDashboardUrl} target="_blank" rel="noreferrer">Center Dashboard</a>}
+                                {o.leagueSecretary.leagueDashboardUrl &&
+                                    <a href={o.leagueSecretary.leagueDashboardUrl} target="_blank" rel="noreferrer">League Dashboard</a>}
+                            </div>
                         </>
                         }
                     </CardBody>
@@ -191,16 +201,20 @@ const LeagueHonorRoll :FC<LeagueSummaryDataProps> = ({leagueDetails} : LeagueSum
             <CardHeader className="py-1 px-2 text-white bg-info"><span className="fs-6">Honor Roll</span></CardHeader>
             {leagueDetails.leagueAccolades.map((accolade, idx) => (
                 <CardBody className="py-1 px-1 my-0 mx-2" key={"league-accolage-" + idx.toString()}>
-                    <Container>
-                        <Row>
-                            <Col className="bg-info-subtle text-info-emphasis">{accoladeLabels.get(accolade.type)}</Col>
-                        </Row>
-                        <Row>
-                            <Col>{accolade.when?.format("DD MMM")}</Col>
-                            <Col className="col-auto text-start">{accolade.type.startsWith("IND") ? findPlayer(accolade.who) : findTeam(accolade.who)}</Col>
-                            <Col className="text-end">{(accolade.description && accolade.description.length > 0) ? accolade.description : numberFormat.format(accolade.howMuch)}</Col>
-                        </Row>
-                    </Container>
+                    <div className="rounded-1 px-2 py-1 mb-1 bg-info-subtle text-info-emphasis fw-medium">
+                        {accoladeLabels.get(accolade.type)}
+                    </div>
+                    <div className="d-flex flex-wrap align-items-baseline column-gap-2 px-1">
+                        <span className="text-nowrap">{accolade.when?.format("DD MMM")}</span>
+                        <span className="flex-grow-1 text-break">
+                            {accolade.type.startsWith("IND") ? findPlayer(accolade.who) : findTeam(accolade.who)}
+                        </span>
+                        <span className="ms-auto text-end text-nowrap fw-semibold">
+                            {(accolade.description && accolade.description.length > 0)
+                                ? accolade.description
+                                : numberFormat.format(accolade.howMuch)}
+                        </span>
+                    </div>
                 </CardBody>))}
             <CardFooter><small>Honor Roll only considers achievements from <em>tracked teams</em>.</small></CardFooter>
         </Card>
@@ -215,9 +229,9 @@ const LeagueSummaryData :FC<LeagueSummaryDataProps> = ({leagueDetails, currentBr
     return (
     <>
         <Container fluid="true">
-            {/*The notation below goes to 2 cols above sm, 3 cols above md: className="row row-cols-1 row-cols-sm-2 row-cols-md-3 justify-content-evenly"*/}
-            <Row>
-                <Col md={4}>
+            {/* Stack on phones & tablets; 3 columns only on large (lg+) screens */}
+            <Row className="g-2 g-lg-3">
+                <Col xs={12} lg={4} className="mb-2 mb-lg-0">
                     <Card className="text-start mx-0 mb-0 h-100" border="secondary">
                         <CollapsibleContainer divId="league-honor-roll" headerTitle="Honor Roll" currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_XS}>
                             <CardBody className="py-1 py-sm-2">
@@ -226,7 +240,7 @@ const LeagueSummaryData :FC<LeagueSummaryDataProps> = ({leagueDetails, currentBr
                         </CollapsibleContainer>
                     </Card>
                 </Col>
-                <Col md={4}>
+                <Col xs={12} lg={4} className="mb-2 mb-lg-0">
                     <Card className="text-start mx-0 mb-0 h-100" border="secondary">
                         <CollapsibleContainer divId="league-rules" headerTitle="League Rules" currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_XS}>
                             <CardBody className="py-1 py-sm-2">
@@ -235,7 +249,7 @@ const LeagueSummaryData :FC<LeagueSummaryDataProps> = ({leagueDetails, currentBr
                         </CollapsibleContainer>
                     </Card>
                 </Col>
-                <Col md={4}>
+                <Col xs={12} lg={4}>
                     <Card className="text-start mx-0 mb-0 h-100" border="secondary">
                         <CollapsibleContainer divId="league-info" headerTitle="League Info" currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_XS}>
                             <CardBody className="py-1 py-sm-2">
