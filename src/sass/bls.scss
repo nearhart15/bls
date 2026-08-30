@@ -1,6 +1,6 @@
 /*!
  * Copyright (c) 2025. Bindul Bhowmik
- * Dark mode + modern polish © 2026
+ * Dark mode + modern polish + link styles © 2026
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,6 +81,37 @@ body {
   letter-spacing: 0.03em;
   text-transform: uppercase;
   font-size: 0.75rem;
+}
+
+/* Noticeable links */
+a.bls-link,
+.bls-link {
+  color: var(--bs-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  font-weight: 500;
+}
+
+a.bls-link:hover,
+.bls-link:hover {
+  color: var(--bs-link-hover-color, var(--bs-primary));
+  text-decoration-thickness: 2px;
+}
+
+/* Player list rows look clearly interactive */
+.bls-link-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.bls-link-row .bls-link-text {
+  color: var(--bs-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.bls-link-row:hover .bls-link-text {
+  text-decoration-thickness: 2px;
 }
 
 /* Score summary tables */
@@ -186,5 +217,11 @@ body {
 
   .table thead th {
     background-color: rgba(255, 255, 255, 0.06);
+  }
+
+  a.bls-link,
+  .bls-link,
+  .bls-link-row .bls-link-text {
+    color: #6ea8fe;
   }
 }

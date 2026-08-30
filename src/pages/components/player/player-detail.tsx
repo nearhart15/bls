@@ -27,7 +27,11 @@ import {
     Table,
 } from "react-bootstrap";
 
-import type {AggregatedPlayerData, PlayerLeagueAppearance} from "../../../data/player/player-aggregate";
+import type {
+    AggregatedPlayerData,
+    PlayerLeagueAppearance,
+    PlayerSeasonStats,
+} from "../../../data/player/player-aggregate";
 import type {PlayerStats, RatioGroup} from "../../../data/player/player-stats";
 
 const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 2});
@@ -99,6 +103,53 @@ const CareerStatsPanel: FC<CareerStatsProps> = ({stats}) => {
     );
 };
 
+interface SeasonStatsProps {
+    seasons: PlayerSeasonStats[];
+}
+const SeasonStatsPanel: FC<SeasonStatsProps> = ({seasons}) => {
+    if (seasons.length === 0) {
+        return null;
+    }
+
+    return (
+        <Card className="mb-3" border="secondary">
+            <CardHeader>By Season</CardHeader>
+            <CardBody className="p-0">
+                <Table responsive hover size="sm" className="mb-0 bls-score-table">
+                    <thead>
+                        <tr>
+                            <th>Season</th>
+                            <th className="text-end">Leagues</th>
+                            <th className="text-end">Games</th>
+                            <th className="text-end">Average</th>
+                            <th className="text-end">Pinfall</th>
+                            <th className="text-end">High Gm</th>
+                            <th className="text-end">High Ser</th>
+                            <th className="text-end">200s</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {seasons.map((s) => (
+                            <tr key={s.season}>
+                                <td className="text-nowrap fw-medium">{s.season}</td>
+                                <td className="text-end">{s.leagues || "—"}</td>
+                                <td className="text-end">{s.games || "—"}</td>
+                                <td className="text-end">
+                                    {s.games > 0 ? numberFormat.format(s.average) : "—"}
+                                </td>
+                                <td className="text-end">{s.games > 0 ? s.pinfall : "—"}</td>
+                                <td className="text-end">{s.games > 0 ? s.highGame : "—"}</td>
+                                <td className="text-end">{s.highSeries > 0 ? s.highSeries : "—"}</td>
+                                <td className="text-end">{s.games200 || "—"}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            </CardBody>
+        </Card>
+    );
+};
+
 interface AppearancesProps {
     appearances: PlayerLeagueAppearance[];
 }
@@ -135,10 +186,10 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
                             <tr key={`${a.leagueId}-${a.teamId}`}>
                                 <td className="text-nowrap">{a.season}</td>
                                 <td>
-                                    <Link to={`/league/${a.leagueId}`}>{a.leagueName}</Link>
+                                    <Link className="bls-link" to={`/league/${a.leagueId}`}>{a.leagueName}</Link>
                                 </td>
                                 <td>
-                                    <Link to={`/league/${a.leagueId}/${a.teamId}`}>
+                                    <Link className="bls-link" to={`/league/${a.leagueId}/${a.teamId}`}>
                                         #{a.teamNumber} {a.teamName}
                                     </Link>
                                 </td>
@@ -168,16 +219,16 @@ interface PlayerDetailProps {
     data: AggregatedPlayerData;
 }
 const PlayerDetail: FC<PlayerDetailProps> = ({data}) => {
-    const {player, appearances, careerStats} = data;
+    const {player, appearances, careerStats, seasonStats} = data;
 
     return (
         <Container fluid="true" className="px-0">
             <Card border="primary" className="mb-3">
                 <CardHeader className="d-flex flex-wrap align-items-center gap-2 justify-content-between">
                     <span className="fs-4 fw-semibold mb-0">{player.name}</span>
-                    {player.lastBowled && (
+                    {careerStats.gameStats.count > 0 && (
                         <span className="fs-sm text-body-secondary">
-                            Last bowled: {player.lastBowled.format("MMM D, YYYY")}
+                            Career avg {numberFormat.format(careerStats.gameStats.average)}
                         </span>
                     )}
                 </CardHeader>
@@ -189,10 +240,11 @@ const PlayerDetail: FC<PlayerDetailProps> = ({data}) => {
             </Card>
 
             <CareerStatsPanel stats={careerStats}/>
+            <SeasonStatsPanel seasons={seasonStats}/>
             <AppearancesPanel appearances={appearances}/>
 
             <div className="mb-3">
-                <Link to="/player" className="btn btn-outline-secondary btn-sm">← All players</Link>
+                <Link to="/player" className="btn btn-outline-primary btn-sm">← All players</Link>
             </div>
         </Container>
     );
