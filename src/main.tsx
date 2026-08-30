@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
+ * Dark mode additions © 2026
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +25,7 @@ import {Route, Routes, HashRouter} from "react-router";
 
 import {ContextCacheProvider} from "./pages/components/cache/context-cache";
 import G4Provider from "./pages/components/analytics/ga4-provider";
+import {ThemeProvider} from "./pages/components/theme";
 
 import Layout from "./pages/layout";
 import Home from "./pages/home";
@@ -49,11 +51,13 @@ createRoot(document.getElementById('root')!)
     .render(
     <StrictMode>
         <HashRouter>
-            <ContextCacheProvider>
-                <G4Provider>
-                    <App/>
-                </G4Provider>
-            </ContextCacheProvider>
+            <ThemeProvider>
+                <ContextCacheProvider>
+                    <G4Provider>
+                        <App/>
+                    </G4Provider>
+                </ContextCacheProvider>
+            </ThemeProvider>
         </HashRouter>
     </StrictMode>
 )

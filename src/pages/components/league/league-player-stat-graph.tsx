@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
+ * Dark mode additions © 2026
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +24,22 @@ import {Col, Container, Row} from "react-bootstrap";
 
 import {BS_BP_LG, BS_BP_XS, BS_BP_XXL} from "../ui-utils";
 import type {PlayerDayData} from "./league-team-roster";
+import {useTheme} from "../theme";
 
 interface TeamPlayerStatGraphProps {
     playerData: PlayerDayData[];
 }
 const TeamPlayerStatGraph: FC<TeamPlayerStatGraphProps> = ({playerData}) => {
+    const {theme} = useTheme();
+
     const chartOptions : ApexOptions = {
         chart: {
             id: 'Player-Averages',
+            background: 'transparent',
+            foreColor: theme === 'dark' ? '#adb5bd' : '#373d3f',
+        },
+        theme: {
+            mode: theme,
         },
         series: [
             {

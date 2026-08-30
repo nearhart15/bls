@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
+ * Dark mode additions © 2026
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +24,23 @@ import {Col, Container, Row} from "react-bootstrap";
 import {BS_BP_LG, BS_BP_XS, BS_BP_XXL} from "../ui-utils";
 
 import type {TeamPositionScoreData} from "./league-team-details";
+import {useTheme} from "../theme";
 
 interface TeamStatGraphProps {
     teamPosScores: TeamPositionScoreData[];
 }
 const TeamStatGraph : FC<TeamStatGraphProps> = ({teamPosScores} : TeamStatGraphProps) => {
+    const {theme} = useTheme();
+
     const chartOptions : ApexOptions = {
         chart: {
             id: 'Team-Performance',
             type: 'line',
+            background: 'transparent',
+            foreColor: theme === 'dark' ? '#adb5bd' : '#373d3f',
+        },
+        theme: {
+            mode: theme,
         },
         series: [{
                 name: 'Team Scratch Series',

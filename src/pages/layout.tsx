@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
+ * Dark mode additions © 2026
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +21,7 @@ import {Navbar, Nav, Container, NavDropdown} from "react-bootstrap";
 import ImgBowlingLogo from "./../assets/bowling-svgrepo-com.svg";
 import ScrollToTop from "./components/scroll-to-top";
 import ClearCache, {type ClearCacheRef} from "./components/cache/clear-cache";
+import {ThemeToggle} from "./components/theme";
 
 const Layout :FC = () => {
     const clearCacheRef = useRef<ClearCacheRef>(null);
@@ -59,6 +61,7 @@ const Layout :FC = () => {
                                         <NavDropdown.Item eventKey="score-converter" as={Link} to="/score-utils">Score Utilities</NavDropdown.Item>
                                     </NavDropdown>
                                 </Nav>
+                                <ThemeToggle />
                             </Navbar.Collapse>
                         </Container>
                     </Navbar>
