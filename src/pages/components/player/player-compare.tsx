@@ -61,6 +61,8 @@ const CONVERSION: StatDef[] = [
     {key: "strikeToSparePct", label: "Strike→spare %", format: fmtP},
     {key: "singlePinPickup", label: "Single pins pickup", format: fmtP},
     {key: "cleanGames", label: "Clean games", format: fmtI},
+    {key: "hungCount", label: "Got hung", format: fmtI},
+    {key: "turkeyCount", label: "Turkeys", format: fmtI},
 ];
 
 const VOLUME: StatDef[] = [
@@ -97,6 +99,8 @@ type RichSlice = {
     series600?: number;
     series800?: number;
     cleanGames?: number;
+    hungCount?: number;
+    turkeyCount?: number;
     firstBall?: number | null;
     strikePct?: number | null;
     sparePct?: number | null;
@@ -112,7 +116,7 @@ type RichSlice = {
 
 function bagFromSlices(slices: RichSlice[]): StatBag {
     let games = 0, pinfall = 0, highGame = 0, highSeries = 0, games200 = 0;
-    let games300 = 0, series600 = 0, series800 = 0, cleanGames = 0, seriesCount = 0;
+    let games300 = 0, series600 = 0, series800 = 0, cleanGames = 0, hungCount = 0, turkeyCount = 0, seriesCount = 0;
     let weighted = 0;
     let firstW = 0, firstG = 0;
     let strikeW = 0, spareW = 0, singleW = 0, openW = 0, splitW = 0, s2sW = 0, pickupW = 0, pctG = 0;
@@ -128,6 +132,8 @@ function bagFromSlices(slices: RichSlice[]): StatBag {
         series600 += s.series600 ?? 0;
         series800 += s.series800 ?? 0;
         cleanGames += s.cleanGames ?? 0;
+        hungCount += s.hungCount ?? 0;
+        turkeyCount += s.turkeyCount ?? 0;
         seriesCount += s.seriesCount ?? 0;
         if (s.average != null && s.games > 0) weighted += s.average * s.games;
         if (s.firstBall != null && s.games > 0) { firstW += s.firstBall * s.games; firstG += s.games; }
@@ -147,7 +153,7 @@ function bagFromSlices(slices: RichSlice[]): StatBag {
     return {
         average: games > 0 ? weighted / games : null,
         games, pinfall, highGame, highSeries, games200,
-        games300, series600, series800, cleanGames, seriesCount,
+        games300, series600, series800, cleanGames, hungCount, turkeyCount, seriesCount,
         firstBall: firstG > 0 ? firstW / firstG : null,
         strikePct: pctG > 0 && strikeW > 0 ? strikeW / pctG : null,
         sparePct: pctG > 0 && spareW > 0 ? spareW / pctG : null,
@@ -179,6 +185,8 @@ function bagFromCareer(stats: PlayerStats): StatBag {
         series600: stats.series600,
         series800: stats.series800,
         cleanGames: stats.cleanGames,
+        hungCount: stats.hungCount,
+        turkeyCount: stats.turkeyCount,
         firstBall: stats.firstBallAverage || null,
         strikePct: ratioPct(stats.strikes),
         sparePct: ratioPct(stats.spares),
@@ -240,18 +248,18 @@ const DualRadar: FC<{bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}
     const gamesA = Math.max(1, num(bagA.games));
     const gamesB = Math.max(1, num(bagB.games));
     const scaleAvg = (v: number | null) => Math.max(0, Math.min(100, ((num(v) - 140) / 80) * 100));
-    const cats = ["Avg", "Strike %", "Spare %", "1st Ball", "200+", "Clean"];
+    const cats = ["Avg", "Strike %", "Spare %", "Clean", "Hung", "Turkey"];
     const seriesA = [
         scaleAvg(bagA.average), num(bagA.strikePct), num(bagA.sparePct),
-        Math.min(100, (num(bagA.firstBall) / 10) * 100),
-        Math.min(100, (num(bagA.games200) / gamesA) * 300),
         Math.min(100, (num(bagA.cleanGames) / gamesA) * 100),
+        Math.min(100, (num(bagA.hungCount) / gamesA) * 40),
+        Math.min(100, (num(bagA.turkeyCount) / gamesA) * 25),
     ];
     const seriesB = [
         scaleAvg(bagB.average), num(bagB.strikePct), num(bagB.sparePct),
-        Math.min(100, (num(bagB.firstBall) / 10) * 100),
-        Math.min(100, (num(bagB.games200) / gamesB) * 300),
         Math.min(100, (num(bagB.cleanGames) / gamesB) * 100),
+        Math.min(100, (num(bagB.hungCount) / gamesB) * 40),
+        Math.min(100, (num(bagB.turkeyCount) / gamesB) * 25),
     ];
     const options: ApexOptions = {
         chart: {type: "radar", background: "transparent", toolbar: {show: false}, fontFamily: "Inter, sans-serif"},
