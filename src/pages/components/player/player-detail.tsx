@@ -1,5 +1,5 @@
 /*
- * Modern player detail © 2026
+ * Player detail — Apple-inspired presentation © 2026
  */
 
 import type {FC} from "react";
@@ -211,15 +211,18 @@ const PlayerDetail: FC<PlayerDetailProps> = ({data}) => {
 
     return (
         <Container fluid="true" className="px-0">
-            <div className="bls-hero mb-3">
-                <h1 className="mb-1">{player.name}</h1>
-                <p>
-                    {appearances.length} league appearance{appearances.length === 1 ? "" : "s"}
-                    {careerStats.gameStats.count > 0 && (
-                        <> · Career avg {numberFormat.format(careerStats.gameStats.average)}</>
-                    )}
-                </p>
-            </div>
+            <section className="bls-hero mb-4">
+                <div className="bls-hero-inner">
+                    <span className="bls-hero-kicker">Player</span>
+                    <h1>{player.name}</h1>
+                    <p>
+                        {appearances.length} league appearance{appearances.length === 1 ? "" : "s"}
+                        {careerStats.gameStats.count > 0 && (
+                            <> · Career avg {numberFormat.format(careerStats.gameStats.average)}</>
+                        )}
+                    </p>
+                </div>
+            </section>
 
             <CareerStatsPanel stats={careerStats}/>
             <SeasonStatsPanel seasons={seasonStats}/>
