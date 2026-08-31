@@ -374,21 +374,13 @@ const PlayerLeaderboard: FC = () => {
                             </tbody>
                         </Table>
                     </div>
-                    <div className="bls-player-cards">
+                    <div className="bls-player-cards bls-lb-list">
                         {ranked.map((r, idx) => (
-                            <div className="bls-player-card" key={`lb-${r.row.id}`}>
-                                <div className="bls-player-card-top">
-                                    <div>
-                                        <div className="bls-player-card-meta">#{idx + 1}</div>
-                                        <Link to={`/player/${r.row.id}`} className="bls-link bls-player-card-name">{r.row.name}</Link>
-                                    </div>
-                                    <strong className="tabular-nums">{formatValue(r.value, def)}</strong>
-                                </div>
-                                <div className="bls-player-card-grid">
-                                    <div className="bls-player-card-stat"><strong>{r.row.games}</strong><span>Games</span></div>
-                                    <div className="bls-player-card-stat"><strong>{def.label}</strong><span>Ranked stat</span></div>
-                                </div>
-                            </div>
+                            <Link to={`/player/${r.row.id}`} className="bls-lb-row" key={`lb-${r.row.id}`}>
+                                <span className="bls-lb-rank">{idx + 1}</span>
+                                <span className="bls-lb-name">{r.row.name}</span>
+                                <span className="bls-lb-val tabular-nums">{formatValue(r.value, def)}</span>
+                            </Link>
                         ))}
                     </div>
                 </Card>
