@@ -35,6 +35,11 @@ function avgScore(avg: number): number {
     return Math.max(0, Math.min(100, ((avg - 140) / 80) * 100));
 }
 
+/** Plot count stats as % of games so similar counts sit at similar radii. */
+function countScore(count: number, games: number): number {
+    return Math.max(0, Math.min(100, (count / Math.max(1, games)) * 100));
+}
+
 function useIsNarrow(maxWidth = 767): boolean {
     const [narrow, setNarrow] = useState(false);
     useEffect(() => {
@@ -112,10 +117,10 @@ const CareerRadar: FC<{stats: PlayerStats}> = ({stats}) => {
         avgScore(stats.gameStats.average),
         pct(stats.strikes),
         pct(stats.spares),
-        Math.min(100, (stats.cleanGames / games) * 100),
-        Math.min(100, (stats.hungCount / games) * 40),
-        Math.min(100, (stats.turkeyCount / games) * 25),
-        Math.min(100, (stats.games200 / games) * 100 * 3),
+        countScore(stats.cleanGames, games),
+        countScore(stats.hungCount, games),
+        countScore(stats.turkeyCount, games),
+        countScore(stats.games200, games),
     ];
     const chartHeight = narrow ? 280 : 360;
     const labelSize = narrow ? "10px" : "12px";
@@ -204,7 +209,7 @@ const PlayerDetail: FC<{data: AggregatedPlayerData}> = ({data}) => {
                     <span className="bls-hero-kicker">Player profile</span>
                     <h1 className="bls-profile-hero-name">{displayName}</h1>
                     <p className="text-body-secondary mb-0">
-                        <Link to="/player" className="bls-link">All players</Link>{" · "}
+                        <Link to="/player" className="bls-link">All players</Link>{" \u00b7 "}
                         <Link to="/player/compare" className="bls-link">Player Compare</Link>
                     </p>
                     <div className="bls-scope-pills mt-3" role="tablist" aria-label="Player views">
@@ -239,14 +244,14 @@ const PlayerDetail: FC<{data: AggregatedPlayerData}> = ({data}) => {
                         <Card className="bls-profile-card bls-kpi-hero h-100">
                             <div className="bls-profile-card-head">Career highlight</div>
                             <CardBody>
-                                <div className="bls-kpi-big">{hasGames ? numberFormat.format(stats.gameStats.average) : "—"}</div>
+                                <div className="bls-kpi-big">{hasGames ? numberFormat.format(stats.gameStats.average) : "\u2014"}</div>
                                 <div className="bls-kpi-big-label">Scratch average</div>
                                 <div className="row g-2 mt-3">
-                                    <div className="col-6 col-lg-4"><div className="bls-kpi-mini"><div className="bls-kpi-mini-val">{stats.gameStats.count || "—"}</div><div className="bls-kpi-mini-lbl">Games</div></div></div>
-                                    <div className="col-6 col-lg-4"><div className="bls-kpi-mini"><div className="bls-kpi-mini-val">{stats.games200 || "—"}</div><div className="bls-kpi-mini-lbl">200+ Games</div></div></div>
-                                    <div className="col-6 col-lg-4"><div className="bls-kpi-mini"><div className="bls-kpi-mini-val">{stats.cleanGames || "—"}</div><div className="bls-kpi-mini-lbl">Clean Games</div></div></div>
-                                    <div className="col-6 col-lg-4"><div className="bls-kpi-mini"><div className="bls-kpi-mini-val">{stats.hungCount || "—"}</div><div className="bls-kpi-mini-lbl">Got Hung</div></div></div>
-                                    <div className="col-6 col-lg-4"><div className="bls-kpi-mini"><div className="bls-kpi-mini-val">{stats.turkeyCount || "—"}</div><div className="bls-kpi-mini-lbl">Turkeys</div></div></div>
+                                    <div className="col-6 col-lg-4"><div className="bls-kpi-mini"><div className="bls-kpi-mini-val">{stats.gameStats.count || "\u2014"}</div><div className="bls-kpi-mini-lbl">Games</div></div></div>
+                                    <div className="col-6 col-lg-4"><div className="bls-kpi-mini"><div className="bls-kpi-mini-val">{stats.games200 || "\u2014"}</div><div className="bls-kpi-mini-lbl">200+ Games</div></div></div>
+                                    <div className="col-6 col-lg-4"><div className="bls-kpi-mini"><div className="bls-kpi-mini-val">{stats.cleanGames || "\u2014"}</div><div className="bls-kpi-mini-lbl">Clean Games</div></div></div>
+                                    <div className="col-6 col-lg-4"><div className="bls-kpi-mini"><div className="bls-kpi-mini-val">{stats.hungCount || "\u2014"}</div><div className="bls-kpi-mini-lbl">Got Hung</div></div></div>
+                                    <div className="col-6 col-lg-4"><div className="bls-kpi-mini"><div className="bls-kpi-mini-val">{stats.turkeyCount || "\u2014"}</div><div className="bls-kpi-mini-lbl">Turkeys</div></div></div>
                                 </div>
                             </CardBody>
                         </Card>
