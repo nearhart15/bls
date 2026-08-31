@@ -78,6 +78,7 @@ const Home: FC = () => {
                         defaultScope="last-year"
                         lockScope
                         showTrend={false}
+                        showRating={false}
                         title="Active bowlers (last year)"
                     />
                 </div>
