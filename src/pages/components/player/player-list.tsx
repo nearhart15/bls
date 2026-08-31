@@ -5,7 +5,7 @@
 import {type FC, useCallback} from "react";
 import {Link} from "react-router";
 import {Badge, Card, CardBody, CardHeader, Table} from "react-bootstrap";
-import {Bowling} from "react-bootstrap-icons";
+import {PersonCircle} from "react-bootstrap-icons";
 
 import {
     buildFullPlayerList,
@@ -80,7 +80,7 @@ const PlayerList: FC = () => {
                                         <td>
                                             <div className="d-flex align-items-center gap-2">
                                                 <span className="bls-bowler-icon">
-                                                    <Bowling size={16} />
+                                                    <PersonCircle size={16} />
                                                 </span>
                                                 <div className="min-w-0">
                                                     <Link
