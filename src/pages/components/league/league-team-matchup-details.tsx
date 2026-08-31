@@ -4,6 +4,7 @@
  */
 
 import {type FC, createContext, useContext, useEffect, useMemo, useState} from "react";
+import {createPortal} from "react-dom";
 
 import {
     Row,
@@ -85,8 +86,23 @@ const findPlayer = (teamDetails: TrackedLeagueTeam, playerId: string | undefined
 
 const FrameAttrHintContext = createContext<{
     active: FrameAttributeIconInfo | null;
-    setActive: (info: FrameAttributeIconInfo) => void;
+    setActive: (info: FrameAttributeIconInfo | null) => void;
 }>({active: null, setActive: () => undefined});
+
+const FrameAttrToast: FC = () => {
+    const {active, setActive} = useContext(FrameAttrHintContext);
+    if (!active || typeof document === "undefined") return null;
+    return createPortal(
+        <div className="bls-attr-toast" role="status">
+            <Icon iconName={active.iconName} color={active.iconColor}/>
+            <span style={{color: active.iconColor}}>{active.description}</span>
+            <button type="button" className="bls-attr-toast-close" aria-label="Dismiss" onClick={() => setActive(null)}>
+                ×
+            </button>
+        </div>,
+        document.body,
+    );
+};
 
 interface FrameAttributeIconProps {
     attribute: FrameAttributes;
@@ -104,7 +120,7 @@ const FrameAttributeIcon :FC<FrameAttributeIconProps> = ({attribute}: FrameAttri
             onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setActive(iconInfo);
+                setActive(isOn ? null : iconInfo);
             }}
         >
             <Icon iconName={iconInfo.iconName} color={iconInfo.iconColor}/>
@@ -125,7 +141,7 @@ const FrameAttributeIconLegend :FC = () => {
                             type="button"
                             className={`bls-attr-btn bls-attr-legend-item${isOn ? " is-active" : ""}`}
                             aria-label={icn.description}
-                            onClick={() => setActive(icn)}
+                            onClick={() => setActive(isOn ? null : icn)}
                         >
                             <Icon iconName={icn.iconName} color={icn.iconColor}/>
                         </button>
@@ -150,7 +166,7 @@ const FrameAttributeIconLegend :FC = () => {
                             <button
                                 type="button"
                                 className={`bls-attr-guide-row${isOn ? " is-active" : ""}`}
-                                onClick={() => setActive(icn)}
+                                onClick={() => setActive(isOn ? null : icn)}
                             >
                                 <Icon iconName={icn.iconName} color={icn.iconColor}/>
                                 <span>{icn.description}</span>
@@ -412,6 +428,7 @@ const MatchupDetailsDisplay: FC<MatchupDetailsDisplayProps> = ({leagueDetails, m
                 </Col>
             </Row>
         }
+        <FrameAttrToast />
     </FrameAttrHintContext.Provider>
     );
 }
