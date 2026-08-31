@@ -578,6 +578,57 @@ a.bls-link:hover,
   }
 }
 
+/* Global mobile polish */
+@media (max-width: 767.98px) {
+  .bls-shell {
+    padding: 0.65rem 0.75rem 2.5rem;
+  }
+
+  .bls-main {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .bls-hero {
+    padding: 1.75rem 1rem;
+  }
+
+  .bls-hero h1 {
+    font-size: clamp(1.75rem, 8vw, 2.5rem);
+  }
+
+  .card-body {
+    padding: 0.9rem 0.85rem;
+  }
+
+  .bls-features {
+    gap: 0.75rem;
+  }
+
+  .table-responsive,
+  .bls-perf-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .bls-compare-hero h1 {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+  }
+
+  .bls-lead-slider {
+    padding: 0.7rem 0.75rem;
+  }
+
+  .bls-lead-slider-values {
+    font-size: 0.95rem;
+  }
+
+  .bls-nav .navbar-brand {
+    font-size: 0.95rem;
+  }
+}
+
 @import "perf-table";
 @import "player-profile";
 @import "sortable";
