@@ -25,6 +25,17 @@ class FrameStatCalculator {
     totalFramesAccum = 0;
     strikesInARow = new Map<number, number>();
     singlePinsPickedUpGameScores: number[] = [];
+    tenthMarksSum = 0;
+    tenthMarkGames = 0;
+    splitFrameCount = 0;
+    pinfallByFrameSum = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    pinfallByFrameN = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    framePinfallTotal = 0;
+    framePinfallFrames = 0;
+    paceFramesSum = [0, 0, 0, 0];
+    paceFramesN = [0, 0, 0, 0];
+    paceBallsSum = [0, 0, 0, 0];
+    paceBallsN = [0, 0, 0, 0];
 
     private saveStrikeCounter (strikes: number) {
         if (strikes >= 3) {
@@ -100,6 +111,7 @@ class FrameStatCalculator {
                 this.spareOpportunitiesAccum++;
                 const singlePin = ball1Score == 9;
                 const split = !!(frame.ballScores[0][1] && frame.ballScores[0][1] == "S");
+                if (split) this.splitFrameCount++;
                 if (singlePin) this.singlePinSpareOppportunitiesAccum++;
                 if (split) this.splitSpareOppportunitiesAccum++;
                 if (first2BallScores == 10) {
@@ -118,6 +130,7 @@ class FrameStatCalculator {
                     this.spareOpportunitiesAccum++;
                     const singlePin = ball2Score == 9;
                     const split = !!(frame.ballScores[1][1] && frame.ballScores[1][1] == "S");
+                    if (split) this.splitFrameCount++;
                     if (singlePin) this.singlePinSpareOppportunitiesAccum++;
                     if (split) this.splitSpareOppportunitiesAccum++;
                     if (ball2Score + ball3Score == 10) {
@@ -132,6 +145,46 @@ class FrameStatCalculator {
         this.saveStrikeCounter(strikeCounter);
         if (potentialCleanGame) this.cleanGameCount++;
         this.singlePinsPickedUpGameScores.push(this.computeAllSinglePinsPickedUpGameScore(game));
+        this.addPaceAndFramePinfall(game);
+    }
+
+    private addPaceAndFramePinfall(game: TeamPlayerGameScore) {
+        if (game.frames.some((f) => !f.cumulativeScore)) {
+            accumulateFrameScores(game.frames);
+        }
+        const thresholds = [50, 100, 150, 200];
+        const reached = [false, false, false, false];
+        let prev = 0;
+        let balls = 0;
+        for (const frame of game.frames) {
+            const idx = Math.max(0, Math.min(9, (frame.number || 1) - 1));
+            const cum = frame.cumulativeScore || 0;
+            const contrib = Math.max(0, cum - prev);
+            this.pinfallByFrameSum[idx] += contrib;
+            this.pinfallByFrameN[idx] += 1;
+            this.framePinfallTotal += contrib;
+            this.framePinfallFrames += 1;
+            balls += frame.ballScores?.length ?? 0;
+            for (let t = 0; t < thresholds.length; t++) {
+                if (!reached[t] && cum >= thresholds[t]) {
+                    reached[t] = true;
+                    this.paceFramesSum[t] += frame.number;
+                    this.paceFramesN[t] += 1;
+                    this.paceBallsSum[t] += balls;
+                    this.paceBallsN[t] += 1;
+                }
+            }
+            prev = cum;
+        }
+        const tenth = game.frames.find((f) => f.number === 10);
+        if (tenth) {
+            let marks = 0;
+            for (const ball of tenth.ballScores) {
+                if (ball[1] === "X" || ball[1] === "/") marks++;
+            }
+            this.tenthMarksSum += marks;
+            this.tenthMarkGames += 1;
+        }
     }
 
     getFirstBallAverage() {
@@ -214,4 +267,27 @@ export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: Pla
     if (frameStatsCalculator.singlePinsPickedUpGameScores.length > 0) {
         stats.allSinglePinsPickedUpAverage = ss.mean(frameStatsCalculator.singlePinsPickedUpGameScores);
     }
+
+    stats.avgPinfallPerFrame = frameStatsCalculator.framePinfallFrames > 0
+        ? frameStatsCalculator.framePinfallTotal / frameStatsCalculator.framePinfallFrames
+        : 0;
+    stats.avgTenthMarks = frameStatsCalculator.tenthMarkGames > 0
+        ? frameStatsCalculator.tenthMarksSum / frameStatsCalculator.tenthMarkGames
+        : 0;
+    stats.tenthMarkGames = frameStatsCalculator.tenthMarkGames;
+    stats.splitsOccurred = new RatioGroup(frameStatsCalculator.splitFrameCount, frameStatsCalculator.totalFramesAccum);
+    stats.framePinfallAvg = frameStatsCalculator.pinfallByFrameSum.map((sum, i) => {
+        const n = frameStatsCalculator.pinfallByFrameN[i];
+        return n > 0 ? sum / n : 0;
+    });
+    stats.framePinfallN = [...frameStatsCalculator.pinfallByFrameN];
+    stats.paceAvgFrames = frameStatsCalculator.paceFramesSum.map((sum, i) => {
+        const n = frameStatsCalculator.paceFramesN[i];
+        return n > 0 ? sum / n : 0;
+    });
+    stats.paceAvgBalls = frameStatsCalculator.paceBallsSum.map((sum, i) => {
+        const n = frameStatsCalculator.paceBallsN[i];
+        return n > 0 ? sum / n : 0;
+    });
+    stats.paceN = [...frameStatsCalculator.paceFramesN];
 }
