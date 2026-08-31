@@ -9,7 +9,7 @@ import {PersonAdd, PersonFillLock} from "react-bootstrap-icons";
 
 import type {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import {useTheme} from "../theme";
-import {MicroBarChart, performanceRatingFromAverage, performanceRatingFromDelta, ratingClass, Sparkline} from "../charts/mini-charts";
+import {MicroBarChart, performanceRatingFromAverage, performanceRatingFromDelta, RatingBadge, Sparkline} from "../charts/mini-charts";
 import {createGameTableData} from "./league-team-roster-data";
 
 interface Props {
@@ -70,6 +70,8 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                         const rating = meanDelta != null
                             ? performanceRatingFromDelta(meanDelta)
                             : performanceRatingFromAverage(avg);
+                        const compared = weekAvgs.filter((w) => w > 0);
+                        const comparedAvg = compared.length > 0 ? compared.reduce((s, n) => s + n, 0) / compared.length : avg ?? null;
                         return (
                             <tr key={p.id} className={selectedPlayerId === p.id ? "table-active" : undefined}>
                                 <td className="text-center text-body-secondary fw-semibold">{idx + 1}</td>
@@ -97,9 +99,13 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                                 <td className="d-none d-xl-table-cell text-center"><MicroBarChart values={weekSeries} isDark={isDark} /></td>
                                 <td className="d-none d-xl-table-cell text-center"><Sparkline values={weekAvgs} isDark={isDark} /></td>
                                 <td className="text-center">
-                                    <span className={`bls-grade ${ratingClass(rating)}`}>
-                                        {rating == null ? "—" : rating}
-                                    </span>
+                                    <RatingBadge
+                                        rating={rating}
+                                        delta={meanDelta}
+                                        bookAverage={avg ?? null}
+                                        comparedAverage={comparedAvg}
+                                        sampleLabel="game scores vs entering average"
+                                    />
                                 </td>
                             </tr>
                         );
