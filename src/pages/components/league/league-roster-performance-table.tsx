@@ -9,6 +9,7 @@ import {PersonAdd, PersonFillLock} from "react-bootstrap-icons";
 
 import type {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import {useTheme} from "../theme";
+import {comparePinnedThen} from "../../../data/player/player-pin";
 import {MicroBarChart, performanceRatingFromAverage, performanceRatingFromDelta, RatingBadge, Sparkline} from "../charts/mini-charts";
 import {createGameTableData} from "./league-team-roster-data";
 
@@ -27,10 +28,12 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
     const isDark = theme === "dark";
 
     const ranked = [...teamDetails.roster].sort((a, b) => {
-        const aReg = a.status === "REGULAR" ? 0 : 1;
-        const bReg = b.status === "REGULAR" ? 0 : 1;
-        if (aReg !== bReg) return aReg - bReg;
-        return (b.playerStats?.gameStats.average ?? 0) - (a.playerStats?.gameStats.average ?? 0);
+        return comparePinnedThen(a.name ?? "", b.name ?? "", (() => {
+            const aReg = a.status === "REGULAR" ? 0 : 1;
+            const bReg = b.status === "REGULAR" ? 0 : 1;
+            if (aReg !== bReg) return aReg - bReg;
+            return (b.playerStats?.gameStats.average ?? 0) - (a.playerStats?.gameStats.average ?? 0);
+        })());
     });
 
     return (
