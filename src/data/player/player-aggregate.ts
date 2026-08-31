@@ -125,7 +125,7 @@ export interface PlayerListEntry {
 }
 
 export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail-v3-all-stats";
-export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v5-fun-stats";
+export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v6-s2s-ratio";
 
 interface RosterScanResult {
     playerMap: Map<string, {name: string; lastBowled?: moment.Moment}>;
@@ -253,7 +253,9 @@ function richFromStats(s: PlayerStats) {
         singlePinPct: ratioPct(s.singlePinSpares),
         openPct: ratioPct(s.opens),
         splitPct: ratioPct(s.splits),
-        strikeToSparePct: ratioPct(s.strikesToSpares),
+        strikeToSparePct: s.strikesToSpares.denominator > 0
+            ? Math.round(s.strikesToSpares.pct * 100) / 100
+            : null,
         singlePinPickup: s.allSinglePinsPickedUpAverage > 0
             ? Math.round(s.allSinglePinsPickedUpAverage * 1000) / 10 : null,
         lowGame: s.gameStats.min || null,
