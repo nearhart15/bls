@@ -43,58 +43,79 @@ const AppearSortTh: FC<{
 };
 
 function fmtPct(rg?: RatioGroup | null): string {
-    if (!rg || rg.denominator <= 0) return "—";
+    if (!rg || rg.denominator <= 0) return "\u2014";
     return `${(rg.pct * 100).toFixed(1)}% (${rg.numerator}/${rg.denominator})`;
 }
 
 function fmtNum(n: number | null | undefined, digits = 1): string {
-    if (n == null || Number.isNaN(n)) return "—";
+    if (n == null || Number.isNaN(n)) return "\u2014";
     return (Math.round(n * 10 ** digits) / 10 ** digits).toFixed(digits);
+}
+
+function fmtAccolade(accolade?: {description?: string; howMuch?: number; when?: {format: (s: string) => string}}): string {
+    if (!accolade) return "\u2014";
+    const base = accolade.description && accolade.description.length > 0
+        ? accolade.description
+        : String(accolade.howMuch ?? "");
+    const when = accolade.when?.format("DD MMM");
+    return when ? `${base} on ${when}` : base;
+}
+
+function fmtStreaks(rows: [number, number][] | undefined): string {
+    if (!rows || rows.length === 0) return "\u2014";
+    return rows.map(([len, count]) => `${len}x \u00d7 ${count}`).join(", ");
 }
 
 export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerStats; hideGroups?: string[]}> = ({stats, leagueExtras, hideGroups}) => {
     const hidden = new Set(hideGroups ?? []);
+    const gameSlotItems = (stats.gameAverages ?? []).map((ga, idx) => ({
+        label: `Game ${idx + 1} avg`,
+        value: ga ? fmtNum(ga) : "\u2014",
+    }));
     const rows: {group: string; items: {label: string; value: string}[]}[] = [
         {group: "Scoring", items: [
-            {label: "Games", value: String(stats.gameStats.count || "—")},
-            {label: "Scratch average", value: fmtNum(stats.gameStats.average)},
-            {label: "Pinfall", value: String(stats.pinfall || "—")},
-            {label: "High game", value: String(stats.gameStats.max || "—")},
-            {label: "Low game", value: String(stats.gameStats.min || "—")},
-            {label: "Game SD", value: fmtNum(stats.gameStats.sd)},
-            {label: "Series count", value: String(stats.seriesStats.count || "—")},
-            {label: "Series average", value: fmtNum(stats.seriesStats.average)},
-            {label: "High series", value: String(stats.seriesStats.max || "—")},
-            {label: "Low series", value: String(stats.seriesStats.min || "—")},
-            {label: "First-ball average", value: fmtNum(stats.firstBallAverage)},
+            {label: "Games", value: String(stats.gameStats.count || "\u2014")},
+            {label: "Pinfall", value: String(stats.pinfall || "\u2014")},
+            {label: "Games - Avg", value: fmtNum(stats.gameStats.average)},
+            {label: "Games - Min", value: String(stats.gameStats.min || "\u2014")},
+            {label: "Games - Max", value: String(stats.gameStats.max || "\u2014")},
+            {label: "Games - SD", value: fmtNum(stats.gameStats.sd)},
+            {label: "200 Games", value: String(stats.games200 ?? "\u2014")},
+            {label: "300 Games", value: String(stats.games300 ?? "\u2014")},
+            ...gameSlotItems,
+            {label: "Series", value: String(stats.seriesStats.count || "\u2014")},
+            {label: "Series - Avg", value: fmtNum(stats.seriesStats.average)},
+            {label: "Series - Min", value: String(stats.seriesStats.min || "\u2014")},
+            {label: "Series - Max", value: String(stats.seriesStats.max || "\u2014")},
+            {label: "Series - SD", value: fmtNum(stats.seriesStats.sd)},
+            {label: "600 Series", value: String(stats.series600 ?? "\u2014")},
+            {label: "800 Series", value: String(stats.series800 ?? "\u2014")},
+            {label: "First Ball Average", value: fmtNum(stats.firstBallAverage)},
         ]},
         {group: "Conversion", items: [
-            {label: "Strike %", value: fmtPct(stats.strikes)},
-            {label: "Spare %", value: fmtPct(stats.spares)},
-            {label: "Single-pin spare %", value: fmtPct(stats.singlePinSpares)},
+            {label: "Clean Games", value: String(stats.cleanGames ?? "\u2014")},
+            {label: "Strikes", value: fmtPct(stats.strikes)},
+            {label: "Spares", value: fmtPct(stats.spares)},
+            {label: "Single Pin Spares", value: fmtPct(stats.singlePinSpares)},
+            {label: "Picked up Splits", value: fmtPct(stats.splits)},
+            {label: "Opens", value: fmtPct(stats.opens)},
+            {label: "Consecutive Strikes", value: fmtStreaks(stats.strikesInARow)},
+            {label: "Strike Spare Ratio", value: fmtPct(stats.strikesToSpares)},
             {label: "Single-pin pickup avg", value: fmtNum(stats.allSinglePinsPickedUpAverage)},
-            {label: "Open %", value: fmtPct(stats.opens)},
-            {label: "Split %", value: fmtPct(stats.splits)},
-            {label: "Strike-to-spare %", value: fmtPct(stats.strikesToSpares)},
-        ]},
-        {group: "Volume / fun", items: [
-            {label: "Clean games", value: String(stats.cleanGames ?? "—")},
-            {label: "Got hung", value: String(stats.hungCount ?? "—")},
-            {label: "Turkeys", value: String(stats.turkeyCount ?? "—")},
-            {label: "200+ games", value: String(stats.games200 ?? "—")},
-            {label: "300 games", value: String(stats.games300 ?? "—")},
-            {label: "600+ series", value: String(stats.series600 ?? "—")},
-            {label: "800+ series", value: String(stats.series800 ?? "—")},
+            {label: "Got hung", value: String(stats.hungCount ?? "\u2014")},
+            {label: "Turkeys", value: String(stats.turkeyCount ?? "\u2014")},
         ]},
     ];
     const visible = rows.filter((g) => !hidden.has(g.group));
     if (leagueExtras && !hidden.has("League book")) {
-        visible.push({group: "League book", items: [
-            {label: "League average", value: fmtNum(leagueExtras.leagueAverage)},
-            {label: "League handicap", value: String(leagueExtras.leagueHandicap || "—")},
-            {label: "League games", value: String(leagueExtras.leagueGames || "—")},
-            {label: "League pinfall", value: String(leagueExtras.leaguePinfall || "—")},
-            {label: "Avg booster series", value: fmtNum(leagueExtras.averageBoosterSeries)},
+        visible.splice(1, 0, {group: "League book", items: [
+            {label: "League Games", value: String(leagueExtras.leagueGames || "\u2014")},
+            {label: "League Pinfall", value: String(leagueExtras.leaguePinfall || "\u2014")},
+            {label: "League Average", value: fmtNum(leagueExtras.leagueAverage)},
+            {label: "League Handicap", value: String(leagueExtras.leagueHandicap || "\u2014")},
+            {label: "Average Booster", value: fmtNum(leagueExtras.averageBoosterSeries, 0)},
+            {label: "Best Game over Avg", value: fmtAccolade(leagueExtras.bestGameOverAverage)},
+            {label: "Best Series over Avg", value: fmtAccolade(leagueExtras.bestSeriesOverAverage)},
         ]});
     }
     return (
@@ -179,9 +200,9 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
                                 </td>
                                 <td><Link className="bls-link" to={`/league/${a.leagueId}/${a.teamId}`}>{a.teamName}</Link></td>
                                 <td><Badge bg={a.status === "REGULAR" ? "primary" : "secondary"}>{a.status === "REGULAR" ? "Regular" : "Sub"}</Badge></td>
-                                <td className="text-end tabular-nums">{a.stats?.gameStats.count ?? "—"}</td>
-                                <td className="text-end tabular-nums">{a.stats ? numberFormat.format(a.stats.gameStats.average) : "—"}</td>
-                                <td className="text-end tabular-nums">{a.stats?.gameStats.max ?? "—"}</td>
+                                <td className="text-end tabular-nums">{a.stats?.gameStats.count ?? "\u2014"}</td>
+                                <td className="text-end tabular-nums">{a.stats ? numberFormat.format(a.stats.gameStats.average) : "\u2014"}</td>
+                                <td className="text-end tabular-nums">{a.stats?.gameStats.max ?? "\u2014"}</td>
                             </tr>
                             );
                         })}
@@ -196,7 +217,7 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
                         <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                             <div>
                                 <div className="fw-semibold">{a.leagueName}</div>
-                                <div className="text-body-secondary fs-sm">{a.season} · {a.teamName}</div>
+                                <div className="text-body-secondary fs-sm">{a.season} \u00b7 {a.teamName}</div>
                             </div>
                             <Link className="bls-link fs-sm" to={`/league/${a.leagueId}/${a.teamId}`}>Open league page</Link>
                         </div>
@@ -297,16 +318,16 @@ const SeasonBreakdownTable: FC<{seasons: PlayerSeasonStats[]}> = ({seasons}) => 
                         {sorted.map((s) => (
                             <tr key={s.season}>
                                 <td className="fw-semibold">{s.season}</td>
-                                <td className="text-end">{s.leagues || "—"}</td>
-                                <td className="text-end">{s.games || "—"}</td>
-                                <td className="text-end">{s.games > 0 ? numberFormat.format(s.average) : "—"}</td>
-                                <td className="text-end">{s.games > 0 ? s.pinfall : "—"}</td>
-                                <td className="text-end">{s.games > 0 ? s.highGame : "—"}</td>
-                                <td className="text-end">{s.highSeries > 0 ? s.highSeries : "—"}</td>
-                                <td className="text-end">{s.games200 || "—"}</td>
-                                <td className="text-end">{s.cleanGames || "—"}</td>
-                                <td className="text-end">{s.hungCount || "—"}</td>
-                                <td className="text-end">{s.turkeyCount || "—"}</td>
+                                <td className="text-end">{s.leagues || "\u2014"}</td>
+                                <td className="text-end">{s.games || "\u2014"}</td>
+                                <td className="text-end">{s.games > 0 ? numberFormat.format(s.average) : "\u2014"}</td>
+                                <td className="text-end">{s.games > 0 ? s.pinfall : "\u2014"}</td>
+                                <td className="text-end">{s.games > 0 ? s.highGame : "\u2014"}</td>
+                                <td className="text-end">{s.highSeries > 0 ? s.highSeries : "\u2014"}</td>
+                                <td className="text-end">{s.games200 || "\u2014"}</td>
+                                <td className="text-end">{s.cleanGames || "\u2014"}</td>
+                                <td className="text-end">{s.hungCount || "\u2014"}</td>
+                                <td className="text-end">{s.turkeyCount || "\u2014"}</td>
                             </tr>
                         ))}
                     </tbody>
