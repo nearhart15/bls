@@ -15,7 +15,6 @@
  */
 
 import {type FC, useEffect, useState} from "react";
-import {Link} from "react-router";
 import moment from "moment";
 
 import {Badge, Card, CardBody, CardHeader, Col, Row, Stack, Table} from "react-bootstrap";
@@ -141,7 +140,6 @@ const MatchupDisplay :FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
     useEffect(() => {
         const today = moment();
         if (!matchup.bowlDate || matchup.bowlDate.isAfter(today) || !matchup.scores?.games || matchup.scores.games.length == 0) {
-            // We don't have data for this matchup
             setShowMatchupDetails(false);
         } else {
             setShowMatchupDetails(true);
@@ -164,7 +162,6 @@ const MatchupDisplay :FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
     }, [matchup, leagueDetails, opponentTeamId]);
 
     useEffect(() => {
-        // Reset expanded state for all matchups
         const matchupDetailsExpNew = [...matchupDetailsExpanded];
         matchupDetailsExpNew.forEach(me => me.expanded = false);
         setMatchupDetailsExpanded(matchupDetailsExpNew);
@@ -240,13 +237,13 @@ const MatchupDisplay :FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
                                 <div className="my-auto align-middle">
                                     {showMatchupDetails && <span className="fs-5">{matchup.pointsWonLost[0]} - {matchup.pointsWonLost[1]}</span>}
                                 </div>
-                                {/* Expand / Collapse for larger screens - small screens is a little further down*/}
                                 <div className="d-none d-sm-block w-auto">
                                     {showMatchupDetails &&
-                                        <Link to="#" onClick={() => {toggleVisiblity(matchup.week)}}>{isVisible(matchup.week)?
-                                            <><ArrowsCollapse className="fw-bold"/><br/><span className="fs-xs">Hide Game Details</span></> :
-                                            <><ArrowsExpand className="fw-bold"/><br/><span className="fs-xs">Game Details</span></>}
-                                        </Link>
+                                        <button type="button" className="bls-details-toggle" onClick={() => {toggleVisiblity(matchup.week)}}>
+                                            {isVisible(matchup.week) ?
+                                                <><ArrowsCollapse className="fw-bold"/><br/><span className="fs-xs">Hide Game Details</span></> :
+                                                <><ArrowsExpand className="fw-bold"/><br/><span className="fs-xs">Game Details</span></>}
+                                        </button>
                                     }
                                 </div>
                             </Stack>
@@ -281,15 +278,13 @@ const MatchupDisplay :FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
                                                                          matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent}
                                                                          currentBreakpoint={currentBreakpoint}/>}
                         </div>
-                        {/* Expand / Collapse for small screens */}
-                        {showMatchupDetails && <div className="border border-primary-subtle bg-secondary my-1">
-                            <div className="mx-auto d-table">
-                                <Link to="#" onClick={() => {toggleVisiblity(matchup.week)}}>{isVisible(matchup.week)?
-                                    <><BoxArrowUp className="fw-bold fs-sm"/> <span className="fs-sm">Hide Details</span></> :
-                                    <><BoxArrowDown className="fw-bolder fs-sm"/> <span className="fs-sm">Show Details</span></>}
-                                </Link>
-                            </div>
-                        </div>}
+                        {showMatchupDetails && (
+                            <button type="button" className="bls-details-toggle bls-details-toggle-wide my-1" onClick={() => {toggleVisiblity(matchup.week)}}>
+                                {isVisible(matchup.week) ?
+                                    <><BoxArrowUp /> Hide Details</> :
+                                    <><BoxArrowDown /> Show Details</>}
+                            </button>
+                        )}
                     </Stack>
                 </CardBody>
                 <CardBody className={`p-0 mx-1 my-1 ${isVisible(matchup.week) ? "d-block" : "d-none"}`}>
