@@ -110,17 +110,26 @@ const CareerRadar: FC<RadarProps> = ({stats}) => {
     const {theme} = useTheme();
     const palette = chartPalette(theme);
 
+    const games = Math.max(1, stats.gameStats.count);
+    const displayVals = [
+        numberFormat.format(stats.gameStats.average),
+        `${pct(stats.strikes)}%`,
+        `${pct(stats.spares)}%`,
+        `${pct(stats.singlePinSpares)}%`,
+        String(stats.cleanGames),
+        numberFormat.format(stats.firstBallAverage),
+        String(stats.games200),
+    ];
     const categories = [
-        "Average",
-        "Strike %",
-        "Spare %",
-        "Single Pin %",
-        "Clean Games",
-        "First Ball",
-        "200+ Rate",
+        `${displayVals[0]} Average`,
+        `${displayVals[1]} Strike %`,
+        `${displayVals[2]} Spare %`,
+        `${displayVals[3]} Single Pin %`,
+        `${displayVals[4]} Clean Games`,
+        `${displayVals[5]} First Ball`,
+        `${displayVals[6]} 200+ Games`,
     ];
 
-    const games = Math.max(1, stats.gameStats.count);
     const seriesVals = [
         avgScore(stats.gameStats.average),
         pct(stats.strikes),
@@ -153,7 +162,7 @@ const CareerRadar: FC<RadarProps> = ({stats}) => {
             labels: {
                 style: {
                     colors: Array(categories.length).fill(palette.text),
-                    fontSize: "11px",
+                    fontSize: "12px",
                     fontWeight: 600,
                 },
             },
