@@ -28,7 +28,7 @@ const Layout :FC = () => {
                             <Nav.Link as={Link} to="/">Home</Nav.Link>
                             <Nav.Link as={Link} to="/league">Leagues</Nav.Link>
                             <Nav.Link as={Link} to="/player">Players</Nav.Link>
-                            <Nav.Link as={Link} to="/player/compare">Compare</Nav.Link>
+                            <Nav.Link as={Link} to="/player/compare">Player Compare</Nav.Link>
                             <NavDropdown title="Utilities" id="utilities-nav">
                                 <NavDropdown.Item
                                     as={Link}

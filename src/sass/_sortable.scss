@@ -119,3 +119,68 @@
   color: var(--bls-text);
   border-radius: var(--bls-radius-sm);
 }
+
+/* Player compare tug-of-war sliders */
+.bls-lead-slider {
+  border: 1px solid var(--bls-border);
+  border-radius: var(--bls-radius-sm);
+  padding: 0.85rem 1rem;
+  transition: background 0.2s ease;
+}
+
+.bls-lead-slider-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.bls-lead-slider-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: -0.01em;
+  color: var(--bls-text);
+}
+
+.bls-lead-slider-values {
+  display: flex;
+  justify-content: space-between;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.35rem;
+}
+
+.bls-lead-track {
+  position: relative;
+  display: flex;
+  height: 1.35rem;
+  border-radius: 980px;
+  overflow: hidden;
+  background: var(--bls-surface-3);
+}
+
+.bls-lead-fill {
+  height: 100%;
+  transition: width 0.35s ease, opacity 0.2s ease;
+}
+
+.bls-lead-center {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+
+.bls-lead-slider-foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+}

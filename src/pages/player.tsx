@@ -52,7 +52,7 @@ const Player: FC = () => {
         <div className="container-md">
             <div className="d-flex justify-content-end mb-2">
                 <Link to="/player/compare" className="btn btn-outline-primary btn-sm">
-                    Compare players
+                    Player Compare
                 </Link>
             </div>
             <PlayerList />

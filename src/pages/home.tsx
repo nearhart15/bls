@@ -23,7 +23,7 @@ const Home: FC = () => {
                     </p>
                     <div className="bls-hero-actions mt-3 d-flex flex-wrap gap-2 justify-content-center">
                         <Link to="/player/compare" className="btn btn-primary btn-sm">
-                            Compare players
+                            Player Compare
                         </Link>
                         <Link to="/player" className="btn btn-outline-primary btn-sm">
                             All players
