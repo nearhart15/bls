@@ -19,6 +19,21 @@ interface Props {
     onSelectPlayer: (playerId: string) => void;
 }
 
+function hungCountForPlayer(teamDetails: TrackedLeagueTeam, playerId: string): number {
+    let count = 0;
+    for (const matchup of teamDetails.matchups) {
+        const playerScore = matchup.scores?.playerScores.find((ps) => ps.player === playerId);
+        if (!playerScore) continue;
+        for (const game of playerScore.games) {
+            if (game.blind) continue;
+            for (const frame of game.frames ?? []) {
+                if (frame.attributes?.includes("Hung")) count++;
+            }
+        }
+    }
+    return count;
+}
+
 const LeagueRosterPerformanceTable: FC<Props> = ({
     teamDetails,
     selectedPlayerId,
@@ -45,6 +60,7 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                         <th>Bowler</th>
                         <th className="text-end">Avg</th>
                         <th className="text-end">Hcp</th>
+                        <th className="text-end">Hung</th>
                         <th className="text-end d-none d-md-table-cell">Pins</th>
                         <th className="text-end d-none d-md-table-cell">HG</th>
                         <th className="text-end d-none d-lg-table-cell">HS</th>
@@ -75,6 +91,7 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                             : performanceRatingFromAverage(avg);
                         const compared = weekAvgs.filter((w) => w > 0);
                         const comparedAvg = compared.length > 0 ? compared.reduce((s, n) => s + n, 0) / compared.length : avg ?? null;
+                        const hung = p.id ? hungCountForPlayer(teamDetails, p.id) : (stats?.hungCount ?? 0);
                         return (
                             <tr key={p.id} className={selectedPlayerId === p.id ? "table-active" : undefined}>
                                 <td className="text-center text-body-secondary fw-semibold">{idx + 1}</td>
@@ -93,12 +110,13 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                                         </div>
                                     </div>
                                 </td>
-                                <td className="text-end fw-semibold tabular-nums">{avg != null ? avg.toFixed(1) : "—"}</td>
-                                <td className="text-end tabular-nums">{stats?.leagueHandicap ?? "—"}</td>
-                                <td className="text-end d-none d-md-table-cell tabular-nums">{stats?.pinfall ?? "—"}</td>
-                                <td className="text-end d-none d-md-table-cell tabular-nums">{stats?.gameStats.max ?? "—"}</td>
-                                <td className="text-end d-none d-lg-table-cell tabular-nums">{stats?.seriesStats.max ?? "—"}</td>
-                                <td className="text-end d-none d-sm-table-cell tabular-nums">{stats?.games200 ?? "—"}</td>
+                                <td className="text-end fw-semibold tabular-nums">{avg != null ? avg.toFixed(1) : "\u2014"}</td>
+                                <td className="text-end tabular-nums">{stats?.leagueHandicap ?? "\u2014"}</td>
+                                <td className="text-end tabular-nums">{hung}</td>
+                                <td className="text-end d-none d-md-table-cell tabular-nums">{stats?.pinfall ?? "\u2014"}</td>
+                                <td className="text-end d-none d-md-table-cell tabular-nums">{stats?.gameStats.max ?? "\u2014"}</td>
+                                <td className="text-end d-none d-lg-table-cell tabular-nums">{stats?.seriesStats.max ?? "\u2014"}</td>
+                                <td className="text-end d-none d-sm-table-cell tabular-nums">{stats?.games200 ?? "\u2014"}</td>
                                 <td className="d-none d-xl-table-cell text-center"><MicroBarChart values={weekSeries} isDark={isDark} /></td>
                                 <td className="d-none d-xl-table-cell text-center"><Sparkline values={weekAvgs} isDark={isDark} /></td>
                                 <td className="text-center">
