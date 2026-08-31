@@ -99,6 +99,8 @@ function mergeStats(list: PlayerStats[]): PlayerStats {
     if (list.length === 1) return list[0];
     let games = 0, pinfall = 0, firstBallW = 0, singlePinW = 0;
     const streak = new Map<number, number>();
+    const gameAvgW: number[] = [];
+    const gameAvgN: number[] = [];
     for (const s of list) {
         const g = s.gameStats.count || 0;
         games += g;
@@ -134,6 +136,12 @@ function mergeStats(list: PlayerStats[]): PlayerStats {
         }
         out.incompleteFrameData = out.incompleteFrameData || s.incompleteFrameData;
         for (const [len, count] of s.strikesInARow ?? []) streak.set(len, (streak.get(len) ?? 0) + count);
+        (s.gameAverages ?? []).forEach((ga, i) => {
+            if (!ga) return;
+            const seriesN = s.seriesStats.count || 1;
+            gameAvgW[i] = (gameAvgW[i] ?? 0) + ga * seriesN;
+            gameAvgN[i] = (gameAvgN[i] ?? 0) + seriesN;
+        });
     }
     out.pinfall = pinfall;
     out.gameStats.average = games > 0 ? pinfall / games : 0;
@@ -155,6 +163,7 @@ function mergeStats(list: PlayerStats[]): PlayerStats {
     out.splits.pct = ratio(out.splits.numerator, out.splits.denominator);
     out.strikesToSpares.pct = ratio(out.strikesToSpares.numerator, out.strikesToSpares.denominator);
     out.strikesInARow = [...streak.entries()].sort((a, b) => a[0] - b[0]);
+    out.gameAverages = gameAvgW.map((sum, i) => (gameAvgN[i] ? sum / gameAvgN[i] : 0));
     return out;
 }
 
@@ -189,10 +198,14 @@ export const AllStatsPanel: FC<{
             if (row) return {stats: row.stats, extras: undefined as LeaguePlayerStats | undefined, label: timeframe};
         }
         const stats = apps.length === 0 ? new PlayerStats() : mergeStats(apps.map((a) => a.stats));
-        const one = apps.length === 1 ? appearances.find((a) => a.season === apps[0].season && a.leagueId === apps[0].leagueId) : undefined;
+        const bookCandidates = appearances
+            .filter((a) => seasonMatchesTimeframe(a.season, timeframe, lastYear) && (leagueId === "all" || a.leagueId === leagueId))
+            .sort((a, b) => b.season.localeCompare(a.season));
+        const extras = bookCandidates.length === 1 ? bookCandidates[0].stats
+            : (leagueId !== "all" ? bookCandidates[0]?.stats : undefined);
         const leagueName = leagueId === "all" ? "All leagues" : (leagues.find(([id]) => id === leagueId)?.[1] ?? "League");
         const timeLabel = timeframe === "career" ? "Career" : timeframe === "last-year" ? lastYear : timeframe;
-        return {stats, extras: one?.stats, label: `${timeLabel} · ${leagueName}`};
+        return {stats, extras, label: `${timeLabel} \u00b7 ${leagueName}`};
     }, [careerStats, seasonSlicesFull, appearanceSlicesFull, appearances, timeframe, leagueId, lastYear, leagues]);
 
     return (
@@ -220,7 +233,7 @@ export const AllStatsPanel: FC<{
                 {selected.stats.gameStats.count > 0
                     ? <>
                         <ConversionRadar stats={selected.stats} />
-                        <FullStatsGrid stats={selected.stats} leagueExtras={selected.extras} hideGroups={["Conversion"]} />
+                        <FullStatsGrid stats={selected.stats} leagueExtras={selected.extras} />
                       </>
                     : <p className="text-body-secondary mb-0">No games for this timeframe / league.</p>}
             </CardBody>
