@@ -14,7 +14,7 @@ function pct(rg?: RatioGroup | null): number | null {
 }
 
 function fmt(n: number | null | undefined, digits = 1, suffix = ""): string {
-    if (n == null || Number.isNaN(n)) return "—";
+    if (n == null || Number.isNaN(n)) return "\u2014";
     return `${(Math.round(n * 10 ** digits) / 10 ** digits).toFixed(digits)}${suffix}`;
 }
 
@@ -59,10 +59,10 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
             id: "opens",
             priority: open > 30 ? "focus" : "watch",
             title: "Too many open frames",
-            metric: `${fmt(open)}% open  ·  target under 18%`,
+            metric: `${fmt(open)}% open  \u00b7  target under 18%`,
             why: `${name} is leaving ${fmt(open)}% of frames open. Opens are usually a bigger average killer than raw strike rate.`,
             workOn: [
-                "Make the single-pin spares first — they should be automatic",
+                "Make the single-pin spares first \u2014 they should be automatic",
                 "Have a spare ball or a committed spare line instead of striking at every leftover",
                 "Count the 7 and 10 specifically after each session",
             ],
@@ -74,7 +74,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
             id: "single-pin",
             priority: single < 68 ? "focus" : "watch",
             title: "Single-pin conversion is leaking pins",
-            metric: `${fmt(single)}% single-pin  ·  target 80%+`,
+            metric: `${fmt(single)}% single-pin  \u00b7  target 80%+`,
             why: `League averages jump quickly when the corner pins start going. ${fmt(single)}% means several free pins are walking each night.`,
             workOn: [
                 "Pick one spare system (2-and-1 or 3-6-9) and use it every shot",
@@ -89,11 +89,11 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
             id: "spares",
             priority: spare < 42 ? "focus" : "watch",
             title: "Spare game is holding the average down",
-            metric: `${fmt(spare)}% spare  ·  target 52%+`,
+            metric: `${fmt(spare)}% spare  \u00b7  target 52%+`,
             why: "A modest strike night can still score well if the multi-pin leftovers get picked up. This spare rate is leaving series on the table.",
             workOn: [
-                "Practice 2–8 / 3–9 / 4–6–7 / 4–6–10 looks, not just pocket strikes",
-                "Slow down on leftovers — spare shots do not need strike speed",
+                "Practice 2\u20138 / 3\u20139 / 4\u20136\u20137 / 4\u20136\u201310 looks, not just pocket strikes",
+                "Slow down on leftovers \u2014 spare shots do not need strike speed",
                 "Track spare make % separately from strike % for a month",
             ],
         });
@@ -104,12 +104,12 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
             id: "strikes",
             priority: strike < 28 ? "focus" : "watch",
             title: "Pocket strike rate needs a bump",
-            metric: `${fmt(strike)}% strike  ·  target 38%+`,
+            metric: `${fmt(strike)}% strike  \u00b7  target 38%+`,
             why: "Without enough strikes, even a clean spare night tops out. First-ball quality is the next lever.",
             workOn: [
                 "Film two games from behind and check release repeatability",
                 "Play one tighter line for a night instead of chasing hook",
-                "Get the ball to the pocket, then adjust leftover shape — not the other way around",
+                "Get the ball to the pocket, then adjust leftover shape \u2014 not the other way around",
             ],
         });
     }
@@ -119,10 +119,10 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
             id: "first-ball",
             priority: firstBall < 8.0 ? "focus" : "watch",
             title: "First ball is leaving too much wood",
-            metric: `${fmt(firstBall)} first-ball avg  ·  target 8.5+`,
+            metric: `${fmt(firstBall)} first-ball avg  \u00b7  target 8.5+`,
             why: "A lower first-ball average means more multi-pin spares and more chance of an open. Pocket quality comes before spare gymnastics.",
             workOn: [
-                "Watch the 3-6 or 2-8 leave — that usually means light or high",
+                "Watch the 3-6 or 2-8 leave \u2014 that usually means light or high",
                 "Keep speed and axis tilt in a narrower window for a full series",
                 "If the lane is tight, move in before you start forcing hook",
             ],
@@ -134,7 +134,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
             id: "splits",
             priority: split > 12 ? "focus" : "watch",
             title: "Splits are showing up too often",
-            metric: `${fmt(split)}% splits  ·  keep under 6–8%`,
+            metric: `${fmt(split)}% splits  \u00b7  keep under 6\u20138%`,
             why: "Frequent splits usually mean the first ball is light, high, or rolling out. That is a line/speed issue more than a spare issue.",
             workOn: [
                 "Check if splits are coming from light hits vs. high hits",
@@ -149,7 +149,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
             id: "hung",
             priority: "watch",
             title: "Getting hung is eating strings",
-            metric: `${stats.hungCount} hung  ·  ${fmt(hungRate)}% of games`,
+            metric: `${stats.hungCount} hung  \u00b7  ${fmt(hungRate)}% of games`,
             why: "A hung 10 (or 7) after a good look stops a string cold. That is usually a touch light or a ball that is rolling out.",
             workOn: [
                 "Note whether hungs are the same corner pin every time",
@@ -164,7 +164,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
             id: "consistency",
             priority: "watch",
             title: "Scoring is streaky from game to game",
-            metric: `SD ${fmt(sd)}  ·  average ${fmt(avg)}`,
+            metric: `SD ${fmt(sd)}  \u00b7  average ${fmt(avg)}`,
             why: "A wide game-to-game spread means the look is not repeating. Consistency work will raise the floor faster than chasing a 250.",
             workOn: [
                 "Use the same pre-shot routine for every shot in a series",
@@ -180,7 +180,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
             priority: "focus",
             title: "This season is off the prior pace",
             metric: `${latest!.season} avg ${fmt(latest!.average)}  vs  ${prior!.season} ${fmt(prior!.average)} (${fmt(seasonDrop)})`,
-            why: "A multi-pin drop vs. last season is a signal to simplify — not to keep adding equipment or speed.",
+            why: "A multi-pin drop vs. last season is a signal to simplify \u2014 not to keep adding equipment or speed.",
             workOn: [
                 "Compare first-ball leave charts from this season vs. last",
                 "Go back to the line and ball that produced the last good block",
@@ -216,7 +216,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
             id: "clean-strength",
             priority: "strength",
             title: "Clean games are showing up",
-            metric: `${stats.cleanGames} clean  ·  ${fmt(cleanRate)}% of games`,
+            metric: `${stats.cleanGames} clean  \u00b7  ${fmt(cleanRate)}% of games`,
             why: "Clean games mean the spare game is holding. Strings and 200s will follow if first-ball quality stays up.",
             workOn: ["Treat every open as a post-game note, not just a bad frame"],
         });
@@ -227,7 +227,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
             id: "turkey-strength",
             priority: "strength",
             title: "Strings are available",
-            metric: `${stats.turkeyCount} turkeys  ·  ${fmt(twoHundredRate)}% of games are 200+`,
+            metric: `${stats.turkeyCount} turkeys  \u00b7  ${fmt(twoHundredRate)}% of games are 200+`,
             why: "Once two strikes go up, a third is happening often enough to chase 200s. Do not change lines just because the first turkey ended.",
             workOn: ["Stay with the shot that started the string unless the leave tells you otherwise"],
         });
@@ -308,6 +308,23 @@ export const InsightsPanel: FC<{
 
     return (
         <div className="bls-insights">
+            {strengths.length > 0 && (
+                <Card className="bls-profile-card mb-3">
+                    <div className="bls-profile-card-head">What is already working</div>
+                    <CardBody>
+                        <div className="bls-insight-strengths">
+                            {strengths.map((item) => (
+                                <div key={item.id} className="bls-insight-strength">
+                                    <div className="bls-insight-strength-title">{item.title}</div>
+                                    <div className="bls-insight-metric">{item.metric}</div>
+                                    <p className="mb-0 fs-sm">{item.why}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </CardBody>
+                </Card>
+            )}
+
             {headline && (
                 <Card className="bls-profile-card bls-insight-hero mb-3">
                     <div className="bls-profile-card-head">Start here</div>
@@ -342,23 +359,6 @@ export const InsightsPanel: FC<{
                     </div>
                 ))}
             </div>
-
-            {strengths.length > 0 && (
-                <Card className="bls-profile-card mb-3">
-                    <div className="bls-profile-card-head">What is already working</div>
-                    <CardBody>
-                        <div className="bls-insight-strengths">
-                            {strengths.map((item) => (
-                                <div key={item.id} className="bls-insight-strength">
-                                    <div className="bls-insight-strength-title">{item.title}</div>
-                                    <div className="bls-insight-metric">{item.metric}</div>
-                                    <p className="mb-0 fs-sm">{item.why}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </CardBody>
-                </Card>
-            )}
 
             <Card className="bls-profile-card mb-3">
                 <div className="bls-profile-card-head">Ask Grok</div>
