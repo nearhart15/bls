@@ -149,6 +149,7 @@ interface PlayerListProps {
     lockScope?: boolean;
     title?: string;
     showTrend?: boolean;
+    showRating?: boolean;
 }
 
 const PlayerList: FC<PlayerListProps> = ({
@@ -156,6 +157,7 @@ const PlayerList: FC<PlayerListProps> = ({
     lockScope = false,
     title = "Bowler Performance",
     showTrend = true,
+    showRating = true,
 }) => {
     const {theme} = useTheme();
     const isDark = theme === "dark";
@@ -221,7 +223,7 @@ const PlayerList: FC<PlayerListProps> = ({
                                 <SortTh label="HS" sortKey="highSeries" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-lg-table-cell" />
                                 <SortTh label="200+" sortKey="games200" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-sm-table-cell" />
                                 {showTrend && <th className="d-none d-xl-table-cell text-center">Trend</th>}
-                                <SortTh label="Rating" sortKey="grade" active={sortKey} dir={sortDir} onSort={onSort} className="text-center" />
+                                {showRating && <SortTh label="Rating" sortKey="grade" active={sortKey} dir={sortDir} onSort={onSort} className="text-center" />}
                             </tr>
                         </thead>
                         <tbody>
@@ -253,9 +255,11 @@ const PlayerList: FC<PlayerListProps> = ({
                                                 ) : <span className="bls-mini-empty">—</span>}
                                             </td>
                                         )}
+                                        {showRating && (
                                         <td className="text-center">
                                             <RatingBadge rating={rating} delta={delta} bookAverage={p.average} comparedAverage={compared} sampleLabel="weekly averages vs book average" />
                                         </td>
+                                        )}
                                     </tr>
                                 );
                             })}
@@ -278,7 +282,7 @@ const PlayerList: FC<PlayerListProps> = ({
                                         <div className="bls-player-card-meta">#{idx + 1}</div>
                                         <Link to={`/player/${p.id}`} className="bls-link bls-player-card-name">{p.name}</Link>
                                     </div>
-                                    <RatingBadge rating={rating} delta={delta} bookAverage={p.average} comparedAverage={compared} sampleLabel="weekly averages vs book average" />
+                                    {showRating && <RatingBadge rating={rating} delta={delta} bookAverage={p.average} comparedAverage={compared} sampleLabel="weekly averages vs book average" />}
                                 </div>
                                 <div className="bls-player-card-grid">
                                     <div className="bls-player-card-stat"><strong>{p.average != null ? numberFormat.format(p.average) : "—"}</strong><span>Avg</span></div>
