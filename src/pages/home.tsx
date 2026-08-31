@@ -77,6 +77,7 @@ const Home: FC = () => {
                     <PlayerList
                         defaultScope="last-year"
                         lockScope
+                        showTrend={false}
                         title="Active bowlers (last year)"
                     />
                 </div>
