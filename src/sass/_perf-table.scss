@@ -105,6 +105,35 @@
   font-size: 1.02rem;
 }
 
+.bls-details-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: auto;
+  border: 1px solid #3a3a3c;
+  border-radius: 0.7rem;
+  background: #1c1c1e;
+  color: #f5f5f7;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  padding: 0.55rem 0.85rem;
+}
+
+.bls-details-toggle-wide {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+}
+
+.bls-details-toggle:hover,
+.bls-details-toggle:focus-visible {
+  background: #2c2c2e;
+  color: #ffffff;
+  outline: none;
+  box-shadow: 0 0 0 2px #00d4ff;
+}
+
 @media (max-width: 767.98px) {
   .bls-perf-table-wrap { display: none; }
   .bls-player-cards { display: block; }
