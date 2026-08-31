@@ -25,3 +25,63 @@
   font-size: 0.65em;
   opacity: 0.9;
 }
+
+/* Season scope filter pills */
+.bls-scope-bar {
+  border-bottom: 1px solid var(--bls-border);
+  padding-bottom: 0.85rem;
+}
+
+.bls-scope-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bls-scope-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  border: 1px solid var(--bls-border);
+  background: var(--bls-surface-2);
+  color: var(--bls-text);
+  border-radius: 980px;
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  text-align: left;
+}
+
+.bls-scope-pill:hover {
+  border-color: var(--bls-accent);
+  background: var(--bls-accent-soft);
+}
+
+.bls-scope-pill.is-active {
+  border-color: var(--bls-accent);
+  background: var(--bls-accent-soft);
+  color: var(--bls-accent);
+  box-shadow: 0 0 0 1px var(--bls-accent-soft);
+}
+
+.bls-scope-pill-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.bls-scope-pill-sub {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--bls-text-muted);
+  max-width: 10rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bls-scope-pill.is-active .bls-scope-pill-sub {
+  color: var(--bls-accent);
+  opacity: 0.85;
+}
