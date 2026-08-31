@@ -153,12 +153,12 @@ function filteredAppearances(
     current: string,
     lastYear: string,
     leagueId: string,
-    teamKey: string,
+    teamName: string,
 ): PlayerAppearanceSlice[] {
     return (entry.appearanceSlices ?? []).filter((a) => {
         if (!seasonMatches(a.season, scope, current, lastYear)) return false;
         if (leagueId && a.leagueId !== leagueId) return false;
-        if (teamKey && `${a.leagueId}::${a.teamId}` !== teamKey) return false;
+        if (teamName && (a.teamName || a.teamId) !== teamName) return false;
         return true;
     });
 }
@@ -167,16 +167,16 @@ function toRows(
     entries: PlayerListEntry[],
     scope: Scope,
     leagueId: string,
-    teamKey: string,
+    teamName: string,
 ): Row[] {
     const current = resolveCurrentSeason(entries);
     const lastYear = String(new Date().getFullYear() - 1);
     const rows: Row[] = [];
-    const useApps = Boolean(leagueId || teamKey);
+    const useApps = Boolean(leagueId || teamName);
     for (const e of entries) {
         let stats: Omit<Row, "id" | "name">;
         if (useApps) {
-            stats = mergeSlices(filteredAppearances(e, scope, current, lastYear, leagueId, teamKey));
+            stats = mergeSlices(filteredAppearances(e, scope, current, lastYear, leagueId, teamName));
         } else if (scope === "career") {
             stats = careerRow(e);
         } else if (scope === "current") {
@@ -212,7 +212,7 @@ const PlayerLeaderboard: FC = () => {
     const [statId, setStatId] = useState("average");
     const [minGames, setMinGames] = useState(9);
     const [leagueId, setLeagueId] = useState("");
-    const [teamKey, setTeamKey] = useState("");
+    const [teamName, setTeamName] = useState("");
 
     const def = STATS.find((s) => s.id === statId) ?? STATS[0];
     const currentSeason = useMemo(() => (data ? resolveCurrentSeason(data) : ""), [data]);
@@ -232,27 +232,24 @@ const PlayerLeaderboard: FC = () => {
     }, [data, scope, currentSeason, lastYear]);
 
     const teams = useMemo(() => {
-        if (!data) return [] as {key: string; name: string}[];
-        const map = new Map<string, string>();
+        if (!data) return [] as string[];
+        const set = new Set<string>();
         for (const p of data) {
             for (const a of p.appearanceSlices ?? []) {
-                if (!a.teamId) continue;
+                const name = a.teamName || a.teamId;
+                if (!name) continue;
                 if (!seasonMatches(a.season, scope, currentSeason, lastYear)) continue;
                 if (leagueId && a.leagueId !== leagueId) continue;
-                const key = `${a.leagueId}::${a.teamId}`;
-                if (!map.has(key)) {
-                    const team = a.teamName || a.teamId;
-                    map.set(key, leagueId ? team : `${a.leagueName || a.leagueId} — ${team}`);
-                }
+                set.add(name);
             }
         }
-        return [...map.entries()].map(([key, name]) => ({key, name})).sort((a, b) => a.name.localeCompare(b.name));
+        return [...set].sort((a, b) => a.localeCompare(b));
     }, [data, scope, currentSeason, lastYear, leagueId]);
 
     const ranked = useMemo(() => {
         if (!data) return [] as {row: Row; value: number | null}[];
         const lower = LOWER_IS_BETTER.has(def.id);
-        return toRows(data, scope, leagueId, teamKey)
+        return toRows(data, scope, leagueId, teamName)
             .filter((r) => r.games >= minGames)
             .map((row) => ({row, value: statValue(row, def)}))
             .filter((r) => r.value != null)
@@ -263,7 +260,7 @@ const PlayerLeaderboard: FC = () => {
                 if (cmp !== 0) return cmp;
                 return a.row.name.localeCompare(b.row.name);
             });
-    }, [data, scope, def, minGames, leagueId, teamKey]);
+    }, [data, scope, def, minGames, leagueId, teamName]);
 
     const max = ranked[0]?.value ?? 0;
     const min = ranked[ranked.length - 1]?.value ?? 0;
@@ -283,7 +280,7 @@ const PlayerLeaderboard: FC = () => {
                             ["current", "Current season", currentSeason || "Latest"],
                             ["last-year", "Last calendar year", String(new Date().getFullYear() - 1)],
                         ] as [Scope, string, string][]).map(([id, label, sub]) => (
-                            <button key={id} type="button" className={`bls-scope-pill${scope === id ? " is-active" : ""}`} onClick={() => { setScope(id); setTeamKey(""); }}>
+                            <button key={id} type="button" className={`bls-scope-pill${scope === id ? " is-active" : ""}`} onClick={() => { setScope(id); setTeamName(""); }}>
                                 <span className="bls-scope-pill-label">{label}</span>
                                 <span className="bls-scope-pill-sub">{sub}</span>
                             </button>
@@ -304,16 +301,16 @@ const PlayerLeaderboard: FC = () => {
                         </div>
                         <div className="col-md-6">
                             <Form.Label className="bls-meta-label">League</Form.Label>
-                            <Form.Select value={leagueId} onChange={(e) => { setLeagueId(e.target.value); setTeamKey(""); }}>
+                            <Form.Select value={leagueId} onChange={(e) => { setLeagueId(e.target.value); setTeamName(""); }}>
                                 <option value="">All leagues</option>
                                 {leagues.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
                             </Form.Select>
                         </div>
                         <div className="col-md-6">
                             <Form.Label className="bls-meta-label">Team</Form.Label>
-                            <Form.Select value={teamKey} onChange={(e) => setTeamKey(e.target.value)}>
+                            <Form.Select value={teamName} onChange={(e) => setTeamName(e.target.value)}>
                                 <option value="">All teams</option>
-                                {teams.map((t) => <option key={t.key} value={t.key}>{t.name}</option>)}
+                                {teams.map((t) => <option key={t} value={t}>{t}</option>)}
                             </Form.Select>
                         </div>
                     </div>
