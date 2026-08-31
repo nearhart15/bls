@@ -36,11 +36,20 @@ export interface PlayerSeasonStats {
     turkeyCount: number;
 }
 
+export interface PlayerSliceStats {
+    season?: string;
+    leagueId?: string;
+    leagueName?: string;
+    stats: PlayerStats;
+}
+
 export interface AggregatedPlayerData {
     player: PlayerInfo;
     appearances: PlayerLeagueAppearance[];
     careerStats: PlayerStats;
     seasonStats: PlayerSeasonStats[];
+    seasonSlicesFull: PlayerSliceStats[];
+    appearanceSlicesFull: PlayerSliceStats[];
 }
 
 export interface PlayerListSeasonSlice {
@@ -115,7 +124,7 @@ export interface PlayerListEntry {
     lastBowled?: moment.Moment;
 }
 
-export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail-v2";
+export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail-v3-all-stats";
 export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v5-fun-stats";
 
 interface RosterScanResult {
@@ -355,5 +364,25 @@ export async function aggregatePlayerData(playerId: string): Promise<AggregatedP
     for (const row of seasonStats) {
         row.leagues = new Set(appearances.filter((a) => a.season === row.season).map((a) => a.leagueId)).size;
     }
-    return {player, appearances, careerStats, seasonStats};
+    const seasonSlicesFull: PlayerSliceStats[] = [];
+    const bySeason = scan.seriesByPlayerSeason.get(playerId);
+    if (bySeason) {
+        for (const [season, series] of bySeason.entries()) {
+            seasonSlicesFull.push({season, stats: statsFromSeries(series)});
+        }
+        seasonSlicesFull.sort((a, b) => (b.season ?? "").localeCompare(a.season ?? ""));
+    }
+    const appearanceSlicesFull: PlayerSliceStats[] = [];
+    const byLeague = scan.seriesByPlayerLeague.get(playerId);
+    for (const ap of appearances) {
+        const key = `${ap.season}::${ap.leagueId}`;
+        const series = byLeague?.get(key) ?? [];
+        appearanceSlicesFull.push({
+            season: ap.season,
+            leagueId: ap.leagueId,
+            leagueName: ap.leagueName,
+            stats: series.length > 0 ? statsFromSeries(series) : (ap.stats ?? new PlayerStats()),
+        });
+    }
+    return {player, appearances, careerStats, seasonStats, seasonSlicesFull, appearanceSlicesFull};
 }
