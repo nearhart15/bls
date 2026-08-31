@@ -32,8 +32,8 @@ const intFormat = Intl.NumberFormat("en-US", {
     maximumFractionDigits: 0,
 });
 
-function initials(name: string): string {
-    const parts = name.trim().split(/\s+/).filter(Boolean);
+function initials(name?: string): string {
+    const parts = (name ?? "").trim().split(/\s+/).filter(Boolean);
     if (parts.length === 0) return "?";
     if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
@@ -44,7 +44,6 @@ function pct(rg: {numerator: number; denominator: number; pct: number}): number 
     return Math.round(rg.pct * 1000) / 10;
 }
 
-/** Normalize average to 0–100 scale for radar (150–220 typical range) */
 function avgScore(avg: number): number {
     return Math.max(0, Math.min(100, ((avg - 140) / 80) * 100));
 }
@@ -141,13 +140,8 @@ const CareerRadar: FC<RadarProps> = ({stats}) => {
         },
         theme: {mode: theme},
         colors: ["#ffd60a"],
-        fill: {
-            opacity: 0.2,
-        },
-        stroke: {
-            width: 3,
-            colors: ["#ffd60a"],
-        },
+        fill: {opacity: 0.2},
+        stroke: {width: 3, colors: ["#ffd60a"]},
         markers: {
             size: 5,
             colors: ["#ffd60a"],
@@ -164,12 +158,7 @@ const CareerRadar: FC<RadarProps> = ({stats}) => {
                 },
             },
         },
-        yaxis: {
-            show: false,
-            min: 0,
-            max: 100,
-            tickAmount: 4,
-        },
+        yaxis: {show: false, min: 0, max: 100, tickAmount: 4},
         plotOptions: {
             radar: {
                 polygons: {
@@ -187,9 +176,7 @@ const CareerRadar: FC<RadarProps> = ({stats}) => {
         legend: {show: false},
         tooltip: {
             theme,
-            y: {
-                formatter: (v) => `${Math.round(v)}`,
-            },
+            y: {formatter: (v) => `${Math.round(v)}`},
         },
     };
 
@@ -239,7 +226,6 @@ const SeasonTrendChart: FC<SeasonTrendProps> = ({seasons}) => {
     const {theme} = useTheme();
     const palette = chartPalette(theme);
     const ordered = [...seasons].reverse();
-
     if (ordered.length < 1) return null;
 
     const options: ApexOptions = {
@@ -248,7 +234,6 @@ const SeasonTrendChart: FC<SeasonTrendProps> = ({seasons}) => {
             background: "transparent",
             toolbar: {show: false},
             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-            sparkline: {enabled: false},
         },
         theme: {mode: theme},
         colors: [palette.series[0], palette.series[2]],
@@ -256,21 +241,12 @@ const SeasonTrendChart: FC<SeasonTrendProps> = ({seasons}) => {
         stroke: {curve: "smooth", width: 3},
         fill: {
             type: "gradient",
-            gradient: {
-                shadeIntensity: 0.4,
-                opacityFrom: 0.45,
-                opacityTo: 0.05,
-            },
+            gradient: {shadeIntensity: 0.4, opacityFrom: 0.45, opacityTo: 0.05},
         },
-        grid: {
-            borderColor: palette.grid,
-            strokeDashArray: 3,
-        },
+        grid: {borderColor: palette.grid, strokeDashArray: 3},
         xaxis: {
             categories: ordered.map((s) => s.season),
-            labels: {
-                style: {colors: palette.text, fontSize: "11px"},
-            },
+            labels: {style: {colors: palette.text, fontSize: "11px"}},
             axisBorder: {show: false},
             axisTicks: {show: false},
         },
@@ -361,10 +337,7 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
                                     </Link>
                                 </td>
                                 <td>
-                                    <Link
-                                        className="bls-link"
-                                        to={`/league/${a.leagueId}/${a.teamId}`}
-                                    >
+                                    <Link className="bls-link" to={`/league/${a.leagueId}/${a.teamId}`}>
                                         {a.teamName}
                                     </Link>
                                 </td>
@@ -373,17 +346,11 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
                                         {a.status === "REGULAR" ? "Regular" : "Sub"}
                                     </Badge>
                                 </td>
+                                <td className="text-end tabular-nums">{a.stats?.gameStats.count ?? "—"}</td>
                                 <td className="text-end tabular-nums">
-                                    {a.stats?.gameStats.count ?? "—"}
+                                    {a.stats ? numberFormat.format(a.stats.gameStats.average) : "—"}
                                 </td>
-                                <td className="text-end tabular-nums">
-                                    {a.stats
-                                        ? numberFormat.format(a.stats.gameStats.average)
-                                        : "—"}
-                                </td>
-                                <td className="text-end tabular-nums">
-                                    {a.stats?.gameStats.max ?? "—"}
-                                </td>
+                                <td className="text-end tabular-nums">{a.stats?.gameStats.max ?? "—"}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -401,7 +368,6 @@ const PlayerSwitcher: FC<PlayerSwitcherProps> = ({currentId}) => {
     const navigate = useNavigate();
     const fetcher = useCallback(buildFullPlayerList, []);
     const {data} = useCachedFetcher<PlayerListEntry[]>(fetcher, PLAYER_INDEX_CACHE_CATEGORY);
-
     const players = useMemo(() => data ?? [], [data]);
 
     if (players.length === 0) return null;
@@ -437,17 +403,17 @@ const PlayerDetail: FC<PlayerDetailProps> = ({data}) => {
     const palette = chartPalette(theme);
     const stats = careerStats;
     const hasGames = stats.gameStats.count > 0;
+    const displayName = player.name ?? player.id ?? "Player";
 
     return (
         <div className="bls-player-profile">
-            <PlayerSwitcher currentId={player.id} />
+            <PlayerSwitcher currentId={player.id || ""} />
 
             <div className="bls-player-profile-main">
-                {/* Hero */}
                 <section className="bls-player-hero">
                     <div className="bls-player-hero-text">
                         <span className="bls-hero-kicker">Player profile</span>
-                        <h1>{player.name}</h1>
+                        <h1>{displayName}</h1>
                         <div className="bls-player-meta">
                             <div>
                                 <span className="bls-meta-label">Career avg</span>
@@ -472,11 +438,10 @@ const PlayerDetail: FC<PlayerDetailProps> = ({data}) => {
                         </div>
                     </div>
                     <div className="bls-player-hero-badge" aria-hidden>
-                        <span className="bls-player-hero-initials">{initials(player.name)}</span>
+                        <span className="bls-player-hero-initials">{initials(displayName)}</span>
                     </div>
                 </section>
 
-                {/* Appearances + headline KPI */}
                 <div className="row g-3 mb-3">
                     <div className="col-lg-8">
                         <AppearancesPanel appearances={appearances} />
@@ -528,13 +493,12 @@ const PlayerDetail: FC<PlayerDetailProps> = ({data}) => {
                     </div>
                 </div>
 
-                {/* Radar + radials */}
                 {hasGames && (
                     <div className="row g-3 mb-3">
                         <div className="col-lg-7">
                             <Card className="bls-profile-card">
                                 <div className="bls-profile-card-head">
-                                    {player.name} — overall career shape
+                                    {displayName} — overall career shape
                                 </div>
                                 <CardBody>
                                     <CareerRadar stats={stats} />
@@ -588,7 +552,6 @@ const PlayerDetail: FC<PlayerDetailProps> = ({data}) => {
                     </div>
                 )}
 
-                {/* Detailed season table */}
                 {seasonStats.length > 0 && (
                     <Card className="bls-profile-card mb-3">
                         <div className="bls-profile-card-head">Season breakdown</div>
