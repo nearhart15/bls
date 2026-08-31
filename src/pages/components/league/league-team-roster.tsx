@@ -1,25 +1,13 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  * Dark mode contrast fixes © 2026
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Dashboard roster table © 2026
  */
 
 import {type FC, type ReactNode, useEffect, useState} from "react";
-import {Link} from "react-router";
 
 import {Card, CardBody, CardFooter, CardHeader, Col, Container, OverlayTrigger, Row, Table, Tooltip} from "react-bootstrap";
-import {DashSquare, Icon9Square, PersonAdd, PersonFillLock, XCircle} from "react-bootstrap-icons";
+import {DashSquare, Icon9Square, XCircle} from "react-bootstrap-icons";
 
 import Loader from "../loader";
 import {type Breakpoint, BS_BP_SM, BS_BP_XS} from "../ui-utils";
@@ -32,64 +20,9 @@ import {
     TrackedLeagueTeam
 } from "../../../data/league/league-team-details";
 import {RatioGroup} from "../../../data/player/player-stats";
-import {type LeagueMatchup, LeagueTeamPlayerScore} from "../../../data/league/league-matchup";
 import TeamPlayerStatGraph from "./league-player-stat-graph";
-
-// TODO Change 3 game assumption later
-export interface PlayerDayData {
-    week: number;
-    bowlDate: Date;
-    enteringAvg: number;
-    game1: number;
-    game2: number;
-    game3: number;
-    series: number;
-    average: number;
-    runningAverageAfter: number;
-}
-function createGameTableData(teamDetails: TrackedLeagueTeam, playerId: string) {
-
-    interface MatchupPlayerScore {
-        matchup: LeagueMatchup;
-        playerScore: LeagueTeamPlayerScore;
-    }
-
-    const currentPlayerAvg = teamDetails.roster.find(player => player.id === playerId)?.playerStats?.gameStats.average ?? 0;
-    // We do this in 2 steps since we are grabbing average from the next matchup
-    // TODO This is an ugly temporary solution until we move calculations to the backend and its hopefully calculated there
-    const matchupPlayerScores : MatchupPlayerScore[] = [];
-    teamDetails.matchups.forEach(matchup => {
-        const playerScore = matchup.scores?.playerScores.find(ps => ps.player === playerId);
-        if (playerScore && !playerScore.games[0].blind) { // Assuming one game blind is all games blind
-            matchupPlayerScores.push({
-                matchup: matchup,
-                playerScore: playerScore
-            });
-        }
-    });
-
-    const data : PlayerDayData[] = matchupPlayerScores.map((mps, idx) => {
-        let runningAvgAfter = currentPlayerAvg;
-        if (matchupPlayerScores.length > (idx + 1)) {
-            const nextMatchupPlayerScore = matchupPlayerScores[idx + 1].playerScore;
-            if (nextMatchupPlayerScore.enteringAverage) {
-                runningAvgAfter = nextMatchupPlayerScore.enteringAverage;
-            }
-        }
-        return {
-            week: mps.matchup.week,
-            bowlDate: mps.matchup.scheduledDate?.toDate() ?? new Date(), // Using scheduled date here or the graph gets wonky with pre-bowls and post-bowls
-            enteringAvg: mps.playerScore.hdcpSettingDay ? 0 : mps.playerScore.enteringAverage,
-            game1: mps.playerScore.games[0].scratchScore,
-            game2: mps.playerScore.games[1].scratchScore,
-            game3: mps.playerScore.games[2].scratchScore,
-            series: mps.playerScore.series.scratchScore,
-            average: mps.playerScore.series.average,
-            runningAverageAfter: runningAvgAfter
-        };
-    });
-    return data;
-}
+import LeagueRosterPerformanceTable from "./league-roster-performance-table";
+import {createGameTableData, type PlayerDayData} from "./league-team-roster-data";
 
 interface PlayerStatsDisplayProps {
     playerStats: LeaguePlayerStats;
@@ -277,34 +210,34 @@ const PlayerGamesTable :FC<PlayerGamesTableProps> = ({playerGameData, currentBre
                             <thead className="table-dark">
                                 <tr>
                                     <th scope="col">Week</th>
-                                    {playerGameData.map(p => <th scope="col" key={"gw-" + p.week.toString() + "-" + Math.random().toString()}>{p.week}</th>)}
+                                    {playerGameData.map(p => <th scope="col" key={"gw-" + p.week.toString()}>{p.week}</th>)}
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <th scope="row">Entering Avg</th>
-                                    {playerGameData.map(p => <td key={"gea-" + p.week.toString() + "-" + Math.random().toString()}>{p.enteringAvg}</td>)}
+                                    {playerGameData.map(p => <td key={"gea-" + p.week.toString()}>{p.enteringAvg}</td>)}
                                 </tr>
                                 <tr>
                                     <th scope="row">Game 1</th>
-                                    {playerGameData.map(p => <td key={"g1-" + p.week.toString() + "-" + Math.random().toString()}>{p.game1}</td>)}
+                                    {playerGameData.map(p => <td key={"g1-" + p.week.toString()}>{p.game1}</td>)}
                                 </tr>
                                 <tr>
                                     <th scope="row">Game 2</th>
-                                    {playerGameData.map(p => <td key={"g2-" + p.week.toString() + "-" + Math.random().toString()}>{p.game2}</td>)}
+                                    {playerGameData.map(p => <td key={"g2-" + p.week.toString()}>{p.game2}</td>)}
                                 </tr>
                                 <tr>
                                     <th scope="row">Game 3</th>
-                                    {playerGameData.map(p => <td key={"g3-" + p.week.toString() + "-" + Math.random().toString()}>{p.game3}</td>)}
+                                    {playerGameData.map(p => <td key={"g3-" + p.week.toString()}>{p.game3}</td>)}
                                 </tr>
                                 <tr>
                                     <th scope="row">Series</th>
-                                    {playerGameData.map(p => <td  key={"gs-" + p.week.toString() + "-" + Math.random().toString()}>{p.series}</td>)}
+                                    {playerGameData.map(p => <td key={"gs-" + p.week.toString()}>{p.series}</td>)}
                                 </tr>
                                 <tr>
                                     <th scope="row">Average</th>
                                     {playerGameData.map(p =>
-                                        <td className={p.average < p.enteringAvg ? "text-danger" : ""} key={"gavg-" + p.week.toString() + "-" + Math.random().toString()}>
+                                        <td className={p.average < p.enteringAvg ? "text-danger" : ""} key={"gavg-" + p.week.toString()}>
                                             {numberFormat.format(p.average)}
                                         </td>
                                     )}
@@ -365,7 +298,6 @@ const LeagueTeamRoster: FC<LeagueTeamRosterProps> = ({teamDetails, currentBreakp
     const [playerDetailsDisplay, setPlayerDetailsDisplay] = useState<string | undefined>(undefined);
 
     useEffect(() => {
-        // Team details changed, switch out displayed player
         setPlayerDetailsDisplay(undefined);
     }, [teamDetails]);
 
@@ -375,54 +307,18 @@ const LeagueTeamRoster: FC<LeagueTeamRosterProps> = ({teamDetails, currentBreakp
 
     return (<>
         {leagueDetailsLoading && <div className="card-body"><Loader/></div>}
-        <CardBody className="px-0 py-1 border border-secondary-subtle">
-            <Card className="mx-2">
-                <CardHeader className="text-white bg-dark text-center fw-bolder py-1">Roster</CardHeader>
-                <CardBody className="mx-0 px-0 py-2">
-                        <Table responsive={true} size="sm" >
-                            <thead>
-                            <tr>
-                                {/*Some columns are hidden on smaller screens*/}
-                                <th>Player</th>
-                                <th>Games</th>
-                                <th className="d-none d-md-block">Scratch Pins</th>
-                                <th>Average</th>
-                                <th className="d-none d-md-block">
-                                    <OverlayTrigger overlay={<Tooltip id={Math.random().toString()}>League Average includes games from first half of split season leagues</Tooltip>}>
-                                        <a href="#" onClick={(e) => { e.preventDefault(); }}>League Average</a>
-                                    </OverlayTrigger>
-                                </th>
-                                <th>
-                                    <OverlayTrigger overlay={<Tooltip id={Math.random().toString()}>Handicap includes games from first half of split season leagues</Tooltip>}>
-                                        <a href="#" onClick={(e) => { e.preventDefault(); }}>Handicap</a>
-                                    </OverlayTrigger>
-                                </th>
-                                <th className="d-none d-md-block">Series Avg</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {teamDetails.roster.map(p => (
-                                <tr key={p.id}>
-                                    <td>
-                                        {p.status === "REGULAR" ? <PersonFillLock/> : <PersonAdd/>}
-                                        <Link to="#" onClick={() => { setPlayerDetailsDisplay(p.id); }}>{p.name}</Link>
-                                    </td>
-                                    <td>{p.playerStats?.gameStats.count}</td>
-                                    <td className="d-none d-md-block">{p.playerStats?.pinfall}</td>
-                                    <td>{p.playerStats?.gameStats.average.toFixed(2)}</td>
-                                    <td className="d-none d-md-block">
-                                        {p.playerStats?.leagueAverage.toFixed(2)}
-                                    </td>
-                                    <td>{p.playerStats?.leagueHandicap}</td>
-                                    <td className="d-none d-md-block">
-                                        {p.playerStats?.seriesStats.average.toFixed(2)}
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </Table>
-                </CardBody>
-                <CardFooter><small>Click on player names to see more stats</small></CardFooter>
+        <CardBody className="px-0 py-1">
+            <Card className="mx-2 bls-perf-card">
+                <CardHeader className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <span>Bowler Performance</span>
+                    <span className="fs-xs text-body-secondary">Tap a name for full stats</span>
+                </CardHeader>
+                <LeagueRosterPerformanceTable
+                    teamDetails={teamDetails}
+                    selectedPlayerId={playerDetailsDisplay}
+                    onSelectPlayer={setPlayerDetailsDisplay}
+                />
+                <CardFooter className="text-center">Tap a bowler for game-by-game detail</CardFooter>
             </Card>
             {playerDetailsDisplay &&
                 <PlayerDetails playerDetailsDisplay={playerDetailsDisplay} teamDetails={teamDetails}
