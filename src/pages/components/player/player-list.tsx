@@ -1,5 +1,5 @@
 /*
- * Player index — dashboard performance table with column sorting © 2026
+ * Player index — sortable performance table with season scope filters © 2026
  */
 
 import {type CSSProperties, type FC, useCallback, useMemo, useState} from "react";
@@ -10,6 +10,7 @@ import {
     buildFullPlayerList,
     PLAYER_INDEX_CACHE_CATEGORY,
     type PlayerListEntry,
+    type PlayerListSeasonSlice,
 } from "../../../data/player/player-aggregate";
 import {useCachedFetcher} from "../cache/data-loader";
 import Loader from "../loader";
@@ -35,6 +36,21 @@ type SortKey =
 
 type SortDir = "asc" | "desc";
 
+export type PlayerScope = "career" | "current" | "last-year";
+
+interface DisplayRow {
+    id: string;
+    name: string;
+    average: number | null;
+    games: number;
+    pinfall: number;
+    highGame: number;
+    highSeries: number;
+    games200: number;
+    weekAverages?: number[];
+    weekSeries?: number[];
+}
+
 function gradeRank(avg: number | null): number {
     if (avg == null || avg <= 0) return -1;
     if (avg >= 210) return 5;
@@ -44,7 +60,7 @@ function gradeRank(avg: number | null): number {
     return 1;
 }
 
-function comparePlayers(a: PlayerListEntry, b: PlayerListEntry, key: SortKey, dir: SortDir): number {
+function compareRows(a: DisplayRow, b: DisplayRow, key: SortKey, dir: SortDir): number {
     const mul = dir === "asc" ? 1 : -1;
     let cmp = 0;
     switch (key) {
@@ -79,6 +95,86 @@ function comparePlayers(a: PlayerListEntry, b: PlayerListEntry, key: SortKey, di
     }
     if (cmp === 0) cmp = a.name.localeCompare(b.name);
     return cmp * mul;
+}
+
+function mergeSlices(
+    slices: PlayerListSeasonSlice[]
+): Omit<DisplayRow, "id" | "name" | "weekAverages" | "weekSeries"> {
+    let games = 0;
+    let pinfall = 0;
+    let highGame = 0;
+    let highSeries = 0;
+    let games200 = 0;
+    let weighted = 0;
+    for (const s of slices) {
+        games += s.games;
+        pinfall += s.pinfall;
+        highGame = Math.max(highGame, s.highGame);
+        highSeries = Math.max(highSeries, s.highSeries);
+        games200 += s.games200;
+        if (s.average != null && s.games > 0) {
+            weighted += s.average * s.games;
+        }
+    }
+    return {
+        games,
+        pinfall,
+        highGame,
+        highSeries,
+        games200,
+        average: games > 0 ? weighted / games : null,
+    };
+}
+
+function resolveCurrentSeason(entries: PlayerListEntry[]): string {
+    let best = "";
+    for (const e of entries) {
+        for (const s of e.seasonSlices) {
+            if (s.season.localeCompare(best) > 0) best = s.season;
+        }
+    }
+    return best;
+}
+
+function sliceMatchesLastYear(season: string, year: number): boolean {
+    return season.includes(String(year));
+}
+
+function toDisplayRows(entries: PlayerListEntry[], scope: PlayerScope): DisplayRow[] {
+    const currentSeason = resolveCurrentSeason(entries);
+    const lastYear = new Date().getFullYear() - 1;
+
+    const rows: DisplayRow[] = [];
+    for (const e of entries) {
+        let stats: Omit<DisplayRow, "id" | "name" | "weekAverages" | "weekSeries">;
+        if (scope === "career") {
+            stats = {
+                average: e.average,
+                games: e.games,
+                pinfall: e.pinfall,
+                highGame: e.highGame,
+                highSeries: e.highSeries,
+                games200: e.games200,
+            };
+        } else if (scope === "current") {
+            const slices = e.seasonSlices.filter((s) => s.season === currentSeason);
+            stats = mergeSlices(slices);
+        } else {
+            const slices = e.seasonSlices.filter((s) => sliceMatchesLastYear(s.season, lastYear));
+            stats = mergeSlices(slices);
+        }
+
+        if (stats.games <= 0) continue;
+
+        rows.push({
+            id: e.id,
+            name: e.name,
+            ...stats,
+            weekAverages: scope === "career" ? e.weekAverages : undefined,
+            weekSeries: scope === "career" ? e.weekSeries : undefined,
+        });
+    }
+    return rows;
 }
 
 const SortTh: FC<{
@@ -116,6 +212,12 @@ const SortTh: FC<{
     );
 };
 
+const SCOPE_OPTIONS: {id: PlayerScope; label: string; hint: string}[] = [
+    {id: "career", label: "Career", hint: "All seasons combined"},
+    {id: "current", label: "Current season", hint: "Most recent league season"},
+    {id: "last-year", label: "Last calendar year", hint: "Seasons in the prior calendar year"},
+];
+
 const PlayerList: FC = () => {
     const {theme} = useTheme();
     const isDark = theme === "dark";
@@ -125,6 +227,7 @@ const PlayerList: FC = () => {
         PLAYER_INDEX_CACHE_CATEGORY
     );
 
+    const [scope, setScope] = useState<PlayerScope>("career");
     const [sortKey, setSortKey] = useState<SortKey>("games");
     const [sortDir, setSortDir] = useState<SortDir>("desc");
 
@@ -137,10 +240,17 @@ const PlayerList: FC = () => {
         }
     };
 
+    const currentSeasonLabel = useMemo(
+        () => (data ? resolveCurrentSeason(data) : ""),
+        [data]
+    );
+    const lastYearLabel = String(new Date().getFullYear() - 1);
+
     const sorted = useMemo(() => {
         if (!data) return [];
-        return [...data].sort((a, b) => comparePlayers(a, b, sortKey, sortDir));
-    }, [data, sortKey, sortDir]);
+        const rows = toDisplayRows(data, scope);
+        return rows.sort((a, b) => compareRows(a, b, sortKey, sortDir));
+    }, [data, scope, sortKey, sortDir]);
 
     return (
         <Card className="mb-0 h-100 bls-perf-card">
@@ -148,10 +258,40 @@ const PlayerList: FC = () => {
                 <span>Bowler Performance</span>
                 {data && (
                     <Badge bg="secondary" pill>
-                        {data.length} bowlers
+                        {sorted.length} bowlers
                     </Badge>
                 )}
             </CardHeader>
+
+            <div className="bls-scope-bar px-3 pt-3">
+                <div className="bls-scope-pills" role="tablist" aria-label="Stats scope">
+                    {SCOPE_OPTIONS.map((opt) => {
+                        const active = scope === opt.id;
+                        let sub = opt.hint;
+                        if (opt.id === "current" && currentSeasonLabel) {
+                            sub = currentSeasonLabel;
+                        }
+                        if (opt.id === "last-year") {
+                            sub = lastYearLabel;
+                        }
+                        return (
+                            <button
+                                key={opt.id}
+                                type="button"
+                                role="tab"
+                                aria-selected={active}
+                                className={`bls-scope-pill${active ? " is-active" : ""}`}
+                                title={opt.hint}
+                                onClick={() => setScope(opt.id)}
+                            >
+                                <span className="bls-scope-pill-label">{opt.label}</span>
+                                <span className="bls-scope-pill-sub">{sub}</span>
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
             {isLoading && (
                 <CardBody>
                     <Loader />
@@ -178,6 +318,13 @@ const PlayerList: FC = () => {
                             </tr>
                         </thead>
                         <tbody>
+                            {sorted.length === 0 && (
+                                <tr>
+                                    <td colSpan={10} className="text-center text-body-secondary py-4">
+                                        No bowlers with games in this scope.
+                                    </td>
+                                </tr>
+                            )}
                             {sorted.map((p, idx) => {
                                 const grade = performanceGrade(p.average);
                                 return (
