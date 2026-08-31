@@ -10,7 +10,7 @@ import {Card, CardBody} from "react-bootstrap";
 
 import type {
     AggregatedPlayerData,
-    PlayerSeasonStats,
+    PlayerLeagueAppearance,
 } from "../../../data/player/player-aggregate";
 import type {PlayerStats} from "../../../data/player/player-stats";
 import {useTheme} from "../theme";
@@ -153,11 +153,16 @@ const CareerRadar: FC<{stats: PlayerStats}> = ({stats}) => {
     );
 };
 
-const SeasonTrendChart: FC<{seasons: PlayerSeasonStats[]}> = ({seasons}) => {
+const LeagueTrendChart: FC<{appearances: PlayerLeagueAppearance[]}> = ({appearances}) => {
     const {theme} = useTheme();
     const palette = chartPalette(theme);
-    const ordered = [...seasons].reverse();
+    const ordered = [...appearances]
+        .filter((a) => (a.stats?.gameStats.count ?? 0) > 0)
+        .sort((a, b) => a.season.localeCompare(b.season) || a.leagueName.localeCompare(b.leagueName));
     if (ordered.length < 1) return null;
+    const nameCounts = new Map<string, number>();
+    for (const a of ordered) nameCounts.set(a.leagueName, (nameCounts.get(a.leagueName) ?? 0) + 1);
+    const labels = ordered.map((a) => nameCounts.get(a.leagueName)! > 1 ? `${a.leagueName} (${a.season})` : a.leagueName);
     const options: ApexOptions = {
         chart: {type: "area", background: "transparent", toolbar: {show: false}, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'},
         theme: {mode: theme},
@@ -166,7 +171,7 @@ const SeasonTrendChart: FC<{seasons: PlayerSeasonStats[]}> = ({seasons}) => {
         stroke: {curve: "smooth", width: 3},
         fill: {type: "gradient", gradient: {shadeIntensity: 0.4, opacityFrom: 0.45, opacityTo: 0.05}},
         grid: {borderColor: palette.grid, strokeDashArray: 3},
-        xaxis: {categories: ordered.map((s) => s.season), labels: {style: {colors: palette.text, fontSize: "11px"}}, axisBorder: {show: false}, axisTicks: {show: false}},
+        xaxis: {categories: labels, labels: {style: {colors: palette.text, fontSize: "10px"}, rotate: -25, rotateAlways: labels.length > 4}, axisBorder: {show: false}, axisTicks: {show: false}},
         yaxis: [
             {title: {text: "Average", style: {color: palette.series[0], fontSize: "11px"}}, labels: {style: {colors: palette.text, fontSize: "11px"}, formatter: (v) => Math.round(v).toString()}},
             {opposite: true, title: {text: "Games", style: {color: palette.series[2], fontSize: "11px"}}, labels: {style: {colors: palette.text, fontSize: "11px"}, formatter: (v) => Math.round(v).toString()}},
@@ -176,8 +181,8 @@ const SeasonTrendChart: FC<{seasons: PlayerSeasonStats[]}> = ({seasons}) => {
     };
     return (
         <Chart options={options} series={[
-            {name: "Average", type: "area", data: ordered.map((s) => Math.round(s.average * 10) / 10)},
-            {name: "Games", type: "column", data: ordered.map((s) => s.games)},
+            {name: "Average", type: "area", data: ordered.map((a) => Math.round((a.stats?.gameStats.average ?? 0) * 10) / 10)},
+            {name: "Games", type: "column", data: ordered.map((a) => a.stats?.gameStats.count ?? 0)},
         ]} type="area" height={220} width="100%" />
     );
 };
@@ -219,9 +224,11 @@ const PlayerDetail: FC<{data: AggregatedPlayerData}> = ({data}) => {
                     </div>
                     <div className="col-md-7">
                         <Card className="bls-profile-card h-100">
-                            <div className="bls-profile-card-head">Season trend</div>
+                            <div className="bls-profile-card-head">League trend</div>
                             <CardBody>
-                                {seasonStats.length > 0 ? <SeasonTrendChart seasons={seasonStats} /> : <p className="text-body-secondary mb-0 fs-sm">Not enough season history for a trend chart.</p>}
+                                {appearances.some((a) => (a.stats?.gameStats.count ?? 0) > 0)
+                                    ? <LeagueTrendChart appearances={appearances} />
+                                    : <p className="text-body-secondary mb-0 fs-sm">Not enough league history for a trend chart.</p>}
                             </CardBody>
                         </Card>
                     </div>
