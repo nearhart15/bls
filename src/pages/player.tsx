@@ -1,26 +1,15 @@
 /*
  * Player routes © 2026
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 import {type FC, useCallback} from "react";
-import {useParams} from "react-router";
+import {Link, useParams} from "react-router";
 
 import Loader from "./components/loader";
 import ErrorDisplay from "./components/error-display";
 import PlayerList from "./components/player/player-list";
 import PlayerDetail from "./components/player/player-detail";
+import PlayerCompare from "./components/player/player-compare";
 import {useCachedFetcher} from "./components/cache/data-loader";
 import {
     aggregatePlayerData,
@@ -37,27 +26,36 @@ const PlayerDetailPage: FC<{playerId: string}> = ({playerId}) => {
     );
 
     if (isLoading) {
-        return <Loader/>;
+        return <Loader />;
     }
     if (error) {
-        return <ErrorDisplay message="Error loading player stats." error={error}/>;
+        return <ErrorDisplay message="Error loading player stats." error={error} />;
     }
     if (!data) {
-        return <ErrorDisplay message={`Player not found: ${playerId}`}/>;
+        return <ErrorDisplay message={`Player not found: ${playerId}`} />;
     }
-    return <PlayerDetail data={data}/>;
+    return <PlayerDetail data={data} />;
 };
 
 const Player: FC = () => {
     const {playerId} = useParams();
 
+    if (playerId === "compare") {
+        return <PlayerCompare />;
+    }
+
     if (playerId) {
-        return <PlayerDetailPage key={playerId} playerId={playerId}/>;
+        return <PlayerDetailPage key={playerId} playerId={playerId} />;
     }
 
     return (
         <div className="container-md">
-            <PlayerList/>
+            <div className="d-flex justify-content-end mb-2">
+                <Link to="/player/compare" className="btn btn-outline-primary btn-sm">
+                    Compare players
+                </Link>
+            </div>
+            <PlayerList />
         </div>
     );
 };
