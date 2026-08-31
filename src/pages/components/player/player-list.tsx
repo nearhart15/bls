@@ -207,7 +207,8 @@ const PlayerList: FC<PlayerListProps> = ({
             {isLoading && <CardBody><Loader /></CardBody>}
             {error != null && <ErrorDisplay message="Error loading players." error={error} />}
             {data && (
-                <div className="bls-perf-scroll">
+                <>
+                <div className="bls-perf-scroll bls-perf-table-wrap">
                     <Table className="bls-perf-table mb-0" size="sm" hover responsive>
                         <thead>
                             <tr>
@@ -261,6 +262,37 @@ const PlayerList: FC<PlayerListProps> = ({
                         </tbody>
                     </Table>
                 </div>
+                <div className="bls-player-cards">
+                    {sorted.length === 0 && (
+                        <div className="text-center text-body-secondary py-4">No bowlers with games in this scope.</div>
+                    )}
+                    {sorted.map((p, idx) => {
+                        const delta = weekDelta(p);
+                        const rating = delta != null ? performanceRatingFromDelta(delta) : performanceRatingFromAverage(p.average);
+                        const weeks = (p.weekAverages ?? []).filter((w) => w > 0);
+                        const compared = weeks.length > 0 ? weeks.reduce((s, n) => s + n, 0) / weeks.length : null;
+                        return (
+                            <div className="bls-player-card" key={`card-${p.id}`}>
+                                <div className="bls-player-card-top">
+                                    <div>
+                                        <div className="bls-player-card-meta">#{idx + 1}</div>
+                                        <Link to={`/player/${p.id}`} className="bls-link bls-player-card-name">{p.name}</Link>
+                                    </div>
+                                    <RatingBadge rating={rating} delta={delta} bookAverage={p.average} comparedAverage={compared} sampleLabel="weekly averages vs book average" />
+                                </div>
+                                <div className="bls-player-card-grid">
+                                    <div className="bls-player-card-stat"><strong>{p.average != null ? numberFormat.format(p.average) : "—"}</strong><span>Avg</span></div>
+                                    <div className="bls-player-card-stat"><strong>{p.games || "—"}</strong><span>Games</span></div>
+                                    <div className="bls-player-card-stat"><strong>{p.pinfall || "—"}</strong><span>Pins</span></div>
+                                    <div className="bls-player-card-stat"><strong>{p.highGame || "—"}</strong><span>High gm</span></div>
+                                    <div className="bls-player-card-stat"><strong>{p.highSeries || "—"}</strong><span>High ser</span></div>
+                                    <div className="bls-player-card-stat"><strong>{p.games200 || "—"}</strong><span>200+</span></div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+                </>
             )}
         </Card>
     );
