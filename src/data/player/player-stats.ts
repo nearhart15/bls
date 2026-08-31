@@ -46,4 +46,15 @@ export class PlayerStats {
     series800 = 0;
     strikesInARow: StrikesInARow[] = [];
     allSinglePinsPickedUpAverage = 0;
+
+    avgPinfallPerFrame = 0;
+    avgTenthMarks = 0;
+    tenthMarkGames = 0;
+    splitsOccurred: RatioGroup = new RatioGroup();
+    framePinfallAvg: number[] = [];
+    framePinfallN: number[] = [];
+    /** Indexes 0-3 = first time the game reaches 50 / 100 / 150 / 200. */
+    paceAvgFrames: number[] = [];
+    paceAvgBalls: number[] = [];
+    paceN: number[] = [];
 }
