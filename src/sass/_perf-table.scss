@@ -1,0 +1,124 @@
+/* Performance dashboard tables */
+.bls-perf-card {
+  overflow: hidden;
+}
+
+.bls-perf-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bls-perf-table {
+  --bs-table-bg: transparent;
+  font-size: 0.875rem;
+  min-width: 640px;
+}
+
+.bls-perf-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bls-surface-2) !important;
+  white-space: nowrap;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--bls-text-muted);
+  border-bottom: 1px solid var(--bls-border);
+  padding: 0.7rem 0.55rem;
+}
+
+.bls-perf-table tbody td {
+  vertical-align: middle;
+  padding: 0.7rem 0.55rem;
+  border-color: var(--bls-border);
+  white-space: nowrap;
+}
+
+.bls-perf-table tbody tr:hover td {
+  background: var(--bls-accent-soft);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.bls-bowler-icon {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bls-surface-2);
+  border: 1px solid var(--bls-border);
+  color: var(--bls-accent);
+}
+
+.bls-micro-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 28px;
+  min-width: 56px;
+}
+
+.bls-micro-bar {
+  width: 5px;
+  border-radius: 2px 2px 1px 1px;
+  min-height: 3px;
+  opacity: 0.95;
+}
+
+.bls-sparkline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.bls-mini-empty {
+  color: var(--bls-text-muted);
+  font-size: 0.8rem;
+}
+
+.bls-grade {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 980px;
+  white-space: nowrap;
+}
+
+.bls-grade-a {
+  color: #30d158;
+  background: rgba(48, 209, 88, 0.12);
+}
+
+.bls-grade-b {
+  color: #ffd60a;
+  background: rgba(255, 214, 10, 0.12);
+}
+
+.bls-grade-c {
+  color: #ff9f0a;
+  background: rgba(255, 159, 10, 0.12);
+}
+
+.bls-grade-d {
+  color: #ff453a;
+  background: rgba(255, 69, 58, 0.12);
+}
+
+.bls-grade-na {
+  color: var(--bls-text-muted);
+  background: var(--bls-surface-2);
+}
+
+[data-bs-theme="light"] {
+  .bls-grade-a { color: #1a7f37; background: rgba(52, 199, 89, 0.15); }
+  .bls-grade-b { color: #9a6700; background: rgba(255, 204, 0, 0.18); }
+  .bls-grade-c { color: #b35900; background: rgba(255, 149, 0, 0.15); }
+  .bls-grade-d { color: #c62828; background: rgba(255, 59, 48, 0.12); }
+}
