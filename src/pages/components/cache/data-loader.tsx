@@ -29,7 +29,8 @@ export function useCachedFetcher<T extends object>(fetcher :() => Promise<T>, ca
     const contextCache = useContextCache();
 
     useEffect(() => {
-        // Check cache
+        let cancelled = false;
+        setError(null);
         if (contextCache != null) {
             const value = contextCache.get(category, key) as T;
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -39,19 +40,23 @@ export function useCachedFetcher<T extends object>(fetcher :() => Promise<T>, ca
                 return;
             }
         }
-
+        setData(null);
+        setLoading(true);
         fetcher().then((data) => {
+                if (cancelled) return;
                 if (contextCache != null) {
                     contextCache.put(category, key, data);
                 }
                 setData(data);
             })
             .catch((error :unknown) => {
+                if (cancelled) return;
                 console.error(error);
                 setError(error);
             })
-            .finally(() => { setLoading(false); });
-    }, []);
+            .finally(() => { if (!cancelled) setLoading(false); });
+        return () => { cancelled = true; };
+    }, [category, key]);
 
     return {data, isLoading, error};
 }
