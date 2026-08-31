@@ -50,6 +50,19 @@ export interface PlayerListSeasonSlice {
     games200: number;
 }
 
+/** Per league+season appearance for compare filters */
+export interface PlayerAppearanceSlice {
+    season: string;
+    leagueId: string;
+    leagueName: string;
+    average: number | null;
+    games: number;
+    pinfall: number;
+    highGame: number;
+    highSeries: number;
+    games200: number;
+}
+
 /** Summary row for the home/player list */
 export interface PlayerListEntry {
     id: string;
@@ -62,6 +75,8 @@ export interface PlayerListEntry {
     games200: number;
     /** Per-season stats for filtering (current season / last year) */
     seasonSlices: PlayerListSeasonSlice[];
+    /** Per league appearance stats for compare filters */
+    appearanceSlices: PlayerAppearanceSlice[];
     /** Weekly series averages for sparkline */
     weekAverages?: number[];
     /** Weekly series pinfall for micro-bars */
@@ -70,7 +85,7 @@ export interface PlayerListEntry {
 }
 
 export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail";
-export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v2-scopes";
+export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v3-appearances";
 
 interface RosterScanResult {
     playerMap: Map<string, {name: string; lastBowled?: moment.Moment}>;
@@ -249,6 +264,23 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
             seasonSlices.sort((a, b) => b.season.localeCompare(a.season));
         }
 
+        const appearanceSlices: PlayerAppearanceSlice[] = [];
+        for (const ap of scan.appearancesByPlayer.get(id) ?? []) {
+            const st = ap.stats;
+            const games = st?.gameStats.count ?? 0;
+            appearanceSlices.push({
+                season: ap.season,
+                leagueId: ap.leagueId,
+                leagueName: ap.leagueName,
+                average: games > 0 && st ? st.gameStats.average : null,
+                games,
+                pinfall: st?.pinfall ?? 0,
+                highGame: st?.gameStats.max ?? 0,
+                highSeries: st?.seriesStats.max ?? 0,
+                games200: st?.games200 ?? 0,
+            });
+        }
+
         entries.push({
             id,
             name: info.name,
@@ -259,6 +291,7 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
             highSeries: stats.seriesStats.max,
             games200: stats.games200,
             seasonSlices,
+            appearanceSlices,
             weekAverages: scan.weekAveragesByPlayer.get(id),
             weekSeries: scan.weekSeriesByPlayer.get(id),
             lastBowled: info.lastBowled,
