@@ -2,7 +2,9 @@
  * Filterable all-stats panel © 2026
  */
 
-import {type FC, useMemo, useState} from "react";
+import {type FC, useEffect, useMemo, useState} from "react";
+import Chart from "react-apexcharts";
+import type {ApexOptions} from "apexcharts";
 import {Card, CardBody} from "react-bootstrap";
 
 import type {
@@ -12,6 +14,85 @@ import type {
 import {PlayerStats} from "../../../data/player/player-stats";
 import type {LeaguePlayerStats} from "../../../data/league/league-team-details";
 import {FullStatsGrid} from "./player-detail-tables";
+import {useTheme} from "../theme";
+import {chartPalette} from "../charts/chart-theme";
+
+function pct(rg: {numerator: number; denominator: number; pct: number}): number {
+    if (rg.denominator <= 0) return 0;
+    return Math.round(rg.pct * 1000) / 10;
+}
+
+function pickupPct(n: number): number {
+    if (!n) return 0;
+    return Math.round((n <= 1 ? n * 100 : n) * 10) / 10;
+}
+
+function useIsNarrow(maxWidth = 767): boolean {
+    const [narrow, setNarrow] = useState(false);
+    useEffect(() => {
+        const mq = window.matchMedia(`(max-width: ${maxWidth}px)`);
+        const apply = () => setNarrow(mq.matches);
+        apply();
+        mq.addEventListener("change", apply);
+        return () => mq.removeEventListener("change", apply);
+    }, [maxWidth]);
+    return narrow;
+}
+
+const ConversionRadar: FC<{stats: PlayerStats}> = ({stats}) => {
+    const {theme} = useTheme();
+    const palette = chartPalette(theme);
+    const narrow = useIsNarrow();
+    const strike = pct(stats.strikes);
+    const spare = pct(stats.spares);
+    const single = pct(stats.singlePinSpares);
+    const strikeSpare = pct(stats.strikesToSpares);
+    const closed = Math.round((100 - pct(stats.opens)) * 10) / 10;
+    const noSplit = Math.round((100 - pct(stats.splits)) * 10) / 10;
+    const pickup = pickupPct(stats.allSinglePinsPickedUpAverage);
+    const displayVals = [
+        `${strike}%`,
+        `${spare}%`,
+        `${single}%`,
+        `${strikeSpare}%`,
+        `${closed}%`,
+        `${noSplit}%`,
+        `${pickup}%`,
+    ];
+    const labels = ["Strike %", "Spare %", "Single-pin %", "Strike-spare %", "Closed %", "No-split %", "Pickup %"];
+    const categories = narrow
+        ? labels
+        : labels.map((label, i) => `${displayVals[i]} ${label}`);
+    const options: ApexOptions = {
+        chart: {type: "radar", background: "transparent", toolbar: {show: false}, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', parentHeightOffset: 0},
+        theme: {mode: theme},
+        colors: ["#ffd60a"],
+        fill: {opacity: 0.22},
+        stroke: {width: 3, colors: ["#ffd60a"]},
+        markers: {size: narrow ? 4 : 5, colors: ["#ffd60a"], strokeColors: theme === "dark" ? "#0a0a0a" : "#fff", strokeWidth: 2},
+        xaxis: {categories, labels: {show: true, style: {colors: Array(categories.length).fill("#ffd60a"), fontSize: narrow ? "10px" : "12px", fontWeight: 700}}},
+        yaxis: {show: false, min: 0, max: 100, tickAmount: 4},
+        plotOptions: {
+            radar: {
+                size: narrow ? 100 : 130, offsetX: 0, offsetY: 0,
+                polygons: {
+                    strokeColors: palette.grid, connectorColors: palette.grid,
+                    fill: {colors: theme === "dark" ? ["#0a0a0a", "#111111"] : ["#ffffff", "#f5f5f7"]},
+                },
+            },
+        },
+        legend: {show: false},
+        tooltip: {theme, y: {formatter: (_v, opts) => displayVals[opts?.dataPointIndex ?? 0] ?? String(_v)}},
+    };
+    return (
+        <div className="bls-allstats-group">
+            <div className="bls-allstats-group-head">Conversion</div>
+            <div className="bls-radar-wrap">
+                <Chart key={narrow ? "conv-sm" : "conv-lg"} options={options} series={[{name: "Conversion", data: [strike, spare, single, strikeSpare, closed, noSplit, pickup]}]} type="radar" height={narrow ? 280 : 360} width="100%" />
+            </div>
+        </div>
+    );
+};
 
 function mergeStats(list: PlayerStats[]): PlayerStats {
     const out = new PlayerStats();
@@ -138,7 +219,10 @@ export const AllStatsPanel: FC<{
                 </div>
                 <div className="text-body-secondary fs-sm mb-3">{selected.label}</div>
                 {selected.stats.gameStats.count > 0
-                    ? <FullStatsGrid stats={selected.stats} leagueExtras={selected.extras} />
+                    ? <>
+                        <ConversionRadar stats={selected.stats} />
+                        <FullStatsGrid stats={selected.stats} leagueExtras={selected.extras} hideGroups={["Conversion"]} />
+                      </>
                     : <p className="text-body-secondary mb-0">No games for this timeframe / league.</p>}
             </CardBody>
         </Card>
