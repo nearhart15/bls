@@ -11,65 +11,56 @@
   min-width: 0;
 }
 
-/* Vertical player switcher */
+/* Vertical player switcher — names only, no avatars */
 .bls-player-rail {
   position: sticky;
   top: 5.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.35rem;
   max-height: calc(100vh - 7rem);
   overflow-y: auto;
   padding: 0.35rem;
   flex-shrink: 0;
   scrollbar-width: thin;
+  min-width: 7.5rem;
 }
 
 .bls-player-rail-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  display: block;
+  width: 100%;
+  text-align: left;
   border: 1px solid transparent;
   background: transparent;
-  border-radius: 980px;
-  padding: 0.2rem;
+  border-radius: var(--bls-radius-sm);
+  padding: 0.4rem 0.55rem;
   color: var(--bls-text);
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.25;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .bls-player-rail-btn:hover {
   background: var(--bls-accent-soft);
+  color: var(--bls-accent);
 }
 
 .bls-player-rail-btn.is-active {
   border-color: var(--bls-accent);
   background: var(--bls-accent-soft);
-  box-shadow: 0 0 0 2px var(--bls-accent-soft);
-}
-
-.bls-player-avatar {
-  width: 2.35rem;
-  height: 2.35rem;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  background: var(--bls-gradient);
-  color: #fff;
-  flex-shrink: 0;
+  color: var(--bls-accent);
+  font-weight: 600;
+  box-shadow: 0 0 0 1px var(--bls-accent-soft);
 }
 
 .bls-player-rail-name {
-  font-size: 0.75rem;
-  font-weight: 500;
-  max-width: 7rem;
+  display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 9rem;
 }
 
 /* Hero */
@@ -127,32 +118,6 @@
   color: var(--bls-text);
 }
 
-.bls-player-hero-badge {
-  position: relative;
-  z-index: 1;
-  flex-shrink: 0;
-}
-
-.bls-player-hero-initials {
-  width: 5.5rem;
-  height: 5.5rem;
-  border-radius: 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.75rem;
-  font-weight: 800;
-  background: var(--bls-gradient);
-  color: #fff;
-  box-shadow: 0 12px 40px var(--bls-glow-1);
-}
-
-@media (max-width: 575.98px) {
-  .bls-player-hero-badge {
-    display: none;
-  }
-}
-
 /* Cards */
 .bls-profile-card {
   background: var(--bls-surface);
@@ -206,7 +171,7 @@
 }
 
 .bls-appear-scroll {
-  max-height: 280px;
+  max-height: 320px;
   overflow: auto;
 }
 
@@ -290,11 +255,23 @@
   .bls-player-rail {
     position: static;
     flex-direction: row;
+    flex-wrap: nowrap;
     max-height: none;
     overflow-x: auto;
     overflow-y: hidden;
     width: 100%;
+    min-width: 0;
     padding-bottom: 0.5rem;
+    gap: 0.35rem;
+  }
+
+  .bls-player-rail-btn {
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .bls-player-rail-name {
+    max-width: 7rem;
   }
 
   .bls-radar-callouts {

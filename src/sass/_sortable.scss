@@ -1,0 +1,27 @@
+/* Clickable column headers */
+.bls-sortable-th {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.bls-sortable-th:hover {
+  color: var(--bls-accent) !important;
+  background: var(--bls-accent-soft) !important;
+}
+
+.bls-sortable-th.is-sorted {
+  color: var(--bls-accent) !important;
+}
+
+.bls-sortable-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.bls-sort-indicator {
+  font-size: 0.65em;
+  opacity: 0.9;
+}

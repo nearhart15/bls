@@ -1,11 +1,10 @@
 /*
- * Player index — dashboard performance table © 2026
+ * Player index — dashboard performance table with column sorting © 2026
  */
 
-import {type FC, useCallback} from "react";
+import {type FC, useCallback, useMemo, useState} from "react";
 import {Link} from "react-router";
 import {Badge, Card, CardBody, CardHeader, Table} from "react-bootstrap";
-import {PersonCircle} from "react-bootstrap-icons";
 
 import {
     buildFullPlayerList,
@@ -23,6 +22,101 @@ const numberFormat = Intl.NumberFormat("en-US", {
     maximumFractionDigits: 1,
 });
 
+type SortKey =
+    | "rank"
+    | "name"
+    | "average"
+    | "games"
+    | "pinfall"
+    | "highGame"
+    | "highSeries"
+    | "games200"
+    | "grade";
+
+type SortDir = "asc" | "desc";
+
+function gradeRank(avg: number | null): number {
+    if (avg == null || avg <= 0) return -1;
+    if (avg >= 210) return 5;
+    if (avg >= 190) return 4;
+    if (avg >= 170) return 3;
+    if (avg >= 150) return 2;
+    return 1;
+}
+
+function comparePlayers(a: PlayerListEntry, b: PlayerListEntry, key: SortKey, dir: SortDir): number {
+    const mul = dir === "asc" ? 1 : -1;
+    let cmp = 0;
+    switch (key) {
+        case "name":
+            cmp = a.name.localeCompare(b.name);
+            break;
+        case "average":
+            cmp = (a.average ?? -1) - (b.average ?? -1);
+            break;
+        case "games":
+            cmp = a.games - b.games;
+            break;
+        case "pinfall":
+            cmp = a.pinfall - b.pinfall;
+            break;
+        case "highGame":
+            cmp = a.highGame - b.highGame;
+            break;
+        case "highSeries":
+            cmp = a.highSeries - b.highSeries;
+            break;
+        case "games200":
+            cmp = a.games200 - b.games200;
+            break;
+        case "grade":
+            cmp = gradeRank(a.average) - gradeRank(b.average);
+            break;
+        case "rank":
+default:
+            // rank follows games then avg (default list order)
+            cmp = a.games - b.games || (a.average ?? 0) - (b.average ?? 0);
+            break;
+    }
+    if (cmp === 0) cmp = a.name.localeCompare(b.name);
+    return cmp * mul;
+}
+
+const SortTh: FC<{
+    label: string;
+    sortKey: SortKey;
+    active: SortKey;
+    dir: SortDir;
+    onSort: (k: SortKey) => void;
+    className?: string;
+    style?: React.CSSProperties;
+}> = ({label, sortKey, active, dir, onSort, className, style}) => {
+    const isActive = active === sortKey;
+    return (
+        <th
+            className={`bls-sortable-th ${className ?? ""}${isActive ? " is-sorted" : ""}`}
+            style={style}
+            onClick={() => onSort(sortKey)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSort(sortKey);
+                }
+            }}
+            aria-sort={isActive ? (dir === "asc" ? "ascending" : "descending") : "none"}
+        >
+            <span className="bls-sortable-label">
+                {label}
+                <span className="bls-sort-indicator" aria-hidden>
+                    {isActive ? (dir === "asc" ? " ▲" : " ▼") : ""}
+                </span>
+            </span>
+        </th>
+    );
+};
+
 const PlayerList: FC = () => {
     const {theme} = useTheme();
     const isDark = theme === "dark";
@@ -31,6 +125,24 @@ const PlayerList: FC = () => {
         fetcher,
         PLAYER_INDEX_CACHE_CATEGORY
     );
+
+    const [sortKey, setSortKey] = useState<SortKey>("games");
+    const [sortDir, setSortDir] = useState<SortDir>("desc");
+
+    const onSort = (key: SortKey) => {
+        if (key === sortKey) {
+            setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+        } else {
+            setSortKey(key);
+            // sensible default direction per column
+            setSortDir(key === "name" ? "asc" : "desc");
+        }
+    };
+
+    const sorted = useMemo(() => {
+        if (!data) return [];
+        return [...data].sort((a, b) => comparePlayers(a, b, sortKey, sortDir));
+    }, [data, sortKey, sortDir]);
 
     return (
         <Card className="mb-0 h-100 bls-perf-card">
@@ -55,22 +167,83 @@ const PlayerList: FC = () => {
                     <Table className="bls-perf-table mb-0" size="sm" hover responsive>
                         <thead>
                             <tr>
-                                <th className="text-center" style={{width: "2.5rem"}}>
-                                    #
-                                </th>
-                                <th>Bowler</th>
-                                <th className="text-end">Avg</th>
-                                <th className="text-end d-none d-sm-table-cell">Games</th>
-                                <th className="text-end d-none d-md-table-cell">Pins</th>
-                                <th className="text-end d-none d-md-table-cell">HG</th>
-                                <th className="text-end d-none d-lg-table-cell">HS</th>
-                                <th className="text-end d-none d-sm-table-cell">200+</th>
+                                <SortTh
+                                    label="#"
+                                    sortKey="rank"
+                                    active={sortKey}
+                                    dir={sortDir}
+                                    onSort={onSort}
+                                    className="text-center"
+                                    style={{width: "2.5rem"}}
+                                />
+                                <SortTh
+                                    label="Bowler"
+                                    sortKey="name"
+                                    active={sortKey}
+                                    dir={sortDir}
+                                    onSort={onSort}
+                                />
+                                <SortTh
+                                    label="Avg"
+                                    sortKey="average"
+                                    active={sortKey}
+                                    dir={sortDir}
+                                    onSort={onSort}
+                                    className="text-end"
+                                />
+                                <SortTh
+                                    label="Games"
+                                    sortKey="games"
+                                    active={sortKey}
+                                    dir={sortDir}
+                                    onSort={onSort}
+                                    className="text-end d-none d-sm-table-cell"
+                                />
+                                <SortTh
+                                    label="Pins"
+                                    sortKey="pinfall"
+                                    active={sortKey}
+                                    dir={sortDir}
+                                    onSort={onSort}
+                                    className="text-end d-none d-md-table-cell"
+                                />
+                                <SortTh
+                                    label="HG"
+                                    sortKey="highGame"
+                                    active={sortKey}
+                                    dir={sortDir}
+                                    onSort={onSort}
+                                    className="text-end d-none d-md-table-cell"
+                                />
+                                <SortTh
+                                    label="HS"
+                                    sortKey="highSeries"
+                                    active={sortKey}
+                                    dir={sortDir}
+                                    onSort={onSort}
+                                    className="text-end d-none d-lg-table-cell"
+                                />
+                                <SortTh
+                                    label="200+"
+                                    sortKey="games200"
+                                    active={sortKey}
+                                    dir={sortDir}
+                                    onSort={onSort}
+                                    className="text-end d-none d-sm-table-cell"
+                                />
                                 <th className="d-none d-xl-table-cell text-center">Trend</th>
-                                <th className="text-center">Grade</th>
+                                <SortTh
+                                    label="Grade"
+                                    sortKey="grade"
+                                    active={sortKey}
+                                    dir={sortDir}
+                                    onSort={onSort}
+                                    className="text-center"
+                                />
                             </tr>
                         </thead>
                         <tbody>
-                            {data.map((p, idx) => {
+                            {sorted.map((p, idx) => {
                                 const grade = performanceGrade(p.average);
                                 return (
                                     <tr key={p.id}>
@@ -78,22 +251,12 @@ const PlayerList: FC = () => {
                                             {idx + 1}
                                         </td>
                                         <td>
-                                            <div className="d-flex align-items-center gap-2">
-                                                <span className="bls-bowler-icon">
-                                                    <PersonCircle size={16} />
-                                                </span>
-                                                <div className="min-w-0">
-                                                    <Link
-                                                        to={`/player/${p.id}`}
-                                                        className="bls-link fw-semibold text-truncate d-block"
-                                                    >
-                                                        {p.name}
-                                                    </Link>
-                                                    <div className="fs-xs text-body-secondary">
-                                                        {p.games} game{p.games === 1 ? "" : "s"}
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <Link
+                                                to={`/player/${p.id}`}
+                                                className="bls-link fw-semibold"
+                                            >
+                                                {p.name}
+                                            </Link>
                                         </td>
                                         <td className="text-end fw-semibold tabular-nums">
                                             {p.average != null
