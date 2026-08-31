@@ -16,7 +16,7 @@ import {useCachedFetcher} from "../cache/data-loader";
 import Loader from "../loader";
 import ErrorDisplay from "../error-display";
 import {useTheme} from "../theme";
-import {MicroBarChart, performanceRatingFromAverage, performanceRatingFromDelta, ratingClass, Sparkline} from "../charts/mini-charts";
+import {MicroBarChart, performanceRatingFromAverage, performanceRatingFromDelta, RatingBadge, Sparkline} from "../charts/mini-charts";
 
 const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 1});
 
@@ -129,19 +129,10 @@ const SortTh: FC<{
 }> = ({label, sortKey, active, dir, onSort, className, style}) => {
     const isActive = active === sortKey;
     return (
-        <th
-            className={`bls-sortable-th ${className ?? ""}${isActive ? " is-sorted" : ""}`}
-            style={style}
-            onClick={() => onSort(sortKey)}
-            role="button"
-            tabIndex={0}
+        <th className={`bls-sortable-th ${className ?? ""}${isActive ? " is-sorted" : ""}`} style={style} onClick={() => onSort(sortKey)} role="button" tabIndex={0}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSort(sortKey); } }}
-            aria-sort={isActive ? (dir === "asc" ? "ascending" : "descending") : "none"}
-        >
-            <span className="bls-sortable-label">
-                {label}
-                <span className="bls-sort-indicator" aria-hidden>{isActive ? (dir === "asc" ? " ▲" : " ▼") : ""}</span>
-            </span>
+            aria-sort={isActive ? (dir === "asc" ? "ascending" : "descending") : "none"}>
+            <span className="bls-sortable-label">{label}<span className="bls-sort-indicator" aria-hidden>{isActive ? (dir === "asc" ? " ▲" : " ▼") : ""}</span></span>
         </th>
     );
 };
@@ -238,6 +229,8 @@ const PlayerList: FC<PlayerListProps> = ({
                             {sorted.map((p, idx) => {
                                 const delta = weekDelta(p);
                                 const rating = delta != null ? performanceRatingFromDelta(delta) : performanceRatingFromAverage(p.average);
+                                const weeks = (p.weekAverages ?? []).filter((w) => w > 0);
+                                const compared = weeks.length > 0 ? weeks.reduce((s, n) => s + n, 0) / weeks.length : null;
                                 return (
                                     <tr key={p.id}>
                                         <td className="text-center text-body-secondary fw-semibold">{idx + 1}</td>
@@ -259,7 +252,7 @@ const PlayerList: FC<PlayerListProps> = ({
                                             </td>
                                         )}
                                         <td className="text-center">
-                                            <span className={`bls-grade ${ratingClass(rating)}`}>{rating == null ? "—" : rating}</span>
+                                            <RatingBadge rating={rating} delta={delta} bookAverage={p.average} comparedAverage={compared} sampleLabel="weekly averages vs book average" />
                                         </td>
                                     </tr>
                                 );
