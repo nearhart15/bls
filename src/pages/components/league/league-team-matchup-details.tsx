@@ -1,21 +1,9 @@
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  * Dark mode / modern frame sheet © 2026
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
  */
 
-import {type FC, type ReactElement, type ReactNode, useEffect, useMemo, useState} from "react";
+import {type FC, createContext, useContext, useEffect, useMemo, useState} from "react";
 
 import {
     Row,
@@ -24,8 +12,6 @@ import {
     Table,
     Card,
     CardBody,
-    OverlayTrigger,
-    Tooltip,
     CardFooter,
     Stack,
     ListGroup,
@@ -97,33 +83,67 @@ const findPlayer = (teamDetails: TrackedLeagueTeam, playerId: string | undefined
     return playerName ? playerName : "UNKNOWN";
 }
 
-interface OverlaywithTooltipProps {
-    children: ReactElement;
-    tooltip: ReactNode;
-}
-const OverlayWithTooltip :FC<OverlaywithTooltipProps> = ({children, tooltip}: OverlaywithTooltipProps) =>
-    (<OverlayTrigger overlay={<Tooltip id={Math.random().toString()}>{tooltip}</Tooltip>}>{children}</OverlayTrigger>);
+const FrameAttrHintContext = createContext<{
+    active: FrameAttributeIconInfo | null;
+    setActive: (info: FrameAttributeIconInfo) => void;
+}>({active: null, setActive: () => undefined});
 
 interface FrameAttributeIconProps {
     attribute: FrameAttributes;
 }
 const FrameAttributeIcon :FC<FrameAttributeIconProps> = ({attribute}: FrameAttributeIconProps) => {
     const iconInfo = FrameAttributeIcons.get(attribute);
-    return (<>
-        {iconInfo && <OverlayWithTooltip tooltip={iconInfo.description}><Icon iconName={iconInfo.iconName} color={iconInfo.iconColor}/></OverlayWithTooltip>}
-    </>);
+    const {setActive, active} = useContext(FrameAttrHintContext);
+    if (!iconInfo) return null;
+    const isOn = active?.attribute === iconInfo.attribute;
+    return (
+        <button
+            type="button"
+            className={`bls-attr-btn${isOn ? " is-active" : ""}`}
+            aria-label={iconInfo.description}
+            onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setActive(iconInfo);
+            }}
+        >
+            <Icon iconName={iconInfo.iconName} color={iconInfo.iconColor}/>
+        </button>
+    );
 }
 
 const FrameAttributeIconLegend :FC = () => {
-    const iconNum = FrameAttributeIcons.size;
-    const keyPrefix = "fr-attr-legent-" + Math.random().toString() + "-";
-    return (<>
-        {Array.from(FrameAttributeIcons.values()).map((icn: FrameAttributeIconInfo, idx: number) =>
-            <span key={keyPrefix + idx.toString()}>
-                <Icon iconName={icn.iconName} color={icn.iconColor}/>: {icn.description}
-                {(idx + 1) < iconNum && <span>&nbsp;|&nbsp;</span>}
-            </span>)}
-    </>);
+    const {active, setActive} = useContext(FrameAttrHintContext);
+    return (
+        <div className="bls-attr-legend">
+            <div className="bls-attr-legend-icons">
+                {Array.from(FrameAttributeIcons.values()).map((icn) => {
+                    const isOn = active?.attribute === icn.attribute;
+                    return (
+                        <button
+                            key={icn.attribute}
+                            type="button"
+                            className={`bls-attr-btn bls-attr-legend-item${isOn ? " is-active" : ""}`}
+                            aria-label={icn.description}
+                            onClick={() => setActive(icn)}
+                        >
+                            <Icon iconName={icn.iconName} color={icn.iconColor}/>
+                        </button>
+                    );
+                })}
+            </div>
+            <div className="bls-attr-callout" aria-live="polite">
+                {active ? (
+                    <>
+                        <Icon iconName={active.iconName} color={active.iconColor}/>
+                        <span style={{color: active.iconColor}}>{active.description}</span>
+                    </>
+                ) : (
+                    <span className="text-body-secondary">Tap a numbered badge to see what it means</span>
+                )}
+            </div>
+        </div>
+    );
 }
 const EmptyFrames: Frame[] = [
     { number: 1, ballScores: [[0, "A"]], cumulativeScore: 0, attributes: []},
@@ -302,19 +322,21 @@ interface MatchupDetailsDisplayProps {
 }
 const MatchupDetailsDisplay: FC<MatchupDetailsDisplayProps> = ({leagueDetails, matchup, teamDetails, currentBreakpoint}: MatchupDetailsDisplayProps) => {
     const [hasFrameData, setHasFrameData] = useState(true);
+    const [activeAttr, setActiveAttr] = useState<FrameAttributeIconInfo | null>(null);
 
     useEffect(() => {
-        setHasFrameData(true); // Start with positive assumption
+        setHasFrameData(true);
         matchup.scores?.playerScores.forEach(ps => {
             ps.games.forEach(psg => {
                 if (!psg.blind && !psg.vacant && psg.frames.length == 0) {
-                    setHasFrameData(false); // We are missing frame data for this matchup
+                    setHasFrameData(false);
                 }
             });
         })
     }, [matchup]);
 
-    return (<>
+    return (
+    <FrameAttrHintContext.Provider value={{active: activeAttr, setActive: setActiveAttr}}>
         <Row className="gy-1 gx-1">
             <Col>
                 <Card className="my-1 mx-0">
@@ -373,7 +395,8 @@ const MatchupDetailsDisplay: FC<MatchupDetailsDisplayProps> = ({leagueDetails, m
                 </Col>
             </Row>
         }
-    </>);
+    </FrameAttrHintContext.Provider>
+    );
 }
 
 export default MatchupDetailsDisplay;
