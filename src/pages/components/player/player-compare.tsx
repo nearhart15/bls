@@ -248,21 +248,29 @@ const FifaBar: FC<{
 const DualRadar: FC<{bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}> = ({bagA, bagB, nameA, nameB}) => {
     const {theme} = useTheme();
     const palette = chartPalette(theme);
-    const gamesA = Math.max(1, num(bagA.games));
-    const gamesB = Math.max(1, num(bagB.games));
-    const scaleAvg = (v: number | null) => Math.max(0, Math.min(100, ((num(v) - 140) / 80) * 100));
-    const cats = ["Avg", "Strike %", "Spare %", "Clean", "Hung", "Turkey"];
+    const clampPct = (v: number | null | undefined) => Math.max(0, Math.min(100, num(v)));
+    const ratePct = (count: number | null | undefined, games: number | null | undefined) => {
+        const g = num(games);
+        if (g <= 0) return 0;
+        return clampPct((num(count) / g) * 100);
+    };
+    const firstBallPct = (v: number | null | undefined) => clampPct(num(v) * 10);
+    const cats = ["Strike %", "Spare %", "Single-pin %", "Split %", "Clean %", "1st ball %"];
     const seriesA = [
-        scaleAvg(bagA.average), num(bagA.strikePct), num(bagA.sparePct),
-        Math.min(100, (num(bagA.cleanGames) / gamesA) * 100),
-        Math.min(100, (num(bagA.hungCount) / gamesA) * 40),
-        Math.min(100, (num(bagA.turkeyCount) / gamesA) * 25),
+        clampPct(bagA.strikePct),
+        clampPct(bagA.sparePct),
+        clampPct(bagA.singlePinPct),
+        clampPct(bagA.splitPct),
+        ratePct(bagA.cleanGames, bagA.games),
+        firstBallPct(bagA.firstBall),
     ];
     const seriesB = [
-        scaleAvg(bagB.average), num(bagB.strikePct), num(bagB.sparePct),
-        Math.min(100, (num(bagB.cleanGames) / gamesB) * 100),
-        Math.min(100, (num(bagB.hungCount) / gamesB) * 40),
-        Math.min(100, (num(bagB.turkeyCount) / gamesB) * 25),
+        clampPct(bagB.strikePct),
+        clampPct(bagB.sparePct),
+        clampPct(bagB.singlePinPct),
+        clampPct(bagB.splitPct),
+        ratePct(bagB.cleanGames, bagB.games),
+        firstBallPct(bagB.firstBall),
     ];
     const options: ApexOptions = {
         chart: {type: "radar", background: "transparent", toolbar: {show: false}, fontFamily: "Inter, sans-serif"},
@@ -274,7 +282,7 @@ const DualRadar: FC<{bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}
         xaxis: {categories: cats, labels: {style: {colors: Array(cats.length).fill(palette.text), fontSize: "11px", fontWeight: 600}}},
         yaxis: {show: false, min: 0, max: 100, tickAmount: 4},
         legend: {position: "bottom", labels: {colors: palette.text}},
-        tooltip: {theme},
+        tooltip: {theme, y: {formatter: (val: number) => `${Number(val).toFixed(1)}%`}},
         plotOptions: {
             radar: {
                 polygons: {
