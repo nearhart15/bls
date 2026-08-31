@@ -218,7 +218,17 @@ const SCOPE_OPTIONS: {id: PlayerScope; label: string; hint: string}[] = [
     {id: "last-year", label: "Last calendar year", hint: "Seasons in the prior calendar year"},
 ];
 
-const PlayerList: FC = () => {
+interface PlayerListProps {
+    defaultScope?: PlayerScope;
+    lockScope?: boolean;
+    title?: string;
+}
+
+const PlayerList: FC<PlayerListProps> = ({
+    defaultScope = "career",
+    lockScope = false,
+    title = "Bowler Performance",
+}) => {
     const {theme} = useTheme();
     const isDark = theme === "dark";
     const fetcher = useCallback(buildFullPlayerList, []);
@@ -227,7 +237,7 @@ const PlayerList: FC = () => {
         PLAYER_INDEX_CACHE_CATEGORY
     );
 
-    const [scope, setScope] = useState<PlayerScope>("career");
+    const [scope, setScope] = useState<PlayerScope>(defaultScope);
     const [sortKey, setSortKey] = useState<SortKey>("games");
     const [sortDir, setSortDir] = useState<SortDir>("desc");
 
@@ -255,7 +265,7 @@ const PlayerList: FC = () => {
     return (
         <Card className="mb-0 h-100 bls-perf-card">
             <CardHeader className="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <span>Bowler Performance</span>
+                <span>{title}</span>
                 {data && (
                     <Badge bg="secondary" pill>
                         {sorted.length} bowlers
@@ -263,34 +273,36 @@ const PlayerList: FC = () => {
                 )}
             </CardHeader>
 
-            <div className="bls-scope-bar px-3 pt-3">
-                <div className="bls-scope-pills" role="tablist" aria-label="Stats scope">
-                    {SCOPE_OPTIONS.map((opt) => {
-                        const active = scope === opt.id;
-                        let sub = opt.hint;
-                        if (opt.id === "current" && currentSeasonLabel) {
-                            sub = currentSeasonLabel;
-                        }
-                        if (opt.id === "last-year") {
-                            sub = lastYearLabel;
-                        }
-                        return (
-                            <button
-                                key={opt.id}
-                                type="button"
-                                role="tab"
-                                aria-selected={active}
-                                className={`bls-scope-pill${active ? " is-active" : ""}`}
-                                title={opt.hint}
-                                onClick={() => setScope(opt.id)}
-                            >
-                                <span className="bls-scope-pill-label">{opt.label}</span>
-                                <span className="bls-scope-pill-sub">{sub}</span>
-                            </button>
-                        );
-                    })}
+            {!lockScope && (
+                <div className="bls-scope-bar px-3 pt-3">
+                    <div className="bls-scope-pills" role="tablist" aria-label="Stats scope">
+                        {SCOPE_OPTIONS.map((opt) => {
+                            const active = scope === opt.id;
+                            let sub = opt.hint;
+                            if (opt.id === "current" && currentSeasonLabel) {
+                                sub = currentSeasonLabel;
+                            }
+                            if (opt.id === "last-year") {
+                                sub = lastYearLabel;
+                            }
+                            return (
+                                <button
+                                    key={opt.id}
+                                    type="button"
+                                    role="tab"
+                                    aria-selected={active}
+                                    className={`bls-scope-pill${active ? " is-active" : ""}`}
+                                    title={opt.hint}
+                                    onClick={() => setScope(opt.id)}
+                                >
+                                    <span className="bls-scope-pill-label">{opt.label}</span>
+                                    <span className="bls-scope-pill-sub">{sub}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
                 </div>
-            </div>
+            )}
 
             {isLoading && (
                 <CardBody>
