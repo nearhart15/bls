@@ -66,11 +66,17 @@ function fmtStreaks(rows: [number, number][] | undefined): string {
     return rows.map(([len, count]) => `${len}x \u00d7 ${count}`).join(", ");
 }
 
-function fmtPace(stats: PlayerStats, idx: number, kind: "frames" | "balls"): string {
+function paceTile(stats: PlayerStats, idx: number, target: number): {label: string; value: string} {
     const n = stats.paceN?.[idx] ?? 0;
-    const val = kind === "frames" ? stats.paceAvgFrames?.[idx] : stats.paceAvgBalls?.[idx];
-    if (!n || !val) return "\u2014";
-    return `${fmtNum(val)} (${n} games)`;
+    const frames = stats.paceAvgFrames?.[idx];
+    const balls = stats.paceAvgBalls?.[idx];
+    if (!n || !frames) {
+        return {label: `Avg to reach ${target}`, value: "\u2014"};
+    }
+    return {
+        label: `Avg to reach ${target} \u00b7 ${n} games`,
+        value: `${fmtNum(frames)} frames / ${fmtNum(balls)} balls`,
+    };
 }
 
 export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerStats; hideGroups?: string[]}> = ({stats, leagueExtras, hideGroups}) => {
@@ -104,14 +110,10 @@ export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerS
             {label: "Avg 10th-frame marks", value: stats.tenthMarkGames ? fmtNum(stats.avgTenthMarks) : "\u2014"},
             {label: "Splits / frame", value: fmtPct(stats.splitsOccurred)},
             {label: "Opens / frame", value: fmtPct(stats.opens)},
-            {label: "Frames to 50", value: fmtPace(stats, 0, "frames")},
-            {label: "Balls to 50", value: fmtPace(stats, 0, "balls")},
-            {label: "Frames to 100", value: fmtPace(stats, 1, "frames")},
-            {label: "Balls to 100", value: fmtPace(stats, 1, "balls")},
-            {label: "Frames to 150", value: fmtPace(stats, 2, "frames")},
-            {label: "Balls to 150", value: fmtPace(stats, 2, "balls")},
-            {label: "Frames to 200", value: fmtPace(stats, 3, "frames")},
-            {label: "Balls to 200", value: fmtPace(stats, 3, "balls")},
+            paceTile(stats, 0, 50),
+            paceTile(stats, 1, 100),
+            paceTile(stats, 2, 150),
+            paceTile(stats, 3, 200),
         ]},
         {group: "Conversion", items: [
             {label: "Clean Games", value: String(stats.cleanGames ?? "\u2014")},
