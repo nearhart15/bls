@@ -19,12 +19,13 @@ import {chartPalette} from "../charts/chart-theme";
 
 function pct(rg: {numerator: number; denominator: number; pct: number}): number {
     if (rg.denominator <= 0) return 0;
-    return Math.round(rg.pct * 1000) / 10;
+    const raw = rg.pct > 1 ? rg.pct : rg.pct * 100;
+    return Math.round(Math.max(0, Math.min(100, raw)) * 10) / 10;
 }
 
-function pickupPct(n: number): number {
+function firstBallPct(n: number): number {
     if (!n) return 0;
-    return Math.round((n <= 1 ? n * 100 : n) * 10) / 10;
+    return Math.round(Math.max(0, Math.min(100, (n / 10) * 100)) * 10) / 10;
 }
 
 function useIsNarrow(maxWidth = 767): boolean {
@@ -46,20 +47,18 @@ const ConversionRadar: FC<{stats: PlayerStats}> = ({stats}) => {
     const strike = pct(stats.strikes);
     const spare = pct(stats.spares);
     const single = pct(stats.singlePinSpares);
-    const strikeSpare = pct(stats.strikesToSpares);
+    const splitConv = pct(stats.splits);
     const closed = Math.round((100 - pct(stats.opens)) * 10) / 10;
-    const noSplit = Math.round((100 - pct(stats.splits)) * 10) / 10;
-    const pickup = pickupPct(stats.allSinglePinsPickedUpAverage);
+    const firstBall = firstBallPct(stats.firstBallAverage);
     const displayVals = [
         `${strike}%`,
         `${spare}%`,
         `${single}%`,
-        `${strikeSpare}%`,
+        `${splitConv}%`,
         `${closed}%`,
-        `${noSplit}%`,
-        `${pickup}%`,
+        `${(stats.firstBallAverage || 0).toFixed(1)} pins`,
     ];
-    const labels = ["Strike %", "Spare %", "Single-pin %", "Strike-spare %", "Closed %", "No-split %", "Pickup %"];
+    const labels = ["Strike %", "Spare %", "Single-pin %", "Split conv %", "Closed %", "First ball"];
     const categories = narrow
         ? labels
         : labels.map((label, i) => `${displayVals[i]} ${label}`);
@@ -88,7 +87,7 @@ const ConversionRadar: FC<{stats: PlayerStats}> = ({stats}) => {
         <div className="bls-allstats-group">
             <div className="bls-allstats-group-head">Conversion</div>
             <div className="bls-radar-wrap">
-                <Chart key={narrow ? "conv-sm" : "conv-lg"} options={options} series={[{name: "Conversion", data: [strike, spare, single, strikeSpare, closed, noSplit, pickup]}]} type="radar" height={narrow ? 280 : 360} width="100%" />
+                <Chart key={narrow ? "conv-sm" : "conv-lg"} options={options} series={[{name: "Conversion", data: [strike, spare, single, splitConv, closed, firstBall]}]} type="radar" height={narrow ? 280 : 360} width="100%" />
             </div>
         </div>
     );
