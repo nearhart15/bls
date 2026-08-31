@@ -1,11 +1,12 @@
 /*
- * Modern app shell © 2026
+ * Layout — glass nav + OLED shell © 2026
  */
-import {type FC, useRef} from "react";
-import { Outlet, Link } from "react-router";
-import {Navbar, Nav, NavDropdown} from "react-bootstrap";
 
-import ImgBowlingLogo from "./../assets/bowling-svgrepo-com.svg";
+import {type FC, useRef} from "react";
+import {Link, Outlet} from "react-router";
+import {Nav, Navbar, NavDropdown} from "react-bootstrap";
+
+import ImgBowlingLogo from "../assets/bowling-svgrepo-com.svg";
 import ScrollToTop from "./components/scroll-to-top";
 import ClearCache, {type ClearCacheRef} from "./components/cache/clear-cache";
 import {ThemeToggle} from "./components/theme";
@@ -27,6 +28,7 @@ const Layout :FC = () => {
                             <Nav.Link as={Link} to="/">Home</Nav.Link>
                             <Nav.Link as={Link} to="/league">Leagues</Nav.Link>
                             <Nav.Link as={Link} to="/player">Players</Nav.Link>
+                            <Nav.Link as={Link} to="/player/compare">Compare</Nav.Link>
                             <NavDropdown title="Utilities" id="utilities-nav">
                                 <NavDropdown.Item
                                     as={Link}

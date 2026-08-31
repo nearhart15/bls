@@ -55,7 +55,11 @@ const League :FC<LeagueProps> = ({league} :LeagueProps)=> {
     </>);
 }
 
-const LeagueList :FC = ()=> {
+interface LeagueListProps {
+    compact?: boolean;
+}
+
+const LeagueList :FC<LeagueListProps> = ({compact = false})=> {
     const fetcher = useCallback(leagueInfoListFetcher, []);
     const { data, isLoading, error } = useCachedFetcher<AvailableLeagues>(fetcher, LEAGUE_LIST_CACHE_CATEGORY);
 
@@ -67,9 +71,9 @@ const LeagueList :FC = ()=> {
             {isLoading && <div className="card-body"><Loader /></div>}
             {(error != null) && <ErrorDisplay message="Error loading leagues. Nothing else on the site will probably work." error={error}/>}
             {data?.seasons.map(season => (
-                <CardBody className="py-3" key={season.season}>
-                    <div className="bls-section-title">{season.season} Season</div>
-                    <ListGroup variant="flush" className="mx-n3" style={{marginLeft: '-1.15rem', marginRight: '-1.15rem'}}>
+                <CardBody className={compact ? "py-2 px-3" : "py-3"} key={season.season}>
+                    <div className={`bls-section-title${compact ? " mb-1" : ""}`}>{season.season} Season</div>
+                    <ListGroup variant="flush" className={compact ? "bls-league-list-compact" : ""} style={compact ? undefined : {marginLeft: '-1.15rem', marginRight: '-1.15rem'}}>
                         {season.leagues.map(league => (
                             <League league={league} key={league.id}/>
                         ))}
