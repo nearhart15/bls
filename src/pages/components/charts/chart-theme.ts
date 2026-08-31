@@ -19,6 +19,34 @@ export function chartPalette(theme: ThemeMode) {
     };
 }
 
+/**
+ * Selection-zoom icon: corner brackets + horizontal span
+ * Reads as "drag a range" instead of another magnifying glass.
+ */
+const ICON_SELECT_RANGE =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M4 9V5a1 1 0 0 1 1-1h4"/>' +
+    '<path d="M4 15v4a1 1 0 0 0 1 1h4"/>' +
+    '<path d="M20 9V5a1 1 0 0 0-1-1h-4"/>' +
+    '<path d="M20 15v4a1 1 0 0 1-1 1h-4"/>' +
+    '<path d="M8 12h8"/>' +
+    '<path d="M10 10l-2 2 2 2"/>' +
+    '<path d="M14 10l2 2-2 2"/>' +
+    "</svg>";
+
+/** Shared toolbar: custom range-select icon, no redundant selection tool */
+export const chartToolbarTools: NonNullable<
+    NonNullable<ApexOptions["chart"]>["toolbar"]
+>["tools"] = {
+    download: false,
+    selection: false,
+    zoom: ICON_SELECT_RANGE,
+    zoomin: true,
+    zoomout: true,
+    pan: true,
+    reset: true,
+};
+
 /** Base options shared by all BLS charts */
 export function baseChartOptions(theme: ThemeMode, title: string): ApexOptions {
     const p = chartPalette(theme);
@@ -33,15 +61,7 @@ export function baseChartOptions(theme: ThemeMode, title: string): ApexOptions {
                 offsetX: 0,
                 offsetY: 0,
                 autoSelected: "zoom",
-                tools: {
-                    download: false,
-                    selection: true,
-                    zoom: true,
-                    zoomin: true,
-                    zoomout: true,
-                    pan: true,
-                    reset: true,
-                },
+                tools: chartToolbarTools,
             },
             zoom: {
                 enabled: true,
@@ -124,18 +144,9 @@ export function baseChartOptions(theme: ThemeMode, title: string): ApexOptions {
                 options: {
                     chart: {
                         height: 280,
-                        // Keep zoom toolbar on phones — was previously hidden
                         toolbar: {
                             show: true,
-                            tools: {
-                                download: false,
-                                selection: true,
-                                zoom: true,
-                                zoomin: true,
-                                zoomout: true,
-                                pan: true,
-                                reset: true,
-                            },
+                            tools: chartToolbarTools,
                         },
                     },
                     title: {

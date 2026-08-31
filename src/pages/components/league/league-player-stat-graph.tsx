@@ -9,7 +9,7 @@ import Chart from "react-apexcharts";
 
 import type {PlayerDayData} from "./league-team-roster";
 import {useTheme} from "../theme";
-import {baseChartOptions, chartPalette} from "../charts/chart-theme";
+import {baseChartOptions, chartPalette, chartToolbarTools} from "../charts/chart-theme";
 
 interface TeamPlayerStatGraphProps {
     playerData: PlayerDayData[];
@@ -33,7 +33,6 @@ const TeamPlayerStatGraph: FC<TeamPlayerStatGraphProps> = ({playerData}) => {
             ? playerData.reduce((minVal, p) => Math.min(minVal, p.average), 300) * 0.9
             : 100;
 
-    // Keep all series as line for reliable zoom (mixed scatter can break toolbar zoom)
     const series: NonNullable<ApexOptions["series"]> = [
         {
             name: "Weekly Avg",
@@ -81,15 +80,7 @@ const TeamPlayerStatGraph: FC<TeamPlayerStatGraphProps> = ({playerData}) => {
             toolbar: {
                 show: true,
                 autoSelected: "zoom",
-                tools: {
-                    download: false,
-                    selection: true,
-                    zoom: true,
-                    zoomin: true,
-                    zoomout: true,
-                    pan: true,
-                    reset: true,
-                },
+                tools: chartToolbarTools,
             },
         },
         series,

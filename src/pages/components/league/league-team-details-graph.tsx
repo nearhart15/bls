@@ -9,7 +9,7 @@ import type {ApexOptions} from "apexcharts";
 
 import type {TeamPositionScoreData} from "./league-team-details";
 import {useTheme} from "../theme";
-import {baseChartOptions, chartPalette} from "../charts/chart-theme";
+import {baseChartOptions, chartPalette, chartToolbarTools} from "../charts/chart-theme";
 
 interface TeamStatGraphProps {
     teamPosScores: TeamPositionScoreData[];
@@ -58,15 +58,7 @@ const TeamStatGraph: FC<TeamStatGraphProps> = ({teamPosScores}) => {
             toolbar: {
                 show: true,
                 autoSelected: "zoom",
-                tools: {
-                    download: false,
-                    selection: true,
-                    zoom: true,
-                    zoomin: true,
-                    zoomout: true,
-                    pan: true,
-                    reset: true,
-                },
+                tools: chartToolbarTools,
             },
         },
         series,
