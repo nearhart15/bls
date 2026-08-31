@@ -1,9 +1,11 @@
 /*
- * Player Compare — neon tug-of-war, career + season/league scopes © 2026
+ * Player Compare — FIFA-style dashboard © 2026
  */
 
 import {type FC, type ReactNode, useCallback, useMemo, useState} from "react";
-import {Badge, Card, CardBody, CardHeader, Col, Form, Row} from "react-bootstrap";
+import Chart from "react-apexcharts";
+import type {ApexOptions} from "apexcharts";
+import {Badge, Card, CardBody, Col, Form, Row} from "react-bootstrap";
 
 import {
     aggregatePlayerData,
@@ -19,24 +21,17 @@ import type {PlayerStats} from "../../../data/player/player-stats";
 import {useCachedFetcher} from "../cache/data-loader";
 import Loader from "../loader";
 import ErrorDisplay from "../error-display";
+import {useTheme} from "../theme";
+import {chartPalette} from "../charts/chart-theme";
 
-const numberFormat = Intl.NumberFormat("en-US", {
-    style: "decimal",
-    maximumFractionDigits: 1,
-});
-const intFormat = Intl.NumberFormat("en-US", {
-    style: "decimal",
-    maximumFractionDigits: 0,
-});
+const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 1});
+const intFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 0});
 
 const COLOR_A = "#ff2d55";
 const COLOR_B = "#00d4ff";
-const COLOR_A_SOFT = "rgba(255, 45, 85, 0.16)";
-const COLOR_B_SOFT = "rgba(0, 212, 255, 0.16)";
-const COLOR_A_GLOW = "0 0 14px rgba(255, 45, 85, 0.85)";
-const COLOR_B_GLOW = "0 0 14px rgba(0, 212, 255, 0.85)";
 
 type Mode = "career" | "season";
+type TabId = "scoring" | "conversion" | "volume";
 
 interface StatDef {
     key: string;
@@ -44,32 +39,41 @@ interface StatDef {
     format: (v: number | null | undefined) => string;
 }
 
-const CORE_STATS: StatDef[] = [
-    {key: "average", label: "Average", format: (v) => (v != null ? numberFormat.format(v) : "—")},
-    {key: "games", label: "Games", format: (v) => (v != null ? intFormat.format(v) : "—")},
-    {key: "pinfall", label: "Pinfall", format: (v) => (v != null ? intFormat.format(v) : "—")},
-    {key: "highGame", label: "High game", format: (v) => (v != null ? intFormat.format(v) : "—")},
-    {key: "highSeries", label: "High series", format: (v) => (v != null ? intFormat.format(v) : "—")},
-    {key: "games200", label: "200+ games", format: (v) => (v != null ? intFormat.format(v) : "—")},
+const fmtN = (v: number | null | undefined) => (v != null ? numberFormat.format(v) : "—");
+const fmtI = (v: number | null | undefined) => (v != null ? intFormat.format(v) : "—");
+const fmtP = (v: number | null | undefined) => (v != null ? `${numberFormat.format(v)}%` : "—");
+
+const SCORING: StatDef[] = [
+    {key: "average", label: "Average", format: fmtN},
+    {key: "highGame", label: "High game", format: fmtI},
+    {key: "highSeries", label: "High series", format: fmtI},
+    {key: "lowGame", label: "Low game", format: fmtI},
+    {key: "lowSeries", label: "Low series", format: fmtI},
+    {key: "firstBall", label: "First ball avg", format: fmtN},
 ];
 
-const CAREER_EXTRA: StatDef[] = [
-    {key: "games300", label: "300 games", format: (v) => (v != null ? intFormat.format(v) : "—")},
-    {key: "series600", label: "600+ series", format: (v) => (v != null ? intFormat.format(v) : "—")},
-    {key: "series800", label: "800+ series", format: (v) => (v != null ? intFormat.format(v) : "—")},
-    {key: "cleanGames", label: "Clean games", format: (v) => (v != null ? intFormat.format(v) : "—")},
-    {key: "firstBall", label: "First ball avg", format: (v) => (v != null ? numberFormat.format(v) : "—")},
-    {key: "strikePct", label: "Strike %", format: (v) => (v != null ? `${numberFormat.format(v)}%` : "—")},
-    {key: "sparePct", label: "Spare %", format: (v) => (v != null ? `${numberFormat.format(v)}%` : "—")},
-    {key: "singlePinPct", label: "Single-pin spare %", format: (v) => (v != null ? `${numberFormat.format(v)}%` : "—")},
-    {key: "openPct", label: "Open %", format: (v) => (v != null ? `${numberFormat.format(v)}%` : "—")},
-    {key: "splitPct", label: "Split %", format: (v) => (v != null ? `${numberFormat.format(v)}%` : "—")},
-    {key: "strikeToSparePct", label: "Strike→spare %", format: (v) => (v != null ? `${numberFormat.format(v)}%` : "—")},
-    {key: "singlePinPickup", label: "All single pins pickup", format: (v) => (v != null ? `${numberFormat.format(v)}%` : "—")},
-    {key: "lowGame", label: "Low game", format: (v) => (v != null ? intFormat.format(v) : "—")},
-    {key: "lowSeries", label: "Low series", format: (v) => (v != null ? intFormat.format(v) : "—")},
-    {key: "seriesCount", label: "Series bowled", format: (v) => (v != null ? intFormat.format(v) : "—")},
+const CONVERSION: StatDef[] = [
+    {key: "strikePct", label: "Strike %", format: fmtP},
+    {key: "sparePct", label: "Spare %", format: fmtP},
+    {key: "singlePinPct", label: "Single-pin spare %", format: fmtP},
+    {key: "openPct", label: "Open %", format: fmtP},
+    {key: "splitPct", label: "Split %", format: fmtP},
+    {key: "strikeToSparePct", label: "Strike→spare %", format: fmtP},
+    {key: "singlePinPickup", label: "Single pins pickup", format: fmtP},
+    {key: "cleanGames", label: "Clean games", format: fmtI},
 ];
+
+const VOLUME: StatDef[] = [
+    {key: "games", label: "Games", format: fmtI},
+    {key: "seriesCount", label: "Series", format: fmtI},
+    {key: "pinfall", label: "Pinfall", format: fmtI},
+    {key: "games200", label: "200+ games", format: fmtI},
+    {key: "games300", label: "300 games", format: fmtI},
+    {key: "series600", label: "600+ series", format: fmtI},
+    {key: "series800", label: "800+ series", format: fmtI},
+];
+
+const ALL_STATS = [...SCORING, ...CONVERSION, ...VOLUME];
 
 function num(v: number | null | undefined): number {
     return v == null || Number.isNaN(v) ? 0 : v;
@@ -85,12 +89,7 @@ type StatBag = Record<string, number | null>;
 function bagFromSlices(
     slices: {average: number | null; games: number; pinfall: number; highGame: number; highSeries: number; games200: number}[]
 ): StatBag {
-    let games = 0;
-    let pinfall = 0;
-    let highGame = 0;
-    let highSeries = 0;
-    let games200 = 0;
-    let weighted = 0;
+    let games = 0, pinfall = 0, highGame = 0, highSeries = 0, games200 = 0, weighted = 0;
     for (const s of slices) {
         games += s.games;
         pinfall += s.pinfall;
@@ -99,24 +98,13 @@ function bagFromSlices(
         games200 += s.games200;
         if (s.average != null && s.games > 0) weighted += s.average * s.games;
     }
-    return {
-        average: games > 0 ? weighted / games : null,
-        games,
-        pinfall,
-        highGame,
-        highSeries,
-        games200,
-    };
+    return {average: games > 0 ? weighted / games : null, games, pinfall, highGame, highSeries, games200};
 }
 
 function bagFromListEntry(entry: PlayerListEntry): StatBag {
     return {
-        average: entry.average,
-        games: entry.games,
-        pinfall: entry.pinfall,
-        highGame: entry.highGame,
-        highSeries: entry.highSeries,
-        games200: entry.games200,
+        average: entry.average, games: entry.games, pinfall: entry.pinfall,
+        highGame: entry.highGame, highSeries: entry.highSeries, games200: entry.games200,
     };
 }
 
@@ -139,138 +127,154 @@ function bagFromCareer(stats: PlayerStats): StatBag {
         openPct: ratioPct(stats.opens),
         splitPct: ratioPct(stats.splits),
         strikeToSparePct: ratioPct(stats.strikesToSpares),
-        singlePinPickup:
-            stats.allSinglePinsPickedUpAverage > 0
-                ? Math.round(stats.allSinglePinsPickedUpAverage * 1000) / 10
-                : null,
+        singlePinPickup: stats.allSinglePinsPickedUpAverage > 0
+            ? Math.round(stats.allSinglePinsPickedUpAverage * 1000) / 10 : null,
         lowGame: stats.gameStats.min || null,
         lowSeries: stats.seriesStats.min || null,
         seriesCount: stats.seriesStats.count || null,
     };
 }
 
-function scopeListEntry(
-    entry: PlayerListEntry,
-    mode: Mode,
-    season: string,
-    leagueId: string
-): StatBag {
+function scopeListEntry(entry: PlayerListEntry, mode: Mode, season: string, leagueId: string): StatBag {
     if (mode === "career") return bagFromListEntry(entry);
     const apps = entry.appearanceSlices ?? [];
     if (leagueId && season) {
-        return bagFromSlices(
-            apps.filter((a: PlayerAppearanceSlice) => a.leagueId === leagueId && a.season === season)
-        );
+        return bagFromSlices(apps.filter((a: PlayerAppearanceSlice) => a.leagueId === leagueId && a.season === season));
     }
     if (season) {
-        const seasonSlices = (entry.seasonSlices ?? []).filter(
-            (s: PlayerListSeasonSlice) => s.season === season
-        );
+        const seasonSlices = (entry.seasonSlices ?? []).filter((s: PlayerListSeasonSlice) => s.season === season);
         if (seasonSlices.length > 0) return bagFromSlices(seasonSlices);
         return bagFromSlices(apps.filter((a) => a.season === season));
     }
     return bagFromListEntry(entry);
 }
 
-const LeadSlider: FC<{
+const FifaBar: FC<{
     label: string;
     valueA: number | null;
     valueB: number | null;
     format: (v: number | null | undefined) => string;
-    nameA: string;
-    nameB: string;
-}> = ({label, valueA, valueB, format, nameA, nameB}) => {
+}> = ({label, valueA, valueB, format}) => {
     const a = num(valueA);
     const b = num(valueB);
     const total = a + b;
-    const pctA = total > 0 ? (a / total) * 100 : 50;
-    const pctB = total > 0 ? (b / total) * 100 : 50;
+    const fill = total > 0 ? (Math.max(a, b) / total) * 100 : 50;
     const leader: "a" | "b" | "tie" = a > b ? "a" : b > a ? "b" : "tie";
-    const rowBg =
-        leader === "a" ? COLOR_A_SOFT : leader === "b" ? COLOR_B_SOFT : "transparent";
-
+    const color = leader === "a" ? COLOR_A : leader === "b" ? COLOR_B : "#6e6e73";
     return (
-        <div className="bls-lead-slider bls-neon-slider" style={{background: rowBg}}>
-            <div className="bls-lead-slider-head">
-                <span className="bls-lead-winner-slot">
-                    {leader === "a" && (
-                        <Badge pill className="bls-neon-badge-a" style={{background: COLOR_A, color: "#fff", fontWeight: 700}}>
-                            {nameA} leads
-                        </Badge>
-                    )}
-                </span>
-                <span className="bls-lead-slider-label">{label}</span>
-                <span className="bls-lead-winner-slot bls-lead-winner-slot-right">
-                    {leader === "b" && (
-                        <Badge pill className="bls-neon-badge-b" style={{background: COLOR_B, color: "#041018", fontWeight: 700}}>
-                            {nameB} leads
-                        </Badge>
-                    )}
-                    {leader === "tie" && (
-                        <Badge bg="secondary" pill>Tie</Badge>
-                    )}
-                </span>
-            </div>
-            <div className="bls-lead-slider-values">
-                <span style={{color: COLOR_A}}>{format(valueA)}</span>
-                <span style={{color: COLOR_B}}>{format(valueB)}</span>
-            </div>
-            <div className="bls-lead-track bls-neon-track" role="img" aria-label={`${label}: ${format(valueA)} vs ${format(valueB)}`}>
-                <div className="bls-lead-fill" style={{width: `${pctA}%`, background: COLOR_A, opacity: leader === "b" ? 0.4 : 1, boxShadow: leader === "a" ? COLOR_A_GLOW : undefined}} />
-                <div className="bls-lead-fill" style={{width: `${pctB}%`, background: COLOR_B, opacity: leader === "a" ? 0.4 : 1, boxShadow: leader === "b" ? COLOR_B_GLOW : undefined}} />
-                <div className="bls-lead-center" aria-hidden />
-            </div>
-            <div className="bls-lead-slider-foot">
-                <span style={{color: COLOR_A}}>{nameA}</span>
-                <span style={{color: COLOR_B}}>{nameB}</span>
+        <div className="bls-fifa-row">
+            <div className="bls-fifa-row-label">{label}</div>
+            <div className="bls-fifa-row-trackline">
+                <span className={`bls-fifa-val${leader === "a" ? " is-lead" : ""}`} style={{color: COLOR_A}}>{format(valueA)}</span>
+                <div className="bls-fifa-track">
+                    <div className="bls-fifa-fill" style={{width: `${fill}%`, background: color, boxShadow: leader === "tie" ? undefined : `0 0 10px ${color}`, marginLeft: leader === "b" ? "auto" : 0}} />
+                </div>
+                <span className={`bls-fifa-val${leader === "b" ? " is-lead" : ""}`} style={{color: COLOR_B}}>{format(valueB)}</span>
             </div>
         </div>
     );
 };
 
-const PlayerCareerFetch: FC<{playerId: string; children: (d: AggregatedPlayerData | null, loading: boolean) => ReactNode}> = ({
-    playerId,
-    children,
-}) => {
-    const fetcher = useCallback(() => aggregatePlayerData(playerId), [playerId]);
-    const {data, isLoading} = useCachedFetcher<AggregatedPlayerData>(
-        fetcher,
-        PLAYER_DETAIL_CACHE_CATEGORY,
-        playerId
+const DualRadar: FC<{bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}> = ({bagA, bagB, nameA, nameB}) => {
+    const {theme} = useTheme();
+    const palette = chartPalette(theme);
+    const gamesA = Math.max(1, num(bagA.games));
+    const gamesB = Math.max(1, num(bagB.games));
+    const scaleAvg = (v: number | null) => Math.max(0, Math.min(100, ((num(v) - 140) / 80) * 100));
+    const cats = ["Avg", "Strike %", "Spare %", "1st Ball", "200+", "Clean"];
+    const seriesA = [
+        scaleAvg(bagA.average), num(bagA.strikePct), num(bagA.sparePct),
+        Math.min(100, (num(bagA.firstBall) / 10) * 100),
+        Math.min(100, (num(bagA.games200) / gamesA) * 300),
+        Math.min(100, (num(bagA.cleanGames) / gamesA) * 100),
+    ];
+    const seriesB = [
+        scaleAvg(bagB.average), num(bagB.strikePct), num(bagB.sparePct),
+        Math.min(100, (num(bagB.firstBall) / 10) * 100),
+        Math.min(100, (num(bagB.games200) / gamesB) * 300),
+        Math.min(100, (num(bagB.cleanGames) / gamesB) * 100),
+    ];
+    const options: ApexOptions = {
+        chart: {type: "radar", background: "transparent", toolbar: {show: false}, fontFamily: "Inter, sans-serif"},
+        theme: {mode: theme},
+        colors: [COLOR_A, COLOR_B],
+        fill: {opacity: 0.18},
+        stroke: {width: 2},
+        markers: {size: 3, strokeWidth: 0},
+        xaxis: {categories: cats, labels: {style: {colors: Array(cats.length).fill(palette.text), fontSize: "11px", fontWeight: 600}}},
+        yaxis: {show: false, min: 0, max: 100, tickAmount: 4},
+        legend: {position: "bottom", labels: {colors: palette.text}},
+        tooltip: {theme},
+        plotOptions: {
+            radar: {
+                polygons: {
+                    strokeColors: palette.grid,
+                    connectorColors: palette.grid,
+                    fill: {colors: theme === "dark" ? ["#0a0a0a", "#111"] : ["#fff", "#f5f5f7"]},
+                },
+            },
+        },
+    };
+    return (
+        <Chart options={options} series={[{name: nameA, data: seriesA}, {name: nameB, data: seriesB}]} type="radar" height={340} width="100%" />
     );
+};
+
+const PlayerCareerFetch: FC<{playerId: string; children: (d: AggregatedPlayerData | null, loading: boolean) => ReactNode}> = ({playerId, children}) => {
+    const fetcher = useCallback(() => aggregatePlayerData(playerId), [playerId]);
+    const {data, isLoading} = useCachedFetcher<AggregatedPlayerData>(fetcher, PLAYER_DETAIL_CACHE_CATEGORY, playerId);
     return <>{children(data ?? null, isLoading)}</>;
 };
 
-const CareerPair: FC<{
-    idA: string;
-    idB: string;
-    children: (a: StatBag | null, b: StatBag | null, loading: boolean) => ReactNode;
-}> = ({idA, idB, children}) => {
+const CareerPair: FC<{idA: string; idB: string; children: (a: StatBag | null, b: StatBag | null, loading: boolean) => ReactNode}> = ({idA, idB, children}) => (
+    <PlayerCareerFetch playerId={idA}>
+        {(dataA, loadA) => (
+            <PlayerCareerFetch playerId={idB}>
+                {(dataB, loadB) => children(dataA ? bagFromCareer(dataA.careerStats) : null, dataB ? bagFromCareer(dataB.careerStats) : null, loadA || loadB)}
+            </PlayerCareerFetch>
+        )}
+    </PlayerCareerFetch>
+);
+
+const PlayerCard: FC<{
+    side: "a" | "b"; name: string; bag: StatBag; players: PlayerListEntry[];
+    selectedId: string; otherId: string; onChange: (id: string) => void; disabled?: boolean;
+}> = ({side, name, bag, players, selectedId, otherId, onChange, disabled}) => {
+    const color = side === "a" ? COLOR_A : COLOR_B;
     return (
-        <PlayerCareerFetch playerId={idA}>
-            {(dataA, loadA) => (
-                <PlayerCareerFetch playerId={idB}>
-                    {(dataB, loadB) =>
-                        children(
-                            dataA ? bagFromCareer(dataA.careerStats) : null,
-                            dataB ? bagFromCareer(dataB.careerStats) : null,
-                            loadA || loadB
-                        )
-                    }
-                </PlayerCareerFetch>
-            )}
-        </PlayerCareerFetch>
+        <div className={`bls-fifa-pcard bls-fifa-pcard-${side}`} style={{borderColor: color, boxShadow: `0 0 18px ${color}40`}}>
+            <div className="bls-fifa-pcard-badge" style={{borderColor: color, color}}>
+                {bag.average != null ? numberFormat.format(bag.average) : "—"}
+            </div>
+            <div className="bls-fifa-pcard-body">
+                <div className="bls-fifa-pcard-name" style={{color}}>{name}</div>
+                <div className="bls-fifa-pcard-meta">
+                    <span>{bag.games != null ? `${intFormat.format(bag.games)} games` : "—"}</span>
+                    <span>{bag.highGame != null ? `HG ${intFormat.format(bag.highGame)}` : ""}</span>
+                </div>
+                <Form.Select size="sm" className="bls-fifa-change" value={selectedId} disabled={disabled} onChange={(e) => onChange(e.target.value)} style={{borderColor: color}}>
+                    <option value="">Change</option>
+                    {players.map((p) => (<option key={p.id} value={p.id} disabled={p.id === otherId}>{p.name}</option>))}
+                </Form.Select>
+            </div>
+        </div>
     );
 };
 
+const StatColumn: FC<{title: string; stats: StatDef[]; bagA: StatBag; bagB: StatBag}> = ({title, stats, bagA, bagB}) => (
+    <div className="bls-fifa-col">
+        <div className="bls-fifa-col-title">{title}</div>
+        {stats.map((s) => (
+            <FifaBar key={s.key} label={s.label} valueA={bagA[s.key] ?? null} valueB={bagB[s.key] ?? null} format={s.format} />
+        ))}
+    </div>
+);
+
 const PlayerCompare: FC = () => {
     const listFetcher = useCallback(buildFullPlayerList, []);
-    const {data, isLoading, error} = useCachedFetcher<PlayerListEntry[]>(
-        listFetcher,
-        PLAYER_INDEX_CACHE_CATEGORY
-    );
-
+    const {data, isLoading, error} = useCachedFetcher<PlayerListEntry[]>(listFetcher, PLAYER_INDEX_CACHE_CATEGORY);
     const [mode, setMode] = useState<Mode>("career");
+    const [tab, setTab] = useState<TabId>("scoring");
     const [season, setSeason] = useState("");
     const [leagueId, setLeagueId] = useState("");
     const [idA, setIdA] = useState("");
@@ -295,16 +299,12 @@ const PlayerCompare: FC = () => {
                 if (!map.has(a.leagueId)) map.set(a.leagueId, a.leagueName || a.leagueId);
             }
         }
-        return [...map.entries()]
-            .map(([id, name]) => ({id, name}))
-            .sort((x, y) => x.name.localeCompare(y.name));
+        return [...map.entries()].map(([id, name]) => ({id, name})).sort((x, y) => x.name.localeCompare(y.name));
     }, [data, season]);
 
     const eligible = useMemo(() => {
         if (!data) return [] as PlayerListEntry[];
-        return data
-            .filter((p) => num(scopeListEntry(p, mode, season, leagueId).games) > 0)
-            .sort((x, y) => x.name.localeCompare(y.name));
+        return data.filter((p) => num(scopeListEntry(p, mode, season, leagueId).games) > 0).sort((x, y) => x.name.localeCompare(y.name));
     }, [data, mode, season, leagueId]);
 
     const aEntry = eligible.find((p) => p.id === idA);
@@ -312,168 +312,129 @@ const PlayerCompare: FC = () => {
     const listBagA = aEntry ? scopeListEntry(aEntry, mode, season, leagueId) : null;
     const listBagB = bEntry ? scopeListEntry(bEntry, mode, season, leagueId) : null;
 
-    const scopeLabel = useMemo(() => {
-        if (mode === "career") return "Career — all seasons & leagues";
-        const parts: string[] = [];
-        if (season) parts.push(season);
-        if (leagueId) {
-            const lg = leagues.find((l) => l.id === leagueId);
-            parts.push(lg?.name ?? leagueId);
-        }
-        return parts.length ? parts.join(" · ") : "Pick a season to compare";
-    }, [mode, season, leagueId, leagues]);
-
-    const statList = mode === "career" ? [...CORE_STATS, ...CAREER_EXTRA] : CORE_STATS;
-
-    const CompareBody: FC<{bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}> = ({
-        bagA, bagB, nameA, nameB,
-    }) => {
-        let scoreA = 0;
-        let scoreB = 0;
-        for (const s of statList) {
-            const av = num(bagA[s.key]);
-            const bv = num(bagB[s.key]);
+    const Board: FC<{bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}> = ({bagA, bagB, nameA, nameB}) => {
+        const scoringStats = mode === "career" ? SCORING : SCORING.filter((s) => bagA[s.key] != null || bagB[s.key] != null || ["average", "highGame", "highSeries"].includes(s.key));
+        const conversionStats = mode === "career" ? CONVERSION : CONVERSION.filter((s) => bagA[s.key] != null || bagB[s.key] != null);
+        const volumeStats = mode === "career" ? VOLUME : VOLUME.filter((s) => ["games", "pinfall", "games200"].includes(s.key));
+        let scoreA = 0, scoreB = 0;
+        for (const s of ALL_STATS) {
+            const av = num(bagA[s.key]), bv = num(bagB[s.key]);
             if (av > bv) scoreA++;
             else if (bv > av) scoreB++;
         }
         return (
             <>
-                <Row className="g-3 mb-3">
-                    <Col md={6}>
-                        <Card className="bls-profile-card h-100 bls-neon-card-a" style={{borderColor: COLOR_A, boxShadow: `0 0 18px ${COLOR_A}55`}}>
-                            <CardHeader className="d-flex justify-content-between align-items-center">
-                                <span style={{color: COLOR_A, fontWeight: 700}}>{nameA}</span>
-                                <Badge pill style={{background: scoreA >= scoreB ? COLOR_A : "#3a3a3c", color: "#fff"}}>{scoreA} leads</Badge>
-                            </CardHeader>
+                <div className="bls-fifa-heads mb-3">
+                    <PlayerCard side="a" name={nameA} bag={bagA} players={eligible} selectedId={idA} otherId={idB} onChange={setIdA} disabled={mode === "season" && !season} />
+                    <div className="bls-fifa-vs"><span>VS</span><Badge pill style={{background: scoreA >= scoreB ? COLOR_A : COLOR_B, color: "#fff"}}>{scoreA}–{scoreB}</Badge></div>
+                    <PlayerCard side="b" name={nameB} bag={bagB} players={eligible} selectedId={idB} otherId={idA} onChange={setIdB} disabled={mode === "season" && !season} />
+                </div>
+                <div className="bls-fifa-tabs" role="tablist">
+                    {([["scoring", "Scoring"], ["conversion", "Conversion"], ["volume", "Volume"]] as [TabId, string][]).map(([id, label]) => (
+                        <button key={id} type="button" className={`bls-fifa-tab${tab === id ? " is-active" : ""}`} onClick={() => setTab(id)}>{label}</button>
+                    ))}
+                </div>
+                <Row className="g-3">
+                    <Col lg={8}>
+                        <Card className="bls-profile-card bls-fifa-panel">
                             <CardBody>
-                                <div className="bls-kpi-big" style={{fontSize: "2.25rem", color: COLOR_A}}>
-                                    {bagA.average != null ? numberFormat.format(bagA.average) : "—"}
-                                </div>
-                                <div className="bls-kpi-big-label">Average in scope</div>
+                                {tab === "scoring" && <StatColumn title="Match scoring" stats={scoringStats} bagA={bagA} bagB={bagB} />}
+                                {tab === "conversion" && (conversionStats.length > 0
+                                    ? <StatColumn title="Conversion & spare game" stats={conversionStats} bagA={bagA} bagB={bagB} />
+                                    : <p className="text-body-secondary mb-0">Frame-level rates need career mode.</p>)}
+                                {tab === "volume" && <StatColumn title="Workload & honor scores" stats={volumeStats} bagA={bagA} bagB={bagB} />}
                             </CardBody>
                         </Card>
                     </Col>
-                    <Col md={6}>
-                        <Card className="bls-profile-card h-100 bls-neon-card-b" style={{borderColor: COLOR_B, boxShadow: `0 0 18px ${COLOR_B}55`}}>
-                            <CardHeader className="d-flex justify-content-between align-items-center">
-                                <span style={{color: COLOR_B, fontWeight: 700}}>{nameB}</span>
-                                <Badge pill style={{background: scoreB >= scoreA ? COLOR_B : "#3a3a3c", color: scoreB >= scoreA ? "#041018" : "#fff"}}>{scoreB} leads</Badge>
-                            </CardHeader>
-                            <CardBody>
-                                <div className="bls-kpi-big" style={{fontSize: "2.25rem", color: COLOR_B}}>
-                                    {bagB.average != null ? numberFormat.format(bagB.average) : "—"}
-                                </div>
-                                <div className="bls-kpi-big-label">Average in scope</div>
-                            </CardBody>
+                    <Col lg={4}>
+                        <Card className="bls-profile-card bls-fifa-panel h-100">
+                            <div className="bls-profile-card-head">Attributes map</div>
+                            <CardBody><DualRadar bagA={bagA} bagB={bagB} nameA={nameA} nameB={nameB} /></CardBody>
                         </Card>
                     </Col>
                 </Row>
-                <Card className="bls-profile-card mb-3 bls-neon-panel">
-                    <div className="bls-profile-card-head">Stat leads</div>
-                    <CardBody className="d-flex flex-column gap-3">
-                        {statList.map((s) => (
-                            <LeadSlider
-                                key={s.key}
-                                label={s.label}
-                                valueA={bagA[s.key] ?? null}
-                                valueB={bagB[s.key] ?? null}
-                                format={s.format}
-                                nameA={nameA}
-                                nameB={nameB}
-                            />
-                        ))}
-                    </CardBody>
-                </Card>
             </>
         );
     };
 
     return (
-        <div className="bls-compare bls-neon-compare">
+        <div className="bls-compare bls-fifa-compare">
             <div className="bls-compare-hero mb-3">
                 <span className="bls-hero-kicker">Head to head</span>
                 <h1>Player Compare</h1>
-                <p className="text-body-secondary mb-0">
-                    Career vs career, or lock a season first — then optionally a league.
-                </p>
             </div>
             {isLoading && <Loader />}
             {error != null && <ErrorDisplay message="Error loading players." error={error} />}
             {data && (
                 <>
-                    <Card className="bls-profile-card mb-3 bls-neon-panel">
+                    <Card className="bls-profile-card mb-3 bls-fifa-panel">
                         <CardBody>
                             <Row className="g-3">
                                 <Col xs={12}>
-                                    <div className="bls-scope-pills" role="tablist" aria-label="Compare mode">
+                                    <div className="bls-scope-pills">
                                         <button type="button" className={`bls-scope-pill${mode === "career" ? " is-active" : ""}`} onClick={() => { setMode("career"); setSeason(""); setLeagueId(""); }}>
                                             <span className="bls-scope-pill-label">Careers</span>
-                                            <span className="bls-scope-pill-sub">All seasons combined</span>
+                                            <span className="bls-scope-pill-sub">All seasons</span>
                                         </button>
                                         <button type="button" className={`bls-scope-pill${mode === "season" ? " is-active" : ""}`} onClick={() => setMode("season")}>
                                             <span className="bls-scope-pill-label">Season / league</span>
-                                            <span className="bls-scope-pill-sub">Year required first</span>
+                                            <span className="bls-scope-pill-sub">Year first</span>
                                         </button>
                                     </div>
                                 </Col>
                                 {mode === "season" && (
                                     <>
-                                        <Col md={6} lg={3}>
+                                        <Col md={6}>
                                             <Form.Label className="bls-meta-label">Season / year</Form.Label>
-                                            <Form.Select value={season} onChange={(e) => { setSeason(e.target.value); setLeagueId(""); }} aria-label="Filter by season">
+                                            <Form.Select value={season} onChange={(e) => { setSeason(e.target.value); setLeagueId(""); }}>
                                                 <option value="">Select a season…</option>
-                                                {seasons.map((s) => (<option key={s} value={s}>{s}</option>))}
+                                                {seasons.map((s) => <option key={s} value={s}>{s}</option>)}
                                             </Form.Select>
                                         </Col>
-                                        <Col md={6} lg={3}>
+                                        <Col md={6}>
                                             <Form.Label className="bls-meta-label">League</Form.Label>
-                                            <Form.Select value={leagueId} onChange={(e) => setLeagueId(e.target.value)} aria-label="Filter by league" disabled={!season} title={!season ? "Pick a season first" : undefined}>
+                                            <Form.Select value={leagueId} onChange={(e) => setLeagueId(e.target.value)} disabled={!season}>
                                                 <option value="">{season ? "All leagues this season" : "Select a season first"}</option>
-                                                {leagues.map((l) => (<option key={l.id} value={l.id}>{l.name}</option>))}
+                                                {leagues.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
                                             </Form.Select>
                                         </Col>
                                     </>
                                 )}
-                                <Col md={6} lg={mode === "career" ? 6 : 3}>
-                                    <Form.Label className="bls-meta-label" style={{color: COLOR_A}}>Player A</Form.Label>
-                                    <Form.Select value={aEntry ? idA : ""} onChange={(e) => setIdA(e.target.value)} aria-label="Select player A" style={{borderColor: COLOR_A, boxShadow: `0 0 8px ${COLOR_A}55`}} disabled={mode === "season" && !season}>
-                                        <option value="">Select bowler…</option>
-                                        {eligible.map((p) => (<option key={p.id} value={p.id} disabled={p.id === idB}>{p.name}</option>))}
-                                    </Form.Select>
-                                </Col>
-                                <Col md={6} lg={mode === "career" ? 6 : 3}>
-                                    <Form.Label className="bls-meta-label" style={{color: COLOR_B}}>Player B</Form.Label>
-                                    <Form.Select value={bEntry ? idB : ""} onChange={(e) => setIdB(e.target.value)} aria-label="Select player B" style={{borderColor: COLOR_B, boxShadow: `0 0 8px ${COLOR_B}55`}} disabled={mode === "season" && !season}>
-                                        <option value="">Select bowler…</option>
-                                        {eligible.map((p) => (<option key={p.id} value={p.id} disabled={p.id === idA}>{p.name}</option>))}
-                                    </Form.Select>
-                                </Col>
                             </Row>
-                            <div className="fs-xs text-body-secondary mt-2">{scopeLabel}</div>
                         </CardBody>
                     </Card>
                     {mode === "season" && !season && (
-                        <Card className="bls-profile-card"><CardBody className="text-body-secondary text-center py-5">Choose a season before picking a league or bowlers.</CardBody></Card>
+                        <Card className="bls-profile-card"><CardBody className="text-center text-body-secondary py-5">Choose a season before picking a league or bowlers.</CardBody></Card>
+                    )}
+                    {(!aEntry || !bEntry) && !(mode === "season" && !season) && (
+                        <Row className="g-3 mb-3">
+                            <Col md={6}>
+                                <Form.Label className="bls-meta-label" style={{color: COLOR_A}}>Player A</Form.Label>
+                                <Form.Select value={idA} onChange={(e) => setIdA(e.target.value)} style={{borderColor: COLOR_A}} disabled={mode === "season" && !season}>
+                                    <option value="">Select bowler…</option>
+                                    {eligible.map((p) => <option key={p.id} value={p.id} disabled={p.id === idB}>{p.name}</option>)}
+                                </Form.Select>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Label className="bls-meta-label" style={{color: COLOR_B}}>Player B</Form.Label>
+                                <Form.Select value={idB} onChange={(e) => setIdB(e.target.value)} style={{borderColor: COLOR_B}} disabled={mode === "season" && !season}>
+                                    <option value="">Select bowler…</option>
+                                    {eligible.map((p) => <option key={p.id} value={p.id} disabled={p.id === idA}>{p.name}</option>)}
+                                </Form.Select>
+                            </Col>
+                        </Row>
                     )}
                     {aEntry && bEntry && mode === "career" && (
                         <CareerPair idA={aEntry.id} idB={bEntry.id}>
-                            {(bagA, bagB, loading) =>
-                                loading ? <Loader /> : bagA && bagB ? (
-                                    <CompareBody bagA={bagA} bagB={bagB} nameA={aEntry.name} nameB={bEntry.name} />
-                                ) : listBagA && listBagB ? (
-                                    <CompareBody bagA={listBagA} bagB={listBagB} nameA={aEntry.name} nameB={bEntry.name} />
-                                ) : null
-                            }
+                            {(bagA, bagB, loading) => loading ? <Loader /> : bagA && bagB
+                                ? <Board bagA={bagA} bagB={bagB} nameA={aEntry.name} nameB={bEntry.name} />
+                                : listBagA && listBagB
+                                    ? <Board bagA={listBagA} bagB={listBagB} nameA={aEntry.name} nameB={bEntry.name} />
+                                    : null}
                         </CareerPair>
                     )}
                     {aEntry && bEntry && mode === "season" && season && listBagA && listBagB && (
-                        <CompareBody bagA={listBagA} bagB={listBagB} nameA={aEntry.name} nameB={bEntry.name} />
-                    )}
-                    {mode === "career" && (!aEntry || !bEntry) && (
-                        <Card className="bls-profile-card"><CardBody className="text-body-secondary text-center py-5">Select two different bowlers to unlock the comparison.</CardBody></Card>
-                    )}
-                    {mode === "season" && season && (!aEntry || !bEntry) && (
-                        <Card className="bls-profile-card"><CardBody className="text-body-secondary text-center py-5">{eligible.length < 2 ? "Not enough bowlers in this season/league. Try widening the scope." : "Select two different bowlers to unlock the comparison."}</CardBody></Card>
+                        <Board bagA={listBagA} bagB={listBagB} nameA={aEntry.name} nameB={bEntry.name} />
                     )}
                 </>
             )}
