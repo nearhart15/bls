@@ -93,14 +93,60 @@ const ConversionRadar: FC<{stats: PlayerStats}> = ({stats}) => {
     );
 };
 
+const FramePinfallChart: FC<{stats: PlayerStats}> = ({stats}) => {
+    const {theme} = useTheme();
+    const palette = chartPalette(theme);
+    const narrow = useIsNarrow();
+    const values = (stats.framePinfallAvg ?? []).slice(0, 10);
+    if (values.every((v) => !v)) return null;
+    const minVal = Math.min(...values.filter((v) => v > 0));
+    const colors = values.map((v) => (v === minVal ? "#ff453a" : "#ffd60a"));
+    const options: ApexOptions = {
+        chart: {type: "bar", background: "transparent", toolbar: {show: false}, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'},
+        theme: {mode: theme},
+        plotOptions: {bar: {columnWidth: "55%", borderRadius: 6, distributed: true}},
+        colors,
+        dataLabels: {
+            enabled: true,
+            formatter: (v) => Number(v).toFixed(1),
+            style: {fontSize: narrow ? "10px" : "11px", colors: [theme === "dark" ? "#fff" : "#111"]},
+        },
+        legend: {show: false},
+        grid: {borderColor: palette.grid, strokeDashArray: 3},
+        xaxis: {
+            categories: values.map((_, i) => `F${i + 1}`),
+            labels: {style: {colors: palette.text, fontSize: "11px", fontWeight: 600}},
+        },
+        yaxis: {
+            min: 0,
+            max: 30,
+            tickAmount: 6,
+            labels: {style: {colors: palette.text, fontSize: "11px"}, formatter: (v) => v.toFixed(0)},
+        },
+        tooltip: {theme, y: {formatter: (v) => `${Number(v).toFixed(2)} pins`}},
+    };
+    return (
+        <div className="bls-allstats-group">
+            <div className="bls-allstats-group-head">Avg pinfall by frame</div>
+            <p className="text-body-secondary fs-sm mb-2">Lowest frame is highlighted. Values include strike and spare bonuses credited to that frame.</p>
+            <Chart key={`frame-pf-${narrow ? "sm" : "lg"}`} options={options} series={[{name: "Avg pins", data: values.map((v) => Math.round(v * 10) / 10)}]} type="bar" height={narrow ? 220 : 280} width="100%" />
+        </div>
+    );
+};
+
 function mergeStats(list: PlayerStats[]): PlayerStats {
     const out = new PlayerStats();
     if (list.length === 0) return out;
     if (list.length === 1) return list[0];
-    let games = 0, pinfall = 0, firstBallW = 0, singlePinW = 0;
+    let games = 0, pinfall = 0, firstBallW = 0, singlePinW = 0, tenthMarksW = 0;
     const streak = new Map<number, number>();
     const gameAvgW: number[] = [];
     const gameAvgN: number[] = [];
+    const frameW: number[] = [];
+    const frameNAcc: number[] = [];
+    const paceFW = [0, 0, 0, 0];
+    const paceBW = [0, 0, 0, 0];
+    const paceN = [0, 0, 0, 0];
     for (const s of list) {
         const g = s.gameStats.count || 0;
         games += g;
@@ -142,6 +188,25 @@ function mergeStats(list: PlayerStats[]): PlayerStats {
             gameAvgW[i] = (gameAvgW[i] ?? 0) + ga * seriesN;
             gameAvgN[i] = (gameAvgN[i] ?? 0) + seriesN;
         });
+        out.splitsOccurred.numerator += s.splitsOccurred?.numerator ?? 0;
+        out.splitsOccurred.denominator += s.splitsOccurred?.denominator ?? 0;
+        out.tenthMarkGames += s.tenthMarkGames || 0;
+        tenthMarksW += (s.avgTenthMarks || 0) * (s.tenthMarkGames || 0);
+        const frameN = s.framePinfallN ?? [];
+        const frameAvg = s.framePinfallAvg ?? [];
+        for (let i = 0; i < 10; i++) {
+            const n = frameN[i] || 0;
+            if (!n) continue;
+            frameW[i] = (frameW[i] ?? 0) + (frameAvg[i] || 0) * n;
+            frameNAcc[i] = (frameNAcc[i] ?? 0) + n;
+        }
+        for (let i = 0; i < 4; i++) {
+            const n = s.paceN?.[i] || 0;
+            if (!n) continue;
+            paceFW[i] += (s.paceAvgFrames?.[i] || 0) * n;
+            paceBW[i] += (s.paceAvgBalls?.[i] || 0) * n;
+            paceN[i] += n;
+        }
     }
     out.pinfall = pinfall;
     out.gameStats.average = games > 0 ? pinfall / games : 0;
@@ -164,6 +229,16 @@ function mergeStats(list: PlayerStats[]): PlayerStats {
     out.strikesToSpares.pct = ratio(out.strikesToSpares.numerator, out.strikesToSpares.denominator);
     out.strikesInARow = [...streak.entries()].sort((a, b) => a[0] - b[0]);
     out.gameAverages = gameAvgW.map((sum, i) => (gameAvgN[i] ? sum / gameAvgN[i] : 0));
+    const frameCount = frameNAcc.reduce((s, n) => s + (n || 0), 0);
+    const framePinSum = frameW.reduce((s, v) => s + (v || 0), 0);
+    out.avgPinfallPerFrame = frameCount > 0 ? framePinSum / frameCount : 0;
+    out.avgTenthMarks = out.tenthMarkGames > 0 ? tenthMarksW / out.tenthMarkGames : 0;
+    out.splitsOccurred.pct = ratio(out.splitsOccurred.numerator, out.splitsOccurred.denominator);
+    out.framePinfallAvg = Array.from({length: 10}, (_, i) => frameNAcc[i] ? frameW[i] / frameNAcc[i] : 0);
+    out.framePinfallN = Array.from({length: 10}, (_, i) => frameNAcc[i] || 0);
+    out.paceAvgFrames = paceN.map((n, i) => n ? paceFW[i] / n : 0);
+    out.paceAvgBalls = paceN.map((n, i) => n ? paceBW[i] / n : 0);
+    out.paceN = [...paceN];
     return out;
 }
 
@@ -233,6 +308,7 @@ export const AllStatsPanel: FC<{
                 {selected.stats.gameStats.count > 0
                     ? <>
                         <ConversionRadar stats={selected.stats} />
+                        <FramePinfallChart stats={selected.stats} />
                         <FullStatsGrid stats={selected.stats} leagueExtras={selected.extras} />
                       </>
                     : <p className="text-body-secondary mb-0">No games for this timeframe / league.</p>}
