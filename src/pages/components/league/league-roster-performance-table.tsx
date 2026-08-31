@@ -9,7 +9,7 @@ import {PersonAdd, PersonFillLock} from "react-bootstrap-icons";
 
 import type {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import {useTheme} from "../theme";
-import {gradeClass, MicroBarChart, performanceGrade, Sparkline} from "../charts/mini-charts";
+import {gradeClass, MicroBarChart, performanceGrade, performanceGradeFromDelta, Sparkline} from "../charts/mini-charts";
 import {createGameTableData} from "./league-team-roster-data";
 
 interface Props {
@@ -57,26 +57,30 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                     {ranked.map((p, idx) => {
                         const stats = p.playerStats;
                         const avg = stats?.gameStats.average;
-                        const grade = performanceGrade(avg);
                         const weekData = p.id ? createGameTableData(teamDetails, p.id) : [];
                         const weekSeries = weekData.map((w) => w.series);
                         const weekAvgs = weekData.map((w) => w.runningAverageAfter || w.average);
+                        const deltas: number[] = [];
+                        for (const w of weekData) {
+                            const basis = w.enteringAvg > 0 ? w.enteringAvg : (avg ?? 0);
+                            if (basis <= 0) continue;
+                            for (const g of [w.game1, w.game2, w.game3]) {
+                                if (g > 0) deltas.push(g - basis);
+                            }
+                        }
+                        const meanDelta = deltas.length > 0
+                            ? deltas.reduce((s, n) => s + n, 0) / deltas.length
+                            : null;
+                        const grade = meanDelta != null
+                            ? performanceGradeFromDelta(meanDelta)
+                            : performanceGrade(avg);
                         return (
-                            <tr
-                                key={p.id}
-                                className={selectedPlayerId === p.id ? "table-active" : undefined}
-                            >
-                                <td className="text-center text-body-secondary fw-semibold">
-                                    {idx + 1}
-                                </td>
+                            <tr key={p.id} className={selectedPlayerId === p.id ? "table-active" : undefined}>
+                                <td className="text-center text-body-secondary fw-semibold">{idx + 1}</td>
                                 <td>
                                     <div className="d-flex align-items-center gap-2">
                                         <span className="bls-bowler-icon">
-                                            {p.status === "REGULAR" ? (
-                                                <PersonFillLock size={14} />
-                                            ) : (
-                                                <PersonAdd size={14} />
-                                            )}
+                                            {p.status === "REGULAR" ? <PersonFillLock size={14} /> : <PersonAdd size={14} />}
                                         </span>
                                         <div className="min-w-0">
                                             <Link
@@ -96,30 +100,14 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                                         </div>
                                     </div>
                                 </td>
-                                <td className="text-end fw-semibold tabular-nums">
-                                    {avg != null ? avg.toFixed(1) : "—"}
-                                </td>
-                                <td className="text-end tabular-nums">
-                                    {stats?.leagueHandicap ?? "—"}
-                                </td>
-                                <td className="text-end d-none d-md-table-cell tabular-nums">
-                                    {stats?.pinfall ?? "—"}
-                                </td>
-                                <td className="text-end d-none d-md-table-cell tabular-nums">
-                                    {stats?.gameStats.max ?? "—"}
-                                </td>
-                                <td className="text-end d-none d-lg-table-cell tabular-nums">
-                                    {stats?.seriesStats.max ?? "—"}
-                                </td>
-                                <td className="text-end d-none d-sm-table-cell tabular-nums">
-                                    {stats?.games200 ?? "—"}
-                                </td>
-                                <td className="d-none d-xl-table-cell text-center">
-                                    <MicroBarChart values={weekSeries} isDark={isDark} />
-                                </td>
-                                <td className="d-none d-xl-table-cell text-center">
-                                    <Sparkline values={weekAvgs} isDark={isDark} />
-                                </td>
+                                <td className="text-end fw-semibold tabular-nums">{avg != null ? avg.toFixed(1) : "—"}</td>
+                                <td className="text-end tabular-nums">{stats?.leagueHandicap ?? "—"}</td>
+                                <td className="text-end d-none d-md-table-cell tabular-nums">{stats?.pinfall ?? "—"}</td>
+                                <td className="text-end d-none d-md-table-cell tabular-nums">{stats?.gameStats.max ?? "—"}</td>
+                                <td className="text-end d-none d-lg-table-cell tabular-nums">{stats?.seriesStats.max ?? "—"}</td>
+                                <td className="text-end d-none d-sm-table-cell tabular-nums">{stats?.games200 ?? "—"}</td>
+                                <td className="d-none d-xl-table-cell text-center"><MicroBarChart values={weekSeries} isDark={isDark} /></td>
+                                <td className="d-none d-xl-table-cell text-center"><Sparkline values={weekAvgs} isDark={isDark} /></td>
                                 <td className="text-center">
                                     <span className={`bls-grade ${gradeClass(grade)}`}>
                                         {grade === "—" ? "—" : `Gr. ${grade}`}
