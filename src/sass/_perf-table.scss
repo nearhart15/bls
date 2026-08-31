@@ -91,6 +91,17 @@
   white-space: nowrap;
 }
 
+.bls-grade-btn {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.bls-grade-btn:focus-visible {
+  outline: 2px solid var(--bls-accent);
+  outline-offset: 2px;
+}
+
 .bls-grade-a {
   color: #30d158;
   background: rgba(48, 209, 88, 0.12);
