@@ -1,14 +1,9 @@
-/*!
- * BLS design system — OLED black + Apple-inspired presentation © 2026
- */
+/*! BLS design system — OLED black + Apple-inspired presentation © 2026 */
 
 @import "bootswatch/dist/lumen/variables";
 @import "bootstrap/scss/bootstrap";
 @import "bootswatch/dist/lumen/bootswatch";
 
-/* =========================================================
-   Design tokens
-   ========================================================= */
 :root,
 [data-bs-theme="light"] {
   --bls-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -32,7 +27,6 @@
   --bls-glow-2: rgba(191, 90, 242, 0.3);
 }
 
-/* True black OLED dark mode */
 [data-bs-theme="dark"] {
   --bls-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 32px rgba(0, 0, 0, 0.6);
   --bls-shadow-lg: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 16px 48px rgba(0, 0, 0, 0.8);
@@ -49,7 +43,6 @@
   --bls-gradient: linear-gradient(135deg, #2997ff 0%, #bf5af2 55%, #ff375f 100%);
   --bls-glow-1: rgba(41, 151, 255, 0.45);
   --bls-glow-2: rgba(191, 90, 242, 0.4);
-
   --bs-body-bg: #000000;
   --bs-body-color: #f5f5f7;
   --bs-secondary-bg: #111111;
@@ -57,9 +50,7 @@
   --bs-border-color: rgba(255, 255, 255, 0.1);
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--bls-font);
@@ -71,9 +62,7 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-h1, h2, h3, h4, h5, h6,
-.card-header,
-.navbar-brand {
+h1, h2, h3, h4, h5, h6, .card-header, .navbar-brand {
   letter-spacing: -0.025em;
   font-weight: 600;
 }
@@ -123,14 +112,10 @@ h1, h2, h3, h4, h5, h6,
 }
 
 @media (min-width: 768px) {
-  .bls-shell {
-    padding: 1.25rem 2rem 4rem;
-  }
+  .bls-shell { padding: 1.25rem 2rem 4rem; }
 }
 
-.bls-main {
-  flex: 1;
-}
+.bls-main { flex: 1; }
 
 .bls-nav {
   position: sticky;
@@ -147,9 +132,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 @media (max-width: 991.98px) {
-  .bls-nav {
-    border-radius: var(--bls-radius);
-  }
+  .bls-nav { border-radius: var(--bls-radius); }
 }
 
 .bls-nav .navbar-brand {
@@ -210,9 +193,7 @@ h1, h2, h3, h4, h5, h6,
   transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
-.card:hover {
-  box-shadow: var(--bls-shadow-lg);
-}
+.card:hover { box-shadow: var(--bls-shadow-lg); }
 
 .card-header {
   background: transparent !important;
@@ -237,9 +218,7 @@ h1, h2, h3, h4, h5, h6,
   color: #fff !important;
 }
 
-.card-body {
-  padding: 1.15rem 1.35rem;
-}
+.card-body { padding: 1.15rem 1.35rem; }
 
 .card-footer {
   background: var(--bls-surface-2) !important;
@@ -267,9 +246,7 @@ h1, h2, h3, h4, h5, h6,
   color: var(--bls-text) !important;
 }
 
-.bls-link-row {
-  cursor: pointer;
-}
+.bls-link-row { cursor: pointer; }
 
 .bls-link-text,
 a.bls-link,
@@ -435,7 +412,6 @@ a.bls-link:hover,
   padding-right: 0.25rem;
 }
 
-/* Charts — full-width, touch-friendly */
 .bls-chart {
   width: 100%;
   max-width: 100%;
@@ -445,24 +421,12 @@ a.bls-link:hover,
   -webkit-tap-highlight-color: transparent;
 }
 
-.bls-chart .apexcharts-canvas {
-  margin: 0 auto !important;
-}
+.bls-chart .apexcharts-canvas { margin: 0 auto !important; }
 
 .bls-chart .apexcharts-tooltip {
   border-radius: 0.65rem !important;
   border: 1px solid var(--bls-border) !important;
   box-shadow: var(--bls-shadow) !important;
-}
-
-.bls-chart .apexcharts-legend-text {
-  padding-left: 2px !important;
-}
-
-@media (max-width: 575.98px) {
-  .bls-chart {
-    margin-inline: -0.25rem;
-  }
 }
 
 .bls-section-title {
@@ -488,9 +452,7 @@ a.bls-link:hover,
 }
 
 @media (min-width: 768px) {
-  .bls-hero {
-    padding: 3.5rem 3rem;
-  }
+  .bls-hero { padding: 3.5rem 3rem; }
 }
 
 .bls-hero::before,
@@ -521,10 +483,7 @@ a.bls-link:hover,
   opacity: 0.65;
 }
 
-.bls-hero-inner {
-  position: relative;
-  z-index: 1;
-}
+.bls-hero-inner { position: relative; z-index: 1; }
 
 .bls-hero-kicker {
   display: inline-block;
@@ -551,7 +510,6 @@ a.bls-link:hover,
   color: var(--bls-text-muted);
   font-size: clamp(1rem, 2.2vw, 1.2rem);
   line-height: 1.45;
-  font-weight: 400;
 }
 
 .bls-hero-graphic {
@@ -735,3 +693,5 @@ a.bls-link:hover,
     --bs-table-color: #f5f5f7;
   }
 }
+
+@import "perf-table";
