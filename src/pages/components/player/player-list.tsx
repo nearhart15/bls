@@ -16,6 +16,7 @@ import {useCachedFetcher} from "../cache/data-loader";
 import Loader from "../loader";
 import ErrorDisplay from "../error-display";
 import {useTheme} from "../theme";
+import {comparePinnedThen} from "../../../data/player/player-pin";
 import {MicroBarChart, performanceRatingFromAverage, performanceRatingFromDelta, RatingBadge, Sparkline} from "../charts/mini-charts";
 
 const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 1});
@@ -70,7 +71,7 @@ function compareRows(a: DisplayRow, b: DisplayRow, key: SortKey, dir: SortDir): 
             break;
     }
     if (cmp === 0) cmp = a.name.localeCompare(b.name);
-    return cmp * mul;
+    return comparePinnedThen(a.name, b.name, cmp * mul);
 }
 
 function mergeSlices(slices: PlayerListSeasonSlice[]): Omit<DisplayRow, "id" | "name" | "weekAverages" | "weekSeries"> {
