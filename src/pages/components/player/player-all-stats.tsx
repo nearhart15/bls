@@ -99,8 +99,14 @@ const FramePinfallChart: FC<{stats: PlayerStats}> = ({stats}) => {
     const narrow = useIsNarrow();
     const values = (stats.framePinfallAvg ?? []).slice(0, 10);
     if (values.every((v) => !v)) return null;
-    const minVal = Math.min(...values.filter((v) => v > 0));
-    const colors = values.map((v) => (v === minVal ? "#ff453a" : "#ffd60a"));
+    const scored = values.filter((v) => v > 0);
+    const minVal = Math.min(...scored);
+    const maxVal = Math.max(...scored);
+    const colors = values.map((v) => {
+        if (maxVal > minVal && v === maxVal) return "#30d158";
+        if (maxVal > minVal && v === minVal) return "#ff453a";
+        return "#ffd60a";
+    });
     const options: ApexOptions = {
         chart: {type: "bar", background: "transparent", toolbar: {show: false}, fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'},
         theme: {mode: theme},
@@ -128,8 +134,8 @@ const FramePinfallChart: FC<{stats: PlayerStats}> = ({stats}) => {
     return (
         <div className="bls-allstats-group">
             <div className="bls-allstats-group-head">Avg pinfall by frame</div>
-            <p className="text-body-secondary fs-sm mb-2">Lowest frame is highlighted. Values include strike and spare bonuses credited to that frame.</p>
-            <Chart key={`frame-pf-${narrow ? "sm" : "lg"}`} options={options} series={[{name: "Avg pins", data: values.map((v) => Math.round(v * 10) / 10)}]} type="bar" height={narrow ? 220 : 280} width="100%" />
+            <p className="text-body-secondary fs-sm mb-2">Green is the strongest frame, red is the weakest. Values include strike and spare bonuses credited to that frame.</p>
+            <Chart key={`frame-pf-${narrow ? "sm" : "lg"}-v2`} options={options} series={[{name: "Avg pins", data: values.map((v) => Math.round(v * 10) / 10)}]} type="bar" height={narrow ? 220 : 280} width="100%" />
         </div>
     );
 };
