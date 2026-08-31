@@ -139,9 +139,26 @@ const FrameAttributeIconLegend :FC = () => {
                         <span style={{color: active.iconColor}}>{active.description}</span>
                     </>
                 ) : (
-                    <span className="text-body-secondary">Tap a numbered badge to see what it means</span>
+                    <span className="text-body-secondary">Tap a numbered badge, or read the full list below</span>
                 )}
             </div>
+            <ul className="bls-attr-guide">
+                {Array.from(FrameAttributeIcons.values()).map((icn) => {
+                    const isOn = active?.attribute === icn.attribute;
+                    return (
+                        <li key={icn.attribute}>
+                            <button
+                                type="button"
+                                className={`bls-attr-guide-row${isOn ? " is-active" : ""}`}
+                                onClick={() => setActive(icn)}
+                            >
+                                <Icon iconName={icn.iconName} color={icn.iconColor}/>
+                                <span>{icn.description}</span>
+                            </button>
+                        </li>
+                    );
+                })}
+            </ul>
         </div>
     );
 }
