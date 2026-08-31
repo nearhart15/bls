@@ -60,7 +60,7 @@ const CONVERSION: StatDef[] = [
     {key: "openPct", label: "Open %", format: fmtP},
     {key: "splitPct", label: "Split %", format: fmtP},
     {key: "strikeToSparePct", label: "Strike : spare", format: fmtR},
-    {key: "singlePinPickup", label: "Single pins pickup", format: fmtP},
+    {key: "singlePinPickup", label: "Single-pin avg", format: fmtN},
     {key: "cleanGames", label: "Clean games", format: fmtI},
     {key: "hungCount", label: "Got hung", format: fmtI},
     {key: "turkeyCount", label: "Turkeys", format: fmtI},
@@ -198,7 +198,7 @@ function bagFromCareer(stats: PlayerStats): StatBag {
             ? Math.round(stats.strikesToSpares.pct * 100) / 100
             : null,
         singlePinPickup: stats.allSinglePinsPickedUpAverage > 0
-            ? Math.round(stats.allSinglePinsPickedUpAverage * 1000) / 10 : null,
+            ? Math.round(stats.allSinglePinsPickedUpAverage * 10) / 10 : null,
         lowGame: stats.gameStats.min || null,
         lowSeries: stats.seriesStats.min || null,
         seriesCount: stats.seriesStats.count || null,
