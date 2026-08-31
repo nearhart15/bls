@@ -3,6 +3,7 @@
  */
 
 import type {FC} from "react";
+import {OverlayTrigger, Popover} from "react-bootstrap";
 
 function barColor(value: number, mean: number, isDark: boolean): string {
     if (mean <= 0) return isDark ? "#30d158" : "#34c759";
@@ -115,3 +116,58 @@ export function ratingClass(rating: number | null): string {
     if (rating >= 50) return "bls-grade-c";
     return "bls-grade-d";
 }
+
+function fmt1(n: number): string {
+    return (Math.round(n * 10) / 10).toFixed(1);
+}
+
+export interface RatingBadgeProps {
+    rating: number | null;
+    delta?: number | null;
+    bookAverage?: number | null;
+    comparedAverage?: number | null;
+    sampleLabel?: string;
+}
+
+export const RatingBadge: FC<RatingBadgeProps> = ({
+    rating, delta, bookAverage, comparedAverage,
+    sampleLabel = "scores vs book / entering average",
+}) => {
+    if (rating == null) return <span className={`bls-grade ${ratingClass(null)}`}>—</span>;
+    const usedDelta = delta != null && !Number.isNaN(delta);
+    const body = usedDelta ? (
+        <>
+            <p className="mb-2">Rating measures pins over or under {sampleLabel}.</p>
+            <ul className="mb-2 ps-3">
+                {comparedAverage != null && <li>Compared avg: <strong>{fmt1(comparedAverage)}</strong></li>}
+                {bookAverage != null && <li>Book / entering avg: <strong>{fmt1(bookAverage)}</strong></li>}
+                <li>Difference: <strong>{delta! >= 0 ? "+" : ""}{fmt1(delta!)} pins</strong></li>
+            </ul>
+            <p className="mb-1"><strong>Formula</strong></p>
+            <p className="mb-1 font-monospace small">rating = 50 + (difference × 2)</p>
+            <p className="mb-2 font-monospace small">50 + ({fmt1(delta!)} × 2) = {fmt1(50 + delta! * 2)} → <strong>{rating}</strong></p>
+            <p className="mb-0 text-body-secondary small">50 means bowling average. About +1 pin = +2 rating. Capped at 0 and 100 (±25 pins).</p>
+        </>
+    ) : (
+        <>
+            <p className="mb-2">No week-by-week book comparison is available, so this uses scratch average only.</p>
+            {bookAverage != null && <p className="mb-2">Scratch average: <strong>{fmt1(bookAverage)}</strong></p>}
+            <p className="mb-1"><strong>Fallback formula</strong></p>
+            <p className="mb-2 font-monospace small">rating = average − 120{bookAverage != null ? ` → ${fmt1(bookAverage)} − 120 = ${rating}` : ""}</p>
+            <p className="mb-0 text-body-secondary small">This is a stand-in until there are weekly scores to compare against book.</p>
+        </>
+    );
+    const pop = (
+        <Popover id={`rating-explain-${rating}-${usedDelta ? "d" : "a"}`}>
+            <Popover.Header>How this rating is calculated</Popover.Header>
+            <Popover.Body>{body}</Popover.Body>
+        </Popover>
+    );
+    return (
+        <OverlayTrigger trigger="click" rootClose placement="left" overlay={pop}>
+            <button type="button" className={`bls-grade bls-grade-btn ${ratingClass(rating)}`} aria-label={`Rating ${rating}. Tap to see how it is calculated.`}>
+                {rating}
+            </button>
+        </OverlayTrigger>
+    );
+};
