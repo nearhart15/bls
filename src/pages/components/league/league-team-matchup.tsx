@@ -168,28 +168,17 @@ const MatchupDisplay :FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
     }, [teamDetails]);
 
     const isVisible = (week: number) => {
-        const cd = matchupDetailsExpanded.find(mde => mde.week === week);
-        if (cd) {
-            return cd.expanded;
-        } else {
-            setMatchupDetailsExpanded([
-                ...matchupDetailsExpanded,
-                {week: week, expanded: false}
-            ]);
-            return false;
-        }
+        return matchupDetailsExpanded.some((mde) => mde.week === week && mde.expanded);
     }
 
     const toggleVisiblity = (week: number) => {
-        const cd = matchupDetailsExpanded.find(mde => mde.week === week);
-        if (cd) {
-            cd.expanded = !cd.expanded;
-        } else {
-            setMatchupDetailsExpanded([
-                ...matchupDetailsExpanded,
-                {week: week, expanded: false}
-            ]);
-        }
+        setMatchupDetailsExpanded((prev) => {
+            const found = prev.find((mde) => mde.week === week);
+            if (found) {
+                return prev.map((mde) => mde.week === week ? {...mde, expanded: !mde.expanded} : mde);
+            }
+            return [...prev, {week, expanded: true}];
+        });
     }
 
     const calculateTeamHdcp = (seriesScore?: SeriesScore, preCalcHdcp?: number)=> {
