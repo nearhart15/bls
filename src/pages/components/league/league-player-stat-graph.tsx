@@ -7,7 +7,7 @@ import type {FC} from "react";
 import type {ApexOptions} from "apexcharts";
 import Chart from "react-apexcharts";
 
-import type {PlayerDayData} from "./league-team-roster";
+import type {PlayerDayData} from "./league-team-roster-data";
 import {useTheme} from "../theme";
 import {baseChartOptions, chartPalette, chartToolbarTools} from "../charts/chart-theme";
 
