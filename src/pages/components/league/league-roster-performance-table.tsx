@@ -9,7 +9,7 @@ import {PersonAdd, PersonFillLock} from "react-bootstrap-icons";
 
 import type {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import {useTheme} from "../theme";
-import {gradeClass, MicroBarChart, performanceGrade, performanceGradeFromDelta, Sparkline} from "../charts/mini-charts";
+import {MicroBarChart, performanceRatingFromAverage, performanceRatingFromDelta, ratingClass, Sparkline} from "../charts/mini-charts";
 import {createGameTableData} from "./league-team-roster-data";
 
 interface Props {
@@ -30,9 +30,7 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
         const aReg = a.status === "REGULAR" ? 0 : 1;
         const bReg = b.status === "REGULAR" ? 0 : 1;
         if (aReg !== bReg) return aReg - bReg;
-        const avgA = a.playerStats?.gameStats.average ?? 0;
-        const avgB = b.playerStats?.gameStats.average ?? 0;
-        return avgB - avgA;
+        return (b.playerStats?.gameStats.average ?? 0) - (a.playerStats?.gameStats.average ?? 0);
     });
 
     return (
@@ -50,7 +48,7 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                         <th className="text-end d-none d-sm-table-cell">200+</th>
                         <th className="d-none d-xl-table-cell text-center">Micro-Bar</th>
                         <th className="d-none d-xl-table-cell text-center">Trend</th>
-                        <th className="text-center">Grade</th>
+                        <th className="text-center">Rating</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,12 +66,10 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                                 if (g > 0) deltas.push(g - basis);
                             }
                         }
-                        const meanDelta = deltas.length > 0
-                            ? deltas.reduce((s, n) => s + n, 0) / deltas.length
-                            : null;
-                        const grade = meanDelta != null
-                            ? performanceGradeFromDelta(meanDelta)
-                            : performanceGrade(avg);
+                        const meanDelta = deltas.length > 0 ? deltas.reduce((s, n) => s + n, 0) / deltas.length : null;
+                        const rating = meanDelta != null
+                            ? performanceRatingFromDelta(meanDelta)
+                            : performanceRatingFromAverage(avg);
                         return (
                             <tr key={p.id} className={selectedPlayerId === p.id ? "table-active" : undefined}>
                                 <td className="text-center text-body-secondary fw-semibold">{idx + 1}</td>
@@ -83,19 +79,11 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                                             {p.status === "REGULAR" ? <PersonFillLock size={14} /> : <PersonAdd size={14} />}
                                         </span>
                                         <div className="min-w-0">
-                                            <Link
-                                                to="#"
-                                                className="bls-link fw-semibold"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    if (p.id) onSelectPlayer(p.id);
-                                                }}
-                                            >
+                                            <Link to="#" className="bls-link fw-semibold" onClick={(e) => { e.preventDefault(); if (p.id) onSelectPlayer(p.id); }}>
                                                 {p.name}
                                             </Link>
                                             <div className="fs-xs text-body-secondary">
-                                                {teamDetails.name}
-                                                {p.status === "SUBSTITUTE" ? " · Sub" : ""}
+                                                {teamDetails.name}{p.status === "SUBSTITUTE" ? " · Sub" : ""}
                                             </div>
                                         </div>
                                     </div>
@@ -109,8 +97,8 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                                 <td className="d-none d-xl-table-cell text-center"><MicroBarChart values={weekSeries} isDark={isDark} /></td>
                                 <td className="d-none d-xl-table-cell text-center"><Sparkline values={weekAvgs} isDark={isDark} /></td>
                                 <td className="text-center">
-                                    <span className={`bls-grade ${gradeClass(grade)}`}>
-                                        {grade === "—" ? "—" : `Gr. ${grade}`}
+                                    <span className={`bls-grade ${ratingClass(rating)}`}>
+                                        {rating == null ? "—" : rating}
                                     </span>
                                 </td>
                             </tr>
