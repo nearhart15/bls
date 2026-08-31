@@ -2,7 +2,7 @@
  * Player profile — sports dashboard layout (radar, switcher, KPI rings) © 2026
  */
 
-import {type FC} from "react";
+import {type FC, useEffect, useState} from "react";
 import {Link} from "react-router";
 import Chart from "react-apexcharts";
 import type {ApexOptions} from "apexcharts";
@@ -37,6 +37,18 @@ function pct(rg: {numerator: number; denominator: number; pct: number}): number 
 
 function avgScore(avg: number): number {
     return Math.max(0, Math.min(100, ((avg - 140) / 80) * 100));
+}
+
+function useIsNarrow(maxWidth = 767): boolean {
+    const [narrow, setNarrow] = useState(false);
+    useEffect(() => {
+        const mq = window.matchMedia(`(max-width: ${maxWidth}px)`);
+        const apply = () => setNarrow(mq.matches);
+        apply();
+        mq.addEventListener("change", apply);
+        return () => mq.removeEventListener("change", apply);
+    }, [maxWidth]);
+    return narrow;
 }
 
 interface RadialProps {
@@ -100,6 +112,7 @@ interface RadarProps {
 const CareerRadar: FC<RadarProps> = ({stats}) => {
     const {theme} = useTheme();
     const palette = chartPalette(theme);
+    const narrow = useIsNarrow();
 
     const games = Math.max(1, stats.gameStats.count);
     const displayVals = [
@@ -111,15 +124,17 @@ const CareerRadar: FC<RadarProps> = ({stats}) => {
         numberFormat.format(stats.firstBallAverage),
         String(stats.games200),
     ];
-    const categories = [
-        `${displayVals[0]} Average`,
-        `${displayVals[1]} Strike %`,
-        `${displayVals[2]} Spare %`,
-        `${displayVals[3]} Single Pin %`,
-        `${displayVals[4]} Clean Games`,
-        `${displayVals[5]} First Ball`,
-        `${displayVals[6]} 200+ Games`,
-    ];
+    const categories = narrow
+        ? ["Avg", "Strike %", "Spare %", "Single %", "Clean", "1st Ball", "200+"]
+        : [
+              `${displayVals[0]} Average`,
+              `${displayVals[1]} Strike %`,
+              `${displayVals[2]} Spare %`,
+              `${displayVals[3]} Single Pin %`,
+              `${displayVals[4]} Clean Games`,
+              `${displayVals[5]} First Ball`,
+              `${displayVals[6]} 200+ Games`,
+          ];
 
     const seriesVals = [
         avgScore(stats.gameStats.average),
@@ -131,19 +146,24 @@ const CareerRadar: FC<RadarProps> = ({stats}) => {
         Math.min(100, (stats.games200 / games) * 100 * 3),
     ];
 
+    const chartHeight = narrow ? 280 : 360;
+    const labelSize = narrow ? "10px" : "12px";
+
     const options: ApexOptions = {
         chart: {
             type: "radar",
             background: "transparent",
             toolbar: {show: false},
             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+            parentHeightOffset: 0,
+            sparkline: {enabled: false},
         },
         theme: {mode: theme},
         colors: ["#ffd60a"],
         fill: {opacity: 0.2},
         stroke: {width: 3, colors: ["#ffd60a"]},
         markers: {
-            size: 5,
+            size: narrow ? 4 : 5,
             colors: ["#ffd60a"],
             strokeColors: theme === "dark" ? "#0a0a0a" : "#fff",
             strokeWidth: 2,
@@ -151,9 +171,10 @@ const CareerRadar: FC<RadarProps> = ({stats}) => {
         xaxis: {
             categories,
             labels: {
+                show: true,
                 style: {
                     colors: Array(categories.length).fill("#ffd60a"),
-                    fontSize: "12px",
+                    fontSize: labelSize,
                     fontWeight: 700,
                 },
             },
@@ -161,6 +182,9 @@ const CareerRadar: FC<RadarProps> = ({stats}) => {
         yaxis: {show: false, min: 0, max: 100, tickAmount: 4},
         plotOptions: {
             radar: {
+                size: narrow ? 100 : 130,
+                offsetX: 0,
+                offsetY: 0,
                 polygons: {
                     strokeColors: palette.grid,
                     connectorColors: palette.grid,
@@ -176,17 +200,24 @@ const CareerRadar: FC<RadarProps> = ({stats}) => {
         legend: {show: false},
         tooltip: {
             theme,
-            y: {formatter: (v) => `${Math.round(v)}`},
+            y: {
+                formatter: (_v, opts) => {
+                    const i = opts?.dataPointIndex ?? 0;
+                    return displayVals[i] ?? String(_v);
+                },
+            },
         },
     };
 
     return (
         <div className="bls-radar-wrap">
             <Chart
+                key={narrow ? "radar-sm" : "radar-lg"}
                 options={options}
                 series={[{name: "Career", data: seriesVals}]}
                 type="radar"
-                height={360}
+                height={chartHeight}
+                width="100%"
             />
             <div className="bls-radar-callouts">
                 <div>
@@ -290,8 +321,9 @@ const SeasonTrendChart: FC<SeasonTrendProps> = ({seasons}) => {
                     data: ordered.map((s) => s.games),
                 },
             ]}
-            type="line"
+            type="area"
             height={220}
+            width="100%"
         />
     );
 };
@@ -301,52 +333,32 @@ interface PlayerDetailProps {
 }
 
 const PlayerDetail: FC<PlayerDetailProps> = ({data}) => {
-    const {player, appearances, careerStats, seasonStats} = data;
     const {theme} = useTheme();
     const palette = chartPalette(theme);
-    const stats = careerStats;
+    const {player, careerStats: stats, seasonStats, appearances} = data;
+    const displayName = player.name ?? player.id;
     const hasGames = stats.gameStats.count > 0;
-    const displayName = player.name ?? player.id ?? "Player";
 
     return (
         <div className="bls-player-profile">
-            <PlayerSwitcher currentId={player.id || ""} />
-
+            <PlayerSwitcher currentId={player.id} />
             <div className="bls-player-profile-main">
-                <section className="bls-player-hero">
-                    <div className="bls-player-hero-text">
-                        <span className="bls-hero-kicker">Player profile</span>
-                        <h1>{displayName}</h1>
-                        <div className="bls-player-meta">
-                            <div>
-                                <span className="bls-meta-label">Career avg</span>
-                                <span className="bls-meta-value">
-                                    {hasGames ? numberFormat.format(stats.gameStats.average) : "—"}
-                                </span>
-                            </div>
-                            <div>
-                                <span className="bls-meta-label">Games</span>
-                                <span className="bls-meta-value">{stats.gameStats.count || "—"}</span>
-                            </div>
-                            <div>
-                                <span className="bls-meta-label">Pinfall</span>
-                                <span className="bls-meta-value">
-                                    {hasGames ? intFormat.format(stats.pinfall) : "—"}
-                                </span>
-                            </div>
-                            <div>
-                                <span className="bls-meta-label">Appearances</span>
-                                <span className="bls-meta-value">{appearances.length}</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <div className="bls-profile-hero">
+                    <span className="bls-hero-kicker">Player profile</span>
+                    <h1 className="bls-profile-hero-name">{displayName}</h1>
+                    <p className="text-body-secondary mb-0">
+                        <Link to="/player" className="bls-link">
+                            All players
+                        </Link>
+                        {" · "}
+                        <Link to="/player/compare" className="bls-link">
+                            Player Compare
+                        </Link>
+                    </p>
+                </div>
 
                 <div className="row g-3 mb-3">
-                    <div className="col-lg-8">
-                        <AppearancesPanel appearances={appearances} />
-                    </div>
-                    <div className="col-lg-4">
+                    <div className="col-md-5">
                         <Card className="bls-profile-card bls-kpi-hero h-100">
                             <div className="bls-profile-card-head">Career highlight</div>
                             <CardBody>
@@ -357,109 +369,96 @@ const PlayerDetail: FC<PlayerDetailProps> = ({data}) => {
                                 <div className="row g-2 mt-3">
                                     <div className="col-6">
                                         <div className="bls-kpi-mini">
-                                            <div className="bls-kpi-mini-val text-warning">
-                                                {stats.gameStats.max || "—"}
+                                            <div className="bls-kpi-mini-val">
+                                                {stats.gameStats.count || "—"}
                                             </div>
-                                            <div className="bls-kpi-mini-lbl">High game</div>
+                                            <div className="bls-kpi-mini-lbl">Games</div>
                                         </div>
                                     </div>
                                     <div className="col-6">
                                         <div className="bls-kpi-mini">
-                                            <div className="bls-kpi-mini-val text-info">
-                                                {stats.seriesStats.max || "—"}
+                                            <div className="bls-kpi-mini-val">
+                                                {stats.games200 || "—"}
                                             </div>
-                                            <div className="bls-kpi-mini-lbl">High series</div>
-                                        </div>
-                                    </div>
-                                    <div className="col-6">
-                                        <div className="bls-kpi-mini">
-                                            <div className="bls-kpi-mini-val" style={{color: palette.series[1]}}>
-                                                {stats.games200}
-                                            </div>
-                                            <div className="bls-kpi-mini-lbl">200+ games</div>
-                                        </div>
-                                    </div>
-                                    <div className="col-6">
-                                        <div className="bls-kpi-mini">
-                                            <div className="bls-kpi-mini-val" style={{color: palette.series[3]}}>
-                                                {stats.games300}
-                                            </div>
-                                            <div className="bls-kpi-mini-lbl">300 games</div>
+                                            <div className="bls-kpi-mini-lbl">200+ Games</div>
                                         </div>
                                     </div>
                                 </div>
                             </CardBody>
                         </Card>
                     </div>
+                    <div className="col-md-7">
+                        <Card className="bls-profile-card h-100">
+                            <div className="bls-profile-card-head">Season trend</div>
+                            <CardBody>
+                                {seasonStats.length > 0 ? (
+                                    <SeasonTrendChart seasons={seasonStats} />
+                                ) : (
+                                    <p className="text-body-secondary mb-0 fs-sm">
+                                        Not enough season history for a trend chart.
+                                    </p>
+                                )}
+                            </CardBody>
+                        </Card>
+                    </div>
                 </div>
 
-                {hasGames && (
-                    <div className="row g-3 mb-3">
-                        <div className="col-lg-7">
-                            <Card className="bls-profile-card">
-                                <div className="bls-profile-card-head">
-                                    {displayName} — overall career shape
-                                </div>
-                                <CardBody>
-                                    <CareerRadar stats={stats} />
-                                </CardBody>
-                            </Card>
-                        </div>
-                        <div className="col-lg-5">
-                            <Card className="bls-profile-card h-100">
-                                <div className="bls-profile-card-head">Season snapshot</div>
-                                <CardBody>
-                                    <div className="bls-radial-grid">
-                                        <RadialStat
-                                            label="Strike %"
-                                            value={pct(stats.strikes)}
-                                            display={`${pct(stats.strikes)}%`}
-                                            color={palette.series[0]}
-                                        />
-                                        <RadialStat
-                                            label="Spare %"
-                                            value={pct(stats.spares)}
-                                            display={`${pct(stats.spares)}%`}
-                                            color={palette.series[1]}
-                                        />
-                                        <RadialStat
-                                            label="Clean %"
-                                            value={Math.min(
-                                                100,
-                                                (stats.cleanGames / Math.max(1, stats.gameStats.count)) * 100
-                                            )}
-                                            display={`${Math.round(
-                                                (stats.cleanGames / Math.max(1, stats.gameStats.count)) * 100
-                                            )}%`}
-                                            color={palette.series[2]}
-                                        />
-                                        <RadialStat
-                                            label="Open %"
-                                            value={pct(stats.opens)}
-                                            display={`${pct(stats.opens)}%`}
-                                            color={palette.series[4]}
-                                        />
-                                    </div>
-                                    {seasonStats.length > 0 && (
-                                        <div className="mt-3">
-                                            <div className="bls-section-title mb-2">By season</div>
-                                            <SeasonTrendChart seasons={seasonStats} />
-                                        </div>
-                                    )}
-                                </CardBody>
-                            </Card>
-                        </div>
+                <div className="row g-3 mb-3">
+                    <div className="col-lg-7">
+                        <Card className="bls-profile-card">
+                            <div className="bls-profile-card-head">
+                                {displayName} — overall career shape
+                            </div>
+                            <CardBody>
+                                <CareerRadar stats={stats} />
+                            </CardBody>
+                        </Card>
                     </div>
-                )}
+                    <div className="col-lg-5">
+                        <Card className="bls-profile-card h-100">
+                            <div className="bls-profile-card-head">Season snapshot</div>
+                            <CardBody>
+                                <div className="bls-radial-grid">
+                                    <RadialStat
+                                        label="Strike %"
+                                        value={pct(stats.strikes)}
+                                        display={`${pct(stats.strikes)}%`}
+                                        color={palette.series[0]}
+                                    />
+                                    <RadialStat
+                                        label="Spare %"
+                                        value={pct(stats.spares)}
+                                        display={`${pct(stats.spares)}%`}
+                                        color={palette.series[1]}
+                                    />
+                                    <RadialStat
+                                        label="Clean %"
+                                        value={Math.min(
+                                            100,
+                                            (stats.cleanGames / Math.max(1, stats.gameStats.count)) * 100
+                                        )}
+                                        display={`${stats.cleanGames}`}
+                                        color={palette.series[2]}
+                                    />
+                                    <RadialStat
+                                        label="1st Ball"
+                                        value={Math.min(100, (stats.firstBallAverage / 10) * 100)}
+                                        display={numberFormat.format(stats.firstBallAverage)}
+                                        color={palette.series[3]}
+                                    />
+                                </div>
+                            </CardBody>
+                        </Card>
+                    </div>
+                </div>
 
-                {seasonStats.length > 0 && (
-                    <SeasonBreakdownTable seasons={seasonStats} />
-                )}
-
-                <div className="mb-2">
-                    <Link to="/player" className="btn btn-outline-primary btn-sm">
-                        ← All players
-                    </Link>
+                <div className="row g-3 mb-3">
+                    <div className="col-lg-6">
+                        <SeasonBreakdownTable seasons={seasonStats} />
+                    </div>
+                    <div className="col-lg-6">
+                        <AppearancesPanel appearances={appearances} />
+                    </div>
                 </div>
             </div>
         </div>
