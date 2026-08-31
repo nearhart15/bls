@@ -97,27 +97,24 @@ const CareerRadar: FC<{stats: PlayerStats}> = ({stats}) => {
         numberFormat.format(stats.gameStats.average),
         `${pct(stats.strikes)}%`,
         `${pct(stats.spares)}%`,
-        String(stats.cleanGames),
         String(stats.hungCount),
         String(stats.turkeyCount),
         String(stats.games200),
     ];
     const categories = narrow
-        ? ["Avg", "Strike %", "Spare %", "Clean", "Hung", "Turkey", "200+"]
+        ? ["Avg", "Strike %", "Spare %", "Hung", "Turkey", "200+"]
         : [
               `${displayVals[0]} Average`,
               `${displayVals[1]} Strike %`,
               `${displayVals[2]} Spare %`,
-              `${displayVals[3]} Clean Games`,
-              `${displayVals[4]} Got Hung`,
-              `${displayVals[5]} Turkeys`,
-              `${displayVals[6]} 200+ Games`,
+              `${displayVals[3]} Got Hung`,
+              `${displayVals[4]} Turkeys`,
+              `${displayVals[5]} 200+ Games`,
           ];
     const seriesVals = [
         avgScore(stats.gameStats.average),
         pct(stats.strikes),
         pct(stats.spares),
-        countScore(stats.cleanGames, games),
         countScore(stats.hungCount, games),
         countScore(stats.turkeyCount, games),
         countScore(stats.games200, games),
@@ -147,7 +144,7 @@ const CareerRadar: FC<{stats: PlayerStats}> = ({stats}) => {
     };
     return (
         <div className="bls-radar-wrap">
-            <Chart key={narrow ? "radar-sm" : "radar-lg"} options={options} series={[{name: "Career", data: seriesVals}]} type="radar" height={chartHeight} width="100%" />
+            <Chart key={narrow ? "radar-sm-v3" : "radar-lg-v3"} options={options} series={[{name: "Career", data: seriesVals}]} type="radar" height={chartHeight} width="100%" />
             <div className="bls-radar-callouts">
                 <div><strong>{numberFormat.format(stats.gameStats.average)}</strong><span>Average</span></div>
                 <div><strong>{stats.cleanGames}</strong><span>Clean Games</span></div>
