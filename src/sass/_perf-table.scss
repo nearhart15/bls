@@ -122,6 +122,37 @@
   box-shadow: 0 0 0 1px var(--bls-accent);
 }
 
+.bls-attr-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  max-width: min(92vw, 28rem);
+  padding: 0.8rem 0.95rem;
+  background: var(--bls-surface);
+  color: var(--bls-text);
+  border: 1px solid var(--bls-accent);
+  border-radius: 1rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.bls-attr-toast-close {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: var(--bls-text-muted);
+  font-size: 1.35rem;
+  line-height: 1;
+  padding: 0 0.15rem;
+}
+
 .bls-perf-table thead th {
   position: sticky;
   top: 0;
