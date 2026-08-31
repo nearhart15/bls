@@ -19,7 +19,7 @@ import {
     AppearancesPanel,
     SeasonBreakdownTable,
     PlayerSwitcher,
-    FullStatsGrid,
+    AllStatsPanel,
 } from "./player-detail-tables";
 
 const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 1});
@@ -191,7 +191,7 @@ const LeagueTrendChart: FC<{appearances: PlayerLeagueAppearance[]}> = ({appearan
 const PlayerDetail: FC<{data: AggregatedPlayerData}> = ({data}) => {
     const {theme} = useTheme();
     const palette = chartPalette(theme);
-    const {player, careerStats: stats, seasonStats, appearances} = data;
+    const {player, careerStats: stats, seasonStats, appearances, seasonSlicesFull, appearanceSlicesFull} = data;
     const displayName = player.name ?? player.id;
     const hasGames = stats.gameStats.count > 0;
     const [tab, setTab] = useState<"overview" | "all">("overview");
@@ -218,12 +218,12 @@ const PlayerDetail: FC<{data: AggregatedPlayerData}> = ({data}) => {
                     </div>
                 </div>
                 {tab === "all" && (
-                    <Card className="bls-profile-card mb-3">
-                        <div className="bls-profile-card-head">Career — all stats</div>
-                        <CardBody>
-                            <FullStatsGrid stats={stats} />
-                        </CardBody>
-                    </Card>
+                    <AllStatsPanel
+                        careerStats={stats}
+                        seasonSlicesFull={seasonSlicesFull ?? []}
+                        appearanceSlicesFull={appearanceSlicesFull ?? []}
+                        appearances={appearances}
+                    />
                 )}
                 {tab === "overview" && <>
                 <div className="row g-3 mb-3">
