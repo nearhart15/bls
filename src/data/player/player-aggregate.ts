@@ -83,6 +83,8 @@ export interface PlayerAppearanceSlice {
     season: string;
     leagueId: string;
     leagueName: string;
+    teamId: string;
+    teamName: string;
     average: number | null;
     games: number;
     pinfall: number;
@@ -125,7 +127,7 @@ export interface PlayerListEntry {
 }
 
 export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail-v3-all-stats";
-export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v7-pickup-avg";
+export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v8-team-league";
 
 interface RosterScanResult {
     playerMap: Map<string, {name: string; lastBowled?: moment.Moment}>;
@@ -305,6 +307,8 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
                 season: ap.season,
                 leagueId: ap.leagueId,
                 leagueName: ap.leagueName,
+                teamId: ap.teamId,
+                teamName: ap.teamName,
                 average: computed?.average ?? (games > 0 && st ? st.gameStats.average : null),
                 games,
                 pinfall: computed?.pinfall ?? st?.pinfall ?? 0,
