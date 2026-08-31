@@ -70,7 +70,7 @@ export interface PlayerListEntry {
 }
 
 export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail";
-export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-full";
+export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v2-scopes";
 
 interface RosterScanResult {
     playerMap: Map<string, {name: string; lastBowled?: moment.Moment}>;
