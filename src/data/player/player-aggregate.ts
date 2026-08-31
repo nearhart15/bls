@@ -1,17 +1,15 @@
 /*
- * Aggregate player stats across leagues © 2026
+ * Player cross-league aggregation © 2026
  */
 
-import moment from "moment";
-
-import {leagueInfoListFetcher} from "../league/league-api";
-import {leagueDetailsFetcher} from "../league/league-api";
+import {leagueDetailsFetcher, leagueInfoListFetcher} from "../league/league-api";
 import type {LeaguePlayerStats} from "../league/league-team-details";
 import type {TeamPlayerGameScore} from "../league/league-matchup";
 import {PlayerStats} from "./player-stats";
 import {calculatePlayerStats} from "./player-stats-calculator";
 import {playerListFetcher} from "./player-api";
-import type {PlayerInfo} from "./player-info";
+import {PlayerInfo} from "./player-info";
+import moment from "moment";
 
 export interface PlayerLeagueAppearance {
     season: string;
@@ -52,9 +50,9 @@ export interface PlayerListEntry {
     highGame: number;
     highSeries: number;
     games200: number;
-    /** Per-week series averages for sparkline (most recent league activity) */
+    /** Weekly series averages for sparkline */
     weekAverages?: number[];
-    /** Per-week series totals for micro-bars */
+    /** Weekly series pinfall for micro-bars */
     weekSeries?: number[];
     lastBowled?: moment.Moment;
 }
@@ -105,60 +103,67 @@ async function scanAllRosters(): Promise<RosterScanResult> {
     };
 
     for (const season of leagues.seasons) {
+        const seasonLabel = season.season ?? "";
         for (const league of season.leagues) {
-            if (!league.hasData()) continue;
+            if (!league.hasData() || !league.dataLoc || !league.id) {
+                continue;
+            }
             try {
-                const details = await leagueDetailsFetcher(league.id);
-                for (const team of details.trackedTeams ?? []) {
-                    for (const player of team.roster ?? []) {
-                        if (!player.id) continue;
-                        if (!playerMap.has(player.id)) {
-                            playerMap.set(player.id, {name: player.name ?? player.id});
+                const details = await leagueDetailsFetcher(league.dataLoc);
+                for (const team of details.teams) {
+                    for (const rosterPlayer of team.roster) {
+                        if (!rosterPlayer.id) continue;
+
+                        if (!playerMap.has(rosterPlayer.id)) {
+                            playerMap.set(rosterPlayer.id, {
+                                name: rosterPlayer.name ?? rosterPlayer.id,
+                            });
+                        } else if (rosterPlayer.name) {
+                            const existing = playerMap.get(rosterPlayer.id)!;
+                            if (!existing.name || existing.name === rosterPlayer.id) {
+                                existing.name = rosterPlayer.name;
+                            }
                         }
 
                         const appearance: PlayerLeagueAppearance = {
-                            season: season.season,
-                            leagueId: String(league.id),
-                            leagueName: league.name ?? String(league.id),
-                            teamId: String(team.id),
-                            teamName: team.name ?? String(team.id),
-                            teamNumber: team.number ?? 0,
-                            status: player.status ?? "REGULAR",
-                            stats: player.playerStats,
+                            season: seasonLabel,
+                            leagueId: league.id,
+                            leagueName: league.name ?? league.id,
+                            teamId: team.id ?? "",
+                            teamName: team.name ?? "",
+                            teamNumber: team.number,
+                            status: rosterPlayer.status ?? "REGULAR",
+                            stats: rosterPlayer.playerStats,
                         };
-                        if (!appearancesByPlayer.has(player.id)) {
-                            appearancesByPlayer.set(player.id, []);
+                        if (!appearancesByPlayer.has(rosterPlayer.id)) {
+                            appearancesByPlayer.set(rosterPlayer.id, []);
                         }
-                        appearancesByPlayer.get(player.id)!.push(appearance);
+                        appearancesByPlayer.get(rosterPlayer.id)!.push(appearance);
 
                         const weekSeries: number[] = [];
                         const weekAvgs: number[] = [];
-
-                        for (const matchup of team.matchups ?? []) {
-                            const score = matchup.scores?.playerScores?.find(
-                                (ps) => ps.player === player.id
+                        for (const matchup of team.matchups) {
+                            const ps = matchup.scores?.playerScores.find(
+                                (s) => s.player === rosterPlayer.id
                             );
-                            if (!score || score.games?.[0]?.blind) continue;
-                            const games = score.games.filter((g) => !g.blind && !g.vacant);
-                            if (games.length === 0) continue;
-                            addSeries(player.id, season.season, games);
-                            if (score.series?.scratchScore != null) {
-                                weekSeries.push(score.series.scratchScore);
-                            }
-                            if (score.series?.average != null) {
-                                weekAvgs.push(score.series.average);
+                            if (ps && ps.games.length > 0) {
+                                addSeries(rosterPlayer.id, seasonLabel, ps.games);
+                                if (ps.series?.scratchScore) {
+                                    weekSeries.push(ps.series.scratchScore);
+                                }
+                                if (ps.series?.average) {
+                                    weekAvgs.push(ps.series.average);
+                                }
                             }
                         }
-
-                        // Prefer most recent league with data for trends
                         if (weekSeries.length > 0) {
-                            weekSeriesByPlayer.set(player.id, weekSeries);
-                            weekAveragesByPlayer.set(player.id, weekAvgs);
+                            weekSeriesByPlayer.set(rosterPlayer.id, weekSeries);
+                            weekAveragesByPlayer.set(rosterPlayer.id, weekAvgs);
                         }
                     }
                 }
-            } catch {
-                // skip league load failures
+            } catch (err) {
+                console.warn(`Skipping league ${league.id} during roster scan:`, err);
             }
         }
     }
@@ -200,34 +205,12 @@ function buildSeasonStats(
             games200: stats.games200,
         });
     }
+
     rows.sort((a, b) => b.season.localeCompare(a.season));
     return rows;
 }
 
-export async function aggregatePlayerData(playerId: string): Promise<AggregatedPlayerData> {
-    const scan = await scanAllRosters();
-    const info = scan.playerMap.get(playerId);
-    const player: PlayerInfo = {
-        id: playerId,
-        name: info?.name ?? playerId,
-        lastBowled: info?.lastBowled,
-    } as PlayerInfo;
-
-    const series = scan.seriesByPlayer.get(playerId) ?? [];
-    const careerStats = statsFromSeries(series);
-    const appearances = scan.appearancesByPlayer.get(playerId) ?? [];
-    const seasonStats = buildSeasonStats(scan.seriesByPlayerSeason.get(playerId));
-
-    // Fill league counts per season from appearances
-    for (const row of seasonStats) {
-        row.leagues = new Set(
-            appearances.filter((a) => a.season === row.season).map((a) => a.leagueId)
-        ).size;
-    }
-
-    return {player, appearances, careerStats, seasonStats};
-}
-
+/** Full player list including everyone found on tracked rosters, with career average. */
 export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
     const scan = await scanAllRosters();
     const entries: PlayerListEntry[] = [];
@@ -260,4 +243,36 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
     });
 
     return entries;
+}
+
+/**
+ * Load a player and aggregate their stats across all tracked leagues/teams.
+ */
+export async function aggregatePlayerData(playerId: string): Promise<AggregatedPlayerData> {
+    const scan = await scanAllRosters();
+
+    const info = scan.playerMap.get(playerId);
+    if (!info) {
+        throw new Error(`Player not found: ${playerId}`);
+    }
+
+    const player = new PlayerInfo();
+    player.id = playerId;
+    player.name = info.name;
+    player.lastBowled = info.lastBowled;
+
+    const appearances = scan.appearancesByPlayer.get(playerId) ?? [];
+    const careerStats = statsFromSeries(scan.seriesByPlayer.get(playerId) ?? []);
+
+    const seasonSeries = scan.seriesByPlayerSeason.get(playerId);
+    const seasonStats = buildSeasonStats(seasonSeries);
+
+    for (const row of seasonStats) {
+        const leagueIds = new Set(
+            appearances.filter((a) => a.season === row.season).map((a) => a.leagueId)
+        );
+        row.leagues = leagueIds.size;
+    }
+
+    return {player, appearances, careerStats, seasonStats};
 }
