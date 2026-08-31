@@ -21,6 +21,7 @@ import {
     PlayerSwitcher,
 } from "./player-detail-tables";
 import {AllStatsPanel} from "./player-all-stats";
+import {InsightsPanel} from "./player-insights";
 
 const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 1});
 const intFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 0});
@@ -194,7 +195,7 @@ const PlayerDetail: FC<{data: AggregatedPlayerData}> = ({data}) => {
     const {player, careerStats: stats, seasonStats, appearances, seasonSlicesFull, appearanceSlicesFull} = data;
     const displayName = player.name ?? player.id;
     const hasGames = stats.gameStats.count > 0;
-    const [tab, setTab] = useState<"overview" | "all">("overview");
+    const [tab, setTab] = useState<"overview" | "all" | "insights">("overview");
     return (
         <div className="bls-player-profile">
             <PlayerSwitcher currentId={player.id} />
@@ -215,8 +216,15 @@ const PlayerDetail: FC<{data: AggregatedPlayerData}> = ({data}) => {
                             <span className="bls-scope-pill-label">All stats</span>
                             <span className="bls-scope-pill-sub">Career</span>
                         </button>
+                        <button type="button" role="tab" aria-selected={tab === "insights"} className={`bls-scope-pill${tab === "insights" ? " is-active" : ""}`} onClick={() => setTab("insights")}>
+                            <span className="bls-scope-pill-label">Insights</span>
+                            <span className="bls-scope-pill-sub">What to work on</span>
+                        </button>
                     </div>
                 </div>
+                {tab === "insights" && (
+                    <InsightsPanel name={displayName} stats={stats} seasons={seasonStats} />
+                )}
                 {tab === "all" && (
                     <AllStatsPanel
                         careerStats={stats}
