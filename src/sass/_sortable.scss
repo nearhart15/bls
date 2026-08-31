@@ -85,3 +85,37 @@
   color: var(--bls-accent);
   opacity: 0.85;
 }
+
+/* Compact league list on home */
+.bls-league-list-compact .list-group-item {
+  padding: 0.55rem 0.85rem;
+}
+
+.bls-league-list-compact .list-group-item + .list-group-item {
+  border-top-width: 1px;
+}
+
+/* Shout outs */
+.bls-shoutouts .bls-news-item {
+  margin: 0.45rem 0.85rem !important;
+  padding: 0.85rem 1rem !important;
+}
+
+.bls-shoutouts .card-header {
+  background: linear-gradient(90deg, var(--bls-accent-soft), transparent) !important;
+}
+
+/* Compare */
+.bls-compare-hero h1 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.bls-compare .form-select {
+  background-color: var(--bls-surface-2);
+  border-color: var(--bls-border);
+  color: var(--bls-text);
+  border-radius: var(--bls-radius-sm);
+}
