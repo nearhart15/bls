@@ -52,7 +52,8 @@ function fmtNum(n: number | null | undefined, digits = 1): string {
     return (Math.round(n * 10 ** digits) / 10 ** digits).toFixed(digits);
 }
 
-export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerStats}> = ({stats, leagueExtras}) => {
+export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerStats; hideGroups?: string[]}> = ({stats, leagueExtras, hideGroups}) => {
+    const hidden = new Set(hideGroups ?? []);
     const rows: {group: string; items: {label: string; value: string}[]}[] = [
         {group: "Scoring", items: [
             {label: "Games", value: String(stats.gameStats.count || "—")},
@@ -86,8 +87,9 @@ export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerS
             {label: "800+ series", value: String(stats.series800 ?? "—")},
         ]},
     ];
-    if (leagueExtras) {
-        rows.push({group: "League book", items: [
+    const visible = rows.filter((g) => !hidden.has(g.group));
+    if (leagueExtras && !hidden.has("League book")) {
+        visible.push({group: "League book", items: [
             {label: "League average", value: fmtNum(leagueExtras.leagueAverage)},
             {label: "League handicap", value: String(leagueExtras.leagueHandicap || "—")},
             {label: "League games", value: String(leagueExtras.leagueGames || "—")},
@@ -97,7 +99,7 @@ export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerS
     }
     return (
         <div className="bls-allstats">
-            {rows.map((g) => (
+            {visible.map((g) => (
                 <div key={g.group} className="bls-allstats-group">
                     <div className="bls-allstats-group-head">{g.group}</div>
                     <div className="bls-allstats-grid">
