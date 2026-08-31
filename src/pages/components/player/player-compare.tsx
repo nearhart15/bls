@@ -42,6 +42,7 @@ interface StatDef {
 const fmtN = (v: number | null | undefined) => (v != null ? numberFormat.format(v) : "—");
 const fmtI = (v: number | null | undefined) => (v != null ? intFormat.format(v) : "—");
 const fmtP = (v: number | null | undefined) => (v != null ? `${numberFormat.format(v)}%` : "—");
+const fmtR = (v: number | null | undefined) => (v != null ? `${numberFormat.format(v)} : 1` : "—");
 
 const SCORING: StatDef[] = [
     {key: "average", label: "Average", format: fmtN},
@@ -58,7 +59,7 @@ const CONVERSION: StatDef[] = [
     {key: "singlePinPct", label: "Single-pin spare %", format: fmtP},
     {key: "openPct", label: "Open %", format: fmtP},
     {key: "splitPct", label: "Split %", format: fmtP},
-    {key: "strikeToSparePct", label: "Strike→spare %", format: fmtP},
+    {key: "strikeToSparePct", label: "Strike : spare", format: fmtR},
     {key: "singlePinPickup", label: "Single pins pickup", format: fmtP},
     {key: "cleanGames", label: "Clean games", format: fmtI},
     {key: "hungCount", label: "Got hung", format: fmtI},
@@ -193,7 +194,9 @@ function bagFromCareer(stats: PlayerStats): StatBag {
         singlePinPct: ratioPct(stats.singlePinSpares),
         openPct: ratioPct(stats.opens),
         splitPct: ratioPct(stats.splits),
-        strikeToSparePct: ratioPct(stats.strikesToSpares),
+        strikeToSparePct: stats.strikesToSpares.denominator > 0
+            ? Math.round(stats.strikesToSpares.pct * 100) / 100
+            : null,
         singlePinPickup: stats.allSinglePinsPickedUpAverage > 0
             ? Math.round(stats.allSinglePinsPickedUpAverage * 1000) / 10 : null,
         lowGame: stats.gameStats.min || null,
@@ -283,7 +286,7 @@ const DualRadar: FC<{bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}
         },
     };
     return (
-        <Chart options={options} series={[{name: nameA, data: seriesA}, {name: nameB, data: seriesB}]} type="radar" height={340} width="100%" />
+        <Chart key={`${nameA}-${nameB}-${seriesA.join(",")}-${seriesB.join(",")}`} options={options} series={[{name: nameA, data: seriesA}, {name: nameB, data: seriesB}]} type="radar" height={340} width="100%" />
     );
 };
 
@@ -487,16 +490,16 @@ const PlayerCompare: FC = () => {
                         </Row>
                     )}
                     {aEntry && bEntry && mode === "career" && (
-                        <CareerPair idA={aEntry.id} idB={bEntry.id}>
+                        <CareerPair key={`${aEntry.id}-${bEntry.id}`} idA={aEntry.id} idB={bEntry.id}>
                             {(bagA, bagB, loading) => loading ? <Loader /> : bagA && bagB
-                                ? <Board bagA={bagA} bagB={bagB} nameA={aEntry.name} nameB={bEntry.name} />
+                                ? <Board key={`${aEntry.id}-${bEntry.id}-board`} bagA={bagA} bagB={bagB} nameA={aEntry.name} nameB={bEntry.name} />
                                 : listBagA && listBagB
-                                    ? <Board bagA={listBagA} bagB={listBagB} nameA={aEntry.name} nameB={bEntry.name} />
+                                    ? <Board key={`${aEntry.id}-${bEntry.id}-list`} bagA={listBagA} bagB={listBagB} nameA={aEntry.name} nameB={bEntry.name} />
                                     : null}
                         </CareerPair>
                     )}
                     {aEntry && bEntry && mode === "season" && season && listBagA && listBagB && (
-                        <Board bagA={listBagA} bagB={listBagB} nameA={aEntry.name} nameB={bEntry.name} />
+                        <Board key={`${aEntry.id}-${bEntry.id}-${season}-${leagueId}`} bagA={listBagA} bagB={listBagB} nameA={aEntry.name} nameB={bEntry.name} />
                     )}
                 </>
             )}
