@@ -31,6 +31,9 @@ export interface PlayerSeasonStats {
     highGame: number;
     highSeries: number;
     games200: number;
+    cleanGames: number;
+    hungCount: number;
+    turkeyCount: number;
 }
 
 export interface AggregatedPlayerData {
@@ -52,6 +55,8 @@ export interface PlayerListSeasonSlice {
     series600: number;
     series800: number;
     cleanGames: number;
+    hungCount: number;
+    turkeyCount: number;
     firstBall: number | null;
     strikePct: number | null;
     sparePct: number | null;
@@ -79,6 +84,8 @@ export interface PlayerAppearanceSlice {
     series600: number;
     series800: number;
     cleanGames: number;
+    hungCount: number;
+    turkeyCount: number;
     firstBall: number | null;
     strikePct: number | null;
     sparePct: number | null;
@@ -108,8 +115,8 @@ export interface PlayerListEntry {
     lastBowled?: moment.Moment;
 }
 
-export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail";
-export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v4-rich-slices";
+export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail-v2";
+export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v5-fun-stats";
 
 interface RosterScanResult {
     playerMap: Map<string, {name: string; lastBowled?: moment.Moment}>;
@@ -229,6 +236,8 @@ function richFromStats(s: PlayerStats) {
         series600: s.series600,
         series800: s.series800,
         cleanGames: s.cleanGames,
+        hungCount: s.hungCount,
+        turkeyCount: s.turkeyCount,
         firstBall: s.firstBallAverage || null,
         strikePct: ratioPct(s.strikes),
         sparePct: ratioPct(s.spares),
@@ -252,6 +261,7 @@ function buildSeasonStats(seriesBySeason: Map<string, TeamPlayerGameScore[][]> |
         rows.push({
             season, leagues: 0, games: stats.gameStats.count, average: stats.gameStats.average,
             pinfall: stats.pinfall, highGame: stats.gameStats.max, highSeries: stats.seriesStats.max, games200: stats.games200,
+            cleanGames: stats.cleanGames, hungCount: stats.hungCount, turkeyCount: stats.turkeyCount,
         });
     }
     rows.sort((a, b) => b.season.localeCompare(a.season));
@@ -294,6 +304,8 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
                 series600: computed?.series600 ?? 0,
                 series800: computed?.series800 ?? 0,
                 cleanGames: computed?.cleanGames ?? 0,
+                hungCount: computed?.hungCount ?? 0,
+                turkeyCount: computed?.turkeyCount ?? 0,
                 firstBall: computed?.firstBall ?? null,
                 strikePct: computed?.strikePct ?? null,
                 sparePct: computed?.sparePct ?? null,
