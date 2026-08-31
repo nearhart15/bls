@@ -152,9 +152,9 @@ const CareerRadar: FC<RadarProps> = ({stats}) => {
             categories,
             labels: {
                 style: {
-                    colors: Array(categories.length).fill(palette.text),
+                    colors: Array(categories.length).fill("#ffd60a"),
                     fontSize: "12px",
-                    fontWeight: 600,
+                    fontWeight: 700,
                 },
             },
         },
