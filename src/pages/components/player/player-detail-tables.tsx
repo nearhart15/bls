@@ -11,6 +11,8 @@ import type {
     PlayerListEntry,
     PlayerSeasonStats,
 } from "../../../data/player/player-aggregate";
+import type {PlayerStats, RatioGroup} from "../../../data/player/player-stats";
+import type {LeaguePlayerStats} from "../../../data/league/league-team-details";
 import {
     buildFullPlayerList,
     PLAYER_INDEX_CACHE_CATEGORY,
@@ -40,9 +42,82 @@ const AppearSortTh: FC<{
     );
 };
 
+function fmtPct(rg?: RatioGroup | null): string {
+    if (!rg || rg.denominator <= 0) return "—";
+    return `${(rg.pct * 100).toFixed(1)}% (${rg.numerator}/${rg.denominator})`;
+}
+
+function fmtNum(n: number | null | undefined, digits = 1): string {
+    if (n == null || Number.isNaN(n)) return "—";
+    return (Math.round(n * 10 ** digits) / 10 ** digits).toFixed(digits);
+}
+
+export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerStats}> = ({stats, leagueExtras}) => {
+    const rows: {group: string; items: {label: string; value: string}[]}[] = [
+        {group: "Scoring", items: [
+            {label: "Games", value: String(stats.gameStats.count || "—")},
+            {label: "Scratch average", value: fmtNum(stats.gameStats.average)},
+            {label: "Pinfall", value: String(stats.pinfall || "—")},
+            {label: "High game", value: String(stats.gameStats.max || "—")},
+            {label: "Low game", value: String(stats.gameStats.min || "—")},
+            {label: "Game SD", value: fmtNum(stats.gameStats.sd)},
+            {label: "Series count", value: String(stats.seriesStats.count || "—")},
+            {label: "Series average", value: fmtNum(stats.seriesStats.average)},
+            {label: "High series", value: String(stats.seriesStats.max || "—")},
+            {label: "Low series", value: String(stats.seriesStats.min || "—")},
+            {label: "First-ball average", value: fmtNum(stats.firstBallAverage)},
+        ]},
+        {group: "Conversion", items: [
+            {label: "Strike %", value: fmtPct(stats.strikes)},
+            {label: "Spare %", value: fmtPct(stats.spares)},
+            {label: "Single-pin spare %", value: fmtPct(stats.singlePinSpares)},
+            {label: "Single-pin pickup avg", value: fmtNum(stats.allSinglePinsPickedUpAverage)},
+            {label: "Open %", value: fmtPct(stats.opens)},
+            {label: "Split %", value: fmtPct(stats.splits)},
+            {label: "Strike-to-spare %", value: fmtPct(stats.strikesToSpares)},
+        ]},
+        {group: "Volume / fun", items: [
+            {label: "Clean games", value: String(stats.cleanGames ?? "—")},
+            {label: "Got hung", value: String(stats.hungCount ?? "—")},
+            {label: "Turkeys", value: String(stats.turkeyCount ?? "—")},
+            {label: "200+ games", value: String(stats.games200 ?? "—")},
+            {label: "300 games", value: String(stats.games300 ?? "—")},
+            {label: "600+ series", value: String(stats.series600 ?? "—")},
+            {label: "800+ series", value: String(stats.series800 ?? "—")},
+        ]},
+    ];
+    if (leagueExtras) {
+        rows.push({group: "League book", items: [
+            {label: "League average", value: fmtNum(leagueExtras.leagueAverage)},
+            {label: "League handicap", value: String(leagueExtras.leagueHandicap || "—")},
+            {label: "League games", value: String(leagueExtras.leagueGames || "—")},
+            {label: "League pinfall", value: String(leagueExtras.leaguePinfall || "—")},
+            {label: "Avg booster series", value: fmtNum(leagueExtras.averageBoosterSeries)},
+        ]});
+    }
+    return (
+        <div className="bls-allstats">
+            {rows.map((g) => (
+                <div key={g.group} className="bls-allstats-group">
+                    <div className="bls-allstats-group-head">{g.group}</div>
+                    <div className="bls-allstats-grid">
+                        {g.items.map((it) => (
+                            <div key={it.label} className="bls-allstats-cell">
+                                <div className="bls-allstats-val">{it.value}</div>
+                                <div className="bls-allstats-lbl">{it.label}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+};
+
 const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
     const [sortKey, setSortKey] = useState<AppearSortKey>("idx");
     const [sortDir, setSortDir] = useState<SortDir>("asc");
+    const [selectedKey, setSelectedKey] = useState<string | null>(null);
     const onSort = (key: AppearSortKey) => {
         if (key === sortKey) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
         else setSortKey(key);
@@ -88,21 +163,47 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {sorted.map(({a, i}) => (
-                            <tr key={`${a.leagueId}-${a.teamId}-${i}`}>
+                        {sorted.map(({a, i}) => {
+                            const key = `${a.season}::${a.leagueId}::${a.teamId}`;
+                            const isOn = selectedKey === key;
+                            return (
+                            <tr key={key} className={isOn ? "table-active" : undefined}>
                                 <td className="text-body-secondary">{String(i + 1).padStart(2, "0")}</td>
                                 <td>{a.season}</td>
-                                <td><Link className="bls-link" to={`/league/${a.leagueId}`}>{a.leagueName}</Link></td>
+                                <td>
+                                    <button type="button" className="bls-link bls-link-btn" onClick={() => setSelectedKey(isOn ? null : key)}>
+                                        {a.leagueName}
+                                    </button>
+                                </td>
                                 <td><Link className="bls-link" to={`/league/${a.leagueId}/${a.teamId}`}>{a.teamName}</Link></td>
                                 <td><Badge bg={a.status === "REGULAR" ? "primary" : "secondary"}>{a.status === "REGULAR" ? "Regular" : "Sub"}</Badge></td>
                                 <td className="text-end tabular-nums">{a.stats?.gameStats.count ?? "—"}</td>
                                 <td className="text-end tabular-nums">{a.stats ? numberFormat.format(a.stats.gameStats.average) : "—"}</td>
                                 <td className="text-end tabular-nums">{a.stats?.gameStats.max ?? "—"}</td>
                             </tr>
-                        ))}
+                            );
+                        })}
                     </tbody>
                 </Table>
             </div>
+            {selectedKey && (() => {
+                const a = appearances.find((x) => `${x.season}::${x.leagueId}::${x.teamId}` === selectedKey);
+                if (!a) return null;
+                return (
+                    <CardBody className="border-top">
+                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                            <div>
+                                <div className="fw-semibold">{a.leagueName}</div>
+                                <div className="text-body-secondary fs-sm">{a.season} · {a.teamName}</div>
+                            </div>
+                            <Link className="bls-link fs-sm" to={`/league/${a.leagueId}/${a.teamId}`}>Open league page</Link>
+                        </div>
+                        {a.stats
+                            ? <FullStatsGrid stats={a.stats} leagueExtras={a.stats} />
+                            : <p className="text-body-secondary mb-0">No detailed stats for this league appearance.</p>}
+                    </CardBody>
+                );
+            })()}
         </Card>
     );
 };
