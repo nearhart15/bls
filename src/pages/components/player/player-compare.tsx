@@ -1,10 +1,8 @@
 /*
- * Player comparison — head-to-head leads with charts © 2026
+ * Player comparison — filters + tug-of-war slider leads © 2026
  */
 
 import {type FC, useCallback, useMemo, useState} from "react";
-import Chart from "react-apexcharts";
-import type {ApexOptions} from "apexcharts";
 import {
     Badge,
     Card,
@@ -18,26 +16,27 @@ import {
 import {
     buildFullPlayerList,
     PLAYER_INDEX_CACHE_CATEGORY,
+    type PlayerAppearanceSlice,
     type PlayerListEntry,
+    type PlayerListSeasonSlice,
 } from "../../../data/player/player-aggregate";
 import {useCachedFetcher} from "../cache/data-loader";
 import Loader from "../loader";
 import ErrorDisplay from "../error-display";
-import {useTheme} from "../theme";
-import {chartPalette} from "../charts/chart-theme";
 
 const numberFormat = Intl.NumberFormat("en-US", {
     style: "decimal",
     maximumFractionDigits: 1,
 });
 
+const COLOR_A = "#2997ff";
+const COLOR_B = "#ff9f0a";
+const COLOR_A_SOFT = "rgba(41, 151, 255, 0.14)";
+const COLOR_B_SOFT = "rgba(255, 159, 10, 0.14)";
+
 interface StatDef {
-    key: keyof Pick<
-        PlayerListEntry,
-        "average" | "games" | "pinfall" | "highGame" | "highSeries" | "games200"
-    >;
+    key: "average" | "games" | "pinfall" | "highGame" | "highSeries" | "games200";
     label: string;
-    higherIsBetter: boolean;
     format: (v: number | null | undefined) => string;
 }
 
@@ -45,216 +44,185 @@ const STATS: StatDef[] = [
     {
         key: "average",
         label: "Average",
-        higherIsBetter: true,
         format: (v) => (v != null ? numberFormat.format(v) : "—"),
     },
-    {
-        key: "games",
-        label: "Games",
-        higherIsBetter: true,
-        format: (v) => (v != null ? String(v) : "—"),
-    },
-    {
-        key: "pinfall",
-        label: "Pinfall",
-        higherIsBetter: true,
-        format: (v) => (v != null ? String(v) : "—"),
-    },
-    {
-        key: "highGame",
-        label: "High game",
-        higherIsBetter: true,
-        format: (v) => (v != null ? String(v) : "—"),
-    },
-    {
-        key: "highSeries",
-        label: "High series",
-        higherIsBetter: true,
-        format: (v) => (v != null ? String(v) : "—"),
-    },
-    {
-        key: "games200",
-        label: "200+ games",
-        higherIsBetter: true,
-        format: (v) => (v != null ? String(v) : "—"),
-    },
+    {key: "games", label: "Games", format: (v) => (v != null ? String(v) : "—")},
+    {key: "pinfall", label: "Pinfall", format: (v) => (v != null ? String(v) : "—")},
+    {key: "highGame", label: "High game", format: (v) => (v != null ? String(v) : "—")},
+    {key: "highSeries", label: "High series", format: (v) => (v != null ? String(v) : "—")},
+    {key: "games200", label: "200+ games", format: (v) => (v != null ? String(v) : "—")},
 ];
+
+interface ScopedStats {
+    average: number | null;
+    games: number;
+    pinfall: number;
+    highGame: number;
+    highSeries: number;
+    games200: number;
+}
 
 function num(v: number | null | undefined): number {
     return v == null || Number.isNaN(v) ? 0 : v;
 }
 
-const LeadBars: FC<{a: PlayerListEntry; b: PlayerListEntry}> = ({a, b}) => {
-    const {theme} = useTheme();
-    const palette = chartPalette(theme);
-    const colorA = palette.series[0];
-    const colorB = palette.series[2];
-
-    const categories = STATS.map((s) => s.label);
-    const seriesA = STATS.map((s) => num(a[s.key] as number | null));
-    const seriesB = STATS.map((s) => num(b[s.key] as number | null));
-
-    const normA: number[] = [];
-    const normB: number[] = [];
-    for (let i = 0; i < STATS.length; i++) {
-        const max = Math.max(seriesA[i], seriesB[i], 1);
-        normA.push(Math.round((seriesA[i] / max) * 1000) / 10);
-        normB.push(Math.round((seriesB[i] / max) * 1000) / 10);
+function mergeAppearanceSlices(slices: PlayerAppearanceSlice[]): ScopedStats {
+    let games = 0;
+    let pinfall = 0;
+    let highGame = 0;
+    let highSeries = 0;
+    let games200 = 0;
+    let weighted = 0;
+    for (const s of slices) {
+        games += s.games;
+        pinfall += s.pinfall;
+        highGame = Math.max(highGame, s.highGame);
+        highSeries = Math.max(highSeries, s.highSeries);
+        games200 += s.games200;
+        if (s.average != null && s.games > 0) weighted += s.average * s.games;
     }
-
-    const options: ApexOptions = {
-        chart: {
-            type: "bar",
-            background: "transparent",
-            toolbar: {show: false},
-            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-        },
-        theme: {mode: theme},
-        plotOptions: {
-            bar: {
-                horizontal: true,
-                borderRadius: 6,
-                barHeight: "68%",
-                dataLabels: {position: "top"},
-            },
-        },
-        colors: [colorA, colorB],
-        dataLabels: {
-            enabled: true,
-            formatter: (_val, opts) => {
-                const i = opts?.dataPointIndex ?? 0;
-                const seriesIndex = opts?.seriesIndex ?? 0;
-                const raw = seriesIndex === 0 ? seriesA[i] : seriesB[i];
-                return STATS[i].format(raw);
-            },
-            style: {
-                fontSize: "11px",
-                fontWeight: 600,
-                colors: [palette.textStrong],
-            },
-            offsetX: 6,
-        },
-        xaxis: {
-            categories,
-            max: 100,
-            labels: {show: false},
-            axisBorder: {show: false},
-            axisTicks: {show: false},
-        },
-        yaxis: {
-            labels: {
-                style: {colors: palette.text, fontSize: "12px", fontWeight: 600},
-            },
-        },
-        grid: {
-            borderColor: palette.grid,
-            xaxis: {lines: {show: false}},
-        },
-        legend: {
-            position: "top",
-            horizontalAlign: "right",
-            labels: {colors: palette.text},
-        },
-        tooltip: {
-            theme,
-            y: {
-                formatter: (_val, opts) => {
-                    const i = opts?.dataPointIndex ?? 0;
-                    const seriesIndex = opts?.seriesIndex ?? 0;
-                    const raw = seriesIndex === 0 ? seriesA[i] : seriesB[i];
-                    return STATS[i].format(raw);
-                },
-            },
-        },
+    return {
+        games,
+        pinfall,
+        highGame,
+        highSeries,
+        games200,
+        average: games > 0 ? weighted / games : null,
     };
+}
+
+function mergeSeasonSlices(slices: PlayerListSeasonSlice[]): ScopedStats {
+    let games = 0;
+    let pinfall = 0;
+    let highGame = 0;
+    let highSeries = 0;
+    let games200 = 0;
+    let weighted = 0;
+    for (const s of slices) {
+        games += s.games;
+        pinfall += s.pinfall;
+        highGame = Math.max(highGame, s.highGame);
+        highSeries = Math.max(highSeries, s.highSeries);
+        games200 += s.games200;
+        if (s.average != null && s.games > 0) weighted += s.average * s.games;
+    }
+    return {
+        games,
+        pinfall,
+        highGame,
+        highSeries,
+        games200,
+        average: games > 0 ? weighted / games : null,
+    };
+}
+
+function scopePlayer(
+    entry: PlayerListEntry,
+    season: string,
+    leagueId: string
+): ScopedStats {
+    const apps = entry.appearanceSlices ?? [];
+    if (leagueId && season) {
+        return mergeAppearanceSlices(
+            apps.filter((a) => a.leagueId === leagueId && a.season === season)
+        );
+    }
+    if (leagueId) {
+        return mergeAppearanceSlices(apps.filter((a) => a.leagueId === leagueId));
+    }
+    if (season) {
+        const seasonSlices = (entry.seasonSlices ?? []).filter((s) => s.season === season);
+        if (seasonSlices.length > 0) return mergeSeasonSlices(seasonSlices);
+        return mergeAppearanceSlices(apps.filter((a) => a.season === season));
+    }
+    return {
+        average: entry.average,
+        games: entry.games,
+        pinfall: entry.pinfall,
+        highGame: entry.highGame,
+        highSeries: entry.highSeries,
+        games200: entry.games200,
+    };
+}
+
+const LeadSlider: FC<{
+    label: string;
+    valueA: number | null;
+    valueB: number | null;
+    format: (v: number | null | undefined) => string;
+    nameA: string;
+    nameB: string;
+}> = ({label, valueA, valueB, format, nameA, nameB}) => {
+    const a = num(valueA);
+    const b = num(valueB);
+    const total = a + b;
+    const pctA = total > 0 ? (a / total) * 100 : 50;
+    const pctB = total > 0 ? (b / total) * 100 : 50;
+    const leader: "a" | "b" | "tie" = a > b ? "a" : b > a ? "b" : "tie";
+
+    const rowBg =
+        leader === "a" ? COLOR_A_SOFT : leader === "b" ? COLOR_B_SOFT : "transparent";
 
     return (
-        <Chart
-            options={options}
-            series={[
-                {name: a.name, data: normA},
-                {name: b.name, data: normB},
-            ]}
-            type="bar"
-            height={Math.max(280, STATS.length * 52)}
-        />
-    );
-};
-
-const DeltaChart: FC<{a: PlayerListEntry; b: PlayerListEntry}> = ({a, b}) => {
-    const {theme} = useTheme();
-    const palette = chartPalette(theme);
-
-    const categories: string[] = [];
-    const deltas: number[] = [];
-
-    for (const s of STATS) {
-        const av = num(a[s.key] as number | null);
-        const bv = num(b[s.key] as number | null);
-        const d = av - bv;
-        categories.push(s.label);
-        deltas.push(Math.round(d * 10) / 10);
-    }
-
-    const options: ApexOptions = {
-        chart: {
-            type: "bar",
-            background: "transparent",
-            toolbar: {show: false},
-            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-        },
-        theme: {mode: theme},
-        plotOptions: {
-            bar: {
-                horizontal: true,
-                borderRadius: 6,
-                barHeight: "60%",
-                colors: {
-                    ranges: [
-                        {from: -1e9, to: -0.0001, color: palette.series[2]},
-                        {from: 0, to: 0, color: palette.grid},
-                        {from: 0.0001, to: 1e9, color: palette.series[0]},
-                    ],
-                },
-            },
-        },
-        colors: [palette.series[0]],
-        dataLabels: {
-            enabled: true,
-            formatter: (val) => {
-                const n = Number(val);
-                return n > 0 ? `+${n}` : String(n);
-            },
-            style: {fontSize: "11px", fontWeight: 700, colors: [palette.textStrong]},
-        },
-        xaxis: {
-            categories,
-            labels: {style: {colors: palette.text, fontSize: "11px"}},
-            axisBorder: {show: false},
-        },
-        yaxis: {
-            labels: {style: {colors: palette.text, fontSize: "12px", fontWeight: 600}},
-        },
-        grid: {borderColor: palette.grid},
-        tooltip: {
-            theme,
-            y: {
-                formatter: (val) => {
-                    const n = Number(val);
-                    return n > 0 ? `+${n}` : String(n);
-                },
-            },
-        },
-        legend: {show: false},
-    };
-
-    return (
-        <Chart
-            options={options}
-            series={[{name: `${a.name} − ${b.name}`, data: deltas}]}
-            type="bar"
-            height={Math.max(260, STATS.length * 48)}
-        />
+        <div className="bls-lead-slider" style={{background: rowBg}}>
+            <div className="bls-lead-slider-head">
+                <span className="bls-lead-slider-label">{label}</span>
+                {leader !== "tie" && (
+                    <Badge
+                        pill
+                        style={{
+                            background: leader === "a" ? COLOR_A : COLOR_B,
+                            color: "#0a0a0a",
+                            fontWeight: 700,
+                        }}
+                    >
+                        {leader === "a" ? nameA : nameB} leads
+                    </Badge>
+                )}
+                {leader === "tie" && (
+                    <Badge bg="secondary" pill>
+                        Tie
+                    </Badge>
+                )}
+            </div>
+            <div className="bls-lead-slider-values">
+                <span className="bls-lead-val bls-lead-val-a" style={{color: COLOR_A}}>
+                    {format(valueA)}
+                </span>
+                <span className="bls-lead-val bls-lead-val-b" style={{color: COLOR_B}}>
+                    {format(valueB)}
+                </span>
+            </div>
+            <div
+                className="bls-lead-track"
+                role="img"
+                aria-label={`${label}: ${format(valueA)} vs ${format(valueB)}`}
+            >
+                <div
+                    className="bls-lead-fill bls-lead-fill-a"
+                    style={{
+                        width: `${pctA}%`,
+                        background: COLOR_A,
+                        opacity: leader === "b" ? 0.45 : 1,
+                        boxShadow: leader === "a" ? `0 0 12px ${COLOR_A}` : undefined,
+                    }}
+                />
+                <div
+                    className="bls-lead-fill bls-lead-fill-b"
+                    style={{
+                        width: `${pctB}%`,
+                        background: COLOR_B,
+                        opacity: leader === "a" ? 0.45 : 1,
+                        boxShadow: leader === "b" ? `0 0 12px ${COLOR_B}` : undefined,
+                    }}
+                />
+                <div className="bls-lead-center" aria-hidden />
+            </div>
+            <div className="bls-lead-slider-foot">
+                <span style={{color: COLOR_A}}>{nameA}</span>
+                <span style={{color: COLOR_B}}>{nameB}</span>
+            </div>
+        </div>
     );
 };
 
@@ -265,44 +233,82 @@ const PlayerCompare: FC = () => {
         PLAYER_INDEX_CACHE_CATEGORY
     );
 
+    const [season, setSeason] = useState("");
+    const [leagueId, setLeagueId] = useState("");
     const [idA, setIdA] = useState("");
     const [idB, setIdB] = useState("");
 
-    const players = useMemo(() => {
-        if (!data) return [];
-        return [...data].sort((x, y) => x.name.localeCompare(y.name));
+    const seasons = useMemo(() => {
+        if (!data) return [] as string[];
+        const set = new Set<string>();
+        for (const p of data) {
+            for (const s of p.seasonSlices ?? []) set.add(s.season);
+            for (const a of p.appearanceSlices ?? []) if (a.season) set.add(a.season);
+        }
+        return [...set].sort((a, b) => b.localeCompare(a));
     }, [data]);
 
-    const a = players.find((p) => p.id === idA);
-    const b = players.find((p) => p.id === idB);
+    const leagues = useMemo(() => {
+        if (!data) return [] as {id: string; name: string}[];
+        const map = new Map<string, string>();
+        for (const p of data) {
+            for (const a of p.appearanceSlices ?? []) {
+                if (!a.leagueId) continue;
+                if (season && a.season !== season) continue;
+                if (!map.has(a.leagueId)) map.set(a.leagueId, a.leagueName || a.leagueId);
+            }
+        }
+        return [...map.entries()]
+            .map(([id, name]) => ({id, name}))
+            .sort((a, b) => a.name.localeCompare(b.name));
+    }, [data, season]);
+
+    const eligible = useMemo(() => {
+        if (!data) return [] as PlayerListEntry[];
+        return data
+            .filter((p) => {
+                const s = scopePlayer(p, season, leagueId);
+                return s.games > 0 || (!season && !leagueId && p.games > 0);
+            })
+            .sort((x, y) => x.name.localeCompare(y.name));
+    }, [data, season, leagueId]);
+
+    const aEntry = eligible.find((p) => p.id === idA);
+    const bEntry = eligible.find((p) => p.id === idB);
+
+    const statsA = aEntry ? scopePlayer(aEntry, season, leagueId) : null;
+    const statsB = bEntry ? scopePlayer(bEntry, season, leagueId) : null;
 
     const leads = useMemo(() => {
-        if (!a || !b) return null;
+        if (!statsA || !statsB) return null;
         let scoreA = 0;
         let scoreB = 0;
-        const rows = STATS.map((s) => {
-            const av = num(a[s.key] as number | null);
-            const bv = num(b[s.key] as number | null);
-            let leader: "a" | "b" | "tie" = "tie";
-            if (av > bv) {
-                leader = "a";
-                scoreA++;
-            } else if (bv > av) {
-                leader = "b";
-                scoreB++;
-            }
-            return {stat: s, av, bv, leader};
-        });
-        return {rows, scoreA, scoreB};
-    }, [a, b]);
+        for (const s of STATS) {
+            const av = num(statsA[s.key]);
+            const bv = num(statsB[s.key]);
+            if (av > bv) scoreA++;
+            else if (bv > av) scoreB++;
+        }
+        return {scoreA, scoreB};
+    }, [statsA, statsB]);
+
+    const scopeLabel = useMemo(() => {
+        const parts: string[] = [];
+        if (season) parts.push(season);
+        if (leagueId) {
+            const lg = leagues.find((l) => l.id === leagueId);
+            parts.push(lg?.name ?? leagueId);
+        }
+        return parts.length ? parts.join(" · ") : "Career (all leagues & seasons)";
+    }, [season, leagueId, leagues]);
 
     return (
         <div className="bls-compare">
             <div className="bls-compare-hero mb-3">
                 <span className="bls-hero-kicker">Head to head</span>
-                <h1>Player comparison</h1>
+                <h1>Player Compare</h1>
                 <p className="text-body-secondary mb-0">
-                    Pick two bowlers to see who leads each career stat.
+                    Filter by season or league, pick two bowlers, and see who leads each stat.
                 </p>
             </div>
 
@@ -315,170 +321,187 @@ const PlayerCompare: FC = () => {
                 <>
                     <Card className="bls-profile-card mb-3">
                         <CardBody>
-                            <Row className="g-3 align-items-end">
-                                <Col md={5}>
-                                    <Form.Label className="bls-meta-label">Player A</Form.Label>
+                            <Row className="g-3">
+                                <Col md={6} lg={3}>
+                                    <Form.Label className="bls-meta-label">Season / year</Form.Label>
                                     <Form.Select
-                                        value={idA}
-                                        onChange={(e) => setIdA(e.target.value)}
-                                        aria-label="Select player A"
+                                        value={season}
+                                        onChange={(e) => {
+                                            setSeason(e.target.value);
+                                            setLeagueId("");
+                                        }}
+                                        aria-label="Filter by season"
                                     >
-                                        <option value="">Select bowler…</option>
-                                        {players.map((p) => (
-                                            <option key={p.id} value={p.id} disabled={p.id === idB}>
-                                                {p.name}
-                                                {p.average != null
-                                                    ? ` (${numberFormat.format(p.average)})`
-                                                    : ""}
+                                        <option value="">All seasons (career)</option>
+                                        {seasons.map((s) => (
+                                            <option key={s} value={s}>
+                                                {s}
                                             </option>
                                         ))}
                                     </Form.Select>
                                 </Col>
-                                <Col md={2} className="text-center">
-                                    <Badge bg="secondary" pill className="fs-6 px-3 py-2">
-                                        vs
-                                    </Badge>
-                                </Col>
-                                <Col md={5}>
-                                    <Form.Label className="bls-meta-label">Player B</Form.Label>
+                                <Col md={6} lg={3}>
+                                    <Form.Label className="bls-meta-label">League</Form.Label>
                                     <Form.Select
-                                        value={idB}
-                                        onChange={(e) => setIdB(e.target.value)}
-                                        aria-label="Select player B"
+                                        value={leagueId}
+                                        onChange={(e) => setLeagueId(e.target.value)}
+                                        aria-label="Filter by league"
+                                    >
+                                        <option value="">All leagues</option>
+                                        {leagues.map((l) => (
+                                            <option key={l.id} value={l.id}>
+                                                {l.name}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                </Col>
+                                <Col md={6} lg={3}>
+                                    <Form.Label className="bls-meta-label" style={{color: COLOR_A}}>
+                                        Player A
+                                    </Form.Label>
+                                    <Form.Select
+                                        value={aEntry ? idA : ""}
+                                        onChange={(e) => setIdA(e.target.value)}
+                                        aria-label="Select player A"
+                                        style={{borderColor: COLOR_A}}
                                     >
                                         <option value="">Select bowler…</option>
-                                        {players.map((p) => (
+                                        {eligible.map((p) => (
+                                            <option key={p.id} value={p.id} disabled={p.id === idB}>
+                                                {p.name}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                </Col>
+                                <Col md={6} lg={3}>
+                                    <Form.Label className="bls-meta-label" style={{color: COLOR_B}}>
+                                        Player B
+                                    </Form.Label>
+                                    <Form.Select
+                                        value={bEntry ? idB : ""}
+                                        onChange={(e) => setIdB(e.target.value)}
+                                        aria-label="Select player B"
+                                        style={{borderColor: COLOR_B}}
+                                    >
+                                        <option value="">Select bowler…</option>
+                                        {eligible.map((p) => (
                                             <option key={p.id} value={p.id} disabled={p.id === idA}>
                                                 {p.name}
-                                                {p.average != null
-                                                    ? ` (${numberFormat.format(p.average)})`
-                                                    : ""}
                                             </option>
                                         ))}
                                     </Form.Select>
                                 </Col>
                             </Row>
+                            <div className="fs-xs text-body-secondary mt-2">{scopeLabel}</div>
                         </CardBody>
                     </Card>
 
-                    {a && b && leads && (
+                    {aEntry && bEntry && statsA && statsB && leads && (
                         <>
                             <Row className="g-3 mb-3">
                                 <Col md={6}>
-                                    <Card className="bls-profile-card h-100 bls-compare-card">
+                                    <Card
+                                        className="bls-profile-card h-100 bls-compare-card"
+                                        style={{
+                                            borderColor: COLOR_A,
+                                            boxShadow: `0 0 0 1px ${COLOR_A}33`,
+                                        }}
+                                    >
                                         <CardHeader className="d-flex justify-content-between align-items-center">
-                                            <span>{a.name}</span>
-                                            <Badge bg={leads.scoreA >= leads.scoreB ? "primary" : "secondary"} pill>
+                                            <span style={{color: COLOR_A, fontWeight: 700}}>
+                                                {aEntry.name}
+                                            </span>
+                                            <Badge
+                                                pill
+                                                style={{
+                                                    background:
+                                                        leads.scoreA >= leads.scoreB
+                                                            ? COLOR_A
+                                                            : "#6e6e73",
+                                                    color: "#0a0a0a",
+                                                }}
+                                            >
                                                 {leads.scoreA} leads
                                             </Badge>
                                         </CardHeader>
                                         <CardBody>
-                                            <div className="bls-kpi-big" style={{fontSize: "2.25rem"}}>
-                                                {a.average != null ? numberFormat.format(a.average) : "—"}
+                                            <div
+                                                className="bls-kpi-big"
+                                                style={{fontSize: "2.25rem", color: COLOR_A}}
+                                            >
+                                                {statsA.average != null
+                                                    ? numberFormat.format(statsA.average)
+                                                    : "—"}
                                             </div>
-                                            <div className="bls-kpi-big-label">Career average</div>
+                                            <div className="bls-kpi-big-label">Average in scope</div>
                                         </CardBody>
                                     </Card>
                                 </Col>
                                 <Col md={6}>
-                                    <Card className="bls-profile-card h-100 bls-compare-card">
+                                    <Card
+                                        className="bls-profile-card h-100 bls-compare-card"
+                                        style={{
+                                            borderColor: COLOR_B,
+                                            boxShadow: `0 0 0 1px ${COLOR_B}33`,
+                                        }}
+                                    >
                                         <CardHeader className="d-flex justify-content-between align-items-center">
-                                            <span>{b.name}</span>
-                                            <Badge bg={leads.scoreB >= leads.scoreA ? "primary" : "secondary"} pill>
+                                            <span style={{color: COLOR_B, fontWeight: 700}}>
+                                                {bEntry.name}
+                                            </span>
+                                            <Badge
+                                                pill
+                                                style={{
+                                                    background:
+                                                        leads.scoreB >= leads.scoreA
+                                                            ? COLOR_B
+                                                            : "#6e6e73",
+                                                    color: "#0a0a0a",
+                                                }}
+                                            >
                                                 {leads.scoreB} leads
                                             </Badge>
                                         </CardHeader>
                                         <CardBody>
-                                            <div className="bls-kpi-big" style={{fontSize: "2.25rem"}}>
-                                                {b.average != null ? numberFormat.format(b.average) : "—"}
+                                            <div
+                                                className="bls-kpi-big"
+                                                style={{fontSize: "2.25rem", color: COLOR_B}}
+                                            >
+                                                {statsB.average != null
+                                                    ? numberFormat.format(statsB.average)
+                                                    : "—"}
                                             </div>
-                                            <div className="bls-kpi-big-label">Career average</div>
+                                            <div className="bls-kpi-big-label">Average in scope</div>
                                         </CardBody>
                                     </Card>
                                 </Col>
                             </Row>
 
                             <Card className="bls-profile-card mb-3">
-                                <div className="bls-profile-card-head">Stat-by-stat lead</div>
-                                <CardBody>
-                                    <div className="table-responsive">
-                                        <table className="table bls-appear-table mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Stat</th>
-                                                    <th className="text-end">{a.name}</th>
-                                                    <th className="text-end">{b.name}</th>
-                                                    <th className="text-center">Lead</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {leads.rows.map(({stat, av, bv, leader}) => (
-                                                    <tr key={stat.key}>
-                                                        <td className="fw-semibold">{stat.label}</td>
-                                                        <td
-                                                            className={`text-end tabular-nums${
-                                                                leader === "a" ? " fw-bold text-primary" : ""
-                                                            }`}
-                                                        >
-                                                            {stat.format(av)}
-                                                        </td>
-                                                        <td
-                                                            className={`text-end tabular-nums${
-                                                                leader === "b" ? " fw-bold text-primary" : ""
-                                                            }`}
-                                                        >
-                                                            {stat.format(bv)}
-                                                        </td>
-                                                        <td className="text-center">
-                                                            {leader === "tie" ? (
-                                                                <span className="text-body-secondary">Tie</span>
-                                                            ) : (
-                                                                <Badge bg="success" pill>
-                                                                    {leader === "a" ? a.name : b.name}
-                                                                </Badge>
-                                                            )}
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                <div className="bls-profile-card-head">Stat leads</div>
+                                <CardBody className="d-flex flex-column gap-3">
+                                    {STATS.map((s) => (
+                                        <LeadSlider
+                                            key={s.key}
+                                            label={s.label}
+                                            valueA={statsA[s.key]}
+                                            valueB={statsB[s.key]}
+                                            format={s.format}
+                                            nameA={aEntry.name}
+                                            nameB={bEntry.name}
+                                        />
+                                    ))}
                                 </CardBody>
                             </Card>
-
-                            <Row className="g-3 mb-3">
-                                <Col lg={6}>
-                                    <Card className="bls-profile-card h-100">
-                                        <div className="bls-profile-card-head">Normalized comparison</div>
-                                        <CardBody>
-                                            <LeadBars a={a} b={b} />
-                                            <p className="fs-xs text-body-secondary mb-0 mt-2">
-                                                Bars are scaled per stat so the leader reaches 100%. Labels show real values.
-                                            </p>
-                                        </CardBody>
-                                    </Card>
-                                </Col>
-                                <Col lg={6}>
-                                    <Card className="bls-profile-card h-100">
-                                        <div className="bls-profile-card-head">
-                                            Margin ({a.name} − {b.name})
-                                        </div>
-                                        <CardBody>
-                                            <DeltaChart a={a} b={b} />
-                                            <p className="fs-xs text-body-secondary mb-0 mt-2">
-                                                Positive bars favor {a.name}; negative favor {b.name}.
-                                            </p>
-                                        </CardBody>
-                                    </Card>
-                                </Col>
-                            </Row>
                         </>
                     )}
 
-                    {(!a || !b) && (
+                    {(!aEntry || !bEntry) && (
                         <Card className="bls-profile-card">
                             <CardBody className="text-body-secondary text-center py-5">
-                                Select two different bowlers to unlock the comparison charts.
+                                {eligible.length < 2
+                                    ? "Not enough bowlers in this season/league filter. Try widening the scope."
+                                    : "Select two different bowlers to unlock the comparison."}
                             </CardBody>
                         </Card>
                     )}
