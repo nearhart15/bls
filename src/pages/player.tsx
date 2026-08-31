@@ -10,6 +10,7 @@ import ErrorDisplay from "./components/error-display";
 import PlayerList from "./components/player/player-list";
 import PlayerDetail from "./components/player/player-detail";
 import PlayerCompare from "./components/player/player-compare";
+import PlayerLeaderboard from "./components/player/player-leaderboard";
 import {useCachedFetcher} from "./components/cache/data-loader";
 import {
     aggregatePlayerData,
@@ -43,6 +44,9 @@ const Player: FC = () => {
     if (playerId === "compare") {
         return <PlayerCompare />;
     }
+    if (playerId === "leaderboard") {
+        return <PlayerLeaderboard />;
+    }
 
     if (playerId) {
         return <PlayerDetailPage key={playerId} playerId={playerId} />;
@@ -50,7 +54,10 @@ const Player: FC = () => {
 
     return (
         <div className="container-md">
-            <div className="d-flex justify-content-end mb-2">
+            <div className="d-flex justify-content-end mb-2 gap-2">
+                <Link to="/player/leaderboard" className="btn btn-outline-primary btn-sm">
+                    Leaderboard
+                </Link>
                 <Link to="/player/compare" className="btn btn-outline-primary btn-sm">
                     Player Compare
                 </Link>
