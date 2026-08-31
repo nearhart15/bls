@@ -1,18 +1,5 @@
 /*
- * Copyright (c) 2025. Bindul Bhowmik
- * Dark mode additions © 2026
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Player averages chart — mobile-friendly © 2026
  */
 
 import type {FC} from "react";
@@ -20,157 +7,169 @@ import type {FC} from "react";
 import type {ApexOptions} from "apexcharts";
 import Chart from "react-apexcharts";
 
-import {Col, Container, Row} from "react-bootstrap";
-
-import {BS_BP_LG, BS_BP_XS, BS_BP_XXL} from "../ui-utils";
 import type {PlayerDayData} from "./league-team-roster";
 import {useTheme} from "../theme";
+import {baseChartOptions, chartPalette} from "../charts/chart-theme";
 
 interface TeamPlayerStatGraphProps {
     playerData: PlayerDayData[];
 }
+
+function count200s(p: PlayerDayData): number {
+    let count = 0;
+    if (p.game1 >= 200) count++;
+    if (p.game2 >= 200) count++;
+    if (p.game3 >= 200) count++;
+    return count;
+}
+
 const TeamPlayerStatGraph: FC<TeamPlayerStatGraphProps> = ({playerData}) => {
     const {theme} = useTheme();
+    const palette = chartPalette(theme);
+    const base = baseChartOptions(theme, "Player Averages");
 
-    const chartOptions : ApexOptions = {
+    const minAvg =
+        playerData.length > 0
+            ? playerData.reduce((minVal, p) => Math.min(minVal, p.average), 300) * 0.9
+            : 100;
+
+    const series: ApexOptions["series"] = [
+        {
+            name: "Weekly Avg",
+            type: "line",
+            data: playerData.map((p) => ({
+                x: p.bowlDate.getTime(),
+                y: Math.round(p.average * 10) / 10,
+            })),
+        },
+        {
+            name: "Running Avg",
+            type: "line",
+            data: playerData.map((p) => ({
+                x: p.bowlDate.getTime(),
+                y: Math.round(p.runningAverageAfter * 10) / 10,
+            })),
+        },
+        {
+            name: "200+ Games",
+            type: "scatter",
+            data: playerData.map((p) => {
+                const count = count200s(p);
+                return {
+                    x: p.bowlDate.getTime(),
+                    y: count > 0 ? count : null,
+                };
+            }),
+        },
+    ];
+
+    const options: ApexOptions = {
+        ...base,
         chart: {
-            id: 'Player-Averages',
-            background: 'transparent',
-            foreColor: theme === 'dark' ? '#adb5bd' : '#373d3f',
+            ...base.chart,
+            id: "Player-Averages",
+            height: 320,
+            type: "line",
         },
-        theme: {
-            mode: theme,
+        series,
+        colors: [palette.series[0], palette.series[3], palette.series[2]],
+        stroke: {
+            curve: ["smooth", "smooth", "smooth"],
+            width: [2.5, 3, 0],
         },
-        series: [
-            {
-                name: 'Weekly Average',
-                type: 'line',
-                data: playerData.map(p => {
-                    return {
-                        x: p.bowlDate.getTime(),
-                        y: p.average
-                    }
-                })
+        markers: {
+            size: [0, 0, 6],
+            strokeWidth: 0,
+            hover: {
+                size: 7,
             },
-            {
-                name: 'Running Average',
-                type: 'line',
-                data: playerData.map(p => {
-                    return {
-                        x: p.bowlDate.getTime(),
-                        y: p.runningAverageAfter
-                    };
-                }),
-            },
-            {
-                name: '200 Games',
-                type: 'line',
-                data: playerData.map(p => {
-                    let count = 0;
-                    if (p.game1 >= 200) {
-                        count ++;
-                    }
-                    if (p.game2 >= 200) {
-                        count ++;
-                    }
-                    if (p.game3 >= 200) {
-                        count ++;
-                    }
-                    if (count == 0) {
-                        return {
-                            x: p.bowlDate.getTime(),
-                            y: null
-                        };
-                    } else {
-                        return {
-                            x: p.bowlDate.getTime(),
-                            y: count
-                        };
-                    }
-                }),
-            }
-        ],
+        },
         xaxis: {
             type: "datetime",
             labels: {
-                format: 'dd-MMM'
-            }
+                datetimeUTC: false,
+                format: "dd MMM",
+                style: {
+                    colors: palette.text,
+                    fontSize: "11px",
+                },
+            },
+            axisBorder: {
+                show: false,
+            },
+            axisTicks: {
+                show: false,
+            },
+            tooltip: {
+                enabled: false,
+            },
         },
         yaxis: [
             {
-                seriesName: ['Weekly Average', 'Running Average'],
+                seriesName: ["Weekly Avg", "Running Avg"],
                 title: {
-                    text: "Scratch Pins"
+                    text: "Average",
+                    style: {
+                        color: palette.series[0],
+                        fontSize: "11px",
+                        fontWeight: 600,
+                    },
                 },
-                min: playerData.reduce((minVal, p) => Math.min(minVal, p.average), 300,) * 0.9,
-                decimalsInFloat: 0
+                min: Math.floor(minAvg),
+                decimalsInFloat: 0,
+                labels: {
+                    style: {
+                        colors: palette.text,
+                        fontSize: "11px",
+                    },
+                    formatter: (v) => (v == null ? "" : Math.round(v).toString()),
+                },
             },
             {
-                title: {
-                    text: "Games"
-                },
+                seriesName: "200+ Games",
                 opposite: true,
-                max: 3,
+                title: {
+                    text: "200s",
+                    style: {
+                        color: palette.series[2],
+                        fontSize: "11px",
+                        fontWeight: 600,
+                    },
+                },
                 min: 0,
-                decimalsInFloat: 0
+                max: 3,
+                tickAmount: 3,
+                decimalsInFloat: 0,
+                labels: {
+                    style: {
+                        colors: palette.text,
+                        fontSize: "11px",
+                    },
+                    formatter: (v) => (v == null ? "" : Math.round(v).toString()),
+                },
             },
         ],
-        stroke: {
-            curve: ["smooth", "smooth", "smooth"],
-            width: [2, 3, 0]
-        },
-        markers: {
-            size: [0, 0, 5]
-        },
-        title: {
-            text: "Player Averages"
-        },
-        noData: {
-            text: "Loading..."
-        },
-        responsive: [
-            {
-                breakpoint: BS_BP_XS.maxWidth,
-                options: {
-                    chart: {
-                        width: 300
-                    },
-                    legend: {
-                        position: "bottom"
+        tooltip: {
+            ...base.tooltip,
+            shared: true,
+            intersect: false,
+            y: {
+                formatter: (val, opts) => {
+                    if (val == null) return "—";
+                    if (opts.seriesIndex === 2) {
+                        return `${Math.round(val)} game${val === 1 ? "" : "s"}`;
                     }
-                }
+                    return Number(val).toFixed(1);
+                },
             },
-            {
-                breakpoint: BS_BP_LG.maxWidth,
-                options: {
-                    chart: {
-                        width: 450
-                    }
-                }
-            },
-            {
-                breakpoint: BS_BP_XXL.maxWidth,
-                options: {
-                    chart: {
-                        width: 600
-                    }
-                }
-            }
-        ]
+        },
     };
 
     return (
-        <Container fluid="true">
-            <Row>
-                <Col className="d-flex justify-content-center">
-                    <Chart
-                        options={chartOptions}
-                        series={chartOptions.series}
-                    />
-                </Col>
-            </Row>
-        </Container>
+        <div className="bls-chart">
+            <Chart options={options} series={series} type="line" width="100%" height={320} />
+        </div>
     );
-}
+};
 
 export default TeamPlayerStatGraph;

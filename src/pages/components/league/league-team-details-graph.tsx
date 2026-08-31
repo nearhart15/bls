@@ -1,18 +1,5 @@
 /*
- * Copyright (c) 2025. Bindul Bhowmik
- * Dark mode additions © 2026
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Team performance chart — mobile-friendly © 2026
  */
 
 import type {FC} from "react";
@@ -20,109 +7,141 @@ import type {FC} from "react";
 import Chart from "react-apexcharts";
 import type {ApexOptions} from "apexcharts";
 
-import {Col, Container, Row} from "react-bootstrap";
-import {BS_BP_LG, BS_BP_XS, BS_BP_XXL} from "../ui-utils";
-
 import type {TeamPositionScoreData} from "./league-team-details";
 import {useTheme} from "../theme";
+import {baseChartOptions, chartPalette} from "../charts/chart-theme";
 
 interface TeamStatGraphProps {
     teamPosScores: TeamPositionScoreData[];
 }
-const TeamStatGraph : FC<TeamStatGraphProps> = ({teamPosScores} : TeamStatGraphProps) => {
-    const {theme} = useTheme();
 
-    const chartOptions : ApexOptions = {
+const TeamStatGraph: FC<TeamStatGraphProps> = ({teamPosScores}) => {
+    const {theme} = useTheme();
+    const palette = chartPalette(theme);
+    const base = baseChartOptions(theme, "Team Scores & Rank");
+
+    const series: ApexOptions["series"] = [
+        {
+            name: "Scratch Series",
+            data: teamPosScores.map((tps) => [tps.bowlDate.getTime(), tps.scratchSeries]),
+        },
+        {
+            name: "League Rank",
+            data: teamPosScores
+                .filter((tps) => tps.position > 0)
+                .map((tps) => [tps.bowlDate.getTime(), tps.position]),
+        },
+    ];
+
+    const options: ApexOptions = {
+        ...base,
         chart: {
-            id: 'Team-Performance',
-            type: 'line',
-            background: 'transparent',
-            foreColor: theme === 'dark' ? '#adb5bd' : '#373d3f',
-        },
-        theme: {
-            mode: theme,
-        },
-        series: [{
-                name: 'Team Scratch Series',
-                data: teamPosScores.map(tps => [tps.bowlDate.getTime(), tps.scratchSeries])
+            ...base.chart,
+            id: "Team-Performance",
+            type: "line",
+            height: 320,
+            toolbar: {
+                ...base.chart?.toolbar,
+                show: true,
             },
-            {
-                name: 'Team League Rank',
-                data: teamPosScores.filter(tps => tps.position > 0).map(tps => [tps.bowlDate.getTime(), tps.position])
-            }
-        ],
+        },
+        series,
+        colors: [palette.series[0], palette.series[1]],
+        stroke: {
+            curve: ["smooth", "stepline"],
+            width: [3, 2.5],
+        },
+        markers: {
+            size: [0, 0],
+            hover: {
+                size: 5,
+            },
+        },
         xaxis: {
             type: "datetime",
             labels: {
-                format: 'dd-MMM'
-            }
+                datetimeUTC: false,
+                format: "dd MMM",
+                style: {
+                    colors: palette.text,
+                    fontSize: "11px",
+                },
+            },
+            axisBorder: {
+                show: false,
+            },
+            axisTicks: {
+                show: false,
+            },
+            tooltip: {
+                enabled: false,
+            },
         },
         yaxis: [
             {
-                decimalsInFloat: 0
+                title: {
+                    text: "Series",
+                    style: {
+                        color: palette.series[0],
+                        fontSize: "11px",
+                        fontWeight: 600,
+                    },
+                },
+                labels: {
+                    style: {
+                        colors: palette.text,
+                        fontSize: "11px",
+                    },
+                    formatter: (v) => (v == null ? "" : Math.round(v).toString()),
+                },
+                decimalsInFloat: 0,
+                forceNiceScale: true,
             },
             {
                 opposite: true,
                 reversed: true,
+                title: {
+                    text: "Rank",
+                    style: {
+                        color: palette.series[1],
+                        fontSize: "11px",
+                        fontWeight: 600,
+                    },
+                },
+                labels: {
+                    style: {
+                        colors: palette.text,
+                        fontSize: "11px",
+                    },
+                    formatter: (v) => (v == null ? "" : Math.round(v).toString()),
+                },
                 decimalsInFloat: 0,
                 forceNiceScale: true,
-                stepSize: 5
-            }
+                min: 1,
+            },
         ],
-        stroke: {
-            curve: ["monotoneCubic", "stepline"],
-            width: [3, 3]
-        },
-        title: {
-            text: "Team Scores and Rank"
-        },
-        noData: {
-            text: "Loading..."
-        },
-        responsive: [
-            {
-                breakpoint: BS_BP_XS.maxWidth,
-                options: {
-                    chart: {
-                        width: 300
-                    },
-                    legend: {
-                        position: "bottom"
+        tooltip: {
+            ...base.tooltip,
+            shared: true,
+            intersect: false,
+            y: {
+                formatter: (val, opts) => {
+                    if (val == null) return "—";
+                    // Rank series is index 1
+                    if (opts.seriesIndex === 1) {
+                        return `#${Math.round(val)}`;
                     }
-                }
+                    return Math.round(val).toString();
+                },
             },
-            {
-                breakpoint: BS_BP_LG.maxWidth,
-                options: {
-                    chart: {
-                        width: 450
-                    }
-                }
-            },
-            {
-                breakpoint: BS_BP_XXL.maxWidth,
-                options: {
-                    chart: {
-                        width: 600
-                    }
-                }
-            }
-        ]
+        },
     };
 
     return (
-        <Container fluid="true">
-            <Row>
-                <Col className="d-flex justify-content-center">
-                    <Chart
-                        options={chartOptions}
-                        series={chartOptions.series}
-                        type="line"
-                    />
-                </Col>
-            </Row>
-        </Container>
+        <div className="bls-chart">
+            <Chart options={options} series={series} type="line" width="100%" height={320} />
+        </div>
     );
-}
+};
 
 export default TeamStatGraph;
