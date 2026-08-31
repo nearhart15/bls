@@ -2,7 +2,7 @@
  * Player index — dashboard performance table with column sorting © 2026
  */
 
-import {type FC, useCallback, useMemo, useState} from "react";
+import {type CSSProperties, type FC, useCallback, useMemo, useState} from "react";
 import {Link} from "react-router";
 import {Badge, Card, CardBody, CardHeader, Table} from "react-bootstrap";
 
@@ -73,8 +73,7 @@ function comparePlayers(a: PlayerListEntry, b: PlayerListEntry, key: SortKey, di
             cmp = gradeRank(a.average) - gradeRank(b.average);
             break;
         case "rank":
-default:
-            // rank follows games then avg (default list order)
+        default:
             cmp = a.games - b.games || (a.average ?? 0) - (b.average ?? 0);
             break;
     }
@@ -89,7 +88,7 @@ const SortTh: FC<{
     dir: SortDir;
     onSort: (k: SortKey) => void;
     className?: string;
-    style?: React.CSSProperties;
+    style?: CSSProperties;
 }> = ({label, sortKey, active, dir, onSort, className, style}) => {
     const isActive = active === sortKey;
     return (
@@ -134,7 +133,6 @@ const PlayerList: FC = () => {
             setSortDir((d) => (d === "asc" ? "desc" : "asc"));
         } else {
             setSortKey(key);
-            // sensible default direction per column
             setSortDir(key === "name" ? "asc" : "desc");
         }
     };
@@ -167,79 +165,16 @@ const PlayerList: FC = () => {
                     <Table className="bls-perf-table mb-0" size="sm" hover responsive>
                         <thead>
                             <tr>
-                                <SortTh
-                                    label="#"
-                                    sortKey="rank"
-                                    active={sortKey}
-                                    dir={sortDir}
-                                    onSort={onSort}
-                                    className="text-center"
-                                    style={{width: "2.5rem"}}
-                                />
-                                <SortTh
-                                    label="Bowler"
-                                    sortKey="name"
-                                    active={sortKey}
-                                    dir={sortDir}
-                                    onSort={onSort}
-                                />
-                                <SortTh
-                                    label="Avg"
-                                    sortKey="average"
-                                    active={sortKey}
-                                    dir={sortDir}
-                                    onSort={onSort}
-                                    className="text-end"
-                                />
-                                <SortTh
-                                    label="Games"
-                                    sortKey="games"
-                                    active={sortKey}
-                                    dir={sortDir}
-                                    onSort={onSort}
-                                    className="text-end d-none d-sm-table-cell"
-                                />
-                                <SortTh
-                                    label="Pins"
-                                    sortKey="pinfall"
-                                    active={sortKey}
-                                    dir={sortDir}
-                                    onSort={onSort}
-                                    className="text-end d-none d-md-table-cell"
-                                />
-                                <SortTh
-                                    label="HG"
-                                    sortKey="highGame"
-                                    active={sortKey}
-                                    dir={sortDir}
-                                    onSort={onSort}
-                                    className="text-end d-none d-md-table-cell"
-                                />
-                                <SortTh
-                                    label="HS"
-                                    sortKey="highSeries"
-                                    active={sortKey}
-                                    dir={sortDir}
-                                    onSort={onSort}
-                                    className="text-end d-none d-lg-table-cell"
-                                />
-                                <SortTh
-                                    label="200+"
-                                    sortKey="games200"
-                                    active={sortKey}
-                                    dir={sortDir}
-                                    onSort={onSort}
-                                    className="text-end d-none d-sm-table-cell"
-                                />
+                                <SortTh label="#" sortKey="rank" active={sortKey} dir={sortDir} onSort={onSort} className="text-center" style={{width: "2.5rem"}} />
+                                <SortTh label="Bowler" sortKey="name" active={sortKey} dir={sortDir} onSort={onSort} />
+                                <SortTh label="Avg" sortKey="average" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                                <SortTh label="Games" sortKey="games" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-sm-table-cell" />
+                                <SortTh label="Pins" sortKey="pinfall" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-md-table-cell" />
+                                <SortTh label="HG" sortKey="highGame" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-md-table-cell" />
+                                <SortTh label="HS" sortKey="highSeries" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-lg-table-cell" />
+                                <SortTh label="200+" sortKey="games200" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-sm-table-cell" />
                                 <th className="d-none d-xl-table-cell text-center">Trend</th>
-                                <SortTh
-                                    label="Grade"
-                                    sortKey="grade"
-                                    active={sortKey}
-                                    dir={sortDir}
-                                    onSort={onSort}
-                                    className="text-center"
-                                />
+                                <SortTh label="Grade" sortKey="grade" active={sortKey} dir={sortDir} onSort={onSort} className="text-center" />
                             </tr>
                         </thead>
                         <tbody>
@@ -247,48 +182,25 @@ const PlayerList: FC = () => {
                                 const grade = performanceGrade(p.average);
                                 return (
                                     <tr key={p.id}>
-                                        <td className="text-center text-body-secondary fw-semibold">
-                                            {idx + 1}
-                                        </td>
+                                        <td className="text-center text-body-secondary fw-semibold">{idx + 1}</td>
                                         <td>
-                                            <Link
-                                                to={`/player/${p.id}`}
-                                                className="bls-link fw-semibold"
-                                            >
+                                            <Link to={`/player/${p.id}`} className="bls-link fw-semibold">
                                                 {p.name}
                                             </Link>
                                         </td>
                                         <td className="text-end fw-semibold tabular-nums">
-                                            {p.average != null
-                                                ? numberFormat.format(p.average)
-                                                : "—"}
+                                            {p.average != null ? numberFormat.format(p.average) : "—"}
                                         </td>
-                                        <td className="text-end d-none d-sm-table-cell tabular-nums">
-                                            {p.games || "—"}
-                                        </td>
-                                        <td className="text-end d-none d-md-table-cell tabular-nums">
-                                            {p.pinfall || "—"}
-                                        </td>
-                                        <td className="text-end d-none d-md-table-cell tabular-nums">
-                                            {p.highGame || "—"}
-                                        </td>
-                                        <td className="text-end d-none d-lg-table-cell tabular-nums">
-                                            {p.highSeries || "—"}
-                                        </td>
-                                        <td className="text-end d-none d-sm-table-cell tabular-nums">
-                                            {p.games200 || "—"}
-                                        </td>
+                                        <td className="text-end d-none d-sm-table-cell tabular-nums">{p.games || "—"}</td>
+                                        <td className="text-end d-none d-md-table-cell tabular-nums">{p.pinfall || "—"}</td>
+                                        <td className="text-end d-none d-md-table-cell tabular-nums">{p.highGame || "—"}</td>
+                                        <td className="text-end d-none d-lg-table-cell tabular-nums">{p.highSeries || "—"}</td>
+                                        <td className="text-end d-none d-sm-table-cell tabular-nums">{p.games200 || "—"}</td>
                                         <td className="d-none d-xl-table-cell text-center">
                                             {p.weekAverages && p.weekAverages.length > 1 ? (
                                                 <div className="d-flex justify-content-center gap-2 align-items-center">
-                                                    <MicroBarChart
-                                                        values={p.weekSeries ?? p.weekAverages}
-                                                        isDark={isDark}
-                                                    />
-                                                    <Sparkline
-                                                        values={p.weekAverages}
-                                                        isDark={isDark}
-                                                    />
+                                                    <MicroBarChart values={p.weekSeries ?? p.weekAverages} isDark={isDark} />
+                                                    <Sparkline values={p.weekAverages} isDark={isDark} />
                                                 </div>
                                             ) : (
                                                 <span className="bls-mini-empty">—</span>

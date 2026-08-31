@@ -287,13 +287,6 @@ a.bls-link:hover,
   border-bottom-width: 1px;
 }
 
-.bls-score-table {
-  border-collapse: separate;
-  border-spacing: 0;
-  overflow: hidden;
-  border-radius: var(--bls-radius-sm);
-}
-
 .badge {
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -587,3 +580,4 @@ a.bls-link:hover,
 
 @import "perf-table";
 @import "player-profile";
+@import "sortable";
