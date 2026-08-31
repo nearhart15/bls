@@ -127,8 +127,7 @@ const TeamStatGraph: FC<TeamStatGraphProps> = ({teamPosScores}) => {
             y: {
                 formatter: (val, opts) => {
                     if (val == null) return "—";
-                    // Rank series is index 1
-                    if (opts.seriesIndex === 1) {
+                    if (opts?.seriesIndex === 1) {
                         return `#${Math.round(val)}`;
                     }
                     return Math.round(val).toString();

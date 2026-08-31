@@ -50,7 +50,6 @@
   --bls-glow-1: rgba(41, 151, 255, 0.45);
   --bls-glow-2: rgba(191, 90, 242, 0.4);
 
-  /* Force Bootstrap body/surfaces toward black */
   --bs-body-bg: #000000;
   --bs-body-color: #f5f5f7;
   --bs-secondary-bg: #111111;
@@ -58,9 +57,6 @@
   --bs-border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* =========================================================
-   Base
-   ========================================================= */
 html {
   scroll-behavior: smooth;
 }
@@ -82,9 +78,6 @@ h1, h2, h3, h4, h5, h6,
   font-weight: 600;
 }
 
-/* =========================================================
-   App shell
-   ========================================================= */
 .bls-app {
   min-height: 100vh;
   display: flex;
@@ -93,7 +86,6 @@ h1, h2, h3, h4, h5, h6,
   overflow-x: hidden;
 }
 
-/* Ambient background glow orbs (Apple-style depth) */
 .bls-app::before,
 .bls-app::after {
   content: "";
@@ -140,9 +132,6 @@ h1, h2, h3, h4, h5, h6,
   flex: 1;
 }
 
-/* =========================================================
-   Navbar — Apple-like frosted bar
-   ========================================================= */
 .bls-nav {
   position: sticky;
   top: 0.75rem;
@@ -212,9 +201,6 @@ h1, h2, h3, h4, h5, h6,
   border-color: transparent !important;
 }
 
-/* =========================================================
-   Cards
-   ========================================================= */
 .card {
   background: var(--bls-surface);
   border: 1px solid var(--bls-border) !important;
@@ -267,9 +253,6 @@ h1, h2, h3, h4, h5, h6,
   letter-spacing: -0.02em;
 }
 
-/* =========================================================
-   Lists
-   ========================================================= */
 .list-group-item {
   background: transparent;
   border-color: var(--bls-border) !important;
@@ -306,9 +289,6 @@ a.bls-link:hover,
   text-underline-offset: 0.2em;
 }
 
-/* =========================================================
-   Tables
-   ========================================================= */
 .table {
   --bs-table-bg: transparent;
   --bs-table-color: var(--bls-text);
@@ -340,9 +320,6 @@ a.bls-link:hover,
   border-radius: var(--bls-radius-sm);
 }
 
-/* =========================================================
-   Badges & buttons
-   ========================================================= */
 .badge {
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -368,9 +345,6 @@ a.bls-link:hover,
   border-radius: 980px;
 }
 
-/* =========================================================
-   Stat tiles
-   ========================================================= */
 .bls-stat-tile {
   border: 1px solid var(--bls-border);
   border-radius: var(--bls-radius-sm);
@@ -403,9 +377,6 @@ a.bls-link:hover,
   font-variant-numeric: tabular-nums;
 }
 
-/* =========================================================
-   Frame score sheet
-   ========================================================= */
 .bls-frame {
   border: 1px solid var(--bls-border);
   border-radius: 0.45rem;
@@ -464,9 +435,36 @@ a.bls-link:hover,
   padding-right: 0.25rem;
 }
 
-/* =========================================================
-   Apple-style hero + feature graphics
-   ========================================================= */
+/* Charts — full-width, touch-friendly */
+.bls-chart {
+  width: 100%;
+  max-width: 100%;
+  margin: 0.5rem 0 0.25rem;
+  padding: 0.25rem 0;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bls-chart .apexcharts-canvas {
+  margin: 0 auto !important;
+}
+
+.bls-chart .apexcharts-tooltip {
+  border-radius: 0.65rem !important;
+  border: 1px solid var(--bls-border) !important;
+  box-shadow: var(--bls-shadow) !important;
+}
+
+.bls-chart .apexcharts-legend-text {
+  padding-left: 2px !important;
+}
+
+@media (max-width: 575.98px) {
+  .bls-chart {
+    margin-inline: -0.25rem;
+  }
+}
+
 .bls-section-title {
   font-size: 0.72rem;
   font-weight: 600;
@@ -495,7 +493,6 @@ a.bls-link:hover,
   }
 }
 
-/* Decorative orbs inside hero */
 .bls-hero::before,
 .bls-hero::after {
   content: "";
@@ -564,7 +561,6 @@ a.bls-link:hover,
   position: relative;
 }
 
-/* Abstract bowling-lane graphic */
 .bls-lane {
   position: absolute;
   inset: 0;
@@ -605,7 +601,6 @@ a.bls-link:hover,
   50% { transform: translateX(28px) scale(1.05); }
 }
 
-/* Feature strip */
 .bls-features {
   display: grid;
   grid-template-columns: 1fr;
@@ -663,7 +658,6 @@ a.bls-link:hover,
   line-height: 1.45;
 }
 
-/* News highlight cards */
 .bls-news-item {
   border: 1px solid var(--bls-border) !important;
   border-radius: var(--bls-radius-sm) !important;
@@ -681,9 +675,6 @@ a.bls-link:hover,
   min-width: 4.5rem;
 }
 
-/* =========================================================
-   Footer
-   ========================================================= */
 .bls-footer {
   margin-top: 3rem;
   padding-top: 2rem;
@@ -699,9 +690,6 @@ a.bls-link:hover,
   font-weight: 600;
 }
 
-/* =========================================================
-   Utilities
-   ========================================================= */
 .fs-sm { font-size: 0.875rem; }
 .fs-xs { font-size: 0.75rem; }
 .fs-xxs { font-size: 0.625rem; }
@@ -735,7 +723,6 @@ a.bls-link:hover,
   border-color: var(--bls-border) !important;
 }
 
-/* OLED: kill residual gray from Bootstrap components */
 [data-bs-theme="dark"] {
   .bg-body,
   .modal-content,

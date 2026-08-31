@@ -156,7 +156,7 @@ const TeamPlayerStatGraph: FC<TeamPlayerStatGraphProps> = ({playerData}) => {
             y: {
                 formatter: (val, opts) => {
                     if (val == null) return "—";
-                    if (opts.seriesIndex === 2) {
+                    if (opts?.seriesIndex === 2) {
                         return `${Math.round(val)} game${val === 1 ? "" : "s"}`;
                     }
                     return Number(val).toFixed(1);
