@@ -249,27 +249,18 @@ const DualRadar: FC<{bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}
     const {theme} = useTheme();
     const palette = chartPalette(theme);
     const clampPct = (v: number | null | undefined) => Math.max(0, Math.min(100, num(v)));
-    const ratePct = (count: number | null | undefined, games: number | null | undefined) => {
-        const g = num(games);
-        if (g <= 0) return 0;
-        return clampPct((num(count) / g) * 100);
-    };
     const firstBallPct = (v: number | null | undefined) => clampPct(num(v) * 10);
-    const cats = ["Strike %", "Spare %", "Single-pin %", "Split %", "Clean %", "1st ball %"];
+    const cats = ["Strike %", "Spare %", "Single-pin %", "1st ball %"];
     const seriesA = [
         clampPct(bagA.strikePct),
         clampPct(bagA.sparePct),
         clampPct(bagA.singlePinPct),
-        clampPct(bagA.splitPct),
-        ratePct(bagA.cleanGames, bagA.games),
         firstBallPct(bagA.firstBall),
     ];
     const seriesB = [
         clampPct(bagB.strikePct),
         clampPct(bagB.sparePct),
         clampPct(bagB.singlePinPct),
-        clampPct(bagB.splitPct),
-        ratePct(bagB.cleanGames, bagB.games),
         firstBallPct(bagB.firstBall),
     ];
     const options: ApexOptions = {
