@@ -147,6 +147,17 @@ function seasonMatches(season: string, scope: Scope, current: string, lastYear: 
     return season.includes(lastYear);
 }
 
+function shortTeamName(a: {teamName?: string; teamId?: string; leagueName?: string}): string {
+    const raw = (a.teamName || a.teamId || "").trim();
+    if (!raw) return "";
+    const dash = raw.split(/\s+[\u2014\u2013-]\s+/);
+    if (dash.length >= 2 && /league/i.test(dash[0])) return dash.slice(1).join(" \u2014 ").trim();
+    if (a.leagueName && raw.startsWith(a.leagueName)) {
+        return raw.slice(a.leagueName.length).replace(/^[\s\u2014\u2013-]+/, "").trim() || raw;
+    }
+    return raw;
+}
+
 function filteredAppearances(
     entry: PlayerListEntry,
     scope: Scope,
@@ -158,7 +169,7 @@ function filteredAppearances(
     return (entry.appearanceSlices ?? []).filter((a) => {
         if (!seasonMatches(a.season, scope, current, lastYear)) return false;
         if (leagueId && a.leagueId !== leagueId) return false;
-        if (teamName && (a.teamName || a.teamId) !== teamName) return false;
+        if (teamName && shortTeamName(a) !== teamName) return false;
         return true;
     });
 }
@@ -199,7 +210,7 @@ function statValue(row: Row, def: StatDef): number | null {
 }
 
 function formatValue(v: number | null, def: StatDef): string {
-    if (v == null || Number.isNaN(v)) return "—";
+    if (v == null || Number.isNaN(v)) return "\u2014";
     if (def.kind === "pct") return `${pctFormat.format(v)}%`;
     if (def.kind === "ratio") return `${numberFormat.format(v)} : 1`;
     return numberFormat.format(v);
@@ -236,7 +247,7 @@ const PlayerLeaderboard: FC = () => {
         const set = new Set<string>();
         for (const p of data) {
             for (const a of p.appearanceSlices ?? []) {
-                const name = a.teamName || a.teamId;
+                const name = shortTeamName(a);
                 if (!name) continue;
                 if (!seasonMatches(a.season, scope, currentSeason, lastYear)) continue;
                 if (leagueId && a.leagueId !== leagueId) continue;
