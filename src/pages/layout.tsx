@@ -4,7 +4,8 @@
 
 import {type FC, useRef} from "react";
 import {Link, Outlet} from "react-router";
-import {Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {Button, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {ArrowClockwise} from "react-bootstrap-icons";
 
 import ImgBowlingLogo from "../assets/bowling-svgrepo-com.svg";
 import ScrollToTop from "./components/scroll-to-top";
@@ -14,6 +15,11 @@ import {ThemeToggle} from "./components/theme";
 const Layout :FC = () => {
     const clearCacheRef = useRef<ClearCacheRef>(null);
 
+    const refreshApp = () => {
+        clearCacheRef.current?.clearCache();
+        window.location.reload();
+    };
+
     return (
         <div className="bls-app">
             <div className="bls-shell">
@@ -22,7 +28,20 @@ const Layout :FC = () => {
                         <img src={ImgBowlingLogo} alt="" width="28" height="28" />
                         Bowling League Stats
                     </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="bls-nav" aria-label="Toggle navigation" />
+                    <div className="d-flex align-items-center gap-2 ms-auto order-lg-last">
+                        <Button
+                            className="bls-theme-btn d-flex align-items-center gap-1"
+                            size="sm"
+                            onClick={refreshApp}
+                            aria-label="Refresh data"
+                            title="Refresh"
+                        >
+                            <ArrowClockwise size={14} />
+                            <span className="d-none d-sm-inline">Refresh</span>
+                        </Button>
+                        <ThemeToggle />
+                        <Navbar.Toggle aria-controls="bls-nav" aria-label="Toggle navigation" />
+                    </div>
                     <Navbar.Collapse id="bls-nav">
                         <Nav className="me-auto ms-lg-3 gap-lg-1">
                             <Nav.Link as={Link} to="/">Home</Nav.Link>
@@ -43,7 +62,6 @@ const Layout :FC = () => {
                                 </NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
-                        <ThemeToggle />
                     </Navbar.Collapse>
                 </Navbar>
 
