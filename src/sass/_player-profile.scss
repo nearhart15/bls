@@ -286,6 +286,76 @@
   color: var(--bls-text-muted);
 }
 
+.bls-insight-kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffd60a;
+  font-weight: 700;
+}
+
+.bls-insight-title,
+.bls-insight-card-title {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.bls-insight-title { font-size: clamp(1.4rem, 3vw, 2rem); margin: 0.2rem 0 0.4rem; }
+.bls-insight-card-title { font-size: 1.1rem; margin-bottom: 0.25rem; }
+
+.bls-insight-metric {
+  font-variant-numeric: tabular-nums;
+  color: var(--bs-secondary-color);
+  font-size: 0.92rem;
+  margin-bottom: 0.65rem;
+}
+
+.bls-insight-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.bls-insight-list li + li { margin-top: 0.35rem; }
+
+.bls-insight-card.is-focus { border-color: rgba(255, 59, 48, 0.35); }
+.bls-insight-card.is-watch { border-color: rgba(255, 214, 10, 0.28); }
+
+.bls-insight-strengths {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+
+.bls-insight-strength-title { font-weight: 700; margin-bottom: 0.2rem; }
+
+.bls-insight-btn {
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  background: #ffd60a;
+  color: #111;
+  font-weight: 700;
+  text-decoration: none;
+}
+.bls-insight-btn.is-ghost {
+  background: transparent;
+  color: inherit;
+  border: 1px solid var(--bs-border-color);
+}
+.bls-insight-btn:hover { filter: brightness(1.05); color: #111; }
+
+.bls-insight-prompt {
+  max-height: 16rem;
+  overflow: auto;
+  font-size: 0.78rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.75rem;
+  padding: 0.85rem;
+  white-space: pre-wrap;
+}
+
 @media (max-width: 767.98px) {
   .bls-player-profile {
     flex-direction: column;
