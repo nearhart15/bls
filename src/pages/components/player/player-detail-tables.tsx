@@ -66,6 +66,13 @@ function fmtStreaks(rows: [number, number][] | undefined): string {
     return rows.map(([len, count]) => `${len}x \u00d7 ${count}`).join(", ");
 }
 
+function fmtPace(stats: PlayerStats, idx: number, kind: "frames" | "balls"): string {
+    const n = stats.paceN?.[idx] ?? 0;
+    const val = kind === "frames" ? stats.paceAvgFrames?.[idx] : stats.paceAvgBalls?.[idx];
+    if (!n || !val) return "\u2014";
+    return `${fmtNum(val)} (${n} games)`;
+}
+
 export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerStats; hideGroups?: string[]}> = ({stats, leagueExtras, hideGroups}) => {
     const hidden = new Set(hideGroups ?? []);
     const gameSlotItems = (stats.gameAverages ?? []).map((ga, idx) => ({
@@ -91,6 +98,20 @@ export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerS
             {label: "600 Series", value: String(stats.series600 ?? "\u2014")},
             {label: "800 Series", value: String(stats.series800 ?? "\u2014")},
             {label: "First Ball Average", value: fmtNum(stats.firstBallAverage)},
+            {label: "Avg pinfall / frame", value: fmtNum(stats.avgPinfallPerFrame)},
+        ]},
+        {group: "Pace & frames", items: [
+            {label: "Avg 10th-frame marks", value: stats.tenthMarkGames ? fmtNum(stats.avgTenthMarks) : "\u2014"},
+            {label: "Splits / frame", value: fmtPct(stats.splitsOccurred)},
+            {label: "Opens / frame", value: fmtPct(stats.opens)},
+            {label: "Frames to 50", value: fmtPace(stats, 0, "frames")},
+            {label: "Balls to 50", value: fmtPace(stats, 0, "balls")},
+            {label: "Frames to 100", value: fmtPace(stats, 1, "frames")},
+            {label: "Balls to 100", value: fmtPace(stats, 1, "balls")},
+            {label: "Frames to 150", value: fmtPace(stats, 2, "frames")},
+            {label: "Balls to 150", value: fmtPace(stats, 2, "balls")},
+            {label: "Frames to 200", value: fmtPace(stats, 3, "frames")},
+            {label: "Balls to 200", value: fmtPace(stats, 3, "balls")},
         ]},
         {group: "Conversion", items: [
             {label: "Clean Games", value: String(stats.cleanGames ?? "\u2014")},
