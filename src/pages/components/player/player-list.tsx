@@ -16,7 +16,7 @@ import {useCachedFetcher} from "../cache/data-loader";
 import Loader from "../loader";
 import ErrorDisplay from "../error-display";
 import {useTheme} from "../theme";
-import {gradeClass, MicroBarChart, performanceGrade, Sparkline} from "../charts/mini-charts";
+import {gradeClass, MicroBarChart, performanceGrade, performanceGradeFromDelta, Sparkline} from "../charts/mini-charts";
 
 const numberFormat = Intl.NumberFormat("en-US", {
     style: "decimal",
@@ -51,7 +51,25 @@ interface DisplayRow {
     weekSeries?: number[];
 }
 
-function gradeRank(avg: number | null): number {
+function weekDelta(row: DisplayRow): number | null {
+    const book = row.average;
+    const weeks = row.weekAverages ?? [];
+    if (book == null || book <= 0 || weeks.length === 0) return null;
+    const ds = weeks.filter((w) => w > 0).map((w) => w - book);
+    if (ds.length === 0) return null;
+    return ds.reduce((s, n) => s + n, 0) / ds.length;
+}
+
+function gradeRank(row: DisplayRow): number {
+    const delta = weekDelta(row);
+    if (delta != null) {
+        if (delta >= 10) return 5;
+        if (delta >= 3) return 4;
+        if (delta >= 0) return 3;
+        if (delta >= -6) return 2;
+        return 1;
+    }
+    const avg = row.average;
     if (avg == null || avg <= 0) return -1;
     if (avg >= 210) return 5;
     if (avg >= 190) return 4;
@@ -86,7 +104,7 @@ function compareRows(a: DisplayRow, b: DisplayRow, key: SortKey, dir: SortDir): 
             cmp = a.games200 - b.games200;
             break;
         case "grade":
-            cmp = gradeRank(a.average) - gradeRank(b.average);
+            cmp = gradeRank(a) - gradeRank(b);
             break;
         case "rank":
         default:
@@ -338,7 +356,10 @@ const PlayerList: FC<PlayerListProps> = ({
                                 </tr>
                             )}
                             {sorted.map((p, idx) => {
-                                const grade = performanceGrade(p.average);
+                                const delta = weekDelta(p);
+                                const grade = delta != null
+                                    ? performanceGradeFromDelta(delta)
+                                    : performanceGrade(p.average);
                                 return (
                                     <tr key={p.id}>
                                         <td className="text-center text-body-secondary fw-semibold">{idx + 1}</td>
