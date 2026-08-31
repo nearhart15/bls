@@ -40,6 +40,16 @@ export interface AggregatedPlayerData {
     seasonStats: PlayerSeasonStats[];
 }
 
+export interface PlayerListSeasonSlice {
+    season: string;
+    average: number | null;
+    games: number;
+    pinfall: number;
+    highGame: number;
+    highSeries: number;
+    games200: number;
+}
+
 /** Summary row for the home/player list */
 export interface PlayerListEntry {
     id: string;
@@ -50,6 +60,8 @@ export interface PlayerListEntry {
     highGame: number;
     highSeries: number;
     games200: number;
+    /** Per-season stats for filtering (current season / last year) */
+    seasonSlices: PlayerListSeasonSlice[];
     /** Weekly series averages for sparkline */
     weekAverages?: number[];
     /** Weekly series pinfall for micro-bars */
@@ -218,6 +230,25 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
     for (const [id, info] of scan.playerMap.entries()) {
         const series = scan.seriesByPlayer.get(id) ?? [];
         const stats = statsFromSeries(series);
+
+        const bySeason = scan.seriesByPlayerSeason.get(id);
+        const seasonSlices: PlayerListSeasonSlice[] = [];
+        if (bySeason) {
+            for (const [season, seasonSeries] of bySeason.entries()) {
+                const s = statsFromSeries(seasonSeries);
+                seasonSlices.push({
+                    season,
+                    average: s.gameStats.count > 0 ? s.gameStats.average : null,
+                    games: s.gameStats.count,
+                    pinfall: s.pinfall,
+                    highGame: s.gameStats.max,
+                    highSeries: s.seriesStats.max,
+                    games200: s.games200,
+                });
+            }
+            seasonSlices.sort((a, b) => b.season.localeCompare(a.season));
+        }
+
         entries.push({
             id,
             name: info.name,
@@ -227,6 +258,7 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
             highGame: stats.gameStats.max,
             highSeries: stats.seriesStats.max,
             games200: stats.games200,
+            seasonSlices,
             weekAverages: scan.weekAveragesByPlayer.get(id),
             weekSeries: scan.weekSeriesByPlayer.get(id),
             lastBowled: info.lastBowled,
