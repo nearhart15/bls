@@ -20,16 +20,24 @@ const TeamStatGraph: FC<TeamStatGraphProps> = ({teamPosScores}) => {
     const palette = chartPalette(theme);
     const base = baseChartOptions(theme, "Team Scores & Rank");
 
-    const series: ApexOptions["series"] = [
+    const series: NonNullable<ApexOptions["series"]> = [
         {
             name: "Scratch Series",
-            data: teamPosScores.map((tps) => [tps.bowlDate.getTime(), tps.scratchSeries]),
+            type: "line",
+            data: teamPosScores.map((tps) => ({
+                x: tps.bowlDate.getTime(),
+                y: tps.scratchSeries,
+            })),
         },
         {
             name: "League Rank",
+            type: "line",
             data: teamPosScores
                 .filter((tps) => tps.position > 0)
-                .map((tps) => [tps.bowlDate.getTime(), tps.position]),
+                .map((tps) => ({
+                    x: tps.bowlDate.getTime(),
+                    y: tps.position,
+                })),
         },
     ];
 
@@ -37,12 +45,28 @@ const TeamStatGraph: FC<TeamStatGraphProps> = ({teamPosScores}) => {
         ...base,
         chart: {
             ...base.chart,
-            id: "Team-Performance",
+            id: "team-performance",
             type: "line",
             height: 320,
+            stacked: false,
+            zoom: {
+                enabled: true,
+                type: "x",
+                autoScaleYaxis: true,
+                allowMouseWheelZoom: true,
+            },
             toolbar: {
-                ...base.chart?.toolbar,
                 show: true,
+                autoSelected: "zoom",
+                tools: {
+                    download: false,
+                    selection: true,
+                    zoom: true,
+                    zoomin: true,
+                    zoomout: true,
+                    pan: true,
+                    reset: true,
+                },
             },
         },
         series,
@@ -79,6 +103,7 @@ const TeamStatGraph: FC<TeamStatGraphProps> = ({teamPosScores}) => {
         },
         yaxis: [
             {
+                seriesName: "Scratch Series",
                 title: {
                     text: "Series",
                     style: {
@@ -98,6 +123,7 @@ const TeamStatGraph: FC<TeamStatGraphProps> = ({teamPosScores}) => {
                 forceNiceScale: true,
             },
             {
+                seriesName: "League Rank",
                 opposite: true,
                 reversed: true,
                 title: {
@@ -138,7 +164,14 @@ const TeamStatGraph: FC<TeamStatGraphProps> = ({teamPosScores}) => {
 
     return (
         <div className="bls-chart">
-            <Chart options={options} series={series} type="line" width="100%" height={320} />
+            <Chart
+                key={`team-chart-${theme}-${teamPosScores.length}`}
+                options={options}
+                series={series}
+                type="line"
+                width="100%"
+                height={320}
+            />
         </div>
     );
 };

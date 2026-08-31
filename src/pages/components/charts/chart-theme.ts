@@ -13,7 +13,6 @@ export function chartPalette(theme: ThemeMode) {
         textStrong: isDark ? "#f5f5f7" : "#1d1d1f",
         grid: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
         tooltipBg: isDark ? "#111111" : "#ffffff",
-        // Series colors tuned for OLED + light
         series: isDark
             ? ["#2997ff", "#30d158", "#ff9f0a", "#bf5af2", "#ff375f"]
             : ["#0071e3", "#34c759", "#ff9500", "#af52de", "#ff3b30"],
@@ -31,9 +30,12 @@ export function baseChartOptions(theme: ThemeMode, title: string): ApexOptions {
             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
             toolbar: {
                 show: true,
+                offsetX: 0,
+                offsetY: 0,
+                autoSelected: "zoom",
                 tools: {
                     download: false,
-                    selection: false,
+                    selection: true,
                     zoom: true,
                     zoomin: true,
                     zoomout: true,
@@ -44,12 +46,20 @@ export function baseChartOptions(theme: ThemeMode, title: string): ApexOptions {
             zoom: {
                 enabled: true,
                 type: "x",
+                autoScaleYaxis: true,
+                allowMouseWheelZoom: true,
+            },
+            selection: {
+                enabled: true,
+                type: "x",
             },
             animations: {
                 enabled: true,
-                speed: 400,
+                speed: 350,
             },
             parentHeightOffset: 0,
+            redrawOnParentResize: true,
+            redrawOnWindowResize: true,
         },
         theme: {
             mode: theme,
@@ -58,6 +68,7 @@ export function baseChartOptions(theme: ThemeMode, title: string): ApexOptions {
         title: {
             text: title,
             align: "left",
+            margin: 8,
             style: {
                 fontSize: "15px",
                 fontWeight: 600,
@@ -69,8 +80,8 @@ export function baseChartOptions(theme: ThemeMode, title: string): ApexOptions {
             strokeDashArray: 3,
             padding: {
                 left: 8,
-                right: 8,
-                top: 8,
+                right: 12,
+                top: 12,
                 bottom: 0,
             },
         },
@@ -107,15 +118,24 @@ export function baseChartOptions(theme: ThemeMode, title: string): ApexOptions {
                 fontSize: "14px",
             },
         },
-        // Mobile-first responsive: full width, compact chrome
         responsive: [
             {
                 breakpoint: 576,
                 options: {
                     chart: {
-                        height: 260,
+                        height: 280,
+                        // Keep zoom toolbar on phones — was previously hidden
                         toolbar: {
-                            show: false,
+                            show: true,
+                            tools: {
+                                download: false,
+                                selection: true,
+                                zoom: true,
+                                zoomin: true,
+                                zoomout: true,
+                                pan: true,
+                                reset: true,
+                            },
                         },
                     },
                     title: {
@@ -142,37 +162,8 @@ export function baseChartOptions(theme: ThemeMode, title: string): ApexOptions {
                         },
                         tickAmount: 4,
                     },
-                    yaxis: [
-                        {
-                            labels: {
-                                style: {
-                                    fontSize: "10px",
-                                },
-                            },
-                            title: {
-                                style: {
-                                    fontSize: "10px",
-                                },
-                            },
-                        },
-                        {
-                            labels: {
-                                style: {
-                                    fontSize: "10px",
-                                },
-                            },
-                            title: {
-                                style: {
-                                    fontSize: "10px",
-                                },
-                            },
-                        },
-                    ],
                     stroke: {
                         width: 2,
-                    },
-                    markers: {
-                        size: 3,
                     },
                 },
             },

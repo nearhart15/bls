@@ -33,7 +33,8 @@ const TeamPlayerStatGraph: FC<TeamPlayerStatGraphProps> = ({playerData}) => {
             ? playerData.reduce((minVal, p) => Math.min(minVal, p.average), 300) * 0.9
             : 100;
 
-    const series: ApexOptions["series"] = [
+    // Keep all series as line for reliable zoom (mixed scatter can break toolbar zoom)
+    const series: NonNullable<ApexOptions["series"]> = [
         {
             name: "Weekly Avg",
             type: "line",
@@ -52,7 +53,7 @@ const TeamPlayerStatGraph: FC<TeamPlayerStatGraphProps> = ({playerData}) => {
         },
         {
             name: "200+ Games",
-            type: "scatter",
+            type: "line",
             data: playerData.map((p) => {
                 const count = count200s(p);
                 return {
@@ -67,14 +68,34 @@ const TeamPlayerStatGraph: FC<TeamPlayerStatGraphProps> = ({playerData}) => {
         ...base,
         chart: {
             ...base.chart,
-            id: "Player-Averages",
+            id: "player-averages",
             height: 320,
             type: "line",
+            stacked: false,
+            zoom: {
+                enabled: true,
+                type: "x",
+                autoScaleYaxis: true,
+                allowMouseWheelZoom: true,
+            },
+            toolbar: {
+                show: true,
+                autoSelected: "zoom",
+                tools: {
+                    download: false,
+                    selection: true,
+                    zoom: true,
+                    zoomin: true,
+                    zoomout: true,
+                    pan: true,
+                    reset: true,
+                },
+            },
         },
         series,
         colors: [palette.series[0], palette.series[3], palette.series[2]],
         stroke: {
-            curve: ["smooth", "smooth", "smooth"],
+            curve: ["smooth", "smooth", "straight"],
             width: [2.5, 3, 0],
         },
         markers: {
@@ -167,7 +188,14 @@ const TeamPlayerStatGraph: FC<TeamPlayerStatGraphProps> = ({playerData}) => {
 
     return (
         <div className="bls-chart">
-            <Chart options={options} series={series} type="line" width="100%" height={320} />
+            <Chart
+                key={`player-chart-${theme}-${playerData.length}`}
+                options={options}
+                series={series}
+                type="line"
+                width="100%"
+                height={320}
+            />
         </div>
     );
 };
