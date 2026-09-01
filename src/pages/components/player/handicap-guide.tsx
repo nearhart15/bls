@@ -29,11 +29,11 @@ function round2(n: number): number {
 }
 
 function avgFromHandicap(hdcp: number): number {
-    return clamp(220 - hdcp / 0.9, 110, 230);
+    return clamp(210 - hdcp / 0.9, 100, 210);
 }
 
 function handicapFromAvg(avg: number): number {
-    return Math.max(0, Math.round(0.9 * (220 - avg)));
+    return Math.max(0, Math.round(0.9 * (210 - avg)));
 }
 
 function ratioPct(rg?: {pct?: number; denominator?: number} | null): number | null {
@@ -78,7 +78,7 @@ type StatKey = keyof ExpectedStats;
 
 function predict(hdcp: number): ExpectedStats {
     const avg = avgFromHandicap(hdcp);
-    const a = clamp(avg, 110, 230);
+    const a = clamp(avg, 100, 210);
     const strike = clamp(28 + (a - 150) * 0.37, 12, 62);
     const spare = clamp(42 + (a - 150) * 0.33, 28, 72);
     const single = clamp(70 + (a - 150) * 0.33, 55, 96);
@@ -380,7 +380,7 @@ const HandicapGuide: FC = () => {
                 <CardBody>
                     <p className="text-body-secondary mb-4">
                         Drag the slider to a house handicap. Numbers below are what that handicap
-                        usually looks like on a typical 90% of 220 league. Add a bowler to see
+                        usually looks like using 90% of (210 - average). Add a bowler to see
                         their numbers vs those targets.
                     </p>
                     <div className="bls-hdcp-hero mb-3 text-center">
@@ -402,8 +402,8 @@ const HandicapGuide: FC = () => {
                         onChange={(e) => setHdcp(Number(e.target.value))}
                     />
                     <div className="d-flex justify-content-between text-body-secondary fs-sm mb-3">
-                        <span>0 hdcp / 220 avg</span>
-                        <span>90 hdcp / 120 avg</span>
+                        <span>0 hdcp / 210 avg</span>
+                        <span>90 hdcp / 110 avg</span>
                     </div>
                     <Form.Label htmlFor="hdcp-player">Compare a bowler</Form.Label>
                     <Form.Select
@@ -454,7 +454,7 @@ const HandicapGuide: FC = () => {
 
             <Group title="Scoring">
                 {tile("avg", "Expected scratch avg")}
-                {tile("hdcp", "House handicap (90/220)")}
+                {tile("hdcp", "House handicap (90% of 210)")}
                 {tile("hdcpGame", "Expected hdcp game")}
                 {tile("series", "Expected 3-game series")}
                 {tile("hdcpSeries", "Expected hdcp series")}
