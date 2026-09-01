@@ -2,7 +2,7 @@
  * Handicap guide - expected stats vs an optional bowler
  */
 
-import {type FC, type ReactNode, useCallback, useMemo, useState} from "react";
+import {type FC, type ReactNode, useCallback, useEffect, useMemo, useState} from "react";
 import {Card, CardBody, Form} from "react-bootstrap";
 
 import {
@@ -142,18 +142,21 @@ const LOWER_BETTER = new Set<StatKey>([
     "frames150", "balls150", "frames200", "balls200", "ballsGame",
 ]);
 
-function actualFromStats(stats: PlayerStats, sliderHdcp: number): Partial<Record<StatKey, number>> {
+const NO_PCT_DIFF = new Set<StatKey>(["avg", "hdcp"]);
+
+function actualFromStats(stats: PlayerStats): Partial<Record<StatKey, number>> {
     const games = stats.gameStats.count || 0;
     const seriesN = stats.seriesStats.count || 0;
     const avg = stats.gameStats.average || 0;
+    const ownHdcp = avg > 0 ? handicapFromAvg(avg) : 0;
     const open = ratioPct(stats.opens);
     const strike = ratioPct(stats.strikes);
     const out: Partial<Record<StatKey, number>> = {
-        hdcp: avg > 0 ? handicapFromAvg(avg) : undefined,
+        hdcp: avg > 0 ? ownHdcp : undefined,
         avg: avg > 0 ? round2(avg) : undefined,
-        hdcpGame: avg > 0 ? round2(avg + sliderHdcp) : undefined,
+        hdcpGame: avg > 0 ? round2(avg + ownHdcp) : undefined,
         series: seriesN > 0 ? round2(stats.seriesStats.average) : undefined,
-        hdcpSeries: seriesN > 0 ? round2(stats.seriesStats.average + sliderHdcp * 3) : undefined,
+        hdcpSeries: seriesN > 0 ? round2(stats.seriesStats.average + ownHdcp * 3) : undefined,
         strike: strike ?? undefined,
         spare: ratioPct(stats.spares) ?? undefined,
         single: ratioPct(stats.singlePinSpares) ?? undefined,
@@ -287,7 +290,8 @@ const Tile: FC<{
     showActual: boolean;
 }> = ({label, statKey, expected, actual, showActual}) => {
     const kind = PCT_KEYS.has(statKey) ? "pct" : "num";
-    const diff = showActual ? diffPct(actual, expected) : null;
+    const skipDiff = NO_PCT_DIFF.has(statKey);
+    const diff = showActual && !skipDiff ? diffPct(actual, expected) : null;
     const lowerBetter = LOWER_BETTER.has(statKey);
     let tone = "";
     if (diff != null) {
@@ -302,7 +306,7 @@ const Tile: FC<{
             {showActual && (
                 <div className="d-flex justify-content-between mt-2 fs-sm" style={{color: tone === " is-better" ? "#30d158" : tone === " is-worse" ? "#ff453a" : undefined}}>
                     <span>{formatVal(actual, kind)}</span>
-                    <span>{diff == null ? "--" : `${diff > 0 ? "+" : ""}${diff.toFixed(2)}%`}</span>
+                    <span>{skipDiff ? "rule" : diff == null ? "--" : `${diff > 0 ? "+" : ""}${diff.toFixed(2)}%`}</span>
                 </div>
             )}
         </div>
@@ -355,12 +359,20 @@ const HandicapGuide: FC = () => {
     const scoped = useMemo(() => pickScopedStats(detail ?? null, scope), [detail, scope]);
     const actual = useMemo(() => {
         if (!playerId || !scoped) return null;
-        return actualFromStats(scoped.stats, hdcp);
-    }, [playerId, scoped, hdcp]);
+        return actualFromStats(scoped.stats);
+    }, [playerId, scoped]);
+
+    useEffect(() => {
+        const avg = scoped?.stats.gameStats.average ?? 0;
+        if (!playerId || avg <= 0) return;
+        setHdcp(handicapFromAvg(avg));
+    }, [playerId, scope, scoped?.stats.gameStats.average]);
 
     const selectedName = players.find((p) => p.id === playerId)?.name;
     const showActual = Boolean(actual);
     const missingScope = Boolean(playerId && !isLoading && !scoped);
+    const playerHdcp = actual?.hdcp;
+    const playerAvg = actual?.avg;
 
     const tile = (key: StatKey, label: string) => (
         <Tile
@@ -379,16 +391,15 @@ const HandicapGuide: FC = () => {
                 <div className="bls-profile-card-head">Handicap guide</div>
                 <CardBody>
                     <p className="text-body-secondary mb-4">
-                        Drag the slider to a house handicap. Numbers below are what that handicap
-                        usually looks like using 90% of (210 - average). Add a bowler to see
-                        their numbers vs those targets.
+                        House rule: handicap = 90% of (210 - average), rounded to a whole number.
+                        Example: 200 avg is 9 pins. A 17 on an old 90/220 card is a ~201 average, not a 17 here.
                     </p>
                     <div className="bls-hdcp-hero mb-3 text-center">
                         <div className="bls-hdcp-hero-num tabular-nums">{hdcp}</div>
                         <div className="bls-hdcp-hero-lbl">Handicap pins</div>
                         <div className="bls-hdcp-hero-sub">
-                            About a {expected.avg.toFixed(2)} scratch average
-                            {selectedName ? ` | comparing ${selectedName}` : ""}
+                            0.9 x (210 - {expected.avg.toFixed(2)}) = {hdcp}
+                            {selectedName && playerAvg != null ? ` | ${selectedName} ${playerAvg.toFixed(2)} avg = ${playerHdcp} pins` : ""}
                             {scoped && scoped.label !== "career" ? ` | ${scoped.label}` : ""}
                         </div>
                     </div>
@@ -444,17 +455,17 @@ const HandicapGuide: FC = () => {
                     )}
                     {showActual && (
                         <div className="text-body-secondary fs-sm mt-2">
-                            Each tile shows expected, then the bowler value and % difference vs the slider target
-                            {scoped ? ` (${scoped.label})` : ""}.
-                            Green means better than the target, red means behind.
+                            Selecting a bowler sets the slider to their 90/210 handicap for that window.
+                            Other tiles then compare their stats to a typical bowler with that same handicap.
+                            Average and handicap tiles follow the rule, so they are not given a % difference.
                         </div>
                     )}
                 </CardBody>
             </Card>
 
             <Group title="Scoring">
-                {tile("avg", "Expected scratch avg")}
-                {tile("hdcp", "House handicap (90% of 210)")}
+                {tile("avg", "Scratch average")}
+                {tile("hdcp", "House handicap 90% of 210")}
                 {tile("hdcpGame", "Expected hdcp game")}
                 {tile("series", "Expected 3-game series")}
                 {tile("hdcpSeries", "Expected hdcp series")}
