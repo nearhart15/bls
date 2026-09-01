@@ -34,7 +34,7 @@ function avgFromHandicap(hdcp: number): number {
 }
 
 function handicapFromAvg(avg: number): number {
-    return Math.max(0, Math.round(0.9 * (210 - avg)));
+    return Math.max(0, round2(0.9 * (210 - avg)));
 }
 
 function ratioPct(rg?: {pct?: number; denominator?: number} | null): number | null {
@@ -145,16 +145,15 @@ const LOWER_BETTER = new Set<StatKey>([
 
 const NO_PCT_DIFF = new Set<StatKey>(["avg", "hdcp"]);
 
-function actualFromStats(stats: PlayerStats, officialHdcp?: number | null, bookAvg?: number | null): Partial<Record<StatKey, number>> {
+function actualFromStats(stats: PlayerStats): Partial<Record<StatKey, number>> {
     const games = stats.gameStats.count || 0;
     const seriesN = stats.seriesStats.count || 0;
     const scratch = stats.gameStats.average || 0;
-    const avg = bookAvg && bookAvg > 0 ? bookAvg : scratch;
-    const ownHdcp = officialHdcp && officialHdcp > 0 ? officialHdcp : (avg > 0 ? handicapFromAvg(avg) : 0);
+    const ownHdcp = scratch > 0 ? handicapFromAvg(scratch) : 0;
     const open = ratioPct(stats.opens);
     const strike = ratioPct(stats.strikes);
     const out: Partial<Record<StatKey, number>> = {
-        hdcp: avg > 0 || ownHdcp > 0 ? ownHdcp : undefined,
+        hdcp: scratch > 0 || ownHdcp > 0 ? ownHdcp : undefined,
         avg: scratch > 0 ? round2(scratch) : undefined,
         hdcpGame: scratch > 0 ? round2(scratch + ownHdcp) : undefined,
         series: seriesN > 0 ? round2(stats.seriesStats.average) : undefined,
@@ -329,7 +328,7 @@ const Tile: FC<{
             {showActual && (
                 <div className="d-flex justify-content-between mt-2 fs-sm" style={{color: tone === " is-better" ? "#30d158" : tone === " is-worse" ? "#ff453a" : undefined}}>
                     <span>{formatVal(actual, kind)}</span>
-                    <span>{skipDiff ? "card" : diff == null ? "--" : `${diff > 0 ? "+" : ""}${diff.toFixed(2)}%`}</span>
+                    <span>{skipDiff ? "rule" : diff == null ? "--" : `${diff > 0 ? "+" : ""}${diff.toFixed(2)}%`}</span>
                 </div>
             )}
         </div>
@@ -382,20 +381,14 @@ const HandicapGuide: FC = () => {
     const scoped = useMemo(() => pickScopedStats(detail ?? null, scope), [detail, scope]);
     const actual = useMemo(() => {
         if (!playerId || !scoped) return null;
-        return actualFromStats(scoped.stats, scoped.leagueHdcp, scoped.leagueAvg);
+        return actualFromStats(scoped.stats);
     }, [playerId, scoped]);
 
     useEffect(() => {
         if (!playerId || !scoped) return;
-        if (scoped.leagueHdcp && scoped.leagueHdcp > 0) {
-            setHdcp(Math.round(scoped.leagueHdcp));
-            return;
-        }
-        const basis = scoped.leagueAvg && scoped.leagueAvg > 0
-            ? scoped.leagueAvg
-            : scoped.stats.gameStats.average;
+        const basis = scoped.stats.gameStats.average;
         if (basis && basis > 0) setHdcp(handicapFromAvg(basis));
-    }, [playerId, scope, scoped?.leagueHdcp, scoped?.leagueAvg, scoped?.stats.gameStats.average]);
+    }, [playerId, scope, scoped?.stats.gameStats.average]);
 
     const selectedName = players.find((p) => p.id === playerId)?.name;
     const showActual = Boolean(actual);
@@ -420,15 +413,16 @@ const HandicapGuide: FC = () => {
                 <div className="bls-profile-card-head">Handicap guide</div>
                 <CardBody>
                     <p className="text-body-secondary mb-4">
-                        House rule: handicap = 90% of (210 - average), rounded.
-                        For a league window we use the league card handicap, not a recast from the current scratch average.
+                        House rule: handicap = 0.90 x (210 - average). A 191.80 average is 16.38 pins.
+                        A rounded league card of 17 is the house posting, not this exact figure.
                     </p>
                     <div className="bls-hdcp-hero mb-3 text-center">
-                        <div className="bls-hdcp-hero-num tabular-nums">{hdcp}</div>
+                        <div className="bls-hdcp-hero-num tabular-nums">{hdcp.toFixed(2)}</div>
                         <div className="bls-hdcp-hero-lbl">Handicap pins</div>
                         <div className="bls-hdcp-hero-sub">
-                            {scoped?.leagueHdcp ? `League card ${scoped.leagueHdcp}` : `0.9 x (210 - ${expected.avg.toFixed(2)}) = ${hdcp}`}
+                            0.90 x (210 - {expected.avg.toFixed(2)}) = {hdcp.toFixed(2)}
                             {selectedName && playerAvg != null ? ` | ${selectedName} ${playerAvg.toFixed(2)} scratch` : ""}
+                            {scoped?.leagueHdcp ? ` | card ${scoped.leagueHdcp}` : ""}
                             {scoped && scoped.label !== "career" ? ` | ${scoped.label}` : ""}
                         </div>
                     </div>
@@ -437,7 +431,7 @@ const HandicapGuide: FC = () => {
                         id="hdcp-slider"
                         min={0}
                         max={90}
-                        step={1}
+                        step={0.01}
                         value={hdcp}
                         onChange={(e) => setHdcp(Number(e.target.value))}
                     />
@@ -484,9 +478,9 @@ const HandicapGuide: FC = () => {
                     )}
                     {showActual && (
                         <div className="text-body-secondary fs-sm mt-2">
-                            Last league / last year use the house handicap stored on that league card.
-                            Scratch average can move during the season; the card handicap stays at the entering book.
-                            {playerHdcp != null ? ` Showing ${playerHdcp} pins for this window.` : ""}
+                            Expected house handicap is 0.90 x (210 - scratch average), to two decimals.
+                            {playerAvg != null && playerHdcp != null ? ` ${playerAvg.toFixed(2)} avg -> ${Number(playerHdcp).toFixed(2)} pins.` : ""}
+                            {scoped?.leagueHdcp ? ` League card posted ${scoped.leagueHdcp}.` : ""}
                         </div>
                     )}
                 </CardBody>
@@ -494,7 +488,7 @@ const HandicapGuide: FC = () => {
 
             <Group title="Scoring">
                 {tile("avg", "Scratch average")}
-                {tile("hdcp", "House handicap")}
+                {tile("hdcp", "0.90 x (210 - avg)")}
                 {tile("hdcpGame", "Expected hdcp game")}
                 {tile("series", "Expected 3-game series")}
                 {tile("hdcpSeries", "Expected hdcp series")}
