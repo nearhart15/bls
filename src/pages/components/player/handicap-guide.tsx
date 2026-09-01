@@ -15,6 +15,7 @@ import {
     type PlayerSliceStats,
 } from "../../../data/player/player-aggregate";
 import type {PlayerStats} from "../../../data/player/player-stats";
+import type {LeaguePlayerStats} from "../../../data/league/league-team-details";
 import {comparePinnedThen} from "../../../data/player/player-pin";
 import {useCachedFetcher} from "../cache/data-loader";
 
@@ -144,17 +145,18 @@ const LOWER_BETTER = new Set<StatKey>([
 
 const NO_PCT_DIFF = new Set<StatKey>(["avg", "hdcp"]);
 
-function actualFromStats(stats: PlayerStats): Partial<Record<StatKey, number>> {
+function actualFromStats(stats: PlayerStats, officialHdcp?: number | null, bookAvg?: number | null): Partial<Record<StatKey, number>> {
     const games = stats.gameStats.count || 0;
     const seriesN = stats.seriesStats.count || 0;
-    const avg = stats.gameStats.average || 0;
-    const ownHdcp = avg > 0 ? handicapFromAvg(avg) : 0;
+    const scratch = stats.gameStats.average || 0;
+    const avg = bookAvg && bookAvg > 0 ? bookAvg : scratch;
+    const ownHdcp = officialHdcp && officialHdcp > 0 ? officialHdcp : (avg > 0 ? handicapFromAvg(avg) : 0);
     const open = ratioPct(stats.opens);
     const strike = ratioPct(stats.strikes);
     const out: Partial<Record<StatKey, number>> = {
-        hdcp: avg > 0 ? ownHdcp : undefined,
-        avg: avg > 0 ? round2(avg) : undefined,
-        hdcpGame: avg > 0 ? round2(avg + ownHdcp) : undefined,
+        hdcp: avg > 0 || ownHdcp > 0 ? ownHdcp : undefined,
+        avg: scratch > 0 ? round2(scratch) : undefined,
+        hdcpGame: scratch > 0 ? round2(scratch + ownHdcp) : undefined,
         series: seriesN > 0 ? round2(stats.seriesStats.average) : undefined,
         hdcpSeries: seriesN > 0 ? round2(stats.seriesStats.average + ownHdcp * 3) : undefined,
         strike: strike ?? undefined,
@@ -224,6 +226,10 @@ function scoreCurrentLeague(slice: PlayerSliceStats, term: {year: number; keys: 
     return score;
 }
 
+function matchAppearance(detail: AggregatedPlayerData, slice: PlayerSliceStats) {
+    return detail.appearances.find((a) => a.season === slice.season && a.leagueId === slice.leagueId);
+}
+
 function pickCurrentLeagueSlice(detail: AggregatedPlayerData): PlayerSliceStats | null {
     const term = currentBowlingTerm();
     const slices = [...(detail.appearanceSlicesFull ?? [])]
@@ -245,9 +251,26 @@ function seasonMatchesYear(season: string, year: number): boolean {
     return season.includes(String(year));
 }
 
-function pickScopedStats(detail: AggregatedPlayerData | null, scope: HdcpScope): {stats: PlayerStats; label: string} | null {
+interface ScopedPick {
+    stats: PlayerStats;
+    label: string;
+    leagueHdcp: number | null;
+    leagueAvg: number | null;
+}
+
+function extrasFromAppearance(detail: AggregatedPlayerData, slice: PlayerSliceStats): {leagueHdcp: number | null; leagueAvg: number | null} {
+    const ap = matchAppearance(detail, slice);
+    const st = ap?.stats as LeaguePlayerStats | undefined;
+    const leagueHdcp = st?.leagueHandicap && st.leagueHandicap > 0 ? st.leagueHandicap : null;
+    const leagueAvg = st?.leagueAverage && st.leagueAverage > 0 ? st.leagueAverage : null;
+    return {leagueHdcp, leagueAvg};
+}
+
+function pickScopedStats(detail: AggregatedPlayerData | null, scope: HdcpScope): ScopedPick | null {
     if (!detail?.careerStats || detail.player?.id === "") return null;
-    if (scope === "career") return {stats: detail.careerStats, label: "career"};
+    if (scope === "career") {
+        return {stats: detail.careerStats, label: "career", leagueHdcp: null, leagueAvg: null};
+    }
     if (scope === "last-league") {
         const slice = pickCurrentLeagueSlice(detail);
         if (!slice) return null;
@@ -255,15 +278,15 @@ function pickScopedStats(detail: AggregatedPlayerData | null, scope: HdcpScope):
         const label = slice.leagueName?.match(/summer|fall|autumn|winter|spring/i)
             ? slice.leagueName
             : [slice.leagueName || term.label, slice.season].filter(Boolean).join(" ");
-        return {stats: slice.stats, label};
+        return {stats: slice.stats, label, ...extrasFromAppearance(detail, slice)};
     }
     const year = new Date().getFullYear() - 1;
-    const slices = [...(detail.seasonSlicesFull ?? [])]
+    const slices = [...(detail.appearanceSlicesFull ?? [])]
         .filter((s) => seasonMatchesYear(s.season ?? "", year) && (s.stats?.gameStats.count ?? 0) > 0)
-        .sort((a, b) => (b.season ?? "").localeCompare(a.season ?? ""));
+        .sort((a, b) => (b.season ?? "").localeCompare(a.season ?? "") || (b.stats.gameStats.count || 0) - (a.stats.gameStats.count || 0));
     const slice = slices[0];
     if (!slice) return null;
-    return {stats: slice.stats, label: slice.season || String(year)};
+    return {stats: slice.stats, label: slice.leagueName || slice.season || String(year), ...extrasFromAppearance(detail, slice)};
 }
 
 function diffPct(actual: number | undefined, expected: number): number | null {
@@ -306,7 +329,7 @@ const Tile: FC<{
             {showActual && (
                 <div className="d-flex justify-content-between mt-2 fs-sm" style={{color: tone === " is-better" ? "#30d158" : tone === " is-worse" ? "#ff453a" : undefined}}>
                     <span>{formatVal(actual, kind)}</span>
-                    <span>{skipDiff ? "rule" : diff == null ? "--" : `${diff > 0 ? "+" : ""}${diff.toFixed(2)}%`}</span>
+                    <span>{skipDiff ? "card" : diff == null ? "--" : `${diff > 0 ? "+" : ""}${diff.toFixed(2)}%`}</span>
                 </div>
             )}
         </div>
@@ -359,14 +382,20 @@ const HandicapGuide: FC = () => {
     const scoped = useMemo(() => pickScopedStats(detail ?? null, scope), [detail, scope]);
     const actual = useMemo(() => {
         if (!playerId || !scoped) return null;
-        return actualFromStats(scoped.stats);
+        return actualFromStats(scoped.stats, scoped.leagueHdcp, scoped.leagueAvg);
     }, [playerId, scoped]);
 
     useEffect(() => {
-        const avg = scoped?.stats.gameStats.average ?? 0;
-        if (!playerId || avg <= 0) return;
-        setHdcp(handicapFromAvg(avg));
-    }, [playerId, scope, scoped?.stats.gameStats.average]);
+        if (!playerId || !scoped) return;
+        if (scoped.leagueHdcp && scoped.leagueHdcp > 0) {
+            setHdcp(Math.round(scoped.leagueHdcp));
+            return;
+        }
+        const basis = scoped.leagueAvg && scoped.leagueAvg > 0
+            ? scoped.leagueAvg
+            : scoped.stats.gameStats.average;
+        if (basis && basis > 0) setHdcp(handicapFromAvg(basis));
+    }, [playerId, scope, scoped?.leagueHdcp, scoped?.leagueAvg, scoped?.stats.gameStats.average]);
 
     const selectedName = players.find((p) => p.id === playerId)?.name;
     const showActual = Boolean(actual);
@@ -391,15 +420,15 @@ const HandicapGuide: FC = () => {
                 <div className="bls-profile-card-head">Handicap guide</div>
                 <CardBody>
                     <p className="text-body-secondary mb-4">
-                        House rule: handicap = 90% of (210 - average), rounded to a whole number.
-                        Example: 200 avg is 9 pins. A 17 on an old 90/220 card is a ~201 average, not a 17 here.
+                        House rule: handicap = 90% of (210 - average), rounded.
+                        For a league window we use the league card handicap, not a recast from the current scratch average.
                     </p>
                     <div className="bls-hdcp-hero mb-3 text-center">
                         <div className="bls-hdcp-hero-num tabular-nums">{hdcp}</div>
                         <div className="bls-hdcp-hero-lbl">Handicap pins</div>
                         <div className="bls-hdcp-hero-sub">
-                            0.9 x (210 - {expected.avg.toFixed(2)}) = {hdcp}
-                            {selectedName && playerAvg != null ? ` | ${selectedName} ${playerAvg.toFixed(2)} avg = ${playerHdcp} pins` : ""}
+                            {scoped?.leagueHdcp ? `League card ${scoped.leagueHdcp}` : `0.9 x (210 - ${expected.avg.toFixed(2)}) = ${hdcp}`}
+                            {selectedName && playerAvg != null ? ` | ${selectedName} ${playerAvg.toFixed(2)} scratch` : ""}
                             {scoped && scoped.label !== "career" ? ` | ${scoped.label}` : ""}
                         </div>
                     </div>
@@ -455,9 +484,9 @@ const HandicapGuide: FC = () => {
                     )}
                     {showActual && (
                         <div className="text-body-secondary fs-sm mt-2">
-                            Selecting a bowler sets the slider to their 90/210 handicap for that window.
-                            Other tiles then compare their stats to a typical bowler with that same handicap.
-                            Average and handicap tiles follow the rule, so they are not given a % difference.
+                            Last league / last year use the house handicap stored on that league card.
+                            Scratch average can move during the season; the card handicap stays at the entering book.
+                            {playerHdcp != null ? ` Showing ${playerHdcp} pins for this window.` : ""}
                         </div>
                     )}
                 </CardBody>
@@ -465,7 +494,7 @@ const HandicapGuide: FC = () => {
 
             <Group title="Scoring">
                 {tile("avg", "Scratch average")}
-                {tile("hdcp", "House handicap 90% of 210")}
+                {tile("hdcp", "House handicap")}
                 {tile("hdcpGame", "Expected hdcp game")}
                 {tile("series", "Expected 3-game series")}
                 {tile("hdcpSeries", "Expected hdcp series")}
