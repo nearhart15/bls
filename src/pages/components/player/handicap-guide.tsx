@@ -17,6 +17,8 @@ import type {PlayerStats} from "../../../data/player/player-stats";
 import {comparePinnedThen} from "../../../data/player/player-pin";
 import {useCachedFetcher} from "../cache/data-loader";
 
+type HdcpScope = "career" | "last-league" | "last-year";
+
 function clamp(n: number, lo: number, hi: number): number {
     return Math.max(lo, Math.min(hi, n));
 }
@@ -187,6 +189,31 @@ function actualFromStats(stats: PlayerStats, sliderHdcp: number): Partial<Record
     return out;
 }
 
+function seasonMatchesYear(season: string, year: number): boolean {
+    return season.includes(String(year));
+}
+
+function pickScopedStats(detail: AggregatedPlayerData | null, scope: HdcpScope): {stats: PlayerStats; label: string} | null {
+    if (!detail?.careerStats || detail.player?.id === "") return null;
+    if (scope === "career") return {stats: detail.careerStats, label: "career"};
+    if (scope === "last-league") {
+        const slices = [...(detail.appearanceSlicesFull ?? [])]
+            .filter((s) => (s.stats?.gameStats.count ?? 0) > 0)
+            .sort((a, b) => (b.season ?? "").localeCompare(a.season ?? "") || (b.leagueName ?? "").localeCompare(a.leagueName ?? ""));
+        const slice = slices[0];
+        if (!slice) return null;
+        const name = [slice.leagueName, slice.season].filter(Boolean).join(" ");
+        return {stats: slice.stats, label: name || "last league"};
+    }
+    const year = new Date().getFullYear() - 1;
+    const slices = [...(detail.seasonSlicesFull ?? [])]
+        .filter((s) => seasonMatchesYear(s.season ?? "", year) && (s.stats?.gameStats.count ?? 0) > 0)
+        .sort((a, b) => (b.season ?? "").localeCompare(a.season ?? ""));
+    const slice = slices[0];
+    if (!slice) return null;
+    return {stats: slice.stats, label: slice.season || String(year)};
+}
+
 function diffPct(actual: number | undefined, expected: number): number | null {
     if (actual == null || !expected) return null;
     return round2(((actual - expected) / Math.abs(expected)) * 100);
@@ -241,10 +268,18 @@ const Group: FC<{title: string; children: ReactNode}> = ({title, children}) => (
 );
 
 const emptyPlayer = {id: "", name: "none"} as AggregatedPlayerData["player"];
+const lastYearNum = new Date().getFullYear() - 1;
+
+const SCOPE_OPTIONS: {id: HdcpScope; label: string; hint: string}[] = [
+    {id: "career", label: "Career", hint: "All seasons"},
+    {id: "last-league", label: "Last league", hint: "Most recent league"},
+    {id: "last-year", label: "Last year", hint: String(lastYearNum)},
+];
 
 const HandicapGuide: FC = () => {
     const [hdcp, setHdcp] = useState(36);
     const [playerId, setPlayerId] = useState("");
+    const [scope, setScope] = useState<HdcpScope>("career");
     const expected = useMemo(() => predict(hdcp), [hdcp]);
 
     const listFetcher = useCallback(buildFullPlayerList, []);
@@ -267,13 +302,15 @@ const HandicapGuide: FC = () => {
         playerId || "none"
     );
 
+    const scoped = useMemo(() => pickScopedStats(detail ?? null, scope), [detail, scope]);
     const actual = useMemo(() => {
-        if (!playerId || !detail?.careerStats || detail.player?.id === "") return null;
-        return actualFromStats(detail.careerStats, hdcp);
-    }, [playerId, detail, hdcp]);
+        if (!playerId || !scoped) return null;
+        return actualFromStats(scoped.stats, hdcp);
+    }, [playerId, scoped, hdcp]);
 
     const selectedName = players.find((p) => p.id === playerId)?.name;
     const showActual = Boolean(actual);
+    const missingScope = Boolean(playerId && !isLoading && !scoped);
 
     const tile = (key: StatKey, label: string) => (
         <Tile
@@ -294,7 +331,7 @@ const HandicapGuide: FC = () => {
                     <p className="text-body-secondary mb-4">
                         Drag the slider to a house handicap. Numbers below are what that handicap
                         usually looks like on a typical 90% of 220 league. Add a bowler to see
-                        their career numbers vs those targets.
+                        their numbers vs those targets.
                     </p>
                     <div className="bls-hdcp-hero mb-3 text-center">
                         <div className="bls-hdcp-hero-num tabular-nums">{hdcp}</div>
@@ -302,6 +339,7 @@ const HandicapGuide: FC = () => {
                         <div className="bls-hdcp-hero-sub">
                             About a {expected.avg.toFixed(2)} scratch average
                             {selectedName ? ` | comparing ${selectedName}` : ""}
+                            {scoped && scoped.label !== "career" ? ` | ${scoped.label}` : ""}
                         </div>
                     </div>
                     <Form.Label htmlFor="hdcp-slider" className="visually-hidden">Handicap</Form.Label>
@@ -320,6 +358,7 @@ const HandicapGuide: FC = () => {
                     <Form.Label htmlFor="hdcp-player">Compare a bowler</Form.Label>
                     <Form.Select
                         id="hdcp-player"
+                        className="mb-3"
                         value={playerId}
                         onChange={(e) => setPlayerId(e.target.value)}
                     >
@@ -330,12 +369,33 @@ const HandicapGuide: FC = () => {
                             </option>
                         ))}
                     </Form.Select>
+                    <div className="bls-scope-pills mb-2" role="tablist" aria-label="Compare window">
+                        {SCOPE_OPTIONS.map((opt) => (
+                            <button
+                                key={opt.id}
+                                type="button"
+                                role="tab"
+                                aria-selected={scope === opt.id}
+                                className={`bls-scope-pill${scope === opt.id ? " is-active" : ""}`}
+                                onClick={() => setScope(opt.id)}
+                            >
+                                <span className="bls-scope-pill-label">{opt.label}</span>
+                                <span className="bls-scope-pill-sub">{opt.hint}</span>
+                            </button>
+                        ))}
+                    </div>
                     {playerId && isLoading && (
                         <div className="text-body-secondary fs-sm mt-2">Loading bowler stats...</div>
                     )}
+                    {missingScope && (
+                        <div className="text-body-secondary fs-sm mt-2">
+                            No games in that window for this bowler. Try Career.
+                        </div>
+                    )}
                     {showActual && (
                         <div className="text-body-secondary fs-sm mt-2">
-                            Each tile shows expected, then the bowler value and % difference vs the slider target.
+                            Each tile shows expected, then the bowler value and % difference vs the slider target
+                            {scoped ? ` (${scoped.label})` : ""}.
                             Green means better than the target, red means behind.
                         </div>
                     )}
