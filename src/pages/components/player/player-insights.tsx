@@ -23,7 +23,7 @@ function clamp(n: number, lo: number, hi: number): number {
 }
 
 function typicalHandicap(avg: number): number {
-    return Math.max(0, Math.round(0.9 * (220 - avg)));
+    return Math.max(0, Math.round(0.9 * (210 - avg) * 100) / 100);
 }
 
 interface Expectation {
@@ -90,7 +90,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
     const single = pct(stats.singlePinSpares);
     const open = pct(stats.opens);
     const out: Insight[] = [];
-    const level = `${fmt(avg)} avg / ~${exp.hdcp} hdcp`;
+    const level = `${fmt(avg)} avg / ~${fmt(exp.hdcp, 2)} hdcp`;
 
     if (open != null) {
         const g = gradeGap(open, exp.open, true);
@@ -174,7 +174,7 @@ function buildGrokPrompt(
     const lines = [
         `You are an experienced USBC league bowling coach. ${name} wants a specific practice plan.`,
         "Use ONLY the numbers in this brief. Do not invent stats that are not here.",
-        `Hold them to a ${fmt(avg)} scratch average (~${exp.hdcp} pins of 90/220 handicap). Do not coach them like a 220 scratch bowler.`,
+        `House handicap is 0.90 * (210 - average). ${name} is a ${fmt(avg)} scratch bowler (~${fmt(exp.hdcp, 2)} pins). Do not treat them as a 210 scratch bowler.`,
         "Rank the top 3 focus areas with the numbers vs expected rates, then give a 7-day practice plan.",
         "",
         "Expected rates:",
@@ -262,7 +262,7 @@ export const InsightsPanel: FC<{
                 <div className="bls-profile-card-head">Expectations for this average</div>
                 <CardBody>
                     <p className="mb-3">
-                        {name} is a <strong>{fmt(avg)}</strong> scratch bowler (~<strong>{exp.hdcp}</strong> pins of 90/220 handicap).
+                        {name} is a <strong>{fmt(avg)}</strong> scratch bowler (~<strong>{fmt(exp.hdcp, 2)}</strong> pins using 0.90 x (210 - avg)).
                     </p>
                     <div className="bls-allstats-grid">
                         <div className="bls-allstats-cell"><div className="bls-allstats-val">{fmt(exp.strike)}%</div><div className="bls-allstats-lbl">Expected strike</div></div>
@@ -270,7 +270,7 @@ export const InsightsPanel: FC<{
                         <div className="bls-allstats-cell"><div className="bls-allstats-val">{fmt(exp.single)}%</div><div className="bls-allstats-lbl">Expected single-pin</div></div>
                         <div className="bls-allstats-cell"><div className="bls-allstats-val">{fmt(exp.open)}%</div><div className="bls-allstats-lbl">Expected opens</div></div>
                         <div className="bls-allstats-cell"><div className="bls-allstats-val">{fmt(exp.firstBall)}</div><div className="bls-allstats-lbl">Expected first ball</div></div>
-                        <div className="bls-allstats-cell"><div className="bls-allstats-val">{exp.hdcp}</div><div className="bls-allstats-lbl">Typical 90/220 hdcp</div></div>
+                        <div className="bls-allstats-cell"><div className="bls-allstats-val">{fmt(exp.hdcp, 2)}</div><div className="bls-allstats-lbl">0.90 x (210 - avg)</div></div>
                     </div>
                 </CardBody>
             </Card>
