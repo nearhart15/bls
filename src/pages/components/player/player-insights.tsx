@@ -14,7 +14,7 @@ function pct(rg?: RatioGroup | null): number | null {
 }
 
 function fmt(n: number | null | undefined, digits = 1, suffix = ""): string {
-    if (n == null || Number.isNaN(n)) return "\u2014";
+    if (n == null || Number.isNaN(n)) return "—";
     return `${(Math.round(n * 10 ** digits) / 10 ** digits).toFixed(digits)}${suffix}`;
 }
 
@@ -115,12 +115,12 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
                 id: "opens",
                 priority: g,
                 title: g === "strength" ? "Open frames are under control for this average" : "More open frames than this average usually has",
-                metric: `${fmt(open)}% open  \u00b7  ${level} target ${fmt(exp.open)}%`,
+                metric: `${fmt(open)}% open  ·  ${level} target ${fmt(exp.open)}%`,
                 why: g === "strength"
                     ? `${name} is closing frames better than a ${fmt(avg)} bowler typically does. That is how handicap nights get protected.`
                     : `A ${fmt(avg)} scratch bowler (~${exp.hdcp} pins of 90/220 handicap) usually opens about ${fmt(exp.open)}% of frames. ${fmt(open)}% is costing pins that handicap is not fully covering.`,
                 workOn: [
-                    "Make the single-pin spares first \u2014 they should be automatic at this average",
+                    "Make the single-pin spares first — they should be automatic at this average",
                     "Have a spare ball or a committed spare line instead of striking at every leftover",
                     "Count the 7 and 10 specifically after each session",
                 ],
@@ -135,7 +135,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
                 id: "single-pin",
                 priority: g,
                 title: g === "strength" ? "Corner pins match this average" : "Single-pin conversion is below this average",
-                metric: `${fmt(single)}% single-pin  \u00b7  ${level} target ${fmt(exp.single)}%`,
+                metric: `${fmt(single)}% single-pin  ·  ${level} target ${fmt(exp.single)}%`,
                 why: g === "strength"
                     ? `At ${fmt(avg)}, ${fmt(exp.single)}% single-pin is the bar. ${name} is above that, which keeps handicap games from slipping.`
                     : `For a ${fmt(avg)} average, single pins should be made about ${fmt(exp.single)}% of the time. ${fmt(single)}% is leaving free pins on the table.`,
@@ -155,13 +155,13 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
                 id: "spares",
                 priority: g,
                 title: g === "strength" ? "Spare rate fits this average" : "Spare game is light for this average",
-                metric: `${fmt(spare)}% spare  \u00b7  ${level} target ${fmt(exp.spare)}%`,
+                metric: `${fmt(spare)}% spare  ·  ${level} target ${fmt(exp.spare)}%`,
                 why: g === "strength"
                     ? `A ${fmt(avg)} bowler is doing well at ${fmt(exp.spare)}% spares. ${name} is clearing that mark.`
                     : `Expected spare rate at ${fmt(avg)} is about ${fmt(exp.spare)}%. Getting back there is usually worth more than chasing extra hook.`,
                 workOn: [
                     "Practice 2-8 / 3-9 / 4-6-7 / 4-6-10 looks, not just pocket strikes",
-                    "Slow down on leftovers \u2014 spare shots do not need strike speed",
+                    "Slow down on leftovers — spare shots do not need strike speed",
                     "Track spare make % separately from strike % for a month",
                 ],
             });
@@ -175,14 +175,14 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
                 id: "strikes",
                 priority: g,
                 title: g === "strength" ? "Strike rate is ahead of this average" : "Strike rate is behind this average",
-                metric: `${fmt(strike)}% strike  \u00b7  ${level} target ${fmt(exp.strike)}%`,
+                metric: `${fmt(strike)}% strike  ·  ${level} target ${fmt(exp.strike)}%`,
                 why: g === "strength"
                     ? `${fmt(strike)}% strikes is above what a ${fmt(avg)} / ~${exp.hdcp} hdcp bowler usually posts. Protect that look.`
                     : `Around ${fmt(avg)}, a realistic strike rate is about ${fmt(exp.strike)}%, not a house-shot pro number. ${fmt(strike)}% is the gap to close.`,
                 workOn: [
                     "Film two games from behind and check release repeatability",
                     "Play one tighter line for a night instead of chasing hook",
-                    "Get the ball to the pocket, then adjust leftover shape \u2014 not the other way around",
+                    "Get the ball to the pocket, then adjust leftover shape — not the other way around",
                 ],
             });
         }
@@ -195,12 +195,12 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
                 id: "first-ball",
                 priority: g,
                 title: g === "strength" ? "First ball is strong for this average" : "First ball is leaving more wood than this average",
-                metric: `${fmt(firstBall)} first-ball  \u00b7  ${level} target ${fmt(exp.firstBall)}`,
+                metric: `${fmt(firstBall)} first-ball  ·  ${level} target ${fmt(exp.firstBall)}`,
                 why: g === "strength"
                     ? `A ${fmt(exp.firstBall)} first-ball average is typical at ${fmt(avg)}. ${name} is beating that.`
                     : `At ${fmt(avg)}, first ball should be around ${fmt(exp.firstBall)} pins. Lower than that creates extra multi-pin spares handicap will not fully erase.`,
                 workOn: [
-                    "Watch the 3-6 or 2-8 leave \u2014 that usually means light or high",
+                    "Watch the 3-6 or 2-8 leave — that usually means light or high",
                     "Keep speed and axis tilt in a narrower window for a full series",
                     "If the lane is tight, move in before you start forcing hook",
                 ],
@@ -215,7 +215,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
                 id: "splits",
                 priority: g,
                 title: g === "strength" ? "Splits are in range for this average" : "Splits are high for this average",
-                metric: `${fmt(split)}% splits  \u00b7  ${level} target under ${fmt(exp.split)}%`,
+                metric: `${fmt(split)}% splits  ·  ${level} target under ${fmt(exp.split)}%`,
                 why: g === "strength"
                     ? `Fewer splits than a ${fmt(avg)} bowler typically sees. That is first-ball control.`
                     : `A ${fmt(avg)} bowler usually lives around ${fmt(exp.split)}% splits. More than that is a line/speed issue, not a spare issue.`,
@@ -235,7 +235,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
                 id: "hung",
                 priority: g === "focus" ? "watch" : g,
                 title: g === "strength" ? "Not getting hung much for this average" : "Getting hung more than this average",
-                metric: `${stats.hungCount} hung  \u00b7  ${fmt(hungRate)}% of games  \u00b7  ${level} target under ${fmt(exp.hung)}%`,
+                metric: `${stats.hungCount} hung  ·  ${fmt(hungRate)}% of games  ·  ${level} target under ${fmt(exp.hung)}%`,
                 why: g === "strength"
                     ? `Hung shots are under the ${fmt(exp.hung)}% mark that is normal at ${fmt(avg)}.`
                     : `At ${fmt(avg)}, hanging more than about ${fmt(exp.hung)}% of games starts cutting strings that this handicap expects to finish.`,
@@ -255,7 +255,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
                 id: "consistency",
                 priority: g === "focus" ? "watch" : g,
                 title: g === "strength" ? "Game-to-game spread is tight for this average" : "Scoring is streakier than this average",
-                metric: `SD ${fmt(sd)}  \u00b7  ${level} target under ${fmt(exp.sd)}`,
+                metric: `SD ${fmt(sd)}  ·  ${level} target under ${fmt(exp.sd)}`,
                 why: g === "strength"
                     ? `A ${fmt(avg)} bowler is doing well if game SD stays near ${fmt(exp.sd)}. This is tighter than that.`
                     : `At ${fmt(avg)}, a realistic game-to-game SD is around ${fmt(exp.sd)}. Wider than that drops the handicap floor.`,
@@ -290,7 +290,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
                 id: "clean-strength",
                 priority: "strength",
                 title: "Clean games are ahead of this average",
-                metric: `${stats.cleanGames} clean  \u00b7  ${fmt(cleanRate)}%  \u00b7  ${level} target ${fmt(exp.clean)}%`,
+                metric: `${stats.cleanGames} clean  ·  ${fmt(cleanRate)}%  ·  ${level} target ${fmt(exp.clean)}%`,
                 why: `At ${fmt(avg)}, about ${fmt(exp.clean)}% clean games is a solid mark. ${name} is above that.`,
                 workOn: ["Treat every open as a post-game note, not just a bad frame"],
             });
@@ -304,7 +304,7 @@ function buildInsights(stats: PlayerStats, seasons: PlayerSeasonStats[], name: s
                 id: "turkey-strength",
                 priority: "strength",
                 title: "Strings are available for this average",
-                metric: `${stats.turkeyCount} turkeys  \u00b7  ${fmt(twoHundredRate)}% of games are 200+  \u00b7  target ${fmt(exp.turkey)}% turkeys`,
+                metric: `${stats.turkeyCount} turkeys  ·  ${fmt(twoHundredRate)}% of games are 200+  ·  target ${fmt(exp.turkey)}% turkeys`,
                 why: `A ${fmt(avg)} bowler does not need 12-baggers. Hitting the ${fmt(exp.turkey)}% turkey mark is enough to feed 200s.`,
                 workOn: ["Stay with the shot that started the string unless the leave tells you otherwise"],
             });
@@ -397,7 +397,7 @@ export const InsightsPanel: FC<{
                     <p className="mb-3">
                         {name} is a <strong>{fmt(avg)} scratch</strong> bowler
                         {" "}(~<strong>{exp.hdcp}</strong> pins of handicap on a typical 90% of 220 house).
-                        Targets below are what that average usually looks like \u2014 not a 220 scratch standard.
+                        Targets below are what that average usually looks like — not a 220 scratch standard.
                     </p>
                     <div className="bls-allstats-grid">
                         <div className="bls-allstats-cell"><div className="bls-allstats-val">{fmt(exp.strike)}%</div><div className="bls-allstats-lbl">Expected strike</div></div>
