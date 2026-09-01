@@ -1,5 +1,5 @@
 /*
- * Player routes © 2026
+ * Player routes (c) 2026
  */
 
 import {type FC, useCallback} from "react";
@@ -11,6 +11,7 @@ import PlayerList from "./components/player/player-list";
 import PlayerDetail from "./components/player/player-detail";
 import PlayerCompare from "./components/player/player-compare";
 import PlayerLeaderboard from "./components/player/player-leaderboard";
+import HandicapGuide from "./components/player/handicap-guide";
 import {useCachedFetcher} from "./components/cache/data-loader";
 import {
     aggregatePlayerData,
@@ -47,6 +48,9 @@ const Player: FC = () => {
     if (playerId === "leaderboard") {
         return <PlayerLeaderboard />;
     }
+    if (playerId === "handicap") {
+        return <HandicapGuide />;
+    }
 
     if (playerId) {
         return <PlayerDetailPage key={playerId} playerId={playerId} />;
@@ -60,6 +64,9 @@ const Player: FC = () => {
                 </Link>
                 <Link to="/player/compare" className="btn btn-outline-primary btn-sm">
                     Player Compare
+                </Link>
+                <Link to="/player/handicap" className="btn btn-outline-primary btn-sm">
+                    Handicap Guide
                 </Link>
             </div>
             <PlayerList />

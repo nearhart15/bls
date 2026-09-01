@@ -1,5 +1,5 @@
 /*
- * Layout — glass nav + OLED shell © 2026
+ * Layout - glass nav + OLED shell (c) 2026
  */
 
 import {type FC, useRef} from "react";
@@ -49,6 +49,7 @@ const Layout :FC = () => {
                             <Nav.Link as={Link} to="/player">Players</Nav.Link>
                             <Nav.Link as={Link} to="/player/leaderboard">Leaderboard</Nav.Link>
                             <Nav.Link as={Link} to="/player/compare">Player Compare</Nav.Link>
+                            <Nav.Link as={Link} to="/player/handicap">Handicap Guide</Nav.Link>
                             <NavDropdown title="Utilities" id="utilities-nav">
                                 <NavDropdown.Item
                                     as={Link}
