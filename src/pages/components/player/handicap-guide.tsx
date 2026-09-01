@@ -12,6 +12,7 @@ import {
     PLAYER_INDEX_CACHE_CATEGORY,
     type AggregatedPlayerData,
     type PlayerListEntry,
+    type PlayerSliceStats,
 } from "../../../data/player/player-aggregate";
 import type {PlayerStats} from "../../../data/player/player-stats";
 import {comparePinnedThen} from "../../../data/player/player-pin";
@@ -189,6 +190,54 @@ function actualFromStats(stats: PlayerStats, sliderHdcp: number): Partial<Record
     return out;
 }
 
+function currentBowlingTerm(now = new Date()): {year: number; label: string; keys: string[]} {
+    const month = now.getMonth() + 1;
+    const year = now.getFullYear();
+    if (month >= 6 && month <= 8) return {year, label: `Summer ${year}`, keys: ["summer"]};
+    if (month >= 9 && month <= 11) return {year, label: `Fall ${year}`, keys: ["fall", "autumn"]};
+    if (month >= 3 && month <= 5) return {year, label: `Spring ${year}`, keys: ["spring"]};
+    return {year, label: `Winter ${year}`, keys: ["winter"]};
+}
+
+function sliceText(slice: PlayerSliceStats): string {
+    return `${slice.season ?? ""} ${slice.leagueName ?? ""}`.toLowerCase();
+}
+
+function yearsInText(text: string): number[] {
+    return (text.match(/20\d{2}/g) ?? []).map(Number);
+}
+
+function scoreCurrentLeague(slice: PlayerSliceStats, term: {year: number; keys: string[]}): number {
+    const text = sliceText(slice);
+    const years = yearsInText(text);
+    const hasYear = years.includes(term.year) || text.includes(String(term.year));
+    const hasSeason = term.keys.some((k) => text.includes(k));
+    let score = 0;
+    if (hasYear && hasSeason) score += 1000;
+    else if (hasSeason) score += 400;
+    else if (hasYear) score += 200;
+    if (years.length) score += Math.max(...years);
+    score += slice.stats?.gameStats.count ?? 0;
+    return score;
+}
+
+function pickCurrentLeagueSlice(detail: AggregatedPlayerData): PlayerSliceStats | null {
+    const term = currentBowlingTerm();
+    const slices = [...(detail.appearanceSlicesFull ?? [])]
+        .filter((s) => (s.stats?.gameStats.count ?? 0) > 0);
+    if (!slices.length) return null;
+    slices.sort((a, b) => scoreCurrentLeague(b, term) - scoreCurrentLeague(a, term));
+    const best = slices[0];
+    const bestScore = scoreCurrentLeague(best, term);
+    if (bestScore >= 400) return best;
+    const yearSlices = slices.filter((s) => yearsInText(sliceText(s)).includes(term.year));
+    if (yearSlices.length) {
+        yearSlices.sort((a, b) => (b.stats.gameStats.count || 0) - (a.stats.gameStats.count || 0));
+        return yearSlices[0];
+    }
+    return best;
+}
+
 function seasonMatchesYear(season: string, year: number): boolean {
     return season.includes(String(year));
 }
@@ -197,13 +246,13 @@ function pickScopedStats(detail: AggregatedPlayerData | null, scope: HdcpScope):
     if (!detail?.careerStats || detail.player?.id === "") return null;
     if (scope === "career") return {stats: detail.careerStats, label: "career"};
     if (scope === "last-league") {
-        const slices = [...(detail.appearanceSlicesFull ?? [])]
-            .filter((s) => (s.stats?.gameStats.count ?? 0) > 0)
-            .sort((a, b) => (b.season ?? "").localeCompare(a.season ?? "") || (b.leagueName ?? "").localeCompare(a.leagueName ?? ""));
-        const slice = slices[0];
+        const slice = pickCurrentLeagueSlice(detail);
         if (!slice) return null;
-        const name = [slice.leagueName, slice.season].filter(Boolean).join(" ");
-        return {stats: slice.stats, label: name || "last league"};
+        const term = currentBowlingTerm();
+        const label = slice.leagueName?.match(/summer|fall|autumn|winter|spring/i)
+            ? slice.leagueName
+            : [slice.leagueName || term.label, slice.season].filter(Boolean).join(" ");
+        return {stats: slice.stats, label};
     }
     const year = new Date().getFullYear() - 1;
     const slices = [...(detail.seasonSlicesFull ?? [])]
@@ -269,10 +318,11 @@ const Group: FC<{title: string; children: ReactNode}> = ({title, children}) => (
 
 const emptyPlayer = {id: "", name: "none"} as AggregatedPlayerData["player"];
 const lastYearNum = new Date().getFullYear() - 1;
+const currentTerm = currentBowlingTerm();
 
 const SCOPE_OPTIONS: {id: HdcpScope; label: string; hint: string}[] = [
     {id: "career", label: "Career", hint: "All seasons"},
-    {id: "last-league", label: "Last league", hint: "Most recent league"},
+    {id: "last-league", label: "Last league", hint: currentTerm.label},
     {id: "last-year", label: "Last year", hint: String(lastYearNum)},
 ];
 
@@ -389,7 +439,7 @@ const HandicapGuide: FC = () => {
                     )}
                     {missingScope && (
                         <div className="text-body-secondary fs-sm mt-2">
-                            No games in that window for this bowler. Try Career.
+                            No games in {scope === "last-league" ? currentTerm.label : "that window"} for this bowler. Try Career.
                         </div>
                     )}
                     {showActual && (
