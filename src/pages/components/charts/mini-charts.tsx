@@ -1,5 +1,5 @@
 /*
- * Inline micro-bar + sparkline charts for performance tables © 2026
+ * Inline micro-bar + sparkline charts for performance tables
  */
 
 import type {FC} from "react";
@@ -21,7 +21,7 @@ interface MicroBarChartProps {
 }
 
 export const MicroBarChart: FC<MicroBarChartProps> = ({values, isDark = true, height = 28}) => {
-    if (!values.length) return <span className="bls-mini-empty">—</span>;
+    if (!values.length) return <span className="bls-mini-empty">-</span>;
     const max = Math.max(...values, 1);
     const mean = values.reduce((a, b) => a + b, 0) / values.length;
     return (
@@ -41,7 +41,7 @@ interface SparklineProps {
 }
 
 export const Sparkline: FC<SparklineProps> = ({values, isDark = true, width = 72, height = 28}) => {
-    if (values.length < 2) return <span className="bls-mini-empty">—</span>;
+    if (values.length < 2) return <span className="bls-mini-empty">-</span>;
     const min = Math.min(...values);
     const max = Math.max(...values);
     const range = max - min || 1;
@@ -63,7 +63,7 @@ export const Sparkline: FC<SparklineProps> = ({values, isDark = true, width = 72
 };
 
 export function performanceGradeFromDelta(delta: number | null | undefined): string {
-    if (delta == null || Number.isNaN(delta)) return "—";
+    if (delta == null || Number.isNaN(delta)) return "-";
     if (delta >= 15) return "A+";
     if (delta >= 10) return "A";
     if (delta >= 6) return "A-";
@@ -77,7 +77,7 @@ export function performanceGradeFromDelta(delta: number | null | undefined): str
 }
 
 export function performanceGrade(score: number | null | undefined, handicapBasis?: number | null): string {
-    if (score == null || score <= 0) return "—";
+    if (score == null || score <= 0) return "-";
     if (handicapBasis != null && handicapBasis > 0) return performanceGradeFromDelta(score - handicapBasis);
     if (score >= 220) return "A+";
     if (score >= 210) return "A";
@@ -95,18 +95,18 @@ export function gradeClass(grade: string): string {
     if (grade.startsWith("A")) return "bls-grade-a";
     if (grade.startsWith("B")) return "bls-grade-b";
     if (grade.startsWith("C")) return "bls-grade-c";
-    if (grade === "—") return "bls-grade-na";
+    if (grade === "-") return "bls-grade-na";
     return "bls-grade-d";
 }
 
 export function performanceRatingFromDelta(delta: number | null | undefined): number | null {
     if (delta == null || Number.isNaN(delta)) return null;
-    return Math.round(Math.max(0, Math.min(100, 50 + delta * 2)));
+    return Math.round(Math.max(0, Math.min(100, 70 + delta * 1.2)));
 }
 
 export function performanceRatingFromAverage(avg: number | null | undefined): number | null {
     if (avg == null || avg <= 0) return null;
-    return Math.round(Math.max(0, Math.min(100, avg - 120)));
+    return Math.round(Math.max(0, Math.min(100, 70 + (avg - 180) * 0.5)));
 }
 
 export function ratingClass(rating: number | null): string {
@@ -131,30 +131,30 @@ export interface RatingBadgeProps {
 
 export const RatingBadge: FC<RatingBadgeProps> = ({
     rating, delta, bookAverage, comparedAverage,
-    sampleLabel = "scores vs book / entering average",
+    sampleLabel = "each game vs entering average / handicap basis",
 }) => {
-    if (rating == null) return <span className={`bls-grade ${ratingClass(null)}`}>—</span>;
+    if (rating == null) return <span className={`bls-grade ${ratingClass(null)}`}>-</span>;
     const usedDelta = delta != null && !Number.isNaN(delta);
     const body = usedDelta ? (
         <>
-            <p className="mb-2">Rating measures pins over or under {sampleLabel}.</p>
+            <p className="mb-2">Rating is each game versus the average your handicap is based on ({sampleLabel}).</p>
             <ul className="mb-2 ps-3">
                 {comparedAverage != null && <li>Compared avg: <strong>{fmt1(comparedAverage)}</strong></li>}
                 {bookAverage != null && <li>Book / entering avg: <strong>{fmt1(bookAverage)}</strong></li>}
                 <li>Difference: <strong>{delta! >= 0 ? "+" : ""}{fmt1(delta!)} pins</strong></li>
             </ul>
             <p className="mb-1"><strong>Formula</strong></p>
-            <p className="mb-1 font-monospace small">rating = 50 + (difference × 2)</p>
-            <p className="mb-2 font-monospace small">50 + ({fmt1(delta!)} × 2) = {fmt1(50 + delta! * 2)} → <strong>{rating}</strong></p>
-            <p className="mb-0 text-body-secondary small">50 means bowling average. About +1 pin = +2 rating. Capped at 0 and 100 (±25 pins).</p>
+            <p className="mb-1 font-monospace small">rating = 70 + (difference x 1.2)</p>
+            <p className="mb-2 font-monospace small">70 + ({fmt1(delta!)} x 1.2) = {fmt1(70 + delta! * 1.2)} -> <strong>{rating}</strong></p>
+            <p className="mb-0 text-body-secondary small">Bowling your handicap average is about a 70. Most nights land in the 60-80 range. Capped at 0 and 100.</p>
         </>
     ) : (
         <>
-            <p className="mb-2">No week-by-week book comparison is available, so this uses scratch average only.</p>
+            <p className="mb-2">No per-game handicap comparison is available yet, so this uses scratch average as a stand-in.</p>
             {bookAverage != null && <p className="mb-2">Scratch average: <strong>{fmt1(bookAverage)}</strong></p>}
             <p className="mb-1"><strong>Fallback formula</strong></p>
-            <p className="mb-2 font-monospace small">rating = average − 120{bookAverage != null ? ` → ${fmt1(bookAverage)} − 120 = ${rating}` : ""}</p>
-            <p className="mb-0 text-body-secondary small">This is a stand-in until there are weekly scores to compare against book.</p>
+            <p className="mb-2 font-monospace small">rating = 70 + (average - 180) x 0.5{bookAverage != null ? ` -> 70 + (${fmt1(bookAverage)} - 180) x 0.5 = ${rating}` : ""}</p>
+            <p className="mb-0 text-body-secondary small">A 180 average is about a 70 on this fallback. Game-vs-handicap ratings replace this when scores exist.</p>
         </>
     );
     const pop = (
