@@ -21,12 +21,8 @@ function clamp(n: number, lo: number, hi: number): number {
     return Math.max(lo, Math.min(hi, n));
 }
 
-function round1(n: number): number {
-    return Math.round(n * 10) / 10;
-}
-
-function round0(n: number): number {
-    return Math.round(n);
+function round2(n: number): number {
+    return Math.round(n * 100) / 100;
 }
 
 function avgFromHandicap(hdcp: number): number {
@@ -39,7 +35,7 @@ function handicapFromAvg(avg: number): number {
 
 function ratioPct(rg?: {pct?: number; denominator?: number} | null): number | null {
     if (!rg || !rg.denominator) return null;
-    return round1((rg.pct ?? 0) * 100);
+    return round2((rg.pct ?? 0) * 100);
 }
 
 interface ExpectedStats {
@@ -105,35 +101,35 @@ function predict(hdcp: number): ExpectedStats {
     const p200 = pace(200);
     return {
         hdcp,
-        avg: round1(avg),
-        hdcpGame: round1(avg + hdcp),
-        series: round1(avg * 3),
-        hdcpSeries: round1((avg + hdcp) * 3),
-        strike: round1(strike),
-        spare: round1(spare),
-        single: round1(single),
-        open: round1(open),
-        split: round1(split),
-        firstBall: round1(firstBall),
-        clean: round1(clean),
-        hung: round1(hung),
-        turkey: round1(turkey),
-        twoHundred: round1(twoHundred),
-        threeHundred: round1(threeHundred),
-        sixHundred: round1(sixHundred),
-        sd: round1(sd),
-        highGame: round0(avg + 1.65 * sd),
-        pinfallFrame: round1(ppf),
-        marksGame: round1(10 * (1 - open / 100)),
-        ballsGame: round1(9 * ballsPerFrame + 2.4),
-        frames50: round1(p50.frames),
-        balls50: round1(p50.balls),
-        frames100: round1(p100.frames),
-        balls100: round1(p100.balls),
-        frames150: round1(p150.frames),
-        balls150: round1(p150.balls),
-        frames200: round1(p200.frames),
-        balls200: round1(p200.balls),
+        avg: round2(avg),
+        hdcpGame: round2(avg + hdcp),
+        series: round2(avg * 3),
+        hdcpSeries: round2((avg + hdcp) * 3),
+        strike: round2(strike),
+        spare: round2(spare),
+        single: round2(single),
+        open: round2(open),
+        split: round2(split),
+        firstBall: round2(firstBall),
+        clean: round2(clean),
+        hung: round2(hung),
+        turkey: round2(turkey),
+        twoHundred: round2(twoHundred),
+        threeHundred: round2(threeHundred),
+        sixHundred: round2(sixHundred),
+        sd: round2(sd),
+        highGame: round2(avg + 1.65 * sd),
+        pinfallFrame: round2(ppf),
+        marksGame: round2(10 * (1 - open / 100)),
+        ballsGame: round2(9 * ballsPerFrame + 2.4),
+        frames50: round2(p50.frames),
+        balls50: round2(p50.balls),
+        frames100: round2(p100.frames),
+        balls100: round2(p100.balls),
+        frames150: round2(p150.frames),
+        balls150: round2(p150.balls),
+        frames200: round2(p200.frames),
+        balls200: round2(p200.balls),
     };
 }
 
@@ -151,27 +147,27 @@ function actualFromStats(stats: PlayerStats, sliderHdcp: number): Partial<Record
     const strike = ratioPct(stats.strikes);
     const out: Partial<Record<StatKey, number>> = {
         hdcp: avg > 0 ? handicapFromAvg(avg) : undefined,
-        avg: avg > 0 ? round1(avg) : undefined,
-        hdcpGame: avg > 0 ? round1(avg + sliderHdcp) : undefined,
-        series: seriesN > 0 ? round1(stats.seriesStats.average) : undefined,
-        hdcpSeries: seriesN > 0 ? round1(stats.seriesStats.average + sliderHdcp * 3) : undefined,
+        avg: avg > 0 ? round2(avg) : undefined,
+        hdcpGame: avg > 0 ? round2(avg + sliderHdcp) : undefined,
+        series: seriesN > 0 ? round2(stats.seriesStats.average) : undefined,
+        hdcpSeries: seriesN > 0 ? round2(stats.seriesStats.average + sliderHdcp * 3) : undefined,
         strike: strike ?? undefined,
         spare: ratioPct(stats.spares) ?? undefined,
         single: ratioPct(stats.singlePinSpares) ?? undefined,
         open: open ?? undefined,
         split: ratioPct(stats.splitsOccurred) ?? ratioPct(stats.splits) ?? undefined,
-        firstBall: stats.firstBallAverage || undefined,
-        clean: games > 0 ? round1((stats.cleanGames / games) * 100) : undefined,
-        hung: games > 0 ? round1((stats.hungCount / games) * 100) : undefined,
-        turkey: games > 0 ? round1((stats.turkeyCount / games) * 100) : undefined,
-        twoHundred: games > 0 ? round1((stats.games200 / games) * 100) : undefined,
-        threeHundred: games > 0 ? round1((stats.games300 / games) * 100) : undefined,
-        sixHundred: seriesN > 0 ? round1((stats.series600 / seriesN) * 100) : undefined,
-        sd: stats.gameStats.sd || undefined,
-        highGame: stats.gameStats.max || undefined,
-        pinfallFrame: stats.avgPinfallPerFrame || undefined,
-        marksGame: open != null ? round1(10 * (1 - open / 100)) : undefined,
-        ballsGame: strike != null ? round1(9 * (1 + (1 - strike / 100)) + 2.4) : undefined,
+        firstBall: stats.firstBallAverage ? round2(stats.firstBallAverage) : undefined,
+        clean: games > 0 ? round2((stats.cleanGames / games) * 100) : undefined,
+        hung: games > 0 ? round2((stats.hungCount / games) * 100) : undefined,
+        turkey: games > 0 ? round2((stats.turkeyCount / games) * 100) : undefined,
+        twoHundred: games > 0 ? round2((stats.games200 / games) * 100) : undefined,
+        threeHundred: games > 0 ? round2((stats.games300 / games) * 100) : undefined,
+        sixHundred: seriesN > 0 ? round2((stats.series600 / seriesN) * 100) : undefined,
+        sd: stats.gameStats.sd ? round2(stats.gameStats.sd) : undefined,
+        highGame: stats.gameStats.max ? round2(stats.gameStats.max) : undefined,
+        pinfallFrame: stats.avgPinfallPerFrame ? round2(stats.avgPinfallPerFrame) : undefined,
+        marksGame: open != null ? round2(10 * (1 - open / 100)) : undefined,
+        ballsGame: strike != null ? round2(9 * (1 + (1 - strike / 100)) + 2.4) : undefined,
     };
     const frames = stats.paceAvgFrames ?? [];
     const balls = stats.paceAvgBalls ?? [];
@@ -184,8 +180,8 @@ function actualFromStats(stats: PlayerStats, sliderHdcp: number): Partial<Record
     ];
     keys.forEach((pair, i) => {
         if ((n[i] ?? 0) > 0) {
-            out[pair[0]] = frames[i] != null ? round1(frames[i]) : undefined;
-            out[pair[1]] = balls[i] != null ? round1(balls[i]) : undefined;
+            out[pair[0]] = frames[i] != null ? round2(frames[i]) : undefined;
+            out[pair[1]] = balls[i] != null ? round2(balls[i]) : undefined;
         }
     });
     return out;
@@ -193,12 +189,13 @@ function actualFromStats(stats: PlayerStats, sliderHdcp: number): Partial<Record
 
 function diffPct(actual: number | undefined, expected: number): number | null {
     if (actual == null || !expected) return null;
-    return round1(((actual - expected) / Math.abs(expected)) * 100);
+    return round2(((actual - expected) / Math.abs(expected)) * 100);
 }
 
 function formatVal(n: number | undefined, kind: "num" | "pct"): string {
     if (n == null || Number.isNaN(n)) return "--";
-    return kind === "pct" ? `${round1(n)}%` : String(n);
+    const s = round2(n).toFixed(2);
+    return kind === "pct" ? `${s}%` : s;
 }
 
 const PCT_KEYS = new Set<StatKey>([
@@ -229,7 +226,7 @@ const Tile: FC<{
             {showActual && (
                 <div className="d-flex justify-content-between mt-2 fs-sm" style={{color: tone === " is-better" ? "#30d158" : tone === " is-worse" ? "#ff453a" : undefined}}>
                     <span>{formatVal(actual, kind)}</span>
-                    <span>{diff == null ? "--" : `${diff > 0 ? "+" : ""}${diff}%`}</span>
+                    <span>{diff == null ? "--" : `${diff > 0 ? "+" : ""}${diff.toFixed(2)}%`}</span>
                 </div>
             )}
         </div>
@@ -303,7 +300,7 @@ const HandicapGuide: FC = () => {
                         <div className="bls-hdcp-hero-num tabular-nums">{hdcp}</div>
                         <div className="bls-hdcp-hero-lbl">Handicap pins</div>
                         <div className="bls-hdcp-hero-sub">
-                            About a {expected.avg} scratch average
+                            About a {expected.avg.toFixed(2)} scratch average
                             {selectedName ? ` | comparing ${selectedName}` : ""}
                         </div>
                     </div>
@@ -329,7 +326,7 @@ const HandicapGuide: FC = () => {
                         <option value="">No bowler selected</option>
                         {players.map((p) => (
                             <option key={p.id} value={p.id}>
-                                {p.name}{p.average != null ? ` (${p.average.toFixed(1)} avg)` : ""}
+                                {p.name}{p.average != null ? ` (${p.average.toFixed(2)} avg)` : ""}
                             </option>
                         ))}
                     </Form.Select>
