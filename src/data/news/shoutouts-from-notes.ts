@@ -33,21 +33,23 @@ function isPlayed(m: LeagueMatchup): boolean {
 export async function shoutOutsFromLastGameNotes(): Promise<MatchNoteShoutOut[]> {
     const leagues = await leagueInfoListFetcher();
     const items: MatchNoteShoutOut[] = [];
+    const failures: string[] = [];
+    let loaded = 0;
 
     for (const season of leagues.seasons) {
         for (const league of season.leagues) {
             if (!league.hasData() || !league.dataLoc || !league.id) continue;
             try {
                 const details = await leagueDetailsFetcher(league.dataLoc);
+                loaded++;
                 const teamNames = new Map<string, string>();
-                for (const team of details.teams) {
+                for (const team of [...details.teams, ...details.otherTeams]) {
                     if (team.id) teamNames.set(team.id, team.name ?? team.id);
                 }
                 for (const team of details.teams) {
                     for (const matchup of team.matchups) {
                         if (!isPlayed(matchup)) continue;
                         const notes = (matchup.notes ?? []).map((n) => n.trim()).filter(Boolean);
-                        if (notes.length === 0) continue;
                         const date = matchDate(matchup);
                         if (!date) continue;
                         const oppId = matchup.opponent?.teamId;
@@ -64,12 +66,13 @@ export async function shoutOutsFromLastGameNotes(): Promise<MatchNoteShoutOut[]>
                     }
                 }
             } catch (err) {
-                console.warn(`Skipping league ${league.id} while gathering shout-outs:`, err);
+                failures.push(`${league.id}: ${err instanceof Error ? err.message : String(err)}`);
             }
         }
     }
 
-    if (items.length === 0) return [];
+    if (failures.length && loaded === 0) throw new Error("Shoutouts could not be loaded: " + failures.join("; "));
+    if (items.length === 0) return Object.assign([], {warnings: failures});
 
     items.sort((a, b) => b.date.valueOf() - a.date.valueOf());
     const latestDay = items[0].date.clone().startOf("day");
@@ -78,10 +81,11 @@ export async function shoutOutsFromLastGameNotes(): Promise<MatchNoteShoutOut[]>
     const seen = new Set<string>();
     const unique: MatchNoteShoutOut[] = [];
     for (const item of onLatest) {
-        const key = `${item.leagueId}|${item.week}|${item.notes.join("||")}`;
+        if (!item.notes.length) continue;
+        const key = `${item.leagueId}|${item.teamId}|${item.week}|${item.notes.join("||")}`;
         if (seen.has(key)) continue;
         seen.add(key);
         unique.push(item);
     }
-    return unique;
+    return Object.assign(unique, {warnings: failures});
 }

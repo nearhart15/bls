@@ -60,7 +60,7 @@ interface LeagueListProps {
 }
 
 const LeagueList :FC<LeagueListProps> = ({compact = false})=> {
-    const fetcher = useCallback(leagueInfoListFetcher, []);
+    const fetcher = useCallback(() => leagueInfoListFetcher(), []);
     const { data, isLoading, error } = useCachedFetcher<AvailableLeagues>(fetcher, LEAGUE_LIST_CACHE_CATEGORY);
 
     return (

@@ -42,6 +42,7 @@ export class DayOfWeekConverter implements JsonCustomConvert<Moment | null> {
     }
     deserialize(data: string): Moment | null {
         if (data === "") return null;
+        if (!["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].includes(data)) throw new Error("Invalid bowling weekday");
         return moment().day(data);
     }
 }
@@ -56,7 +57,9 @@ export class HHMMTimeConverter implements JsonCustomConvert<Moment | null> {
     }
     deserialize(data: string): Moment | null {
         if (data === "") return null;
-        return moment(data, "HH:mm");
+        const result = moment(data, "HH:mm", true);
+        if (!result.isValid()) throw new Error("Invalid time");
+        return result;
     }
 }
 
@@ -70,6 +73,8 @@ export class DateConverter implements JsonCustomConvert<Moment | null> {
     }
     deserialize(data: string): Moment | null {
         if (data === "") return null;
-        return moment(data, "YYYY-MM-DD");
+        const result = moment(data, "YYYY-MM-DD", true);
+        if (!result.isValid()) throw new Error("Invalid date");
+        return result;
     }
 }

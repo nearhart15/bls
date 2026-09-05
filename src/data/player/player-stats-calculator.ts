@@ -94,16 +94,16 @@ class FrameStatCalculator {
 
             if (ball1Score == 10) this.strikeCountAccum++;
             if (frameNum == 10) {
-                if (ball2Score == 10) this.strikeCountAccum++;
-                if (ball3Score == 10) this.strikeCountAccum++;
+                if (frame.ballScores[1]?.[1] === "X") this.strikeCountAccum++;
+                if (frame.ballScores[2]?.[1] === "X") this.strikeCountAccum++;
             }
 
             if (ball1Score == 10) strikeCounter++;
             else { this.saveStrikeCounter(strikeCounter); strikeCounter = 0; }
             if (frameNum == 10) {
-                if (ball2Score == 10) strikeCounter++;
+                if (frame.ballScores[1]?.[1] === "X") strikeCounter++;
                 else { this.saveStrikeCounter(strikeCounter); strikeCounter = 0; }
-                if (ball3Score == 10) strikeCounter++;
+                if (frame.ballScores[2]?.[1] === "X") strikeCounter++;
                 else { this.saveStrikeCounter(strikeCounter); strikeCounter = 0; }
             }
 
@@ -122,7 +122,7 @@ class FrameStatCalculator {
             }
 
             if (frameNum == 10) {
-                if (ball2Score == 10 && ball2Score == 10) this.strikeOpportunitiesAccum += 12;
+                if (ball1Score == 10 && frame.ballScores[1]?.[1] === "X") this.strikeOpportunitiesAccum += 12;
                 else if (ball1Score == 10 || first2BallScores == 10) this.strikeOpportunitiesAccum += 11;
                 else this.strikeOpportunitiesAccum += 10;
 
@@ -192,7 +192,9 @@ class FrameStatCalculator {
     }
 }
 
-export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: PlayerStats, gamesCount = 3) {
+export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: PlayerStats, gamesCount = Math.max(0, ...series.map(games => games.length))) {
+    gamesCount = Math.max(gamesCount, ...series.map(games => games.length));
+    if (!Number.isSafeInteger(gamesCount) || gamesCount < 0 || gamesCount > 12) throw new Error("Invalid series game count");
     const gameScoresByGame :number[][] = [];
     for (let i = 0; i < gamesCount; i++) gameScoresByGame.push([]);
     const allGameScores : number[] = [];
@@ -202,7 +204,7 @@ export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: Pla
     series.forEach(serie => {
         let seriesAccum = 0;
         let hasBlind = false;
-        for (let i = 0; i < gamesCount; i++) {
+        for (let i = 0; i < serie.length; i++) {
             const gameScore = serie[i];
             if (!gameScore.blind && !gameScore.vacant) {
                 gameScoresByGame[i].push(gameScore.scratchScore);
@@ -218,11 +220,11 @@ export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: Pla
                 hasBlind = true
             }
         }
-        if (!hasBlind) {
+        if (!hasBlind && serie.length > 0) {
             seriesScores.push(seriesAccum);
             if (seriesAccum >= 600) {
                 stats.series600 += 1;
-                if (seriesAccum > 800) stats.series800 += 1;
+                if (seriesAccum >= 800) stats.series800 += 1;
             }
         }
     });
@@ -236,6 +238,7 @@ export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: Pla
     }
 
     gameScoresByGame.forEach((gameXScore) => {
+        stats.gameAverageN.push(gameXScore.length);
         stats.gameAverages.push((gameXScore.length > 0) ? ss.mean(gameXScore) : 0);
     })
 
@@ -251,6 +254,8 @@ export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: Pla
     stats.cleanGames = frameStatsCalculator.cleanGameCount;
     stats.hungCount = frameStatsCalculator.hungCount;
     stats.turkeyCount = frameStatsCalculator.turkeyCount;
+    stats.firstBallCount = frameStatsCalculator.firstBallCount;
+    stats.singlePinGameCount = frameStatsCalculator.singlePinsPickedUpGameScores.length;
     stats.firstBallAverage = frameStatsCalculator.getFirstBallAverage();
     stats.strikes = new RatioGroup(frameStatsCalculator.strikeCountAccum, frameStatsCalculator.strikeOpportunitiesAccum);
     stats.spares = new RatioGroup(frameStatsCalculator.pickedUpSpareAccum, frameStatsCalculator.spareOpportunitiesAccum);

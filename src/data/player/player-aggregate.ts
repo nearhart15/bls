@@ -1,3 +1,4 @@
+import {metricCounts, type MetricCounts} from "./metric-counts";
 /*
  * Player cross-league aggregation © 2026
  */
@@ -40,10 +41,14 @@ export interface PlayerSliceStats {
     season?: string;
     leagueId?: string;
     leagueName?: string;
+    teamId?: string;
+    lastBowled?: number;
+    calendarStats?: Record<string, PlayerStats>;
     stats: PlayerStats;
 }
 
 export interface AggregatedPlayerData {
+    warnings?: string[];
     player: PlayerInfo;
     appearances: PlayerLeagueAppearance[];
     careerStats: PlayerStats;
@@ -53,6 +58,7 @@ export interface AggregatedPlayerData {
 }
 
 export interface PlayerListSeasonSlice {
+    metrics?: MetricCounts;
     season: string;
     average: number | null;
     games: number;
@@ -80,6 +86,8 @@ export interface PlayerListSeasonSlice {
 }
 
 export interface PlayerAppearanceSlice {
+    metrics?: MetricCounts;
+    calendarSlices?: PlayerAppearanceSlice[];
     season: string;
     leagueId: string;
     leagueName: string;
@@ -120,6 +128,7 @@ export interface PlayerListEntry {
     highSeries: number;
     games200: number;
     seasonSlices: PlayerListSeasonSlice[];
+    calendarSlices: PlayerListSeasonSlice[];
     appearanceSlices: PlayerAppearanceSlice[];
     weekAverages?: number[];
     weekSeries?: number[];
@@ -130,6 +139,8 @@ export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail-v4-frame-pace";
 export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v8-team-league";
 
 interface RosterScanResult {
+    warnings: string[];
+    dates: Map<TeamPlayerGameScore[], string>;
     playerMap: Map<string, {name: string; lastBowled?: moment.Moment}>;
     seriesByPlayerSeason: Map<string, Map<string, TeamPlayerGameScore[][]>>;
     seriesByPlayer: Map<string, TeamPlayerGameScore[][]>;
@@ -145,6 +156,10 @@ async function scanAllRosters(): Promise<RosterScanResult> {
         leagueInfoListFetcher(),
     ]);
 
+    const dates = new Map<TeamPlayerGameScore[], string>();
+    const failures: string[] = [];
+    let loadedLeagues = 0;
+    const seen = new Set<string>();
     const playerMap = new Map<string, {name: string; lastBowled?: moment.Moment}>();
     for (const p of players.players) {
         playerMap.set(p.id, {name: p.name ?? p.id, lastBowled: p.lastBowled});
@@ -157,14 +172,18 @@ async function scanAllRosters(): Promise<RosterScanResult> {
     const weekAveragesByPlayer = new Map<string, number[]>();
     const seriesByPlayerLeague = new Map<string, Map<string, TeamPlayerGameScore[][]>>();
 
-    const addSeries = (playerId: string, season: string, leagueId: string, games: TeamPlayerGameScore[]) => {
+    const addSeries = (playerId: string, season: string, leagueId: string, teamId: string, date: string, games: TeamPlayerGameScore[], week: number) => {
+        const recordKey = JSON.stringify([playerId, season, leagueId, teamId, date, week]);
+        if (seen.has(recordKey)) throw new Error("Duplicate player matchup: " + recordKey);
+        seen.add(recordKey);
+        dates.set(games, date);
         if (!seriesByPlayer.has(playerId)) seriesByPlayer.set(playerId, []);
         seriesByPlayer.get(playerId)!.push(games);
         if (!seriesByPlayerSeason.has(playerId)) seriesByPlayerSeason.set(playerId, new Map());
         const bySeason = seriesByPlayerSeason.get(playerId)!;
         if (!bySeason.has(season)) bySeason.set(season, []);
         bySeason.get(season)!.push(games);
-        const leagueKey = `${season}::${leagueId}`;
+        const leagueKey = JSON.stringify([season, leagueId, teamId]);
         if (!seriesByPlayerLeague.has(playerId)) seriesByPlayerLeague.set(playerId, new Map());
         const byLeague = seriesByPlayerLeague.get(playerId)!;
         if (!byLeague.has(leagueKey)) byLeague.set(leagueKey, []);
@@ -177,6 +196,7 @@ async function scanAllRosters(): Promise<RosterScanResult> {
             if (!league.hasData() || !league.dataLoc || !league.id) continue;
             try {
                 const details = await leagueDetailsFetcher(league.dataLoc);
+                loadedLeagues++;
                 for (const team of details.teams) {
                     for (const rosterPlayer of team.roster) {
                         if (!rosterPlayer.id) continue;
@@ -203,7 +223,11 @@ async function scanAllRosters(): Promise<RosterScanResult> {
                         for (const matchup of team.matchups) {
                             const ps = matchup.scores?.playerScores.find((s) => s.player === rosterPlayer.id);
                             if (ps && ps.games.length > 0) {
-                                addSeries(rosterPlayer.id, seasonLabel, league.id, ps.games);
+                                const date = matchup.bowlDate ?? matchup.scheduledDate;
+                                if (!date?.isValid()) throw new Error("Scored matchup has no valid date");
+                                addSeries(rosterPlayer.id, seasonLabel, league.id, team.id ?? "", date.format("YYYY-MM-DD"), ps.games, matchup.week);
+                                const info = playerMap.get(rosterPlayer.id)!;
+                                if (!info.lastBowled || date.isAfter(info.lastBowled)) info.lastBowled = date;
                                 if (ps.series?.scratchScore) weekSeries.push(ps.series.scratchScore);
                                 if (ps.series?.average) weekAvgs.push(ps.series.average);
                             }
@@ -215,12 +239,13 @@ async function scanAllRosters(): Promise<RosterScanResult> {
                     }
                 }
             } catch (err) {
-                console.warn(`Skipping league ${league.id} during roster scan:`, err);
+                failures.push(`${league.id}: ${err instanceof Error ? err.message : String(err)}`);
             }
         }
     }
 
-    return {playerMap, seriesByPlayerSeason, seriesByPlayer, seriesByPlayerLeague, appearancesByPlayer, weekSeriesByPlayer, weekAveragesByPlayer};
+    if (failures.length && loadedLeagues === 0) throw new Error("Statistics are unavailable because some leagues could not be loaded. Retry after correcting: " + failures.join("; "));
+    return {warnings: failures, dates, playerMap, seriesByPlayerSeason, seriesByPlayer, seriesByPlayerLeague, appearancesByPlayer, weekSeriesByPlayer, weekAveragesByPlayer};
 }
 
 function statsFromSeries(allSeries: TeamPlayerGameScore[][]): PlayerStats {
@@ -234,9 +259,10 @@ function ratioPct(rg: {pct: number; denominator: number}): number | null {
     return Math.round(rg.pct * 1000) / 10;
 }
 
-function richFromStats(s: PlayerStats) {
+export function richFromStats(s: PlayerStats) {
     const games = s.gameStats.count;
     return {
+        metrics: metricCounts(s),
         average: games > 0 ? s.gameStats.average : null,
         games,
         pinfall: s.pinfall,
@@ -249,7 +275,7 @@ function richFromStats(s: PlayerStats) {
         cleanGames: s.cleanGames,
         hungCount: s.hungCount,
         turkeyCount: s.turkeyCount,
-        firstBall: s.firstBallAverage || null,
+        firstBall: s.firstBallCount > 0 ? s.firstBallAverage : null,
         strikePct: ratioPct(s.strikes),
         sparePct: ratioPct(s.spares),
         singlePinPct: ratioPct(s.singlePinSpares),
@@ -258,7 +284,7 @@ function richFromStats(s: PlayerStats) {
         strikeToSparePct: s.strikesToSpares.denominator > 0
             ? Math.round(s.strikesToSpares.pct * 100) / 100
             : null,
-        singlePinPickup: s.allSinglePinsPickedUpAverage > 0
+        singlePinPickup: s.singlePinGameCount > 0
             ? Math.round(s.allSinglePinsPickedUpAverage * 10) / 10 : null,
         lowGame: s.gameStats.min || null,
         lowSeries: s.seriesStats.min || null,
@@ -298,12 +324,13 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
         const appearanceSlices: PlayerAppearanceSlice[] = [];
         const leagueSeries = scan.seriesByPlayerLeague.get(id);
         for (const ap of scan.appearancesByPlayer.get(id) ?? []) {
-            const key = `${ap.season}::${ap.leagueId}`;
+            const key = JSON.stringify([ap.season, ap.leagueId, ap.teamId]);
             const leagueGames = leagueSeries?.get(key) ?? [];
             const computed = leagueGames.length > 0 ? richFromStats(statsFromSeries(leagueGames)) : null;
             const st = ap.stats;
             const games = computed?.games ?? st?.gameStats.count ?? 0;
-            appearanceSlices.push({
+            const appearance: PlayerAppearanceSlice = {
+                metrics: computed?.metrics,
                 season: ap.season,
                 leagueId: ap.leagueId,
                 leagueName: ap.leagueName,
@@ -332,7 +359,9 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
                 lowGame: computed?.lowGame ?? null,
                 lowSeries: computed?.lowSeries ?? null,
                 seriesCount: computed?.seriesCount ?? 0,
-            });
+            };
+            appearance.calendarSlices = Object.entries(calendarStats(leagueGames, scan.dates)).map(([year, stats]) => ({...appearance, season: year, ...richFromStats(stats)}));
+            appearanceSlices.push(appearance);
         }
         entries.push({
             id, name: info.name,
@@ -340,6 +369,7 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
             games: stats.gameStats.count, pinfall: stats.pinfall,
             highGame: stats.gameStats.max, highSeries: stats.seriesStats.max, games200: stats.games200,
             seasonSlices, appearanceSlices,
+            calendarSlices: Object.entries(calendarStats(series, scan.dates)).map(([season, stats]) => ({season, ...richFromStats(stats)})),
             weekAverages: scan.weekAveragesByPlayer.get(id),
             weekSeries: scan.weekSeriesByPlayer.get(id),
             lastBowled: info.lastBowled,
@@ -353,7 +383,7 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
         if (b.average !== a.average) return b.average - a.average;
         return a.name.localeCompare(b.name);
     });
-    return entries;
+    return Object.assign(entries, {warnings: scan.warnings});
 }
 
 export async function aggregatePlayerData(playerId: string): Promise<AggregatedPlayerData> {
@@ -381,14 +411,24 @@ export async function aggregatePlayerData(playerId: string): Promise<AggregatedP
     const appearanceSlicesFull: PlayerSliceStats[] = [];
     const byLeague = scan.seriesByPlayerLeague.get(playerId);
     for (const ap of appearances) {
-        const key = `${ap.season}::${ap.leagueId}`;
+        const key = JSON.stringify([ap.season, ap.leagueId, ap.teamId]);
         const series = byLeague?.get(key) ?? [];
         appearanceSlicesFull.push({
             season: ap.season,
             leagueId: ap.leagueId,
             leagueName: ap.leagueName,
+            teamId: ap.teamId,
+            lastBowled: Math.max(0, ...series.map(games => Date.parse(scan.dates.get(games) ?? "" ) || 0)),
+            calendarStats: calendarStats(series, scan.dates),
             stats: series.length > 0 ? statsFromSeries(series) : (ap.stats ?? new PlayerStats()),
         });
     }
-    return {player, appearances, careerStats, seasonStats, seasonSlicesFull, appearanceSlicesFull};
+    return {warnings: scan.warnings, player, appearances, careerStats, seasonStats, seasonSlicesFull, appearanceSlicesFull};
+}
+
+
+function calendarStats(series: TeamPlayerGameScore[][], dates: Map<TeamPlayerGameScore[], string>): Record<string, PlayerStats> {
+ const groups = new Map<string, TeamPlayerGameScore[][]>();
+ for (const games of series) {const year=dates.get(games)?.slice(0,4);if(!year) continue;const group=groups.get(year)??[];group.push(games);groups.set(year,group);}
+ return Object.fromEntries([...groups].map(([year,games])=>[year,statsFromSeries(games)]));
 }

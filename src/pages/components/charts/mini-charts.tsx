@@ -141,11 +141,11 @@ export const RatingBadge: FC<RatingBadgeProps> = ({
             <ul className="mb-2 ps-3">
                 {comparedAverage != null && <li>Compared avg: <strong>{fmt1(comparedAverage)}</strong></li>}
                 {bookAverage != null && <li>Book / entering avg: <strong>{fmt1(bookAverage)}</strong></li>}
-                <li>Difference: <strong>{delta! >= 0 ? "+" : ""}{fmt1(delta!)} pins</strong></li>
+                <li>Difference: <strong>{delta >= 0 ? "+" : ""}{fmt1(delta)} pins</strong></li>
             </ul>
             <p className="mb-1"><strong>Formula</strong></p>
             <p className="mb-1 font-monospace small">rating = 70 + (difference x 1.2)</p>
-            <p className="mb-2 font-monospace small">70 + ({fmt1(delta!)} x 1.2) = {fmt1(70 + delta! * 1.2)} -> <strong>{rating}</strong></p>
+            <p className="mb-2 font-monospace small">70 + ({fmt1(delta)} x 1.2) = {fmt1(70 + delta * 1.2)} {'→'} <strong>{rating}</strong></p>
             <p className="mb-0 text-body-secondary small">Bowling your handicap average is about a 70. Most nights land in the 60-80 range. Capped at 0 and 100.</p>
         </>
     ) : (

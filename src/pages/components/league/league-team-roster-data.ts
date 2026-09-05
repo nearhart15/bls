@@ -9,9 +9,7 @@ export interface PlayerDayData {
     week: number;
     bowlDate: Date;
     enteringAvg: number;
-    game1: number;
-    game2: number;
-    game3: number;
+    games: (number | null)[];
     series: number;
     average: number;
     runningAverageAfter: number;
@@ -33,7 +31,7 @@ export function createGameTableData(
     const matchupPlayerScores: MatchupPlayerScore[] = [];
     teamDetails.matchups.forEach((matchup) => {
         const playerScore = matchup.scores?.playerScores.find((ps) => ps.player === playerId);
-        if (playerScore && !playerScore.games[0].blind) {
+        if (playerScore && playerScore.games.some(game => !game.blind && !game.vacant)) {
             matchupPlayerScores.push({
                 matchup,
                 playerScore,
@@ -53,9 +51,7 @@ export function createGameTableData(
             week: mps.matchup.week,
             bowlDate: mps.matchup.scheduledDate?.toDate() ?? new Date(),
             enteringAvg: mps.playerScore.hdcpSettingDay ? 0 : mps.playerScore.enteringAverage,
-            game1: mps.playerScore.games[0].scratchScore,
-            game2: mps.playerScore.games[1].scratchScore,
-            game3: mps.playerScore.games[2].scratchScore,
+            games: mps.playerScore.games.map(game => game.blind || game.vacant ? null : game.scratchScore),
             series: mps.playerScore.series.scratchScore,
             average: mps.playerScore.series.average,
             runningAverageAfter: runningAvgAfter,

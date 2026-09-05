@@ -1,3 +1,5 @@
+import {validateLeague} from "./validate-league";
+import {fetchJson, dataUrl} from "../utils/fetch-json";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  *
@@ -27,19 +29,16 @@ const APP_URL_BASE = import.meta.env.VITE_DATA_URL_BASE;
 const LEAGUE_INDEX_RESOURCE = import.meta.env.VITE_DATA_LEAGUES_INDEX_RESOURCE;
 
 export const leagueInfoListFetcher = async() =>
-    fetch(LEAGUE_INDEX_RESOURCE)
-        .then(res => res.json())
-        .then((json :object) => createJsonConverter().deserialize<AvailableLeagues>(json, AvailableLeagues) as unknown as AvailableLeagues);
+    fetchJson(LEAGUE_INDEX_RESOURCE)
+        .then((json :object) => createJsonConverter().deserialize<AvailableLeagues>(json, AvailableLeagues));
 
 export const leagueTeamDetailsFetcher = async(dataLoc: string) =>
-    fetch(APP_URL_BASE + dataLoc, {headers: {'Accept-Encoding': 'gzip'}})
-        .then(res => res.json())
-        .then((json :object) => createJsonConverter().deserialize<TrackedLeagueTeam>(json, TrackedLeagueTeam) as unknown as TrackedLeagueTeam);
+    fetchJson(dataUrl(APP_URL_BASE, dataLoc))
+        .then((json :object) => createJsonConverter().deserialize<TrackedLeagueTeam>(json, TrackedLeagueTeam));
 
 export const leagueDetailsFetcher = async(dataLoc: string) => {
-    const leagueDetails: LeagueDetails = await fetch(APP_URL_BASE + dataLoc, {headers: {'Accept-Encoding': 'gzip'}})
-        .then(res => res.json())
-        .then((json: object) => createJsonConverter().deserialize<LeagueDetails>(json, LeagueDetails) as unknown as LeagueDetails);
+    const leagueDetails: LeagueDetails = await fetchJson(dataUrl(APP_URL_BASE, dataLoc))
+        .then((json: object) => createJsonConverter().deserialize<LeagueDetails>(json, LeagueDetails));
 
     // Add team details
     const teams: TrackedLeagueTeam[] = [];
@@ -54,6 +53,7 @@ export const leagueDetailsFetcher = async(dataLoc: string) => {
     }
     leagueDetails.teams = teams;
 
+    validateLeague(leagueDetails);
     decorateLeagueDetails(leagueDetails)
     return leagueDetails;
 }

@@ -1,3 +1,4 @@
+import {mergeStats} from "../../../data/player/merge-stats";
 /*
  * Handicap guide - expected stats vs an optional bowler
  */
@@ -14,8 +15,7 @@ import {
     type PlayerListEntry,
     type PlayerSliceStats,
 } from "../../../data/player/player-aggregate";
-import type {PlayerStats} from "../../../data/player/player-stats";
-import type {LeaguePlayerStats} from "../../../data/league/league-team-details";
+import {PlayerStats} from "../../../data/player/player-stats";
 import {comparePinnedThen} from "../../../data/player/player-pin";
 import {useCachedFetcher} from "../cache/data-loader";
 
@@ -38,7 +38,7 @@ function handicapFromAvg(avg: number): number {
 }
 
 function ratioPct(rg?: {pct?: number; denominator?: number} | null): number | null {
-    if (!rg || !rg.denominator) return null;
+    if (!rg?.denominator) return null;
     return round2((rg.pct ?? 0) * 100);
 }
 
@@ -203,52 +203,21 @@ function currentBowlingTerm(now = new Date()): {year: number; label: string; key
     return {year, label: `Winter ${year}`, keys: ["winter"]};
 }
 
-function sliceText(slice: PlayerSliceStats): string {
-    return `${slice.season ?? ""} ${slice.leagueName ?? ""}`.toLowerCase();
-}
 
-function yearsInText(text: string): number[] {
-    return (text.match(/20\d{2}/g) ?? []).map(Number);
-}
 
-function scoreCurrentLeague(slice: PlayerSliceStats, term: {year: number; keys: string[]}): number {
-    const text = sliceText(slice);
-    const years = yearsInText(text);
-    const hasYear = years.includes(term.year) || text.includes(String(term.year));
-    const hasSeason = term.keys.some((k) => text.includes(k));
-    let score = 0;
-    if (hasYear && hasSeason) score += 1000;
-    else if (hasSeason) score += 400;
-    else if (hasYear) score += 200;
-    if (years.length) score += Math.max(...years);
-    score += slice.stats?.gameStats.count ?? 0;
-    return score;
-}
+
+
+
 
 function matchAppearance(detail: AggregatedPlayerData, slice: PlayerSliceStats) {
     return detail.appearances.find((a) => a.season === slice.season && a.leagueId === slice.leagueId);
 }
 
 function pickCurrentLeagueSlice(detail: AggregatedPlayerData): PlayerSliceStats | null {
-    const term = currentBowlingTerm();
-    const slices = [...(detail.appearanceSlicesFull ?? [])]
-        .filter((s) => (s.stats?.gameStats.count ?? 0) > 0);
-    if (!slices.length) return null;
-    slices.sort((a, b) => scoreCurrentLeague(b, term) - scoreCurrentLeague(a, term));
-    const best = slices[0];
-    const bestScore = scoreCurrentLeague(best, term);
-    if (bestScore >= 400) return best;
-    const yearSlices = slices.filter((s) => yearsInText(sliceText(s)).includes(term.year));
-    if (yearSlices.length) {
-        yearSlices.sort((a, b) => (b.stats.gameStats.count || 0) - (a.stats.gameStats.count || 0));
-        return yearSlices[0];
-    }
-    return best;
+    return [...detail.appearanceSlicesFull].filter(s => s.stats.gameStats.count > 0).sort((a,b) => (b.lastBowled ?? 0) - (a.lastBowled ?? 0))[0] ?? null;
 }
 
-function seasonMatchesYear(season: string, year: number): boolean {
-    return season.includes(String(year));
-}
+
 
 interface ScopedPick {
     stats: PlayerStats;
@@ -259,7 +228,7 @@ interface ScopedPick {
 
 function extrasFromAppearance(detail: AggregatedPlayerData, slice: PlayerSliceStats): {leagueHdcp: number | null; leagueAvg: number | null} {
     const ap = matchAppearance(detail, slice);
-    const st = ap?.stats as LeaguePlayerStats | undefined;
+    const st = ap?.stats;
     const leagueHdcp = st?.leagueHandicap && st.leagueHandicap > 0 ? st.leagueHandicap : null;
     const leagueAvg = st?.leagueAverage && st.leagueAverage > 0 ? st.leagueAverage : null;
     return {leagueHdcp, leagueAvg};
@@ -280,12 +249,8 @@ function pickScopedStats(detail: AggregatedPlayerData | null, scope: HdcpScope):
         return {stats: slice.stats, label, ...extrasFromAppearance(detail, slice)};
     }
     const year = new Date().getFullYear() - 1;
-    const slices = [...(detail.appearanceSlicesFull ?? [])]
-        .filter((s) => seasonMatchesYear(s.season ?? "", year) && (s.stats?.gameStats.count ?? 0) > 0)
-        .sort((a, b) => (b.season ?? "").localeCompare(a.season ?? "") || (b.stats.gameStats.count || 0) - (a.stats.gameStats.count || 0));
-    const slice = slices[0];
-    if (!slice) return null;
-    return {stats: slice.stats, label: slice.leagueName || slice.season || String(year), ...extrasFromAppearance(detail, slice)};
+    const stats = mergeStats(detail.appearanceSlicesFull.map(s => s.calendarStats?.[String(year)] ?? new PlayerStats()));
+    return stats.gameStats.count > 0 ? {stats, label: String(year), leagueHdcp: null, leagueAvg: null} : null;
 }
 
 function diffPct(actual: number | undefined, expected: number): number | null {
@@ -358,7 +323,7 @@ const HandicapGuide: FC = () => {
     const [scope, setScope] = useState<HdcpScope>("career");
     const expected = useMemo(() => predict(hdcp), [hdcp]);
 
-    const listFetcher = useCallback(buildFullPlayerList, []);
+    const listFetcher = useCallback(() => buildFullPlayerList(), []);
     const {data: list} = useCachedFetcher<PlayerListEntry[]>(listFetcher, PLAYER_INDEX_CACHE_CATEGORY);
     const players = useMemo(() => {
         const rows = [...(list ?? [])];
@@ -433,7 +398,7 @@ const HandicapGuide: FC = () => {
                         max={90}
                         step={0.01}
                         value={hdcp}
-                        onChange={(e) => setHdcp(Number(e.target.value))}
+                        onChange={(e) => { setHdcp(Number(e.target.value)); }}
                     />
                     <div className="d-flex justify-content-between text-body-secondary fs-sm mb-3">
                         <span>0 hdcp / 210 avg</span>
@@ -444,7 +409,7 @@ const HandicapGuide: FC = () => {
                         id="hdcp-player"
                         className="mb-3"
                         value={playerId}
-                        onChange={(e) => setPlayerId(e.target.value)}
+                        onChange={(e) => { setPlayerId(e.target.value); }}
                     >
                         <option value="">No bowler selected</option>
                         {players.map((p) => (
@@ -461,7 +426,7 @@ const HandicapGuide: FC = () => {
                                 role="tab"
                                 aria-selected={scope === opt.id}
                                 className={`bls-scope-pill${scope === opt.id ? " is-active" : ""}`}
-                                onClick={() => setScope(opt.id)}
+                                onClick={() => { setScope(opt.id); }}
                             >
                                 <span className="bls-scope-pill-label">{opt.label}</span>
                                 <span className="bls-scope-pill-sub">{opt.hint}</span>

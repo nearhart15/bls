@@ -1,3 +1,4 @@
+import {useId} from "react";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  *
@@ -67,7 +68,7 @@ interface GameSummaryAndPointsProps {
 }
 const GameSummaryAndPoints :FC<GameSummaryAndPointsProps> = ({teamNumber, teamScore, isBlindOrAbsent, matchupGames = 3, currentBreakpoint}: GameSummaryAndPointsProps) => {
     const[showBlindAbsent, setShowBlindAbsent] = useState<boolean>(false);
-    const keyPrefix = Math.random().toString();
+    const keyPrefix = useId();
     const gameLoopArray :number[] = new Array<number>(matchupGames).fill(0);
 
     useEffect(() => {

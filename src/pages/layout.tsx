@@ -1,3 +1,4 @@
+import DataQualityNotice from "./components/data-quality-notice";
 /*
  * Layout - glass nav + OLED shell (c) 2026
  */
@@ -70,6 +71,7 @@ const Layout :FC = () => {
                 <ClearCache ref={clearCacheRef}/>
 
                 <main className="bls-main">
+                    <DataQualityNotice/>
                     <Outlet/>
                 </main>
 

@@ -1,3 +1,4 @@
+import {fetchJson} from "../utils/fetch-json";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  *
@@ -21,6 +22,5 @@ export const NEWS_CACHE_CATEGORY = "news";
 const NEWS_RESOURCE = import.meta.env.VITE_DATA_NEWS_INDEX_RESOURCE;
 
 export const newsFetcher = async() =>
-    fetch(NEWS_RESOURCE)
-        .then(res => res.json())
-        .then((json :object) => createJsonConverter().deserialize<News>(json, News) as unknown as News);
+    fetchJson(NEWS_RESOURCE)
+        .then((json :object) => createJsonConverter().deserialize<News>(json, News));

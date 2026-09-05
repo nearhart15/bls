@@ -16,8 +16,12 @@
 
 import {createContext, type FC, type ReactNode, use, useMemo} from "react";
 
-const DEFAULT_TTL = import.meta.env.VITE_CACHE_DEFAULT_TTL;
-const DEFAULT_MAX_CACHE_PER_CATEGORY = import.meta.env.VITE_CACHE_MAX_ENTRY_PER_CATEGORY;
+const positiveConfig = (value: string | undefined, fallback: number) => {
+    const n = Number(value);
+    return Number.isSafeInteger(n) && n > 0 ? n : fallback;
+};
+const DEFAULT_TTL = positiveConfig(import.meta.env.VITE_CACHE_DEFAULT_TTL, 900000);
+const DEFAULT_MAX_CACHE_PER_CATEGORY = positiveConfig(import.meta.env.VITE_CACHE_MAX_ENTRY_PER_CATEGORY, 50);
 export const SINGLE_ENTRY_CATEGORY_KEY = "SINGLE_DEFAULT";
 
 export interface CacheEntry {
@@ -33,7 +37,7 @@ export class Cache {
     get (category: string, key: string = SINGLE_ENTRY_CATEGORY_KEY ) : unknown {
         const categoryCache = this.getCategoryCache(category, false);
         if (categoryCache) {
-            return this.getEntryWithExpiryCheck(key, categoryCache)?.data;
+            return this.getEntryWithExpiryCheck(key, categoryCache)?.data ?? null;
         }
         return null;
     }

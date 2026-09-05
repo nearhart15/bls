@@ -81,8 +81,8 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                         for (const w of weekData) {
                             const basis = w.enteringAvg > 0 ? w.enteringAvg : (avg ?? 0);
                             if (basis <= 0) continue;
-                            for (const g of [w.game1, w.game2, w.game3]) {
-                                if (g > 0) deltas.push(g - basis);
+                            for (const g of w.games) {
+                                if (g != null) deltas.push(g - basis);
                             }
                         }
                         const meanDelta = deltas.length > 0 ? deltas.reduce((s, n) => s + n, 0) / deltas.length : null;

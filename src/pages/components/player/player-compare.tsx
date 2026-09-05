@@ -1,9 +1,10 @@
+import {mergeMetrics, type MetricCounts} from "../../../data/player/metric-counts";
 /*
  * Player Compare — FIFA-style dashboard © 2026
  */
 
 import {type FC, type ReactNode, useCallback, useMemo, useState} from "react";
-import Chart from "react-apexcharts";
+import Chart from "../charts/safe-chart";
 import type {ApexOptions} from "apexcharts";
 import {Badge, Card, CardBody, Col, Form, Row} from "react-bootstrap";
 
@@ -89,7 +90,8 @@ function ratioPct(rg?: {pct: number; denominator: number}): number | null {
 
 type StatBag = Record<string, number | null>;
 
-type RichSlice = {
+interface RichSlice {
+    metrics?: MetricCounts;
     average: number | null;
     games: number;
     pinfall: number;
@@ -113,14 +115,12 @@ type RichSlice = {
     lowGame?: number | null;
     lowSeries?: number | null;
     seriesCount?: number;
-};
+}
 
 function bagFromSlices(slices: RichSlice[]): StatBag {
     let games = 0, pinfall = 0, highGame = 0, highSeries = 0, games200 = 0;
     let games300 = 0, series600 = 0, series800 = 0, cleanGames = 0, hungCount = 0, turkeyCount = 0, seriesCount = 0;
     let weighted = 0;
-    let firstW = 0, firstG = 0;
-    let strikeW = 0, spareW = 0, singleW = 0, openW = 0, splitW = 0, s2sW = 0, pickupW = 0, pctG = 0;
     let lowGame: number | null = null;
     let lowSeries: number | null = null;
     for (const s of slices) {
@@ -137,17 +137,7 @@ function bagFromSlices(slices: RichSlice[]): StatBag {
         turkeyCount += s.turkeyCount ?? 0;
         seriesCount += s.seriesCount ?? 0;
         if (s.average != null && s.games > 0) weighted += s.average * s.games;
-        if (s.firstBall != null && s.games > 0) { firstW += s.firstBall * s.games; firstG += s.games; }
-        if (s.games > 0) {
-            pctG += s.games;
-            if (s.strikePct != null) strikeW += s.strikePct * s.games;
-            if (s.sparePct != null) spareW += s.sparePct * s.games;
-            if (s.singlePinPct != null) singleW += s.singlePinPct * s.games;
-            if (s.openPct != null) openW += s.openPct * s.games;
-            if (s.splitPct != null) splitW += s.splitPct * s.games;
-            if (s.strikeToSparePct != null) s2sW += s.strikeToSparePct * s.games;
-            if (s.singlePinPickup != null) pickupW += s.singlePinPickup * s.games;
-        }
+
         if (s.lowGame != null) lowGame = lowGame == null ? s.lowGame : Math.min(lowGame, s.lowGame);
         if (s.lowSeries != null) lowSeries = lowSeries == null ? s.lowSeries : Math.min(lowSeries, s.lowSeries);
     }
@@ -155,14 +145,7 @@ function bagFromSlices(slices: RichSlice[]): StatBag {
         average: games > 0 ? weighted / games : null,
         games, pinfall, highGame, highSeries, games200,
         games300, series600, series800, cleanGames, hungCount, turkeyCount, seriesCount,
-        firstBall: firstG > 0 ? firstW / firstG : null,
-        strikePct: pctG > 0 && strikeW > 0 ? strikeW / pctG : null,
-        sparePct: pctG > 0 && spareW > 0 ? spareW / pctG : null,
-        singlePinPct: pctG > 0 && singleW > 0 ? singleW / pctG : null,
-        openPct: pctG > 0 && openW > 0 ? openW / pctG : null,
-        splitPct: pctG > 0 && splitW > 0 ? splitW / pctG : null,
-        strikeToSparePct: pctG > 0 && s2sW > 0 ? s2sW / pctG : null,
-        singlePinPickup: pctG > 0 && pickupW > 0 ? pickupW / pctG : null,
+        ...mergeMetrics(slices),
         lowGame, lowSeries,
     };
 }
@@ -188,7 +171,7 @@ function bagFromCareer(stats: PlayerStats): StatBag {
         cleanGames: stats.cleanGames,
         hungCount: stats.hungCount,
         turkeyCount: stats.turkeyCount,
-        firstBall: stats.firstBallAverage || null,
+        firstBall: stats.firstBallCount > 0 ? stats.firstBallAverage : null,
         strikePct: ratioPct(stats.strikes),
         sparePct: ratioPct(stats.spares),
         singlePinPct: ratioPct(stats.singlePinSpares),
@@ -197,7 +180,7 @@ function bagFromCareer(stats: PlayerStats): StatBag {
         strikeToSparePct: stats.strikesToSpares.denominator > 0
             ? Math.round(stats.strikesToSpares.pct * 100) / 100
             : null,
-        singlePinPickup: stats.allSinglePinsPickedUpAverage > 0
+        singlePinPickup: stats.singlePinGameCount > 0
             ? Math.round(stats.allSinglePinsPickedUpAverage * 10) / 10 : null,
         lowGame: stats.gameStats.min || null,
         lowSeries: stats.seriesStats.min || null,
@@ -223,13 +206,14 @@ const FifaBar: FC<{
     label: string;
     valueA: number | null;
     valueB: number | null;
+    lowerIsBetter?: boolean;
     format: (v: number | null | undefined) => string;
-}> = ({label, valueA, valueB, format}) => {
+}> = ({label, valueA, valueB, format, lowerIsBetter = false}) => {
     const a = num(valueA);
     const b = num(valueB);
     const total = a + b;
     const fill = total > 0 ? (Math.max(a, b) / total) * 100 : 50;
-    const leader: "a" | "b" | "tie" = a > b ? "a" : b > a ? "b" : "tie";
+    const leader: "a" | "b" | "tie" = valueA == null || valueB == null || a === b ? "tie" : (lowerIsBetter ? a < b : a > b) ? "a" : "b";
     const color = leader === "a" ? COLOR_A : leader === "b" ? COLOR_B : "#6e6e73";
     return (
         <div className="bls-fifa-row">
@@ -321,7 +305,7 @@ const PlayerCard: FC<{
                     <span>{bag.games != null ? `${intFormat.format(bag.games)} games` : "—"}</span>
                     <span>{bag.highGame != null ? `HG ${intFormat.format(bag.highGame)}` : ""}</span>
                 </div>
-                <Form.Select size="sm" className="bls-fifa-change" value={selectedId} disabled={disabled} onChange={(e) => onChange(e.target.value)} style={{borderColor: color}}>
+                <Form.Select size="sm" className="bls-fifa-change" value={selectedId} disabled={disabled} onChange={(e) => { onChange(e.target.value); }} style={{borderColor: color}}>
                     <option value="">Change</option>
                     {players.map((p) => (<option key={p.id} value={p.id} disabled={p.id === otherId}>{p.name}</option>))}
                 </Form.Select>
@@ -334,13 +318,13 @@ const StatColumn: FC<{title: string; stats: StatDef[]; bagA: StatBag; bagB: Stat
     <div className="bls-fifa-col">
         <div className="bls-fifa-col-title">{title}</div>
         {stats.map((s) => (
-            <FifaBar key={s.key} label={s.label} valueA={bagA[s.key] ?? null} valueB={bagB[s.key] ?? null} format={s.format} />
+            <FifaBar key={s.key} label={s.label} lowerIsBetter={["openPct","hungCount"].includes(s.key)} valueA={bagA[s.key] ?? null} valueB={bagB[s.key] ?? null} format={s.format} />
         ))}
     </div>
 );
 
 const PlayerCompare: FC = () => {
-    const listFetcher = useCallback(buildFullPlayerList, []);
+    const listFetcher = useCallback(() => buildFullPlayerList(), []);
     const {data, isLoading, error} = useCachedFetcher<PlayerListEntry[]>(listFetcher, PLAYER_INDEX_CACHE_CATEGORY);
     const [mode, setMode] = useState<Mode>("career");
     const [tab, setTab] = useState<TabId>("scoring");
@@ -381,12 +365,13 @@ const PlayerCompare: FC = () => {
     const listBagA = aEntry ? scopeListEntry(aEntry, mode, season, leagueId) : null;
     const listBagB = bEntry ? scopeListEntry(bEntry, mode, season, leagueId) : null;
 
-    const Board: FC<{bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}> = ({bagA, bagB, nameA, nameB}) => {
+    const renderBoard = ({bagA, bagB, nameA, nameB}: {bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}) => {
         let scoreA = 0, scoreB = 0;
         for (const s of ALL_STATS) {
-            const av = num(bagA[s.key]), bv = num(bagB[s.key]);
-            if (av > bv) scoreA++;
-            else if (bv > av) scoreB++;
+            const av = bagA[s.key], bv = bagB[s.key];
+            if (av == null || bv == null || av === bv) continue;
+            const aWins = ["openPct", "hungCount"].includes(s.key) ? av < bv : av > bv;
+            if (aWins) scoreA++; else scoreB++;
         }
         return (
             <>
@@ -397,7 +382,7 @@ const PlayerCompare: FC = () => {
                 </div>
                 <div className="bls-fifa-tabs" role="tablist">
                     {([["scoring", "Scoring"], ["conversion", "Conversion"], ["volume", "Volume"]] as [TabId, string][]).map(([id, label]) => (
-                        <button key={id} type="button" className={`bls-fifa-tab${tab === id ? " is-active" : ""}`} onClick={() => setTab(id)}>{label}</button>
+                        <button key={id} type="button" className={`bls-fifa-tab${tab === id ? " is-active" : ""}`} onClick={() => { setTab(id); }}>{label}</button>
                     ))}
                 </div>
                 <Row className="g-3">
@@ -440,7 +425,7 @@ const PlayerCompare: FC = () => {
                                             <span className="bls-scope-pill-label">Careers</span>
                                             <span className="bls-scope-pill-sub">All seasons</span>
                                         </button>
-                                        <button type="button" className={`bls-scope-pill${mode === "season" ? " is-active" : ""}`} onClick={() => setMode("season")}>
+                                        <button type="button" className={`bls-scope-pill${mode === "season" ? " is-active" : ""}`} onClick={() => { setMode("season"); }}>
                                             <span className="bls-scope-pill-label">Season / league</span>
                                             <span className="bls-scope-pill-sub">Year first</span>
                                         </button>
@@ -457,7 +442,7 @@ const PlayerCompare: FC = () => {
                                         </Col>
                                         <Col md={6}>
                                             <Form.Label className="bls-meta-label">League</Form.Label>
-                                            <Form.Select value={leagueId} onChange={(e) => setLeagueId(e.target.value)} disabled={!season}>
+                                            <Form.Select value={leagueId} onChange={(e) => { setLeagueId(e.target.value); }} disabled={!season}>
                                                 <option value="">{season ? "All leagues this season" : "Select a season first"}</option>
                                                 {leagues.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
                                             </Form.Select>
@@ -474,14 +459,14 @@ const PlayerCompare: FC = () => {
                         <Row className="g-3 mb-3">
                             <Col md={6}>
                                 <Form.Label className="bls-meta-label" style={{color: COLOR_A}}>Player A</Form.Label>
-                                <Form.Select value={idA} onChange={(e) => setIdA(e.target.value)} style={{borderColor: COLOR_A}} disabled={mode === "season" && !season}>
+                                <Form.Select value={idA} onChange={(e) => { setIdA(e.target.value); }} style={{borderColor: COLOR_A}} disabled={mode === "season" && !season}>
                                     <option value="">Select bowler…</option>
                                     {eligible.map((p) => <option key={p.id} value={p.id} disabled={p.id === idB}>{p.name}</option>)}
                                 </Form.Select>
                             </Col>
                             <Col md={6}>
                                 <Form.Label className="bls-meta-label" style={{color: COLOR_B}}>Player B</Form.Label>
-                                <Form.Select value={idB} onChange={(e) => setIdB(e.target.value)} style={{borderColor: COLOR_B}} disabled={mode === "season" && !season}>
+                                <Form.Select value={idB} onChange={(e) => { setIdB(e.target.value); }} style={{borderColor: COLOR_B}} disabled={mode === "season" && !season}>
                                     <option value="">Select bowler…</option>
                                     {eligible.map((p) => <option key={p.id} value={p.id} disabled={p.id === idA}>{p.name}</option>)}
                                 </Form.Select>
@@ -491,14 +476,14 @@ const PlayerCompare: FC = () => {
                     {aEntry && bEntry && mode === "career" && (
                         <CareerPair key={`${aEntry.id}-${bEntry.id}`} idA={aEntry.id} idB={bEntry.id}>
                             {(bagA, bagB, loading) => loading ? <Loader /> : bagA && bagB
-                                ? <Board key={`${aEntry.id}-${bEntry.id}-board`} bagA={bagA} bagB={bagB} nameA={aEntry.name} nameB={bEntry.name} />
+                                ? renderBoard({bagA: bagA, bagB: bagB, nameA: aEntry.name, nameB: bEntry.name})
                                 : listBagA && listBagB
-                                    ? <Board key={`${aEntry.id}-${bEntry.id}-list`} bagA={listBagA} bagB={listBagB} nameA={aEntry.name} nameB={bEntry.name} />
+                                    ? renderBoard({bagA: listBagA, bagB: listBagB, nameA: aEntry.name, nameB: bEntry.name})
                                     : null}
                         </CareerPair>
                     )}
                     {aEntry && bEntry && mode === "season" && season && listBagA && listBagB && (
-                        <Board key={`${aEntry.id}-${bEntry.id}-${season}-${leagueId}`} bagA={listBagA} bagB={listBagB} nameA={aEntry.name} nameB={bEntry.name} />
+                        renderBoard({bagA: listBagA, bagB: listBagB, nameA: aEntry.name, nameB: bEntry.name})
                     )}
                 </>
             )}

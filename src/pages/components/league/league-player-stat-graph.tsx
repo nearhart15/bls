@@ -5,7 +5,7 @@
 import type {FC} from "react";
 
 import type {ApexOptions} from "apexcharts";
-import Chart from "react-apexcharts";
+import Chart from "../charts/safe-chart";
 
 import type {PlayerDayData} from "./league-team-roster-data";
 import {useTheme} from "../theme";
@@ -16,10 +16,7 @@ interface TeamPlayerStatGraphProps {
 }
 
 function count200s(p: PlayerDayData): number {
-    let count = 0;
-    if (p.game1 >= 200) count++;
-    if (p.game2 >= 200) count++;
-    if (p.game3 >= 200) count++;
+    const count = p.games.filter(game => game != null && game >= 200).length;
     return count;
 }
 
