@@ -16,7 +16,7 @@
  */
 
 import type {FC, ReactNode} from "react";
-import {useEffect, useState} from "react";
+
 import moment from "moment";
 
 import {Card, CardBody, CardHeader, Col, Container, Row} from "react-bootstrap";
@@ -25,7 +25,6 @@ import {
 } from "react-bootstrap-icons";
 
 import {TrackedLeagueTeam} from "../../../data/league/league-team-details";
-import type {LeagueMatchup} from "../../../data/league/league-matchup";
 import type {LeagueDetails} from "../../../data/league/league-details";
 import {isNumeric} from "../../../data/utils/utils";
 
@@ -91,29 +90,10 @@ interface LeagueTeamProps {
     leagueDetails: LeagueDetails | null;
 }
 const LeagueTeamDetailsSummary :FC<LeagueTeamProps> = ({teamDetails, leagueDetails} : LeagueTeamProps)=> {
-    const [teamPositionScoreData, setTeamPositionScoreData] = useState<TeamPositionScoreData[]>([]);
-    const [lastMatchup, setLastMatchup] = useState<LeagueMatchup | null>(null);
-    const [nextMatchup, setNextMatchup] = useState<LeagueMatchup | null>(null);
-
-    useEffect(() => {
-
-        if (teamDetails != null) {
-            setTeamPositionScoreData(buildTeamPositionScoreData(teamDetails));
-
-            for (let i = 0; i < teamDetails.matchups.length; i++) {
-                const matchup = teamDetails.matchups[i];
-                if (!matchup.scores?.playerScores || matchup.scores.playerScores.length === 0) {
-                    // We have hit the first matchup without scores
-                    setNextMatchup(matchup);
-                    if (i > 0) {
-                        setLastMatchup(teamDetails.matchups[i - 1]);
-                    }
-                    break;
-                }
-            }
-        }
-
-    }, [teamDetails]);
+    const teamPositionScoreData = buildTeamPositionScoreData(teamDetails);
+    const played = teamDetails.matchups.filter(m => (m.scores?.playerScores.length ?? 0) > 0);
+    const lastMatchup = played[played.length - 1] ?? null;
+    const nextMatchup = teamDetails.matchups.find(m => !m.scores?.playerScores.length) ?? null;
 
     const rankComparison = () => {
         let retVal = <></>
@@ -191,18 +171,7 @@ interface LeagueTeamDetailsProps {
     children?: ReactNode;
 }
 const LeagueTeamDetails : FC<LeagueTeamDetailsProps> = ({leagueDetails, leagueDetailsLoading, currentBreakpoint, teamId}: LeagueTeamDetailsProps) => {
-    const [teamDetails, setTeamDetails] = useState<TrackedLeagueTeam | null>(null);
-
-    useEffect(() => {
-        if (leagueDetails && teamId) {
-            for (const item of leagueDetails.teams) {
-                if (item.id === teamId) {
-                    setTeamDetails(item);
-                    break;
-                }
-            }
-        }
-    }, [teamId, leagueDetails]);
+    const teamDetails = leagueDetails?.teams.find(team => team.id === teamId) ?? null;
 
     return (<>
         <Card border="primary" className="mt-2 mb-2 mx-0 px-0">

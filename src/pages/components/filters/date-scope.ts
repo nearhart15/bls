@@ -20,10 +20,10 @@ export function windowsForLabel(label: string): {start: Date; end: Date}[] {
 
     const addMonths = (year: number, startMonth: number, endMonth: number) => {
         if (startMonth <= endMonth) {
-            out.push({start: ymd(year, startMonth, 1), end: ymd(year, endMonth, 28)});
+            out.push({start: ymd(year, startMonth, 1), end: new Date(year, endMonth, 0)});
             return;
         }
-        out.push({start: ymd(year, startMonth, 1), end: ymd(year + 1, endMonth, 28)});
+        out.push({start: ymd(year, startMonth, 1), end: new Date(year + 1, endMonth, 0)});
     };
 
     const named = [
@@ -40,7 +40,7 @@ export function windowsForLabel(label: string): {start: Date; end: Date}[] {
             foundNamed = true;
             const year = Number(m[1]);
             if (row.months[0] === 12) {
-                out.push({start: ymd(year - 1, 12, 1), end: ymd(year, 2, 28)});
+                out.push({start: ymd(year - 1, 12, 1), end: new Date(year, 2, 0)});
             } else {
                 addMonths(year, row.months[0], row.months[1]);
             }
@@ -63,12 +63,12 @@ export function windowsForLabel(label: string): {start: Date; end: Date}[] {
     return out;
 }
 
-export function labelsMatchDateRange(labels: Array<string | null | undefined>, from: string, to: string): boolean {
+export function labelsMatchDateRange(labels: (string | null | undefined)[], from: string, to: string): boolean {
     if (!from && !to) return true;
     const start = parseISODate(from) ?? new Date(1970, 0, 1);
     const end = parseISODate(to) ?? new Date(2099, 11, 31);
     end.setHours(23, 59, 59, 999);
-    const parts = labels.filter((v): v is string => Boolean(v && v.trim()));
+    const parts = labels.filter((v): v is string => Boolean(v?.trim()));
     if (!parts.length) return false;
     for (const label of parts) {
         const windows = windowsForLabel(label);

@@ -30,6 +30,9 @@ export class PlayerStats {
     gameStats: StatGroup = new StatGroup();
     seriesStats: StatGroup = new StatGroup();
     gameAverages: number[] = [];
+    gameAverageN: number[] = [];
+    firstBallCount = 0;
+    singlePinGameCount = 0;
     firstBallAverage = 0;
     strikes: RatioGroup = new RatioGroup();
     spares: RatioGroup = new RatioGroup();
@@ -40,9 +43,9 @@ export class PlayerStats {
     cleanGames = 0;
     hungCount = 0;
     turkeyCount = 0;
-    games200: number = 0;
+    games200 = 0;
     games300 = 0;
-    series600: number = 0;
+    series600 = 0;
     series800 = 0;
     strikesInARow: StrikesInARow[] = [];
     allSinglePinsPickedUpAverage = 0;

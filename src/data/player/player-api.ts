@@ -1,3 +1,4 @@
+import {fetchJson} from "../utils/fetch-json";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  *
@@ -38,7 +39,6 @@ function postProcessLoadedPlayers(players : Players) : Players {
 }
 
 export const playerListFetcher = async() =>
-    fetch(PLAYER_INDEX_RESOURCE)
-        .then(res => res.json())
-        .then((json :object) => createJsonConverter().deserialize<Players>(json, Players) as unknown as Players)
+    fetchJson(PLAYER_INDEX_RESOURCE)
+        .then((json :object) => createJsonConverter().deserialize<Players>(json, Players))
         .then(p => postProcessLoadedPlayers(p));

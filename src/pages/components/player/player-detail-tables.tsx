@@ -34,7 +34,7 @@ const AppearSortTh: FC<{
 }> = ({label, sortKey, active, dir, onSort, className}) => {
     const isActive = active === sortKey;
     return (
-        <th className={`bls-sortable-th ${className ?? ""}${isActive ? " is-sorted" : ""}`} onClick={() => onSort(sortKey)} role="button" tabIndex={0}
+        <th className={`bls-sortable-th ${className ?? ""}${isActive ? " is-sorted" : ""}`} onClick={() => { onSort(sortKey); }} role="button" tabIndex={0}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSort(sortKey); } }}
             aria-sort={isActive ? (dir === "asc" ? "ascending" : "descending") : "none"}>
             <span className="bls-sortable-label">{label}<span className="bls-sort-indicator" aria-hidden>{isActive ? (dir === "asc" ? " ▲" : " ▼") : ""}</span></span>
@@ -176,7 +176,7 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
         const withIdx = appearances.map((a, i) => ({a, i}));
         const mul = sortDir === "asc" ? 1 : -1;
         withIdx.sort((x, y) => {
-            const A = x.a; const B = y.a; let cmp = 0;
+            const A = x.a; const B = y.a; let cmp: number;
             switch (sortKey) {
                 case "season": cmp = A.season.localeCompare(B.season); break;
                 case "league": cmp = A.leagueName.localeCompare(B.leagueName); break;
@@ -221,7 +221,7 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
                                 <td className="text-body-secondary">{String(i + 1).padStart(2, "0")}</td>
                                 <td>{a.season}</td>
                                 <td>
-                                    <button type="button" className="bls-link bls-link-btn" onClick={() => setSelectedKey(isOn ? null : key)}>
+                                    <button type="button" className="bls-link bls-link-btn" onClick={() => { setSelectedKey(isOn ? null : key); }}>
                                         {a.leagueName}
                                     </button>
                                 </td>
@@ -260,14 +260,14 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
 
 const PlayerSwitcher: FC<{currentId: string}> = ({currentId}) => {
     const navigate = useNavigate();
-    const fetcher = useCallback(buildFullPlayerList, []);
+    const fetcher = useCallback(() => buildFullPlayerList(), []);
     const {data} = useCachedFetcher<PlayerListEntry[]>(fetcher, PLAYER_INDEX_CACHE_CATEGORY);
     const players = useMemo(() => data ?? [], [data]);
     if (players.length === 0) return null;
     return (
         <aside className="bls-player-rail" aria-label="Switch player">
             {players.map((p) => (
-                <button key={p.id} type="button" title={p.name} className={`bls-player-rail-btn${p.id === currentId ? " is-active" : ""}`} onClick={() => navigate(`/player/${p.id}`)}>
+                <button key={p.id} type="button" title={p.name} className={`bls-player-rail-btn${p.id === currentId ? " is-active" : ""}`} onClick={() => void navigate(`/player/${p.id}`)}>
                     <span className="bls-player-rail-name">{p.name}</span>
                 </button>
             ))}
@@ -283,7 +283,7 @@ const SeasonSortTh: FC<{
 }> = ({label, sortKey, active, dir, onSort, className}) => {
     const isActive = active === sortKey;
     return (
-        <th className={`bls-sortable-th ${className ?? ""}${isActive ? " is-sorted" : ""}`} onClick={() => onSort(sortKey)} role="button" tabIndex={0}
+        <th className={`bls-sortable-th ${className ?? ""}${isActive ? " is-sorted" : ""}`} onClick={() => { onSort(sortKey); }} role="button" tabIndex={0}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSort(sortKey); } }}
             aria-sort={isActive ? (dir === "asc" ? "ascending" : "descending") : "none"}>
             <span className="bls-sortable-label">{label}<span className="bls-sort-indicator" aria-hidden>{isActive ? (dir === "asc" ? " ▲" : " ▼") : ""}</span></span>
@@ -302,7 +302,7 @@ const SeasonBreakdownTable: FC<{seasons: PlayerSeasonStats[]}> = ({seasons}) => 
         const list = [...seasons];
         const mul = sortDir === "asc" ? 1 : -1;
         list.sort((a, b) => {
-            let cmp = 0;
+            let cmp: number;
             switch (sortKey) {
                 case "leagues": cmp = a.leagues - b.leagues; break;
                 case "games": cmp = a.games - b.games; break;

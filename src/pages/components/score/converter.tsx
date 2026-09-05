@@ -1,3 +1,4 @@
+import {convertScore as parseScore} from "../../../data/utils/bowling-input";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  *
@@ -14,8 +15,8 @@
  *  limitations under the License.
  */
 
-import type {FormEvent, ChangeEvent, FC} from "react";
-import {useState} from "react";
+import type {SubmitEvent, ChangeEvent, FC} from "react";
+import {Fragment, useState} from "react";
 import {Link} from "react-router";
 import {
     Card,
@@ -31,72 +32,14 @@ import {
 import {DashSquareFill, PlusSquareFill} from "react-bootstrap-icons";
 import stringify from "json-stringify-pretty-compact"
 
-import {isNonEmptyString, isNumeric} from "../../../data/utils/utils";
+import {isNonEmptyString} from "../../../data/utils/utils";
 import {LeagueTeamPlayerScore, TeamPlayerGameScore} from "../../../data/league/league-matchup";
 import {createJsonConverter} from "../../../data/utils/json-utils";
 import {accumulateFrameScores, buildFrames} from "../../../data/league/league-calculators";
 
 
 
-const VALID_STANDALONE_SCORE_CHARS = [
-    ["X", "F", "-"],
-    ["/", "F", "-"]
-];
-const convertScore = (rawScore: string) : string[][] => {
-
-    const retrieveChar = (input :string, ptr: number) => {
-        const ch = input.charAt(ptr);
-        return isNumeric(ch) ? ch : ch.toUpperCase();
-    }
-
-    const formatFrameBallScore = (validStandaloneChars: string[], ba :string, fr :number) => {
-        if (validStandaloneChars.includes(ba)) {
-            currFrame.push(ba);
-        } else if (isNumeric(ba)) {
-            let bab = ba;
-            if (validStandaloneChars.includes("X")) {
-                // Splits are only allowed where you are allowed to have a strike
-                const nextChar = (ptr +1 < len) ? retrieveChar(rawScore, ptr + 1) : null;
-                if (nextChar === "S") {
-                    bab = bab + nextChar;
-                    ptr++;
-                }
-            }
-            currFrame.push(bab);
-        } else {
-            throw new Error(`Invalid score character [${ba}] for frame: ${fr}`);
-        }
-    }
-
-    const len = rawScore.length;
-    const scores :string[][] = [];
-    let currFrame :string[] = [];
-    let ptr :number = 0;
-    while (ptr < len && scores.length < 10) {
-        const fr = scores.length + 1;
-        const bn = currFrame.length + 1;
-        const ba = retrieveChar(rawScore, ptr);
-        if (fr != 10 || (fr == 10 && bn == 1)) { // Ball 1 or any ball of frames 1-9
-            formatFrameBallScore(VALID_STANDALONE_SCORE_CHARS[bn - 1], ba, fr);
-            if (bn == 2 || (ba == "X" && fr < 10)) {
-                scores.push(currFrame);
-                currFrame = [];
-            }
-        } else if (fr == 10 && (bn == 2 || bn == 3)) { // Frame 10, ball 2 or 3
-            const lastBall = currFrame[bn - 2];
-            // If the last ball is an X or /, treat it as a first ball (fresh rack)
-            formatFrameBallScore(VALID_STANDALONE_SCORE_CHARS[(lastBall === "X" || lastBall === "/") ? 0 : 1], ba, fr);
-        }
-        ptr++;
-    }
-
-    if (currFrame.length > 0) {
-        // Leftover from the 10th frame or partial frames?
-        scores.push(currFrame);
-    }
-
-    return scores;
-}
+const convertScore = parseScore;
 
 interface GameScoreForm {
     game: number;
@@ -121,7 +64,7 @@ function createGameScoreForm (data: Partial<GameScoreForm>): GameScoreForm {
         game: 0,
         isBlind: false,
         isVacant: false,
-        arsenal: new Array(0),
+        arsenal: [],
         rawScore: '',
         formattedScore: [],
         error: '',
@@ -135,6 +78,8 @@ function createGameScoreForm (data: Partial<GameScoreForm>): GameScoreForm {
 }
 
 function formatPlayerScore (data: PlayerScoreForm) {
+    if (!/^[A-Za-z0-9_-]{1,80}$/.test(data.playerId)) throw new Error("Enter a valid player ID (letters, numbers, underscores or hyphens)");
+    if (!Number.isFinite(data.enteringAvg) || data.enteringAvg < 0 || data.enteringAvg > 300) throw new Error("Entering average must be between 0 and 300");
     const ltps :LeagueTeamPlayerScore = new LeagueTeamPlayerScore();
     ltps.player = data.playerId;
     ltps.hdcpSettingDay = data.hdcpSettingDay;
@@ -142,22 +87,23 @@ function formatPlayerScore (data: PlayerScoreForm) {
         ltps.enteringAverage = data.enteringAvg;
     }
     ltps.games = data.games.map(gsf => {
+        if (gsf.isBlind && gsf.isVacant) throw new Error("A game cannot be both blind and vacant");
         const g = new TeamPlayerGameScore();
         g.blind = gsf.isBlind;
         g.vacant = gsf.isVacant;
         g.arsenal = gsf.arsenal;
         if (!g.blind && !g.vacant) {
-            g.inFrames = gsf.formattedScore;
+            g.inFrames = convertScore(gsf.rawScore);
         }
         return g;
     })
 
-    const jsonObject = createJsonConverter().serialize(ltps, LeagueTeamPlayerScore);
+    const jsonObject: unknown = createJsonConverter().serialize(ltps, LeagueTeamPlayerScore);
     // return JSON.stringify(jsonObject, null, 2);
     const filteredKeys = ["scratch-score", "hdcp", "hdcp-score"]
     const filteredBooleanDefaults = ["blind", "vacant", "hdcp-setting-day"]
     const filteredEmptyArrays = ["arsenal", "frames"]
-    return stringify(jsonObject, {maxLength: 150, indent: 2, replacer: (key, value) => {
+    return stringify(jsonObject, {maxLength: 150, indent: 2, replacer: (key: string, value: unknown) => {
             if (filteredKeys.includes(key)) {
                 return undefined;
             } else if (filteredBooleanDefaults.includes(key) && value === false) {
@@ -195,7 +141,8 @@ const ScoreConverter : FC = () => {
                 updatedScore.calculatedScore = 0;
             }
         } catch (e) {
-            console.log(e);
+            updatedScore.formattedScore = [];
+            updatedScore.calculatedScore = 0;
             if (e instanceof Error) {
                 updatedScore.error = e.message;
             }
@@ -221,8 +168,10 @@ const ScoreConverter : FC = () => {
         const updatedScores = [...gameScores];
         if (name === "is-blind") {
             updatedScores[index].isBlind = checked;
+            if (checked) updatedScores[index].isVacant = false;
         } else if (name === "is-vacant") {
             updatedScores[index].isVacant = checked;
+            if (checked) updatedScores[index].isBlind = false;
         }
         if (checked) {
             updateScore(updatedScores[index], "");
@@ -268,7 +217,7 @@ const ScoreConverter : FC = () => {
         ]);
     }
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const playerData: PlayerScoreForm = {
@@ -290,14 +239,14 @@ const ScoreConverter : FC = () => {
     return (<>
         <Card border="success" className="mb-3 justify-content-center">
             <CardHeader as="h4">Frame Score Converter</CardHeader>
-            <Form onSubmit={handleSubmit} onChange={handleChange} noValidate={true}>
+            <Form onSubmit={handleSubmit} onChange={handleChange} noValidate={false}>
                 <CardBody className="border border-secondary py-1 my-1">
                     <Row>
                         <Col>
                             <Form.Group controlId="player-id">
                                 <Form.Label>Player</Form.Label>
                                 <Form.Control type="text" placeholder="Player Id" value={playerId} name="player-id"
-                                    onChange={(e :ChangeEvent<HTMLInputElement>) => setPlayerId(e.target.value)} />
+                                    onChange={(e :ChangeEvent<HTMLInputElement>) => { setPlayerId(e.target.value); }} />
                             </Form.Group>
                         </Col>
                         <Col>
@@ -311,7 +260,7 @@ const ScoreConverter : FC = () => {
                                 <Form.Label>Entering Average</Form.Label>
                                 <Form.Control type="number" min={0} max={300} name="entering-avg" disabled={isHdcpSettingDay}
                                     placeholder="0" value={enteringAvg}
-                                    onChange={(e :ChangeEvent<HTMLInputElement>) => setEnteringAvg(e.target.valueAsNumber)}/>
+                                    onChange={(e :ChangeEvent<HTMLInputElement>) => { setEnteringAvg(e.target.valueAsNumber); }}/>
                             </Form.Group>
                         </Col>
                     </Row>
@@ -324,30 +273,30 @@ const ScoreConverter : FC = () => {
                                     <Form.Group controlId={"is-blind-" + index}>
                                         <Form.Label>Blind ?</Form.Label>
                                         <Form.Check type="switch" checked={gameScore.isBlind} name="is-blind"
-                                            onChange={(e) => handleBlindOrVacantChange(index, e)}/>
+                                            onChange={(e) => { handleBlindOrVacantChange(index, e); }}/>
                                     </Form.Group>
                                 </Col>
                                 <Col>
                                     <Form.Group controlId={"is-vacant-" + index}>
                                         <Form.Label>Vacant ?</Form.Label>
                                         <Form.Check type="switch" checked={gameScore.isVacant} name="is-vacant"
-                                             onChange={(e) => handleBlindOrVacantChange(index, e)}/>
+                                             onChange={(e) => { handleBlindOrVacantChange(index, e); }}/>
                                     </Form.Group>
                                 </Col>
                                 <Col>
                                     <Form.Group controlId={"arsenal-" + index}>
-                                        <Form.Label>Arsenal</Form.Label>&nbsp;<Link to="#" onClick={() => handleArsenalAdd(index)}><PlusSquareFill/></Link>
+                                        <Form.Label>Arsenal</Form.Label>&nbsp;<Link to="#" onClick={() => { handleArsenalAdd(index); }}><PlusSquareFill/></Link>
                                         <Stack direction="horizontal" gap={1}>
-                                            {gameScore.arsenal.map((arsenal, aIndex) => (<>
+                                            {gameScore.arsenal.map((arsenal, aIndex) => (<Fragment key={aIndex}>
                                                 <div>
                                                     <Form.Control size="sm" type="text" placeholder="Arsenal" maxLength={8}
                                                                   name="arsenal" value={arsenal}
-                                                                  onChange={(e: ChangeEvent<HTMLInputElement>) => handleArsenalChange(index, aIndex, e)}/>
+                                                                  onChange={(e: ChangeEvent<HTMLInputElement>) => { handleArsenalChange(index, aIndex, e); }}/>
                                                 </div>
                                                 <div>
-                                                    <Link to="#" onClick={() => handleArsenalRemove(index, aIndex)}><DashSquareFill/></Link>
+                                                    <Link to="#" onClick={() => { handleArsenalRemove(index, aIndex); }}><DashSquareFill/></Link>
                                                 </div>
-                                            </>))}
+                                            </Fragment>))}
                                         </Stack>
                                     </Form.Group>
                                 </Col>
@@ -357,7 +306,7 @@ const ScoreConverter : FC = () => {
                                     <Form.Group controlId="raw-score">
                                         <Form.Label>Frame Scores (raw)</Form.Label>
                                         <Form.Control type="text" placeholder="Enter Raw Frame Scores" name="raw-score" value={gameScore.rawScore}
-                                            onChange={(e :ChangeEvent<HTMLInputElement>) => handleRawScoreChange(index, e)}/>
+                                            onChange={(e :ChangeEvent<HTMLInputElement>) => { handleRawScoreChange(index, e); }}/>
                                         <Form.Text className="text-muted">Enter all frame score lines for player without spaces, suffix splits with 'S'</Form.Text>
                                     </Form.Group>
                                     {gameScore.error && <Alert variant="warning">{gameScore.error}</Alert>}
@@ -386,7 +335,7 @@ const ScoreConverter : FC = () => {
                     <Row>
                         <Col><Button variant="primary" type="submit">Convert for BLS</Button></Col>
                         <Col><div className="me-auto"/></Col>
-                        <Col><Button variant="secondary" type="reset" onClick={() => handleClear()}>Clear</Button></Col>
+                        <Col><Button variant="secondary" type="reset" onClick={() => { handleClear(); }}>Clear</Button></Col>
                     </Row>
                 </CardBody>
                 {error &&

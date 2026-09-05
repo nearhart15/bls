@@ -4,7 +4,7 @@
 
 import {type FC, useEffect, useState} from "react";
 import {Link} from "react-router";
-import Chart from "react-apexcharts";
+import Chart from "../charts/safe-chart";
 import type {ApexOptions} from "apexcharts";
 import {Card, CardBody} from "react-bootstrap";
 
@@ -43,10 +43,10 @@ function useIsNarrow(maxWidth = 767): boolean {
     const [narrow, setNarrow] = useState(false);
     useEffect(() => {
         const mq = window.matchMedia(`(max-width: ${maxWidth}px)`);
-        const apply = () => setNarrow(mq.matches);
+        const apply = () => { setNarrow(mq.matches); };
         apply();
         mq.addEventListener("change", apply);
-        return () => mq.removeEventListener("change", apply);
+        return () => { mq.removeEventListener("change", apply); };
     }, [maxWidth]);
     return narrow;
 }
@@ -209,15 +209,15 @@ const PlayerDetail: FC<{data: AggregatedPlayerData}> = ({data}) => {
                         <Link to="/player/compare" className="bls-link">Player Compare</Link>
                     </p>
                     <div className="bls-scope-pills mt-3" role="tablist" aria-label="Player views">
-                        <button type="button" role="tab" aria-selected={tab === "overview"} className={`bls-scope-pill${tab === "overview" ? " is-active" : ""}`} onClick={() => setTab("overview")}>
+                        <button type="button" role="tab" aria-selected={tab === "overview"} className={`bls-scope-pill${tab === "overview" ? " is-active" : ""}`} onClick={() => { setTab("overview"); }}>
                             <span className="bls-scope-pill-label">Overview</span>
                             <span className="bls-scope-pill-sub">Dashboard</span>
                         </button>
-                        <button type="button" role="tab" aria-selected={tab === "all"} className={`bls-scope-pill${tab === "all" ? " is-active" : ""}`} onClick={() => setTab("all")}>
+                        <button type="button" role="tab" aria-selected={tab === "all"} className={`bls-scope-pill${tab === "all" ? " is-active" : ""}`} onClick={() => { setTab("all"); }}>
                             <span className="bls-scope-pill-label">All stats</span>
                             <span className="bls-scope-pill-sub">Career</span>
                         </button>
-                        <button type="button" role="tab" aria-selected={tab === "insights"} className={`bls-scope-pill${tab === "insights" ? " is-active" : ""}`} onClick={() => setTab("insights")}>
+                        <button type="button" role="tab" aria-selected={tab === "insights"} className={`bls-scope-pill${tab === "insights" ? " is-active" : ""}`} onClick={() => { setTab("insights"); }}>
                             <span className="bls-scope-pill-label">Insights</span>
                             <span className="bls-scope-pill-sub">What to work on</span>
                         </button>

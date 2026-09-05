@@ -1,3 +1,4 @@
+import {readStorage, writeStorage} from "./safe-storage";
 /*
  * Theme provider + modern toggle © 2026
  */
@@ -9,6 +10,7 @@ import {
     useEffect,
     useMemo,
     useState,
+    useRef,
     type FC,
     type ReactNode,
 } from "react";
@@ -28,7 +30,7 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 function getPreferredTheme(): ThemeMode {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = readStorage(STORAGE_KEY);
     if (stored === "light" || stored === "dark") {
         return stored;
     }
@@ -43,6 +45,7 @@ function applyTheme(mode: ThemeMode) {
 }
 
 export const ThemeProvider: FC<{children: ReactNode}> = ({children}) => {
+    const explicitPreference = useRef(readStorage(STORAGE_KEY) !== null);
     const [theme, setThemeState] = useState<ThemeMode>(() => {
         const initial = getPreferredTheme();
         applyTheme(initial);
@@ -51,25 +54,27 @@ export const ThemeProvider: FC<{children: ReactNode}> = ({children}) => {
 
     useEffect(() => {
         applyTheme(theme);
-        localStorage.setItem(STORAGE_KEY, theme);
+        if (explicitPreference.current) writeStorage(STORAGE_KEY, theme);
     }, [theme]);
 
     useEffect(() => {
         const media = window.matchMedia("(prefers-color-scheme: dark)");
         const handler = (e: MediaQueryListEvent) => {
-            if (!localStorage.getItem(STORAGE_KEY)) {
+            if (!explicitPreference.current) {
                 setThemeState(e.matches ? "dark" : "light");
             }
         };
         media.addEventListener("change", handler);
-        return () => media.removeEventListener("change", handler);
+        return () => { media.removeEventListener("change", handler); };
     }, []);
 
     const setTheme = useCallback((mode: ThemeMode) => {
+        explicitPreference.current = true;
         setThemeState(mode);
     }, []);
 
     const toggleTheme = useCallback(() => {
+        explicitPreference.current = true;
         setThemeState((prev) => (prev === "dark" ? "light" : "dark"));
     }, []);
 

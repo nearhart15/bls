@@ -1,3 +1,4 @@
+import {mergeMetrics} from "../../../data/player/metric-counts";
 /*
  * Player leaderboard — rank by any stat on a per-game basis © 2026
  */
@@ -75,8 +76,7 @@ function mergeSlices(slices: SliceStats[]): Omit<Row, "id" | "name"> {
     let games = 0, pinfall = 0, seriesCount = 0;
     let games200 = 0, games300 = 0, series600 = 0, series800 = 0;
     let cleanGames = 0, hungCount = 0, turkeyCount = 0;
-    let weighted = 0, firstW = 0, firstG = 0;
-    let strikeW = 0, spareW = 0, singleW = 0, openW = 0, splitW = 0, s2sW = 0, pickupW = 0, pctG = 0;
+    let weighted = 0;
     for (const s of slices) {
         games += s.games;
         pinfall += s.pinfall;
@@ -89,32 +89,14 @@ function mergeSlices(slices: SliceStats[]): Omit<Row, "id" | "name"> {
         hungCount += s.hungCount ?? 0;
         turkeyCount += s.turkeyCount ?? 0;
         if (s.average != null && s.games > 0) weighted += s.average * s.games;
-        if (s.firstBall != null && s.games > 0) { firstW += s.firstBall * s.games; firstG += s.games; }
-        if (s.games > 0) {
-            pctG += s.games;
-            if (s.strikePct != null) strikeW += s.strikePct * s.games;
-            if (s.sparePct != null) spareW += s.sparePct * s.games;
-            if (s.singlePinPct != null) singleW += s.singlePinPct * s.games;
-            if (s.openPct != null) openW += s.openPct * s.games;
-            if (s.splitPct != null) splitW += s.splitPct * s.games;
-            if (s.strikeToSparePct != null) s2sW += s.strikeToSparePct * s.games;
-            if (s.singlePinPickup != null) pickupW += s.singlePinPickup * s.games;
-        }
+
     }
-    const wavg = (sum: number) => (pctG > 0 && sum > 0 ? sum / pctG : null);
     return {
         games,
         seriesCount,
         values: {
+            ...mergeMetrics(slices),
             average: games > 0 ? weighted / games : null,
-            firstBall: firstG > 0 ? firstW / firstG : null,
-            singlePinPickup: wavg(pickupW),
-            strikePct: wavg(strikeW),
-            sparePct: wavg(spareW),
-            singlePinPct: wavg(singleW),
-            openPct: wavg(openW),
-            splitPct: wavg(splitW),
-            strikeToSparePct: wavg(s2sW),
             games200,
             games300,
             series600,
@@ -144,7 +126,7 @@ function careerRow(e: PlayerListEntry): Omit<Row, "id" | "name"> {
 function seasonMatches(season: string, scope: Scope, current: string, lastYear: string): boolean {
     if (scope === "career") return true;
     if (scope === "current") return season === current;
-    return season.includes(lastYear);
+    return season === lastYear;
 }
 
 function shortTeamName(a: {teamName?: string; teamId?: string; leagueName?: string}): string {
@@ -166,7 +148,7 @@ function filteredAppearances(
     leagueId: string,
     teamName: string,
 ): PlayerAppearanceSlice[] {
-    return (entry.appearanceSlices ?? []).filter((a) => {
+    return (scope === "last-year" ? entry.appearanceSlices.flatMap(a => a.calendarSlices ?? []) : entry.appearanceSlices).filter((a) => {
         if (!seasonMatches(a.season, scope, current, lastYear)) return false;
         if (leagueId && a.leagueId !== leagueId) return false;
         if (teamName && shortTeamName(a) !== teamName) return false;
@@ -193,7 +175,7 @@ function toRows(
         } else if (scope === "current") {
             stats = mergeSlices((e.seasonSlices ?? []).filter((s) => s.season === current));
         } else {
-            stats = mergeSlices((e.seasonSlices ?? []).filter((s) => s.season.includes(lastYear)));
+            stats = mergeSlices(e.calendarSlices.filter((s) => s.season === lastYear));
         }
         if (stats.games <= 0) continue;
         rows.push({id: e.id, name: e.name, ...stats});
@@ -217,7 +199,7 @@ function formatValue(v: number | null, def: StatDef): string {
 }
 
 const PlayerLeaderboard: FC = () => {
-    const fetcher = useCallback(buildFullPlayerList, []);
+    const fetcher = useCallback(() => buildFullPlayerList(), []);
     const {data, isLoading, error} = useCachedFetcher<PlayerListEntry[]>(fetcher, PLAYER_INDEX_CACHE_CATEGORY);
     const [scope, setScope] = useState<Scope>("career");
     const [statId, setStatId] = useState("average");
@@ -300,13 +282,13 @@ const PlayerLeaderboard: FC = () => {
                     <div className="row g-3">
                         <div className="col-md-6">
                             <Form.Label className="bls-meta-label">Stat</Form.Label>
-                            <Form.Select value={statId} onChange={(e) => setStatId(e.target.value)}>
+                            <Form.Select value={statId} onChange={(e) => { setStatId(e.target.value); }}>
                                 {STATS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
                             </Form.Select>
                         </div>
                         <div className="col-md-6">
                             <Form.Label className="bls-meta-label">Min games</Form.Label>
-                            <Form.Select value={minGames} onChange={(e) => setMinGames(Number(e.target.value))}>
+                            <Form.Select value={minGames} onChange={(e) => { setMinGames(Number(e.target.value)); }}>
                                 {[1, 6, 9, 12, 21, 36].map((n) => <option key={n} value={n}>{n}+</option>)}
                             </Form.Select>
                         </div>
@@ -319,7 +301,7 @@ const PlayerLeaderboard: FC = () => {
                         </div>
                         <div className="col-md-6">
                             <Form.Label className="bls-meta-label">Team</Form.Label>
-                            <Form.Select value={teamName} onChange={(e) => setTeamName(e.target.value)}>
+                            <Form.Select value={teamName} onChange={(e) => { setTeamName(e.target.value); }}>
                                 <option value="">All teams</option>
                                 {teams.map((t) => <option key={t} value={t}>{t}</option>)}
                             </Form.Select>

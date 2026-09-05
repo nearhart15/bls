@@ -1,3 +1,4 @@
+import {useId} from "react";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  * Dark mode contrast fixes © 2026
@@ -137,11 +138,12 @@ interface StatRowProps {
     toolTipText?: string;
 }
 const StatRow :FC<StatRowProps> = ({defn, value, toolTipText} : StatRowProps)=> {
+    const tooltipId = useId();
     return (
         <Row className="border rounded-1 border-secondary-subtle overflow-hidden">
             <Col className="bg-body-secondary text-body-emphasis px-1">
                 {toolTipText && <OverlayTrigger overlay={
-                    <Tooltip id={Math.random().toString()}>{toolTipText}</Tooltip>}>
+                    <Tooltip id={tooltipId}>{toolTipText}</Tooltip>}>
                     <a href="#" onClick={(e) => { e.preventDefault(); }}>{defn}</a>
                 </OverlayTrigger>}
                 {!toolTipText && defn}
@@ -157,19 +159,9 @@ interface PlayerGamesTableProps {
     currentBreakPoint : Breakpoint;
 }
 const PlayerGamesTable :FC<PlayerGamesTableProps> = ({playerGameData, currentBreakPoint}: PlayerGamesTableProps) => {
-    const [transpose, setTranspose] = useState(false);
-
-    useEffect(() => {
-        let hideBelowBreakpoint: Breakpoint | null = null;
-        if (playerGameData.length > 4) {
-            hideBelowBreakpoint = BS_BP_XS;
-        } else if (playerGameData.length > 8) {
-            hideBelowBreakpoint = BS_BP_SM;
-        }
-        if (hideBelowBreakpoint && currentBreakPoint.order <= hideBelowBreakpoint.order) {
-            setTranspose(true);
-        }
-    }, [currentBreakPoint, playerGameData]);
+    const hideBelowBreakpoint = playerGameData.length > 8 ? BS_BP_SM : playerGameData.length > 4 ? BS_BP_XS : null;
+    const transpose = Boolean(hideBelowBreakpoint && currentBreakPoint.order <= hideBelowBreakpoint.order);
+    const gameColumns = Array.from({length: Math.max(0, ...playerGameData.map(p => p.games.length))}, (_, i) => i);
 
     const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 2});
     return (<>
@@ -182,9 +174,7 @@ const PlayerGamesTable :FC<PlayerGamesTableProps> = ({playerGameData, currentBre
                                 <tr>
                                     <th scope="col">Wk</th>
                                     <th scope="col">Avg In</th>
-                                    <th scope="col">Gm 1</th>
-                                    <th scope="col">Gm 2</th>
-                                    <th scope="col">Gm 3</th>
+                                    {gameColumns.map(i => <th scope="col" key={i}>Gm {i + 1}</th>)}
                                     <th scope="col">Ser</th>
                                     <th scope="col">Avg</th>
                                 </tr>
@@ -194,9 +184,7 @@ const PlayerGamesTable :FC<PlayerGamesTableProps> = ({playerGameData, currentBre
                                 <tr key={"pgd-" + p.week.toString() + p.series.toString()}>
                                     <td>{p.week}</td>
                                     <td>{p.enteringAvg}</td>
-                                    <td>{p.game1}</td>
-                                    <td>{p.game2}</td>
-                                    <td>{p.game3}</td>
+                                    {gameColumns.map(i => <td key={i}>{p.games[i] ?? "—"}</td>)}
                                     <td>{p.series}</td>
                                     <td className={p.average < p.enteringAvg ? "text-danger" : ""}>
                                         {numberFormat.format(p.average)}
@@ -218,18 +206,7 @@ const PlayerGamesTable :FC<PlayerGamesTableProps> = ({playerGameData, currentBre
                                     <th scope="row">Entering Avg</th>
                                     {playerGameData.map(p => <td key={"gea-" + p.week.toString()}>{p.enteringAvg}</td>)}
                                 </tr>
-                                <tr>
-                                    <th scope="row">Game 1</th>
-                                    {playerGameData.map(p => <td key={"g1-" + p.week.toString()}>{p.game1}</td>)}
-                                </tr>
-                                <tr>
-                                    <th scope="row">Game 2</th>
-                                    {playerGameData.map(p => <td key={"g2-" + p.week.toString()}>{p.game2}</td>)}
-                                </tr>
-                                <tr>
-                                    <th scope="row">Game 3</th>
-                                    {playerGameData.map(p => <td key={"g3-" + p.week.toString()}>{p.game3}</td>)}
-                                </tr>
+                                {gameColumns.map(i => <tr key={i}><th scope="row">Game {i + 1}</th>{playerGameData.map(p => <td key={p.week}>{p.games[i] ?? "—"}</td>)}</tr>)}
                                 <tr>
                                     <th scope="row">Series</th>
                                     {playerGameData.map(p => <td key={"gs-" + p.week.toString()}>{p.series}</td>)}

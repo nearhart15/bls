@@ -1,3 +1,5 @@
+import {blindPenalty} from "./blind-penalty";
+import {validateFrames} from "../utils/bowling-input";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  *
@@ -97,7 +99,7 @@ class PpgPpsPointsCalculator implements PointsCalculator {
         if (isAbsentTeam) {
             this.assignVacantOrAbsentOpporentPoints(teamScoreA, this.absentOpponentScoring);
         } else if (isVacantTeam) {
-            this.assignVacantOrAbsentOpporentPoints(teamScoreA, this.absentOpponentScoring);
+            this.assignVacantOrAbsentOpporentPoints(teamScoreA, this.vacantOpponentScoring);
         }
     }
 
@@ -233,6 +235,7 @@ export function accumulateFrameScores (frames: Frame[]) {
 }
 
 export function buildFrames(inFrames: string[][]) {
+    validateFrames(inFrames);
     const frames: Frame[] = [];
     for (let f = 0; f < inFrames.length; f++) {
         // We assume Frame objects are not set, we set them
@@ -322,6 +325,9 @@ function calculateFrameScores(playerGame: TeamPlayerGameScore, player?: LeaguePl
     }
 
     // Set the scratch for the game
+    if (playerGame.scratchScore !== 0 && playerGame.scratchScore !== scoreAccum) {
+        throw new Error("Supplied scratch score disagrees with frames");
+    }
     if (playerGame.scratchScore == 0) {
         playerGame.scratchScore = scoreAccum;
     }
@@ -370,10 +376,10 @@ function setCrossPlayerFrameAttributes(matchup: LeagueMatchup) {
     }
 }
 
-function calculatePlayerScores(playerScore: LeagueTeamPlayerScore, hdcpCalculator: HandicapCalculator, scoringRules: LeagueScoringRules, player?: LeaguePlayer) {
+function calculatePlayerScores(playerScore: LeagueTeamPlayerScore, hdcpCalculator: HandicapCalculator, scoringRules: LeagueScoringRules, player?: LeaguePlayer, penalty = scoringRules.blindPenalty?.defaultPenalty ?? 0) {
     // Handle frames
     for (const game of playerScore.games) {
-        if (game.scratchScore == 0 && game.inFrames.length > 0) {
+        if (game.inFrames.length > 0) {
             calculateFrameScores(game, player);
         }
     }
@@ -399,8 +405,8 @@ function calculatePlayerScores(playerScore: LeagueTeamPlayerScore, hdcpCalculato
         game.hdcp = hdcp;
         if (game.blind) {
             // We don't have scratch score
-            // TODO Deal with Handicap Penalty after missed games
-            game.effectiveScratchScore = playerScore.enteringAverage - (scoringRules.blindPenalty?.defaultPenalty ?? 0);
+            // Penalty is resolved from recorded absences by the league calculation pass.
+            game.effectiveScratchScore = playerScore.enteringAverage - (scoringRules.blindPenalty?.allowed ? penalty : 0);
         } else if (game.vacant && scoringRules.vacancyScore?.allowed) {
             // Vacant position update handicap and score
             game.hdcp = scoringRules.vacancyScore.handicap ?? 0;
@@ -424,7 +430,7 @@ function calculatePlayerScores(playerScore: LeagueTeamPlayerScore, hdcpCalculato
     playerScore.series.games = playerScore.games.length;
 }
 
-export function assignScoresAndPoints(matchup: LeagueMatchup, scoringRules: LeagueScoringRules, hdcpCalculator: HandicapCalculator, pointsCalculator: PointsCalculator, teamRoster: LeaguePlayer[]): void {
+export function assignScoresAndPoints(matchup: LeagueMatchup, scoringRules: LeagueScoringRules, hdcpCalculator: HandicapCalculator, pointsCalculator: PointsCalculator, teamRoster: LeaguePlayer[], absences = new Map<string, {consecutive: number; total: number}>()): void {
     const teamScores = matchup.scores;
     const addGamesToSeries = (seriesScore: SeriesScore, matchupGames: MatchupGameScore[]) => {
         matchupGames.forEach(game => {
@@ -448,7 +454,13 @@ export function assignScoresAndPoints(matchup: LeagueMatchup, scoringRules: Leag
         // Set individual team scores
         teamScores.playerScores.forEach((playerScore) => {
             const player = teamRoster.find(p => p.id === playerScore.player);
-            calculatePlayerScores(playerScore, hdcpCalculator, scoringRules, player);
+            const key = playerScore.player ?? "";
+            const previous = absences.get(key) ?? {consecutive: 0, total: 0};
+            const missed = playerScore.games.length > 0 && playerScore.games.every(game => game.blind);
+            const current = {consecutive: missed ? previous.consecutive + 1 : 0, total: previous.total + (missed ? 1 : 0)};
+            absences.set(key, current);
+            const penalty = playerScore.games.some(game => game.blind) ? blindPenalty(scoringRules.blindPenalty, current.consecutive, current.total) : 0;
+            calculatePlayerScores(playerScore, hdcpCalculator, scoringRules, player, penalty);
         })
 
         // Calculate Matchup Scores
@@ -688,8 +700,10 @@ export function decorateLeagueDetails (league : LeagueDetails) :LeagueDetails {
     const scoringRules: LeagueScoringRules = league.scoringRules ?? new LeagueScoringRules(); // Without scoring rules and an empty object to avoid errors, calculations will be off
 
     league.teams.forEach(team => {
-        team.matchups.forEach((matchup) => {
-            assignScoresAndPoints(matchup, scoringRules, hdcpCalculator, pointsCalculator, team.roster);
+        const absences = new Map<string, {consecutive: number; total: number}>();
+        const chronological = [...team.matchups].sort((a,b) => ((a.bowlDate ?? a.scheduledDate)?.valueOf() ?? 0) - ((b.bowlDate ?? b.scheduledDate)?.valueOf() ?? 0));
+        chronological.forEach((matchup) => {
+            assignScoresAndPoints(matchup, scoringRules, hdcpCalculator, pointsCalculator, team.roster, absences);
             // Cross Player Frame Attributes
             setCrossPlayerFrameAttributes(matchup);
         })
@@ -701,7 +715,7 @@ export function decorateLeagueDetails (league : LeagueDetails) :LeagueDetails {
         if (teamStats) {
             let pc = 0;
             team.roster.forEach((p) => {
-                if (pc < 4 && p.status == "REGULAR" && p.playerStats) {
+                if (pc < scoringRules.lineup && p.status == "REGULAR" && p.playerStats) {
                     const playerStats = p.playerStats;
                     teamStats.average += Math.floor(playerStats.gameStats.average);
                     teamStats.handicap += Math.floor(playerStats.leagueHandicap);

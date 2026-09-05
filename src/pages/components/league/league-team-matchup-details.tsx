@@ -1,3 +1,4 @@
+import {useId} from "react";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  * Dark mode / modern frame sheet © 2026
@@ -96,7 +97,7 @@ const FrameAttrToast: FC = () => {
         <div className="bls-attr-toast" role="status">
             <Icon iconName={active.iconName} color={active.iconColor}/>
             <span style={{color: active.iconColor}}>{active.description}</span>
-            <button type="button" className="bls-attr-toast-close" aria-label="Dismiss" onClick={() => setActive(null)}>
+            <button type="button" className="bls-attr-toast-close" aria-label="Dismiss" onClick={() => { setActive(null); }}>
                 ×
             </button>
         </div>,
@@ -141,7 +142,7 @@ const FrameAttributeIconLegend :FC = () => {
                             type="button"
                             className={`bls-attr-btn bls-attr-legend-item${isOn ? " is-active" : ""}`}
                             aria-label={icn.description}
-                            onClick={() => setActive(isOn ? null : icn)}
+                            onClick={() => { setActive(isOn ? null : icn); }}
                         >
                             <Icon iconName={icn.iconName} color={icn.iconColor}/>
                         </button>
@@ -166,7 +167,7 @@ const FrameAttributeIconLegend :FC = () => {
                             <button
                                 type="button"
                                 className={`bls-attr-guide-row${isOn ? " is-active" : ""}`}
-                                onClick={() => setActive(isOn ? null : icn)}
+                                onClick={() => { setActive(isOn ? null : icn); }}
                             >
                                 <Icon iconName={icn.iconName} color={icn.iconColor}/>
                                 <span>{icn.description}</span>
@@ -278,7 +279,7 @@ const TeamIndSeriesGameFramesV2 :FC<TeamIndSeriesGameFramesProps> = ({matchup, t
 }
 
 const TeamIndSeriesGameScoresSummary :FC<MatchupDetailsDisplayProps> = ({matchup, teamDetails, currentBreakpoint}: MatchupDetailsDisplayProps) => {
-    const keyPrefix = Math.random().toString();
+    const keyPrefix = useId();
     const blindOrVacant = (g :TeamPlayerGameScore) => {
         if (g.blind || g.vacant) {
             return <>

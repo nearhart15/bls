@@ -25,7 +25,7 @@ const NewsHighlights: FC<NewsHighlightsProps> = ({shoutOuts = false}) => {
 };
 
 const FileNewsHighlights: FC = () => {
-    const fetcher = useCallback(newsFetcher, []);
+    const fetcher = useCallback(() => newsFetcher(), []);
     const {data, isLoading, error} = useCachedFetcher<News>(fetcher, NEWS_CACHE_CATEGORY);
 
     const expiredDays = Number(import.meta.env.VITE_NEWS_EXPIRED_AFTER_DAYS) || 14;
@@ -62,7 +62,7 @@ const FileNewsHighlights: FC = () => {
 };
 
 const LastGameNotesShoutOuts: FC = () => {
-    const fetcher = useCallback(shoutOutsFromLastGameNotes, []);
+    const fetcher = useCallback(() => shoutOutsFromLastGameNotes(), []);
     const {data, isLoading, error} = useCachedFetcher<MatchNoteShoutOut[]>(fetcher, SHOUTOUT_CACHE_CATEGORY);
 
     const items = data ?? [];

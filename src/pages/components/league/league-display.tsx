@@ -33,7 +33,7 @@ import {useNavigate} from "react-router";
 
 export type CurrentLeagueDetailsDisplay = "TEAM" | "OTHER_TEAMS";
 
-const OTHER_TEAMS: string = "other-teams";
+const OTHER_TEAMS = "other-teams";
 
 interface LeagueDisplayProps {
     leagueInfo: LeagueInfo;
@@ -45,9 +45,10 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
     const {data: leagueDetails, isLoading: leagueDetailsLoading, error: leagueDetailsLoadError } = useCachedFetcher<LeagueDetails>(
         fetcher.bind(null, leagueInfo.dataLoc ?? "will-fail.json"), LEAGUE_DETAILS_CACHE_CATEGORY, leagueInfo.id);
 
-    const [displayedTeam, setDisplayedTeam] = useState<string>("");
-    const [currentDisplay, setCurrentDisplay] = useState<CurrentLeagueDetailsDisplay>("TEAM");
-    const [showInvalidTeamIdError, setShowInvalidTeamIdError] = useState(false);
+    const currentDisplay = teamId?.toLowerCase() === OTHER_TEAMS ? "OTHER_TEAMS" : "TEAM";
+    const selected = leagueDetails?.teams.find(team => team.id === teamId);
+    const displayedTeam = selected?.id ?? leagueDetails?.teams[0]?.id ?? "";
+    const showInvalidTeamIdError = Boolean(leagueDetails && teamId && currentDisplay === "TEAM" && !selected);
     const [currentBreakpoint, setBreakpoint] = useState<Breakpoint>(BS_BP_XXL);
 
     const navigate = useNavigate();
@@ -63,26 +64,6 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
         };
     }, []);
 
-    useEffect(() => {
-        // Validate and set the right team id to display
-        if (leagueDetails) {
-            const firstTeamId = leagueDetails.teams[0].id ?? "";
-            // Validate that the team selected is one that can be displayed
-            if (teamId) {
-                if (teamId.toLowerCase() === OTHER_TEAMS) {
-                    setCurrentDisplay("OTHER_TEAMS");
-                } else if (leagueDetails.teams.find((team) => team.id === teamId)) {
-                    // Valid Team and we can display it
-                    setCurrentDisplay("TEAM");
-                    setDisplayedTeam(teamId);
-                } else {
-                    // Invalid team
-                    setDisplayedTeam(firstTeamId);
-                    setShowInvalidTeamIdError(true);
-                }
-            }
-        }
-    }, [currentDisplay, leagueDetails, teamId]);
 
     if (leagueDetailsLoadError) {
         // Keeping error display here, so we don't end up with multiple alerts from each child component
@@ -99,17 +80,14 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
                     <Nav.Item key={team.id}>
                         <Nav.Link eventKey={team.id} active={currentDisplay == "TEAM" && displayedTeam === team.id}
                                   onClick={() => {
-                                      setCurrentDisplay("TEAM");
-                                      setDisplayedTeam(team.id ?? "");
-                                      navigate(`/league/${String(leagueInfo.id)}/${String(team.id)}`);
+                                      void navigate(`/league/${String(leagueInfo.id)}/${String(team.id)}`);
                                   }}>{team.name}</Nav.Link>
                     </Nav.Item>
                     ))}
                 {leagueDetails.otherTeams.length > 0 && <Nav.Item>
                     <Nav.Link eventKey="OTHER_TEAMS" active={currentDisplay == "OTHER_TEAMS"}
                               onClick={() => {
-                                  setCurrentDisplay("OTHER_TEAMS");
-                                  navigate(`/league/${String(leagueInfo.id)}/${OTHER_TEAMS}`);
+                                  void navigate(`/league/${String(leagueInfo.id)}/${OTHER_TEAMS}`);
                               }}>
                         Other Teams
                     </Nav.Link>
@@ -119,7 +97,7 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
             </Container>
             {showInvalidTeamIdError && <ErrorDisplay message="Invalid Team Id, will display the first team, use the team navigation to select from available teams."
                                                      error={new Error("Entered Team Id: " + String(teamId))}
-                                                     onClose={() => { setShowInvalidTeamIdError(false); }}/>}
+                                                     onClose={() => { void navigate(`/league/${String(leagueInfo.id)}`); }}/>}
             {currentDisplay == "TEAM" && <LeagueTeamDetails leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint} teamId={displayedTeam} />}
             {currentDisplay == "OTHER_TEAMS" && <OtherTeams leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading}/>}
         </>

@@ -4,7 +4,7 @@
 
 import type {FC} from "react";
 
-import Chart from "react-apexcharts";
+import Chart from "../charts/safe-chart";
 import type {ApexOptions} from "apexcharts";
 
 import type {TeamPositionScoreData} from "./league-team-details";

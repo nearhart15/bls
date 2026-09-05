@@ -1,3 +1,4 @@
+import {reportDataQuality, type DataQuality} from "../../../data/utils/data-quality";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  *
@@ -14,7 +15,7 @@
  *  limitations under the License.
  */
 
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef, useId} from "react";
 import {useContextCache} from "./context-cache";
 
 export interface CachedFetcherReturn<T> {
@@ -27,10 +28,14 @@ export function useCachedFetcher<T extends object>(fetcher :() => Promise<T>, ca
     const [isLoading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<unknown>(null);
     const contextCache = useContextCache();
+    const noticeId = useId();
+    const fetcherRef = useRef(fetcher);
+    useEffect(() => { fetcherRef.current = fetcher; }, [fetcher]);
 
     useEffect(() => {
         let cancelled = false;
         setError(null);
+        reportDataQuality(noticeId, []);
         if (contextCache != null) {
             const value = contextCache.get(category, key) as T;
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -42,9 +47,11 @@ export function useCachedFetcher<T extends object>(fetcher :() => Promise<T>, ca
         }
         setData(null);
         setLoading(true);
-        fetcher().then((data) => {
+        fetcherRef.current().then((data) => {
                 if (cancelled) return;
-                if (contextCache != null) {
+                const warnings = (data as DataQuality).warnings ?? [];
+                reportDataQuality(noticeId, warnings);
+                if (contextCache != null && warnings.length === 0) {
                     contextCache.put(category, key, data);
                 }
                 setData(data);
@@ -55,8 +62,8 @@ export function useCachedFetcher<T extends object>(fetcher :() => Promise<T>, ca
                 setError(error);
             })
             .finally(() => { if (!cancelled) setLoading(false); });
-        return () => { cancelled = true; };
-    }, [category, key]);
+        return () => { cancelled = true; reportDataQuality(noticeId, []); };
+    }, [category, key, contextCache, noticeId]);
 
     return {data, isLoading, error};
 }

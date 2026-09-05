@@ -17,13 +17,14 @@ import Loader from "../loader";
 import ErrorDisplay from "../error-display";
 import {useTheme} from "../theme";
 import {comparePinnedThen} from "../../../data/player/player-pin";
+import {availableSeasons, slicesForSeason} from "../../../data/player/season-scope";
 import {MicroBarChart, performanceRatingFromAverage, performanceRatingFromDelta, RatingBadge, Sparkline} from "../charts/mini-charts";
 
 const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 1});
 
 type SortKey = "rank" | "name" | "average" | "games" | "pinfall" | "highGame" | "highSeries" | "games200" | "grade";
 type SortDir = "asc" | "desc";
-export type PlayerScope = "career" | "current" | "last-year";
+export type PlayerScope = "career" | "current" | "last-season" | "last-year";
 
 interface DisplayRow {
     id: string;
@@ -55,7 +56,7 @@ function rowRating(row: DisplayRow): number {
 
 function compareRows(a: DisplayRow, b: DisplayRow, key: SortKey, dir: SortDir): number {
     const mul = dir === "asc" ? 1 : -1;
-    let cmp = 0;
+    let cmp: number;
     switch (key) {
         case "name": cmp = a.name.localeCompare(b.name); break;
         case "average": cmp = (a.average ?? -1) - (b.average ?? -1); break;
@@ -88,21 +89,16 @@ function mergeSlices(slices: PlayerListSeasonSlice[]): Omit<DisplayRow, "id" | "
 }
 
 function resolveCurrentSeason(entries: PlayerListEntry[]): string {
-    let best = "";
-    for (const e of entries) {
-        for (const s of e.seasonSlices) {
-            if (s.season.localeCompare(best) > 0) best = s.season;
-        }
-    }
-    return best;
+    return availableSeasons(entries)[0] ?? "";
 }
 
 function sliceMatchesLastYear(season: string, year: number): boolean {
-    return season.includes(String(year));
+    return season === String(year);
 }
 
 function toDisplayRows(entries: PlayerListEntry[], scope: PlayerScope): DisplayRow[] {
     const currentSeason = resolveCurrentSeason(entries);
+    const lastSeason = availableSeasons(entries)[1];
     const lastYear = new Date().getFullYear() - 1;
     const rows: DisplayRow[] = [];
     for (const e of entries) {
@@ -111,8 +107,10 @@ function toDisplayRows(entries: PlayerListEntry[], scope: PlayerScope): DisplayR
             stats = {average: e.average, games: e.games, pinfall: e.pinfall, highGame: e.highGame, highSeries: e.highSeries, games200: e.games200};
         } else if (scope === "current") {
             stats = mergeSlices(e.seasonSlices.filter((s) => s.season === currentSeason));
+        } else if (scope === "last-season") {
+            stats = mergeSlices(slicesForSeason(e.seasonSlices, lastSeason));
         } else {
-            stats = mergeSlices(e.seasonSlices.filter((s) => sliceMatchesLastYear(s.season, lastYear)));
+            stats = mergeSlices(e.calendarSlices.filter((s) => sliceMatchesLastYear(s.season, lastYear)));
         }
         if (stats.games <= 0) continue;
         rows.push({
@@ -130,7 +128,7 @@ const SortTh: FC<{
 }> = ({label, sortKey, active, dir, onSort, className, style}) => {
     const isActive = active === sortKey;
     return (
-        <th className={`bls-sortable-th ${className ?? ""}${isActive ? " is-sorted" : ""}`} style={style} onClick={() => onSort(sortKey)} role="button" tabIndex={0}
+        <th className={`bls-sortable-th ${className ?? ""}${isActive ? " is-sorted" : ""}`} style={style} onClick={() => { onSort(sortKey); }} role="button" tabIndex={0}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSort(sortKey); } }}
             aria-sort={isActive ? (dir === "asc" ? "ascending" : "descending") : "none"}>
             <span className="bls-sortable-label">{label}<span className="bls-sort-indicator" aria-hidden>{isActive ? (dir === "asc" ? " ▲" : " ▼") : ""}</span></span>
@@ -141,7 +139,8 @@ const SortTh: FC<{
 const SCOPE_OPTIONS: {id: PlayerScope; label: string; hint: string}[] = [
     {id: "career", label: "Career", hint: "All seasons combined"},
     {id: "current", label: "Current season", hint: "Most recent league season"},
-    {id: "last-year", label: "Last calendar year", hint: "Seasons in the prior calendar year"},
+    {id: "last-season", label: "Last season", hint: "The season before the current season"},
+    {id: "last-year", label: "Last calendar year", hint: "Games bowled in the prior calendar year"},
 ];
 
 interface PlayerListProps {
@@ -161,7 +160,7 @@ const PlayerList: FC<PlayerListProps> = ({
 }) => {
     const {theme} = useTheme();
     const isDark = theme === "dark";
-    const fetcher = useCallback(buildFullPlayerList, []);
+    const fetcher = useCallback(() => buildFullPlayerList(), []);
     const {data, isLoading, error} = useCachedFetcher<PlayerListEntry[]>(fetcher, PLAYER_INDEX_CACHE_CATEGORY);
     const [scope, setScope] = useState<PlayerScope>(defaultScope);
     const [sortKey, setSortKey] = useState<SortKey>("games");
@@ -176,6 +175,7 @@ const PlayerList: FC<PlayerListProps> = ({
     };
 
     const currentSeasonLabel = useMemo(() => (data ? resolveCurrentSeason(data) : ""), [data]);
+    const lastSeasonLabel = useMemo(() => (data ? availableSeasons(data)[1] : undefined), [data]);
     const lastYearLabel = String(new Date().getFullYear() - 1);
     const sorted = useMemo(() => {
         if (!data) return [];
@@ -195,9 +195,10 @@ const PlayerList: FC<PlayerListProps> = ({
                             const active = scope === opt.id;
                             let sub = opt.hint;
                             if (opt.id === "current" && currentSeasonLabel) sub = currentSeasonLabel;
+                            if (opt.id === "last-season") sub = lastSeasonLabel ?? "No previous season";
                             if (opt.id === "last-year") sub = lastYearLabel;
                             return (
-                                <button key={opt.id} type="button" role="tab" aria-selected={active} className={`bls-scope-pill${active ? " is-active" : ""}`} title={opt.hint} onClick={() => setScope(opt.id)}>
+                                <button key={opt.id} type="button" role="tab" aria-selected={active} className={`bls-scope-pill${active ? " is-active" : ""}`} title={opt.hint} onClick={() => { setScope(opt.id); }}>
                                     <span className="bls-scope-pill-label">{opt.label}</span>
                                     <span className="bls-scope-pill-sub">{sub}</span>
                                 </button>

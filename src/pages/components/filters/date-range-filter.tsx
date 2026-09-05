@@ -22,7 +22,7 @@ const DateRangeFilter: FC<Props> = ({from, to, onChange}) => {
                     size="sm"
                     value={from}
                     max={to || undefined}
-                    onChange={(e) => onChange(e.target.value, to)}
+                    onChange={(e) => { onChange(e.target.value, to); }}
                 />
             </div>
             <div className="col-6 col-md-4">
@@ -33,12 +33,12 @@ const DateRangeFilter: FC<Props> = ({from, to, onChange}) => {
                     size="sm"
                     value={to}
                     min={from || undefined}
-                    onChange={(e) => onChange(from, e.target.value)}
+                    onChange={(e) => { onChange(from, e.target.value); }}
                 />
             </div>
             <div className="col-12 col-md-4">
                 {(from || to) ? (
-                    <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => onChange("", "")}>
+                    <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => { onChange("", ""); }}>
                         Clear dates
                     </button>
                 ) : (
