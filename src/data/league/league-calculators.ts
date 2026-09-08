@@ -1,4 +1,5 @@
 import {blindPenalty} from "./blind-penalty";
+import {calculatePercentageHandicap} from "./handicap";
 import {validateFrames} from "../utils/bowling-input";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
@@ -67,7 +68,7 @@ class PercentAverageToTargetHandicapCapculator extends ZeroHandicapCalculator im
     }
 
     calculateHandicap(average: number): number {
-        return (average >= this.targetPins) ? 0 : Math.floor((this.targetPins - Math.floor(average)) * (this.pctToTarget / 100));
+        return calculatePercentageHandicap(average, this.targetPins, this.pctToTarget);
     }
 }
 
@@ -340,7 +341,7 @@ function setCrossPlayerFrameAttributes(matchup: LeagueMatchup) {
         let missingFrames = false;
         matchup.scores?.playerScores.filter(ps => ps.games.length >= (i + 1)).forEach((playerScore) => {
             const gameScore = playerScore.games[i];
-            if (!gameScore.blind) {
+            if (!gameScore.blind && !gameScore.vacant) {
                 if (gameScore.frames.length > 0) {
                     allPlayerFrames.push(gameScore.frames);
                 } else {

@@ -16,125 +16,21 @@ import {
     type PlayerSliceStats,
 } from "../../../data/player/player-aggregate";
 import {PlayerStats} from "../../../data/player/player-stats";
+import {
+    actualHandicapStats,
+    handicapForAverage,
+    MAX_HANDICAP,
+    normalizeHandicap,
+    predictHandicapStats,
+    type StatKey,
+} from "../../../data/player/handicap-guide-math";
 import {comparePinnedThen} from "../../../data/player/player-pin";
 import {useCachedFetcher} from "../cache/data-loader";
 
 type HdcpScope = "career" | "last-league" | "last-year";
 
-function clamp(n: number, lo: number, hi: number): number {
-    return Math.max(lo, Math.min(hi, n));
-}
-
 function round2(n: number): number {
     return Math.round(n * 100) / 100;
-}
-
-function avgFromHandicap(hdcp: number): number {
-    return clamp(210 - hdcp / 0.9, 100, 210);
-}
-
-function handicapFromAvg(avg: number): number {
-    return Math.max(0, round2(0.9 * (210 - avg)));
-}
-
-function ratioPct(rg?: {pct?: number; denominator?: number} | null): number | null {
-    if (!rg?.denominator) return null;
-    return round2((rg.pct ?? 0) * 100);
-}
-
-interface ExpectedStats {
-    hdcp: number;
-    avg: number;
-    hdcpGame: number;
-    series: number;
-    hdcpSeries: number;
-    strike: number;
-    spare: number;
-    single: number;
-    open: number;
-    split: number;
-    firstBall: number;
-    clean: number;
-    hung: number;
-    turkey: number;
-    twoHundred: number;
-    threeHundred: number;
-    sixHundred: number;
-    sd: number;
-    highGame: number;
-    pinfallFrame: number;
-    marksGame: number;
-    ballsGame: number;
-    frames50: number;
-    balls50: number;
-    frames100: number;
-    balls100: number;
-    frames150: number;
-    balls150: number;
-    frames200: number;
-    balls200: number;
-}
-
-type StatKey = keyof ExpectedStats;
-
-function predict(hdcp: number): ExpectedStats {
-    const avg = avgFromHandicap(hdcp);
-    const a = clamp(avg, 100, 210);
-    const strike = clamp(28 + (a - 150) * 0.37, 12, 62);
-    const spare = clamp(42 + (a - 150) * 0.33, 28, 72);
-    const single = clamp(70 + (a - 150) * 0.33, 55, 96);
-    const open = clamp(26 - (a - 150) * 0.27, 6, 40);
-    const split = clamp(12 - (a - 150) * 0.08, 4, 16);
-    const firstBall = clamp(7.6 + (a - 150) * 0.023, 7.0, 9.6);
-    const clean = clamp(8 + (a - 150) * 0.2, 4, 28);
-    const hung = clamp(18 - (a - 150) * 0.1, 6, 22);
-    const turkey = clamp(4 + (a - 150) * 0.12, 2, 16);
-    const twoHundred = clamp(8 + (a - 150) * 0.35, 1, 45);
-    const threeHundred = clamp((a - 180) * 0.04, 0, 3);
-    const sixHundred = clamp(12 + (a - 150) * 0.4, 2, 55);
-    const sd = clamp(32 - (a - 150) * 0.08, 18, 36);
-    const ppf = avg / 10;
-    const ballsPerFrame = 1 + (1 - strike / 100);
-    const pace = (target: number) => {
-        const frames = clamp(target / Math.max(ppf, 0.1), 2, 10);
-        return {frames, balls: frames * ballsPerFrame};
-    };
-    const p50 = pace(50);
-    const p100 = pace(100);
-    const p150 = pace(150);
-    const p200 = pace(200);
-    return {
-        hdcp,
-        avg: round2(avg),
-        hdcpGame: round2(avg + hdcp),
-        series: round2(avg * 3),
-        hdcpSeries: round2((avg + hdcp) * 3),
-        strike: round2(strike),
-        spare: round2(spare),
-        single: round2(single),
-        open: round2(open),
-        split: round2(split),
-        firstBall: round2(firstBall),
-        clean: round2(clean),
-        hung: round2(hung),
-        turkey: round2(turkey),
-        twoHundred: round2(twoHundred),
-        threeHundred: round2(threeHundred),
-        sixHundred: round2(sixHundred),
-        sd: round2(sd),
-        highGame: round2(avg + 1.65 * sd),
-        pinfallFrame: round2(ppf),
-        marksGame: round2(10 * (1 - open / 100)),
-        ballsGame: round2(9 * ballsPerFrame + 2.4),
-        frames50: round2(p50.frames),
-        balls50: round2(p50.balls),
-        frames100: round2(p100.frames),
-        balls100: round2(p100.balls),
-        frames150: round2(p150.frames),
-        balls150: round2(p150.balls),
-        frames200: round2(p200.frames),
-        balls200: round2(p200.balls),
-    };
 }
 
 const LOWER_BETTER = new Set<StatKey>([
@@ -145,54 +41,6 @@ const LOWER_BETTER = new Set<StatKey>([
 
 const NO_PCT_DIFF = new Set<StatKey>(["avg", "hdcp"]);
 
-function actualFromStats(stats: PlayerStats): Partial<Record<StatKey, number>> {
-    const games = stats.gameStats.count || 0;
-    const seriesN = stats.seriesStats.count || 0;
-    const scratch = stats.gameStats.average || 0;
-    const ownHdcp = scratch > 0 ? handicapFromAvg(scratch) : 0;
-    const open = ratioPct(stats.opens);
-    const strike = ratioPct(stats.strikes);
-    const out: Partial<Record<StatKey, number>> = {
-        hdcp: scratch > 0 || ownHdcp > 0 ? ownHdcp : undefined,
-        avg: scratch > 0 ? round2(scratch) : undefined,
-        hdcpGame: scratch > 0 ? round2(scratch + ownHdcp) : undefined,
-        series: seriesN > 0 ? round2(stats.seriesStats.average) : undefined,
-        hdcpSeries: seriesN > 0 ? round2(stats.seriesStats.average + ownHdcp * 3) : undefined,
-        strike: strike ?? undefined,
-        spare: ratioPct(stats.spares) ?? undefined,
-        single: ratioPct(stats.singlePinSpares) ?? undefined,
-        open: open ?? undefined,
-        split: ratioPct(stats.splitsOccurred) ?? ratioPct(stats.splits) ?? undefined,
-        firstBall: stats.firstBallAverage ? round2(stats.firstBallAverage) : undefined,
-        clean: games > 0 ? round2((stats.cleanGames / games) * 100) : undefined,
-        hung: games > 0 ? round2((stats.hungCount / games) * 100) : undefined,
-        turkey: games > 0 ? round2((stats.turkeyCount / games) * 100) : undefined,
-        twoHundred: games > 0 ? round2((stats.games200 / games) * 100) : undefined,
-        threeHundred: games > 0 ? round2((stats.games300 / games) * 100) : undefined,
-        sixHundred: seriesN > 0 ? round2((stats.series600 / seriesN) * 100) : undefined,
-        sd: stats.gameStats.sd ? round2(stats.gameStats.sd) : undefined,
-        highGame: stats.gameStats.max ? round2(stats.gameStats.max) : undefined,
-        pinfallFrame: stats.avgPinfallPerFrame ? round2(stats.avgPinfallPerFrame) : undefined,
-        marksGame: open != null ? round2(10 * (1 - open / 100)) : undefined,
-        ballsGame: strike != null ? round2(9 * (1 + (1 - strike / 100)) + 2.4) : undefined,
-    };
-    const frames = stats.paceAvgFrames ?? [];
-    const balls = stats.paceAvgBalls ?? [];
-    const n = stats.paceN ?? [];
-    const keys: StatKey[][] = [
-        ["frames50", "balls50"],
-        ["frames100", "balls100"],
-        ["frames150", "balls150"],
-        ["frames200", "balls200"],
-    ];
-    keys.forEach((pair, i) => {
-        if ((n[i] ?? 0) > 0) {
-            out[pair[0]] = frames[i] != null ? round2(frames[i]) : undefined;
-            out[pair[1]] = balls[i] != null ? round2(balls[i]) : undefined;
-        }
-    });
-    return out;
-}
 
 function currentBowlingTerm(now = new Date()): {year: number; label: string; keys: string[]} {
     const month = now.getMonth() + 1;
@@ -210,7 +58,7 @@ function currentBowlingTerm(now = new Date()): {year: number; label: string; key
 
 
 function matchAppearance(detail: AggregatedPlayerData, slice: PlayerSliceStats) {
-    return detail.appearances.find((a) => a.season === slice.season && a.leagueId === slice.leagueId);
+    return detail.appearances.find((a) => a.season === slice.season && a.leagueId === slice.leagueId && a.teamId === slice.teamId);
 }
 
 function pickCurrentLeagueSlice(detail: AggregatedPlayerData): PlayerSliceStats | null {
@@ -229,8 +77,8 @@ interface ScopedPick {
 function extrasFromAppearance(detail: AggregatedPlayerData, slice: PlayerSliceStats): {leagueHdcp: number | null; leagueAvg: number | null} {
     const ap = matchAppearance(detail, slice);
     const st = ap?.stats;
-    const leagueHdcp = st?.leagueHandicap && st.leagueHandicap > 0 ? st.leagueHandicap : null;
-    const leagueAvg = st?.leagueAverage && st.leagueAverage > 0 ? st.leagueAverage : null;
+    const leagueHdcp = st && st.leagueGames > 0 ? st.leagueHandicap : null;
+    const leagueAvg = st && st.leagueGames > 0 ? st.leagueAverage : null;
     return {leagueHdcp, leagueAvg};
 }
 
@@ -253,32 +101,51 @@ function pickScopedStats(detail: AggregatedPlayerData | null, scope: HdcpScope):
     return stats.gameStats.count > 0 ? {stats, label: String(year), leagueHdcp: null, leagueAvg: null} : null;
 }
 
-function diffPct(actual: number | undefined, expected: number): number | null {
+function diffPct(actual: number | undefined, expected: number | undefined): number | null {
     if (actual == null || !expected) return null;
     return round2(((actual - expected) / Math.abs(expected)) * 100);
 }
 
-function formatVal(n: number | undefined, kind: "num" | "pct"): string {
+type ValueKind = "num" | "pct" | "whole" | "ratio";
+
+function formatVal(n: number | undefined, kind: ValueKind): string {
     if (n == null || Number.isNaN(n)) return "--";
-    const s = round2(n).toFixed(2);
-    return kind === "pct" ? `${s}%` : s;
+    if (kind === "whole") return String(Math.round(n));
+    if (kind === "ratio") return `${round2(n).toFixed(2)} : 1`;
+    const value = round2(n).toFixed(2);
+    return kind === "pct" ? `${value}%` : value;
 }
 
 const PCT_KEYS = new Set<StatKey>([
     "strike", "spare", "single", "open", "split",
-    "clean", "hung", "turkey", "twoHundred", "threeHundred", "sixHundred",
+    "clean", "twoHundred", "threeHundred", "sixHundred", "frameCoverage", "splitConversion",
 ]);
+
+const WHOLE_KEYS = new Set<StatKey>([
+    "hdcp", "games", "completeSeries", "frameGames", "lowGame", "highGame", "lowSeries", "highSeries",
+]);
+
+const RATIO_KEYS = new Set<StatKey>(["strikeToSpare"]);
+
+function valueKind(statKey: StatKey): ValueKind {
+    if (PCT_KEYS.has(statKey)) return "pct";
+    if (WHOLE_KEYS.has(statKey)) return "whole";
+    if (RATIO_KEYS.has(statKey)) return "ratio";
+    return "num";
+}
 
 const Tile: FC<{
     label: string;
     statKey: StatKey;
-    expected: number;
+    expected?: number;
     actual?: number;
     showActual: boolean;
-}> = ({label, statKey, expected, actual, showActual}) => {
-    const kind = PCT_KEYS.has(statKey) ? "pct" : "num";
+    compareActual?: boolean;
+}> = ({label, statKey, expected, actual, showActual, compareActual = true}) => {
+    const kind = valueKind(statKey);
     const skipDiff = NO_PCT_DIFF.has(statKey);
-    const diff = showActual && !skipDiff ? diffPct(actual, expected) : null;
+    const displayActual = compareActual ? actual : undefined;
+    const diff = showActual && compareActual && !skipDiff ? diffPct(displayActual, expected) : null;
     const lowerBetter = LOWER_BETTER.has(statKey);
     let tone = "";
     if (diff != null) {
@@ -290,15 +157,22 @@ const Tile: FC<{
         <div className={`bls-allstats-cell${showActual ? " bls-hdcp-compare" : ""}`}>
             <div className="bls-allstats-val">{formatVal(expected, kind)}</div>
             <div className="bls-allstats-lbl">{label}</div>
-            {showActual && (
+            {showActual && compareActual && (
                 <div className="d-flex justify-content-between mt-2 fs-sm" style={{color: tone === " is-better" ? "#30d158" : tone === " is-worse" ? "#ff453a" : undefined}}>
-                    <span>{formatVal(actual, kind)}</span>
+                    <span>{formatVal(displayActual, kind)}</span>
                     <span>{skipDiff ? "rule" : diff == null ? "--" : `${diff > 0 ? "+" : ""}${diff.toFixed(2)}%`}</span>
                 </div>
             )}
         </div>
     );
 };
+
+const ObservedTile: FC<{label: string; statKey: StatKey; value?: number}> = ({label, statKey, value}) => (
+    <div className="bls-allstats-cell">
+        <div className="bls-allstats-val">{formatVal(value, valueKind(statKey))}</div>
+        <div className="bls-allstats-lbl">{label}</div>
+    </div>
+);
 
 const Group: FC<{title: string; children: ReactNode}> = ({title, children}) => (
     <div className="bls-allstats-group mb-3">
@@ -321,7 +195,7 @@ const HandicapGuide: FC = () => {
     const [hdcp, setHdcp] = useState(36);
     const [playerId, setPlayerId] = useState("");
     const [scope, setScope] = useState<HdcpScope>("career");
-    const expected = useMemo(() => predict(hdcp), [hdcp]);
+    const expected = useMemo(() => predictHandicapStats(hdcp), [hdcp]);
 
     const listFetcher = useCallback(() => buildFullPlayerList(), []);
     const {data: list} = useCachedFetcher<PlayerListEntry[]>(listFetcher, PLAYER_INDEX_CACHE_CATEGORY);
@@ -346,14 +220,13 @@ const HandicapGuide: FC = () => {
     const scoped = useMemo(() => pickScopedStats(detail ?? null, scope), [detail, scope]);
     const actual = useMemo(() => {
         if (!playerId || !scoped) return null;
-        return actualFromStats(scoped.stats);
+        return actualHandicapStats(scoped.stats);
     }, [playerId, scoped]);
 
     useEffect(() => {
         if (!playerId || !scoped) return;
-        const basis = scoped.stats.gameStats.average;
-        if (basis && basis > 0) setHdcp(handicapFromAvg(basis));
-    }, [playerId, scope, scoped?.stats.gameStats.average]);
+        if (scoped.stats.gameStats.count > 0) setHdcp(handicapForAverage(scoped.stats.gameStats.average));
+    }, [playerId, scope, scoped]);
 
     const selectedName = players.find((p) => p.id === playerId)?.name;
     const showActual = Boolean(actual);
@@ -361,7 +234,7 @@ const HandicapGuide: FC = () => {
     const playerHdcp = actual?.hdcp;
     const playerAvg = actual?.avg;
 
-    const tile = (key: StatKey, label: string) => (
+    const tile = (key: StatKey, label: string, compareActual = true) => (
         <Tile
             key={key}
             statKey={key}
@@ -369,7 +242,12 @@ const HandicapGuide: FC = () => {
             expected={expected[key]}
             actual={actual?.[key]}
             showActual={showActual}
+            compareActual={compareActual}
         />
+    );
+
+    const observedTile = (key: StatKey, label: string) => (
+        <ObservedTile key={key} statKey={key} label={label} value={actual?.[key]}/>
     );
 
     return (
@@ -378,16 +256,16 @@ const HandicapGuide: FC = () => {
                 <div className="bls-profile-card-head">Handicap guide</div>
                 <CardBody>
                     <p className="text-body-secondary mb-4">
-                        House rule: handicap = 0.90 x (210 - average). A 191.80 average is 16.38 pins.
-                        A rounded league card of 17 is the house posting, not this exact figure.
+                        House rule: drop the average decimal, take 90% of the difference from 210, then drop the handicap decimal.
+                        A 191.80 average therefore posts a 17 handicap.
                     </p>
                     <div className="bls-hdcp-hero mb-3 text-center">
-                        <div className="bls-hdcp-hero-num tabular-nums">{hdcp.toFixed(2)}</div>
+                        <div className="bls-hdcp-hero-num tabular-nums">{hdcp}</div>
                         <div className="bls-hdcp-hero-lbl">Handicap pins</div>
                         <div className="bls-hdcp-hero-sub">
-                            0.90 x (210 - {expected.avg.toFixed(2)}) = {hdcp.toFixed(2)}
+                            floor(0.90 x (210 - {expected.avg})) = {hdcp}
                             {selectedName && playerAvg != null ? ` | ${selectedName} ${playerAvg.toFixed(2)} scratch` : ""}
-                            {scoped?.leagueHdcp ? ` | card ${scoped.leagueHdcp}` : ""}
+                            {scoped?.leagueHdcp != null ? ` | card ${scoped.leagueHdcp}` : ""}
                             {scoped && scoped.label !== "career" ? ` | ${scoped.label}` : ""}
                         </div>
                     </div>
@@ -395,14 +273,14 @@ const HandicapGuide: FC = () => {
                     <Form.Range
                         id="hdcp-slider"
                         min={0}
-                        max={90}
-                        step={0.01}
+                        max={MAX_HANDICAP}
+                        step={1}
                         value={hdcp}
-                        onChange={(e) => { setHdcp(Number(e.target.value)); }}
+                        onChange={(e) => { setHdcp(normalizeHandicap(Number(e.target.value))); }}
                     />
                     <div className="d-flex justify-content-between text-body-secondary fs-sm mb-3">
                         <span>0 hdcp / 210 avg</span>
-                        <span>90 hdcp / 110 avg</span>
+                        <span>{MAX_HANDICAP} hdcp / 0 avg</span>
                     </div>
                     <Form.Label htmlFor="hdcp-player">Compare a bowler</Form.Label>
                     <Form.Select
@@ -443,52 +321,75 @@ const HandicapGuide: FC = () => {
                     )}
                     {showActual && (
                         <div className="text-body-secondary fs-sm mt-2">
-                            Expected house handicap is 0.90 x (210 - scratch average), to two decimals.
-                            {playerAvg != null && playerHdcp != null ? ` ${playerAvg.toFixed(2)} avg -> ${Number(playerHdcp).toFixed(2)} pins.` : ""}
-                            {scoped?.leagueHdcp ? ` League card posted ${scoped.leagueHdcp}.` : ""}
+                            The large value is the guide; the smaller value is the selected bowler's recorded result.
+                            {playerAvg != null && playerHdcp != null ? ` ${playerAvg.toFixed(2)} avg -> ${playerHdcp} pins.` : ""}
+                            {scoped?.leagueHdcp != null ? ` League card posted ${scoped.leagueHdcp}.` : ""}
                         </div>
                     )}
+                    <div className="text-body-secondary fs-sm mt-2">
+                        Handicap totals follow the league rule. Performance values are illustrative average-based estimates, not calibrated league benchmarks.
+                        Frame-derived comparisons use only games with recorded frames.
+                    </div>
                 </CardBody>
             </Card>
 
-            <Group title="Scoring">
-                {tile("avg", "Scratch average")}
-                {tile("hdcp", "0.90 x (210 - avg)")}
+            <Group title="Handicap math">
+                {tile("avg", "Representative book average")}
+                {tile("hdcp", "Whole-pin handicap")}
                 {tile("hdcpGame", "Expected hdcp game")}
                 {tile("series", "Expected 3-game series")}
                 {tile("hdcpSeries", "Expected hdcp series")}
-                {tile("sd", "Typical game SD")}
-                {tile("highGame", "Typical hot game (95th)")}
+            </Group>
+
+            {showActual && <Group title="Observed bowler record">
+                {observedTile("games", "Games bowled")}
+                {observedTile("completeSeries", "Complete series")}
+                {observedTile("frameGames", "Games with frames")}
+                {observedTile("frameCoverage", "Frame coverage")}
+                {observedTile("lowGame", "Low game")}
+                {observedTile("highGame", "High game")}
+                {observedTile("lowSeries", "Low series")}
+                {observedTile("highSeries", "High series")}
+                {observedTile("gameOneAverage", "Game 1 average")}
+                {observedTile("gameTwoAverage", "Game 2 average")}
+                {observedTile("gameThreeAverage", "Game 3 average")}
+                {observedTile("tenthMarks", "Avg tenth-frame marks")}
+                {observedTile("strikeToSpare", "Strike : spare")}
+                {observedTile("splitConversion", "Split conversion")}
+            </Group>}
+
+            <Group title="Illustrative scoring profile">
+                {tile("sd", "Illustrative game SD")}
+                {tile("highGame", "Illustrative hot-game estimate", false)}
                 {tile("twoHundred", "Games 200+")}
                 {tile("threeHundred", "Games 300")}
                 {tile("sixHundred", "Series 600+")}
             </Group>
 
-            <Group title="Conversion">
+            <Group title="Illustrative conversion profile">
                 {tile("strike", "Strike rate")}
                 {tile("spare", "Spare rate")}
                 {tile("single", "Single-pin pickup")}
                 {tile("open", "Open frames")}
-                {tile("split", "Splits")}
+                {tile("split", "Frames with splits")}
                 {tile("firstBall", "First-ball average")}
                 {tile("clean", "Clean games")}
-                {tile("hung", "Got hung (per game)")}
-                {tile("turkey", "Turkeys (per game)")}
+                {tile("hung", "Got hung / game")}
+                {tile("turkey", "Turkeys / game")}
             </Group>
 
             <Group title="Pace and frames">
-                {tile("pinfallFrame", "Expected pinfall per frame")}
+                {tile("pinfallFrame", "Pinfall per frame")}
                 {tile("marksGame", "Marks per game")}
                 {tile("ballsGame", "Balls thrown per game")}
-                {tile("frames50", "Frames to reach 50")}
-                {tile("balls50", "Balls to reach 50")}
-                {tile("frames100", "Frames to reach 100")}
-                {tile("balls100", "Balls to reach 100")}
-                {tile("frames150", "Frames to reach 150")}
-                {tile("balls150", "Balls to reach 150")}
-                {tile("frames200", "Frames to reach 200")}
-                {tile("balls200", "Balls to reach 200")}
+                {tile("frames50", "Scorecard frame at 50")}
+                {tile("frames100", "Scorecard frame at 100")}
+                {tile("frames150", "Scorecard frame at 150")}
+                {tile("frames200", "Scorecard frame at 200")}
             </Group>
+            <p className="text-body-secondary fs-sm">
+                Scorecard-frame milestones use finalized frame totals, including strike and spare bonuses, and average only games that reached the milestone.
+            </p>
         </div>
     );
 };

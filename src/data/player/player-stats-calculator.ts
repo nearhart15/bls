@@ -88,7 +88,8 @@ class FrameStatCalculator {
                 else if (potentialCleanGame && first2BallScores < 10) potentialCleanGame = false;
             }
 
-            if (first2BallScores < 10 || (frameNum == 10 && ball1Score == 10 && (ball2Score + ball3Score) < 10)) {
+            // A strike closes the tenth frame even when its bonus spare attempt is missed.
+            if (first2BallScores < 10) {
                 this.openFramesAccum++;
             }
 
