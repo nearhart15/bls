@@ -27,7 +27,7 @@ import {
 import {comparePinnedThen} from "../../../data/player/player-pin";
 import {useCachedFetcher} from "../cache/data-loader";
 
-type HdcpScope = "career" | "last-league" | "last-year";
+type HdcpScope = "career" | "last-league" | "current-year" | "last-year";
 
 function round2(n: number): number {
     return Math.round(n * 100) / 100;
@@ -96,7 +96,7 @@ function pickScopedStats(detail: AggregatedPlayerData | null, scope: HdcpScope):
             : [slice.leagueName || term.label, slice.season].filter(Boolean).join(" ");
         return {stats: slice.stats, label, ...extrasFromAppearance(detail, slice)};
     }
-    const year = new Date().getFullYear() - 1;
+    const year = scope === "current-year" ? new Date().getFullYear() : new Date().getFullYear() - 1;
     const stats = mergeStats(detail.appearanceSlicesFull.map(s => s.calendarStats?.[String(year)] ?? new PlayerStats()));
     return stats.gameStats.count > 0 ? {stats, label: String(year), leagueHdcp: null, leagueAvg: null} : null;
 }
@@ -188,6 +188,7 @@ const currentTerm = currentBowlingTerm();
 const SCOPE_OPTIONS: {id: HdcpScope; label: string; hint: string}[] = [
     {id: "career", label: "Career", hint: "All seasons"},
     {id: "last-league", label: "Last league", hint: currentTerm.label},
+    {id: "current-year", label: "This year", hint: String(new Date().getFullYear())},
     {id: "last-year", label: "Last year", hint: String(lastYearNum)},
 ];
 
@@ -395,3 +396,5 @@ const HandicapGuide: FC = () => {
 };
 
 export default HandicapGuide;
+
+
