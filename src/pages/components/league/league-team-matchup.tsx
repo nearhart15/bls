@@ -28,7 +28,8 @@ import {
 
 import {isNonEmptyString} from "../../../data/utils/utils";
 import type {LeagueDetails} from "../../../data/league/league-details";
-import {OtherLeagueTeam, TrackedLeagueTeam} from "../../../data/league/league-team-details";
+import {TrackedLeagueTeam} from "../../../data/league/league-team-details";
+import {opponentDisplay} from "../../../data/league/opponent-display";
 import {type Breakpoint, BS_BP_XS, isBreakpointSmallerThan} from "../ui-utils";
 import Loader from "../loader";
 import {type LeagueMatchup, type MatchupType, SeriesScore, TeamScore} from "../../../data/league/league-matchup";
@@ -53,7 +54,7 @@ interface TeamNameInfoProps {
 }
 const TeamNameInfo :FC<TeamNameInfoProps> = ({teamNumber, name, enteringPosition}: TeamNameInfoProps) => {
     return (<>
-        <span>#{teamNumber} {name}&nbsp;
+        <span>{teamNumber != null && teamNumber > 0 && <>#{teamNumber} </>}{name}&nbsp;
             {isNonEmptyString(enteringPosition) && <small> [ {enteringPosition} ]</small>}
         </span>
     </>);
@@ -132,9 +133,8 @@ const MatchupDisplay :FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
 
     const[matchupDetailsExpanded, setMatchupDetailsExpanded] = useState<MatchupDetailsExplandedProps[]>([]);
     const[showMatchupDetails, setShowMatchupDetails] = useState<boolean>(true);
-    const[isOpponentVacantOrAbsent, setOpponentVacantOrAbsent] = useState<boolean>(false);
-    const[opponentTeamId, setOpponentTeamId] = useState<string | undefined>(undefined);
-    const[opponent, setOpponent] = useState<OtherLeagueTeam | undefined>(undefined);
+    const isOpponentVacantOrAbsent = Boolean(matchup.opponent?.absent || matchup.opponent?.vacant);
+    const opponent = opponentDisplay(leagueDetails, matchup.opponent);
     const[weekPrefix, setWeekPrefix] = useState<LeagueBowlingDurationUnit>("WK");
     const[gamesPerMatchup, setGamesPerMatchup] = useState<number>(3);
 
@@ -146,21 +146,12 @@ const MatchupDisplay :FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
             setShowMatchupDetails(true);
         }
 
-        if (matchup.opponent) {
-            setOpponentVacantOrAbsent((matchup.opponent.absent || matchup.opponent.vacant));
-
-            setOpponentTeamId(matchup.opponent.teamId);
-            if (leagueDetails) {
-                setOpponent(leagueDetails.otherTeams.find(ot => ot.id === opponentTeamId));
-            }
-        }
-
         if(leagueDetails?.bowlingDays) {
             setWeekPrefix(leagueDetails.bowlingDays.durationUnit);
             setGamesPerMatchup(leagueDetails.bowlingDays.gamesPerWeek);
         }
 
-    }, [matchup, leagueDetails, opponentTeamId]);
+    }, [matchup, leagueDetails]);
 
     useEffect(() => {
         const matchupDetailsExpNew = [...matchupDetailsExpanded];
@@ -241,7 +232,7 @@ const MatchupDisplay :FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
                         <div className="ms-auto">
                             <Stack direction="vertical" className="mx-auto">
                                 <div className="text-end align-middle">
-                                    <TeamNameInfo division={opponent?.division} teamNumber={opponent?.number} name={opponent?.name} enteringPosition={matchup.opponent?.enteringRank}/><br/>
+                                    <TeamNameInfo division={opponent.division} teamNumber={opponent.number} name={opponent.name} enteringPosition={opponent.enteringRank}/><br/>
                                     {isOpponentVacantOrAbsent && <><PersonX/>&nbsp;</>}
                                     <span className="fs-sm">
                                         hdcp:
@@ -264,7 +255,7 @@ const MatchupDisplay :FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
                             {showMatchupDetails && <GameSummaryAndPoints teamNumber={teamDetails.number} teamScore={matchup.scores} currentBreakpoint={currentBreakpoint}/>}
                         </div>
                         <div>
-                            {showMatchupDetails && <GameSummaryAndPoints teamNumber={opponent?.number} teamScore={matchup.opponent?.scores}
+                            {showMatchupDetails && <GameSummaryAndPoints teamNumber={opponent.number} teamScore={matchup.opponent?.scores}
                                                                          matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent}
                                                                          currentBreakpoint={currentBreakpoint}/>}
                         </div>
