@@ -27,7 +27,7 @@ import {
 import {comparePinnedThen} from "../../../data/player/player-pin";
 import {useCachedFetcher} from "../cache/data-loader";
 
-type HdcpScope = "career" | "last-league" | "current-year" | "last-year";
+type HdcpScope = "career" | "current-season" | "last-league" | "current-year" | "last-year";
 
 function round2(n: number): number {
     return Math.round(n * 100) / 100;
@@ -61,6 +61,15 @@ function matchAppearance(detail: AggregatedPlayerData, slice: PlayerSliceStats) 
     return detail.appearances.find((a) => a.season === slice.season && a.leagueId === slice.leagueId && a.teamId === slice.teamId);
 }
 
+function pickCurrentSeasonStats(detail: AggregatedPlayerData): {stats: PlayerStats; season: string} | null {
+    const seasons = [...new Set(detail.appearanceSlicesFull.map((s) => s.season).filter((s): s is string => Boolean(s)))].sort((a, b) => b.localeCompare(a, undefined, {numeric: true}));
+    const season = seasons[0];
+    if (!season) return null;
+    const slices = detail.appearanceSlicesFull.filter((s) => s.season === season);
+    const stats = mergeStats(slices.map((s) => s.stats));
+    return stats.gameStats.count > 0 ? {stats, season} : null;
+}
+
 function pickCurrentLeagueSlice(detail: AggregatedPlayerData): PlayerSliceStats | null {
     return [...detail.appearanceSlicesFull].filter(s => s.stats.gameStats.count > 0).sort((a,b) => (b.lastBowled ?? 0) - (a.lastBowled ?? 0))[0] ?? null;
 }
@@ -86,6 +95,10 @@ function pickScopedStats(detail: AggregatedPlayerData | null, scope: HdcpScope):
     if (!detail?.careerStats || detail.player?.id === "") return null;
     if (scope === "career") {
         return {stats: detail.careerStats, label: "career", leagueHdcp: null, leagueAvg: null};
+    }
+    if (scope === "current-season") {
+        const current = pickCurrentSeasonStats(detail);
+        return current ? {stats: current.stats, label: current.season, leagueHdcp: null, leagueAvg: null} : null;
     }
     if (scope === "last-league") {
         const slice = pickCurrentLeagueSlice(detail);
@@ -187,6 +200,7 @@ const currentTerm = currentBowlingTerm();
 
 const SCOPE_OPTIONS: {id: HdcpScope; label: string; hint: string}[] = [
     {id: "career", label: "Career", hint: "All seasons"},
+    {id: "current-season", label: "Current season", hint: "Latest recorded league season"},
     {id: "last-league", label: "Last league", hint: currentTerm.label},
     {id: "current-year", label: "This year", hint: String(new Date().getFullYear())},
     {id: "last-year", label: "Last year", hint: String(lastYearNum)},
@@ -396,5 +410,6 @@ const HandicapGuide: FC = () => {
 };
 
 export default HandicapGuide;
+
 
 
