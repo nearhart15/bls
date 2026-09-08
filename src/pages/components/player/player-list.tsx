@@ -54,7 +54,7 @@ function rowRating(row: DisplayRow): number {
     return rating ?? -1;
 }
 
-function compareRows(a: DisplayRow, b: DisplayRow, key: SortKey, dir: SortDir): number {
+function compareRows(a: DisplayRow, b: DisplayRow, key: SortKey, dir: SortDir, pinDefaultOrder: boolean): number {
     const mul = dir === "asc" ? 1 : -1;
     let cmp: number;
     switch (key) {
@@ -72,7 +72,7 @@ function compareRows(a: DisplayRow, b: DisplayRow, key: SortKey, dir: SortDir): 
             break;
     }
     if (cmp === 0) cmp = a.name.localeCompare(b.name);
-    return comparePinnedThen(a.name, b.name, cmp * mul);
+    return pinDefaultOrder ? comparePinnedThen(a.name, b.name, cmp * mul) : (cmp * mul || a.name.localeCompare(b.name));
 }
 
 function mergeSlices(slices: PlayerListSeasonSlice[]): Omit<DisplayRow, "id" | "name" | "weekAverages" | "weekSeries"> {
@@ -183,7 +183,8 @@ const PlayerList: FC<PlayerListProps> = ({
     const lastYearLabel = String(new Date().getFullYear() - 1);
     const sorted = useMemo(() => {
         if (!data) return [];
-        return toDisplayRows(data, scope).sort((a, b) => compareRows(a, b, sortKey, sortDir));
+        const pinDefaultOrder = sortKey === "games" && sortDir === "desc";
+        return toDisplayRows(data, scope).sort((a, b) => compareRows(a, b, sortKey, sortDir, pinDefaultOrder));
     }, [data, scope, sortKey, sortDir]);
 
     return (
@@ -309,6 +310,7 @@ const PlayerList: FC<PlayerListProps> = ({
 };
 
 export default PlayerList;
+
 
 
 
