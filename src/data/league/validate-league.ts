@@ -17,7 +17,10 @@ export function validateLeague(league: LeagueDetails): void {
     if (matchupKeys.has(key)) throw new Error("Duplicate scored matchup date");
     matchupKeys.add(key);
    }
-   if(matchup.opponent?.teamId && !matchup.opponent.vacant && !teamIds.has(matchup.opponent.teamId))throw new Error("Unknown opponent team");
+   const hasRecordedScores = Boolean(matchup.scores?.playerScores.length || matchup.scores?.games.length || matchup.opponent?.scores?.games.length);
+   // Position-round opponents are assigned later; an unplayed PENDING entry is valid schedule data.
+   const pendingOpponent = matchup.opponent?.teamId === "PENDING" && !hasRecordedScores;
+   if(matchup.opponent?.teamId && !matchup.opponent.vacant && !pendingOpponent && !teamIds.has(matchup.opponent.teamId))throw new Error("Unknown opponent team");
    const seen=new Set<string>();
    for(const score of matchup.scores?.playerScores ?? []){
     if(!score.player || !players.has(score.player) || seen.has(score.player))throw new Error("Unknown or duplicate player score");seen.add(score.player);

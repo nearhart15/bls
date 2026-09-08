@@ -54,6 +54,17 @@ export const leagueDetailsFetcher = async(dataLoc: string) => {
     leagueDetails.teams = teams;
 
     validateLeague(leagueDetails);
+    // Empty score objects are schedule placeholders, not bowled zero-score series.
+    for (const team of leagueDetails.teams) {
+        for (const matchup of team.matchups) {
+            if (matchup.scores?.playerScores.length === 0 && matchup.scores.games.length === 0) {
+                matchup.scores = undefined;
+            }
+            if (matchup.opponent?.scores?.games.length === 0) {
+                matchup.opponent.scores = undefined;
+            }
+        }
+    }
     decorateLeagueDetails(leagueDetails)
     return leagueDetails;
 }

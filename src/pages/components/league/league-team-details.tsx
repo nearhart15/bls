@@ -26,6 +26,7 @@ import {
 
 import {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import type {LeagueDetails} from "../../../data/league/league-details";
+import {opponentDisplay} from "../../../data/league/opponent-display";
 import {isNumeric} from "../../../data/utils/utils";
 
 import Loader from "../loader";
@@ -115,17 +116,10 @@ const LeagueTeamDetailsSummary :FC<LeagueTeamProps> = ({teamDetails, leagueDetai
         return String(nextMatchup?.lanes[0] ?? "") + " - " + String(nextMatchup?.lanes[1] ?? "");
     }
     const formatNextMatchupOpponent = () => {
-        const nextOpponent = nextMatchup?.opponent;
-        if (nextOpponent != undefined) {
-            const otherTeam = leagueDetails?.otherTeams.find(ot => ot.id === nextOpponent.teamId);
-            if (otherTeam) {
-                let retVal = "#" + otherTeam.number.toString() + " " + String(otherTeam.name);
-                if (nextOpponent.enteringRank.length > 0) {
-                    retVal = retVal + " [" + nextOpponent.enteringRank + "]";
-                }
-                return retVal;
-            }
-        }
+        const opponent = opponentDisplay(leagueDetails, nextMatchup?.opponent);
+        const number = opponent.number != null ? `#${opponent.number} ` : "";
+        const rank = opponent.enteringRank ? ` [${opponent.enteringRank}]` : "";
+        return `${number}${opponent.name}${rank}`;
     }
 
     return (
