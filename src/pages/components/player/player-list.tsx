@@ -24,7 +24,7 @@ const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFracti
 
 type SortKey = "rank" | "name" | "average" | "games" | "pinfall" | "highGame" | "highSeries" | "games200" | "grade";
 type SortDir = "asc" | "desc";
-export type PlayerScope = "career" | "current" | "last-season" | "last-year";
+export type PlayerScope = "career" | "current" | "current-year" | "last-season" | "last-year";
 
 interface DisplayRow {
     id: string;
@@ -99,7 +99,8 @@ function sliceMatchesLastYear(season: string, year: number): boolean {
 function toDisplayRows(entries: PlayerListEntry[], scope: PlayerScope): DisplayRow[] {
     const currentSeason = resolveCurrentSeason(entries);
     const lastSeason = availableSeasons(entries)[1];
-    const lastYear = new Date().getFullYear() - 1;
+    const currentYear = new Date().getFullYear();
+    const lastYear = currentYear - 1;
     const rows: DisplayRow[] = [];
     for (const e of entries) {
         let stats: Omit<DisplayRow, "id" | "name" | "weekAverages" | "weekSeries">;
@@ -109,6 +110,8 @@ function toDisplayRows(entries: PlayerListEntry[], scope: PlayerScope): DisplayR
             stats = mergeSlices(e.seasonSlices.filter((s) => s.season === currentSeason));
         } else if (scope === "last-season") {
             stats = mergeSlices(slicesForSeason(e.seasonSlices, lastSeason));
+                } else if (scope === "current-year") {
+            stats = mergeSlices(e.calendarSlices.filter((s) => sliceMatchesLastYear(s.season, currentYear)));
         } else {
             stats = mergeSlices(e.calendarSlices.filter((s) => sliceMatchesLastYear(s.season, lastYear)));
         }
@@ -139,6 +142,7 @@ const SortTh: FC<{
 const SCOPE_OPTIONS: {id: PlayerScope; label: string; hint: string}[] = [
     {id: "career", label: "Career", hint: "All seasons combined"},
     {id: "current", label: "Current season", hint: "Most recent league season"},
+    {id: "current-year", label: "This calendar year", hint: "Games bowled since January 1"},
     {id: "last-season", label: "Last season", hint: "The season before the current season"},
     {id: "last-year", label: "Last calendar year", hint: "Games bowled in the prior calendar year"},
 ];
@@ -196,6 +200,7 @@ const PlayerList: FC<PlayerListProps> = ({
                             let sub = opt.hint;
                             if (opt.id === "current" && currentSeasonLabel) sub = currentSeasonLabel;
                             if (opt.id === "last-season") sub = lastSeasonLabel ?? "No previous season";
+                            if (opt.id === "current-year") sub = String(new Date().getFullYear());
                             if (opt.id === "last-year") sub = lastYearLabel;
                             return (
                                 <button key={opt.id} type="button" role="tab" aria-selected={active} className={`bls-scope-pill${active ? " is-active" : ""}`} title={opt.hint} onClick={() => { setScope(opt.id); }}>
@@ -304,3 +309,7 @@ const PlayerList: FC<PlayerListProps> = ({
 };
 
 export default PlayerList;
+
+
+
+
