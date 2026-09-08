@@ -662,3 +662,23 @@ a.bls-link:hover,
 .bls-nav .bls-utilities-theme {
   padding: 0.35rem 0.75rem;
 }
+
+.bls-nav .bls-theme-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  border: 0;
+  border-radius: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: transparent;
+  color: var(--bls-text-muted);
+  font: inherit;
+  text-align: left;
+}
+
+.bls-nav .bls-theme-menu-btn:hover,
+.bls-nav .bls-theme-menu-btn:focus {
+  background: var(--bls-accent-soft);
+  color: var(--bls-text);
+}

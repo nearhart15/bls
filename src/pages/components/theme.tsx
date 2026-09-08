@@ -100,7 +100,7 @@ export const ThemeToggle: FC<{inMenu?: boolean}> = ({inMenu = false}) => {
 
     return (
         <Button
-            className={`bls-theme-btn d-flex align-items-center gap-1${inMenu ? " w-100 justify-content-start" : " ms-lg-2"}`}
+            className={inMenu ? "bls-theme-menu-btn" : "bls-theme-btn d-flex align-items-center gap-1 ms-lg-2"}
             size="sm"
             onClick={toggleTheme}
             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
@@ -111,4 +111,5 @@ export const ThemeToggle: FC<{inMenu?: boolean}> = ({inMenu = false}) => {
         </Button>
     );
 };
+
 
