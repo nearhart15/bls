@@ -94,20 +94,21 @@ export function useTheme(): ThemeContextValue {
     return ctx;
 }
 
-export const ThemeToggle: FC = () => {
+export const ThemeToggle: FC<{inMenu?: boolean}> = ({inMenu = false}) => {
     const {theme, toggleTheme} = useTheme();
     const isDark = theme === "dark";
 
     return (
         <Button
-            className="bls-theme-btn d-flex align-items-center gap-1 ms-lg-2"
+            className={`bls-theme-btn d-flex align-items-center gap-1${inMenu ? " w-100 justify-content-start" : " ms-lg-2"}`}
             size="sm"
             onClick={toggleTheme}
             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
             title={isDark ? "Light mode" : "Dark mode"}
         >
             {isDark ? <SunFill size={14} /> : <MoonStarsFill size={14} />}
-            <span className="d-none d-md-inline">{isDark ? "Light" : "Dark"}</span>
+            <span className={inMenu ? "" : "d-none d-md-inline"}>{isDark ? "Light" : "Dark"}</span>
         </Button>
     );
 };
+

@@ -59,6 +59,10 @@ const Layout :FC = () => {
                                 >
                                     Clear Cache
                                 </NavDropdown.Item>
+
+                                <NavDropdown.Item as="div" className="bls-utilities-theme">
+                                    <ThemeToggle inMenu />
+                                </NavDropdown.Item>
                                 <NavDropdown.Item as={Link} to="/score-utils">
                                     Score Utilities
                                 </NavDropdown.Item>
@@ -91,3 +95,4 @@ const Layout :FC = () => {
 };
 
 export default Layout;
+

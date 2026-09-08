@@ -644,3 +644,21 @@ a.bls-link:hover,
 @import "perf-table";
 @import "player-profile";
 @import "sortable";
+
+/* Keep active navigation shading tall enough for both one-line and wrapped labels. */
+.bls-nav .nav-link {
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.bls-nav .dropdown-menu {
+  min-width: 12rem;
+}
+
+.bls-nav .bls-utilities-theme {
+  padding: 0.35rem 0.75rem;
+}

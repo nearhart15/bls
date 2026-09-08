@@ -27,7 +27,7 @@ import {
 import {comparePinnedThen} from "../../../data/player/player-pin";
 import {useCachedFetcher} from "../cache/data-loader";
 
-type HdcpScope = "career" | "last-league" | "last-year";
+type HdcpScope = "career" | "current-season" | "last-league" | "last-year";
 
 function round2(n: number): number {
     return Math.round(n * 100) / 100;
@@ -89,6 +89,8 @@ function extrasFromAppearance(detail: AggregatedPlayerData, slice: PlayerSliceSt
     const leagueAvg = st && st.leagueGames > 0 ? st.leagueAverage : null;
     return {leagueHdcp, leagueAvg};
 }
+
+
 
 function pickScopedStats(detail: AggregatedPlayerData | null, scope: HdcpScope): ScopedPick | null {
     if (!detail?.careerStats || detail.player?.id === "") return null;
@@ -408,4 +410,6 @@ const HandicapGuide: FC = () => {
 };
 
 export default HandicapGuide;
+
+
 
