@@ -340,16 +340,16 @@ const PlayerLeaderboard: FC = () => {
                                         ? ((max - r.value) / span) * 100
                                         : ((r.value - min) / span) * 100);
                                     return (
-                                        <tr key={r.row.id}>
+                                                                                <tr key={r.row.id}>
                                             <td className="text-center fw-semibold">{idx + 1}</td>
                                             <td><Link to={`/player/${r.row.id}`} className="bls-link fw-semibold">{r.row.name}</Link></td>
-                                            <td className="text-end tabular-nums fw-semibold">{formatValue(r.value, def)}</td>
                                             <td className="text-end d-none d-md-table-cell tabular-nums">{r.row.games}</td>
                                             <td className="d-none d-md-table-cell">
                                                 <div className="bls-fifa-track" style={{height: "8px"}}>
                                                     <div className="bls-fifa-fill" style={{width: `${Math.max(4, fill)}%`, background: idx === 0 ? "#ffd60a" : idx === 1 ? "#c7c7cc" : idx === 2 ? "#c47b3a" : "var(--bls-accent, #00d4ff)"}} />
                                                 </div>
                                             </td>
+                                            <td className="text-end tabular-nums fw-semibold">{formatValue(r.value, def)}</td>
                                         </tr>
                                     );
                                 })}
@@ -372,6 +372,7 @@ const PlayerLeaderboard: FC = () => {
 };
 
 export default PlayerLeaderboard;
+
 
 
 
