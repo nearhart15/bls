@@ -40,8 +40,7 @@ const Layout :FC = () => {
                             <ArrowClockwise size={14} />
                             <span className="d-none d-sm-inline">Refresh</span>
                         </Button>
-                        <ThemeToggle />
-                        <Navbar.Toggle aria-controls="bls-nav" aria-label="Toggle navigation" />
+<Navbar.Toggle aria-controls="bls-nav" aria-label="Toggle navigation" />
                     </div>
                     <Navbar.Collapse id="bls-nav">
                         <Nav className="me-auto ms-lg-3 gap-lg-1">
@@ -95,4 +94,5 @@ const Layout :FC = () => {
 };
 
 export default Layout;
+
 
