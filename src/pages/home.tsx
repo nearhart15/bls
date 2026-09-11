@@ -3,7 +3,6 @@
  */
 
 import {type FC} from "react";
-import {Link} from "react-router";
 import {BarChartFill, PeopleFill, TrophyFill} from "react-bootstrap-icons";
 
 import NewsHighlights from "./components/news/news";
@@ -21,14 +20,6 @@ const Home: FC = () => {
                         Scores, averages, and bragging rights — presented clearly
                         across every season you track.
                     </p>
-                    <div className="bls-hero-actions mt-3 d-flex flex-wrap gap-2 justify-content-center">
-                        <Link to="/player/compare" className="btn btn-primary btn-sm">
-                            Player Compare
-                        </Link>
-                        <Link to="/player" className="btn btn-outline-primary btn-sm">
-                            All players
-                        </Link>
-                    </div>
                     <div className="bls-hero-graphic" aria-hidden="true">
                         <div className="bls-lane">
                             <span className="bls-lane-line" />
@@ -41,7 +32,7 @@ const Home: FC = () => {
                 </div>
             </section>
 
-            <section className="bls-features">
+            <section className="bls-features d-none d-md-grid">
                 <div className="bls-feature">
                     <div className="bls-feature-icon">
                         <TrophyFill />
