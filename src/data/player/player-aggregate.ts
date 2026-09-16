@@ -83,6 +83,8 @@ export interface PlayerListSeasonSlice {
     lowGame: number | null;
     lowSeries: number | null;
     seriesCount: number;
+    ratingDelta?: number | null;
+    ratingGameCount?: number;
 }
 
 export interface PlayerAppearanceSlice {
@@ -116,6 +118,8 @@ export interface PlayerAppearanceSlice {
     lowGame: number | null;
     lowSeries: number | null;
     seriesCount: number;
+    ratingDelta?: number | null;
+    ratingGameCount?: number;
 }
 
 export interface PlayerListEntry {
@@ -130,13 +134,22 @@ export interface PlayerListEntry {
     seasonSlices: PlayerListSeasonSlice[];
     calendarSlices: PlayerListSeasonSlice[];
     appearanceSlices: PlayerAppearanceSlice[];
+    ratingDelta?: number | null;
+    ratingGameCount?: number;
     weekAverages?: number[];
     weekSeries?: number[];
     lastBowled?: moment.Moment;
 }
 
 export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail-v4-frame-pace";
-export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v8-team-league";
+export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v9-scoped-rating";
+
+interface RatingSample {
+    season: string;
+    year: string;
+    leagueKey: string;
+    delta: number;
+}
 
 interface RosterScanResult {
     warnings: string[];
@@ -146,6 +159,7 @@ interface RosterScanResult {
     seriesByPlayer: Map<string, TeamPlayerGameScore[][]>;
     seriesByPlayerLeague: Map<string, Map<string, TeamPlayerGameScore[][]>>;
     appearancesByPlayer: Map<string, PlayerLeagueAppearance[]>;
+    ratingSamplesByPlayer: Map<string, RatingSample[]>;
     weekSeriesByPlayer: Map<string, number[]>;
     weekAveragesByPlayer: Map<string, number[]>;
 }
@@ -168,6 +182,7 @@ async function scanAllRosters(): Promise<RosterScanResult> {
     const seriesByPlayerSeason = new Map<string, Map<string, TeamPlayerGameScore[][]>>();
     const seriesByPlayer = new Map<string, TeamPlayerGameScore[][]>();
     const appearancesByPlayer = new Map<string, PlayerLeagueAppearance[]>();
+    const ratingSamplesByPlayer = new Map<string, RatingSample[]>();
     const weekSeriesByPlayer = new Map<string, number[]>();
     const weekAveragesByPlayer = new Map<string, number[]>();
     const seriesByPlayerLeague = new Map<string, Map<string, TeamPlayerGameScore[][]>>();
@@ -225,16 +240,35 @@ async function scanAllRosters(): Promise<RosterScanResult> {
                             if (ps && ps.games.length > 0) {
                                 const date = matchup.bowlDate ?? matchup.scheduledDate;
                                 if (!date?.isValid()) throw new Error("Scored matchup has no valid date");
-                                addSeries(rosterPlayer.id, seasonLabel, league.id, team.id ?? "", date.format("YYYY-MM-DD"), ps.games, matchup.week);
+                                const teamId = team.id ?? "";
+                                addSeries(rosterPlayer.id, seasonLabel, league.id, teamId, date.format("YYYY-MM-DD"), ps.games, matchup.week);
                                 const info = playerMap.get(rosterPlayer.id)!;
                                 if (!info.lastBowled || date.isAfter(info.lastBowled)) info.lastBowled = date;
                                 if (ps.series?.scratchScore) weekSeries.push(ps.series.scratchScore);
                                 if (ps.series?.average) weekAvgs.push(ps.series.average);
+
+                                const enteringAverage = ps.hdcpSettingDay ? 0 : ps.enteringAverage;
+                                const fallbackAverage = rosterPlayer.playerStats?.gameStats.average ?? 0;
+                                const basis = enteringAverage > 0 ? enteringAverage : fallbackAverage;
+                                if (basis > 0) {
+                                    const samples = ratingSamplesByPlayer.get(rosterPlayer.id) ?? [];
+                                    const leagueKey = JSON.stringify([seasonLabel, league.id, teamId]);
+                                    for (const game of ps.games) {
+                                        if (game.blind || game.vacant || !Number.isFinite(game.scratchScore)) continue;
+                                        samples.push({
+                                            season: seasonLabel,
+                                            year: date.format("YYYY"),
+                                            leagueKey,
+                                            delta: game.scratchScore - basis,
+                                        });
+                                    }
+                                    ratingSamplesByPlayer.set(rosterPlayer.id, samples);
+                                }
                             }
                         }
                         if (weekSeries.length > 0) {
-                            weekSeriesByPlayer.set(rosterPlayer.id, weekSeries);
-                            weekAveragesByPlayer.set(rosterPlayer.id, weekAvgs);
+                            weekSeriesByPlayer.set(rosterPlayer.id, [...(weekSeriesByPlayer.get(rosterPlayer.id) ?? []), ...weekSeries]);
+                            weekAveragesByPlayer.set(rosterPlayer.id, [...(weekAveragesByPlayer.get(rosterPlayer.id) ?? []), ...weekAvgs]);
                         }
                     }
                 }
@@ -245,13 +279,38 @@ async function scanAllRosters(): Promise<RosterScanResult> {
     }
 
     if (failures.length && loadedLeagues === 0) throw new Error("Statistics are unavailable because some leagues could not be loaded. Retry after correcting: " + failures.join("; "));
-    return {warnings: failures, dates, playerMap, seriesByPlayerSeason, seriesByPlayer, seriesByPlayerLeague, appearancesByPlayer, weekSeriesByPlayer, weekAveragesByPlayer};
+    return {
+        warnings: failures,
+        dates,
+        playerMap,
+        seriesByPlayerSeason,
+        seriesByPlayer,
+        seriesByPlayerLeague,
+        appearancesByPlayer,
+        ratingSamplesByPlayer,
+        weekSeriesByPlayer,
+        weekAveragesByPlayer,
+    };
 }
 
 function statsFromSeries(allSeries: TeamPlayerGameScore[][]): PlayerStats {
     const stats = new PlayerStats();
     if (allSeries.length > 0) calculatePlayerStats(allSeries, stats);
     return stats;
+}
+
+function ratingSummary(samples: RatingSample[]) {
+    let total = 0;
+    let count = 0;
+    for (const sample of samples) {
+        if (!Number.isFinite(sample.delta)) continue;
+        total += sample.delta;
+        count++;
+    }
+    return {
+        ratingDelta: count > 0 ? total / count : null,
+        ratingGameCount: count,
+    };
 }
 
 function ratioPct(rg: {pct: number; denominator: number}): number | null {
@@ -313,11 +372,16 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
     for (const [id, info] of scan.playerMap.entries()) {
         const series = scan.seriesByPlayer.get(id) ?? [];
         const stats = statsFromSeries(series);
+        const ratingSamples = scan.ratingSamplesByPlayer.get(id) ?? [];
         const bySeason = scan.seriesByPlayerSeason.get(id);
         const seasonSlices: PlayerListSeasonSlice[] = [];
         if (bySeason) {
             for (const [season, seasonSeries] of bySeason.entries()) {
-                seasonSlices.push({season, ...richFromStats(statsFromSeries(seasonSeries))});
+                seasonSlices.push({
+                    season,
+                    ...richFromStats(statsFromSeries(seasonSeries)),
+                    ...ratingSummary(ratingSamples.filter((sample) => sample.season === season)),
+                });
             }
             seasonSlices.sort((a, b) => b.season.localeCompare(a.season));
         }
@@ -326,6 +390,7 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
         for (const ap of scan.appearancesByPlayer.get(id) ?? []) {
             const key = JSON.stringify([ap.season, ap.leagueId, ap.teamId]);
             const leagueGames = leagueSeries?.get(key) ?? [];
+            const appearanceRatingSamples = ratingSamples.filter((sample) => sample.leagueKey === key);
             const computed = leagueGames.length > 0 ? richFromStats(statsFromSeries(leagueGames)) : null;
             const st = ap.stats;
             const games = computed?.games ?? st?.gameStats.count ?? 0;
@@ -359,8 +424,14 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
                 lowGame: computed?.lowGame ?? null,
                 lowSeries: computed?.lowSeries ?? null,
                 seriesCount: computed?.seriesCount ?? 0,
+                ...ratingSummary(appearanceRatingSamples),
             };
-            appearance.calendarSlices = Object.entries(calendarStats(leagueGames, scan.dates)).map(([year, stats]) => ({...appearance, season: year, ...richFromStats(stats)}));
+            appearance.calendarSlices = Object.entries(calendarStats(leagueGames, scan.dates)).map(([year, calendarYearStats]) => ({
+                ...appearance,
+                season: year,
+                ...richFromStats(calendarYearStats),
+                ...ratingSummary(appearanceRatingSamples.filter((sample) => sample.year === year)),
+            }));
             appearanceSlices.push(appearance);
         }
         entries.push({
@@ -369,7 +440,12 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
             games: stats.gameStats.count, pinfall: stats.pinfall,
             highGame: stats.gameStats.max, highSeries: stats.seriesStats.max, games200: stats.games200,
             seasonSlices, appearanceSlices,
-            calendarSlices: Object.entries(calendarStats(series, scan.dates)).map(([season, stats]) => ({season, ...richFromStats(stats)})),
+            calendarSlices: Object.entries(calendarStats(series, scan.dates)).map(([season, calendarYearStats]) => ({
+                season,
+                ...richFromStats(calendarYearStats),
+                ...ratingSummary(ratingSamples.filter((sample) => sample.year === season)),
+            })),
+            ...ratingSummary(ratingSamples),
             weekAverages: scan.weekAveragesByPlayer.get(id),
             weekSeries: scan.weekSeriesByPlayer.get(id),
             lastBowled: info.lastBowled,
