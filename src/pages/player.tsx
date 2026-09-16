@@ -3,7 +3,7 @@
  */
 
 import {type FC, useCallback} from "react";
-import {Link, useParams} from "react-router";
+import {useParams} from "react-router";
 
 import Loader from "./components/loader";
 import ErrorDisplay from "./components/error-display";
@@ -58,17 +58,6 @@ const Player: FC = () => {
 
     return (
         <div className="container-md">
-            <div className="d-flex justify-content-end mb-2 gap-2">
-                <Link to="/player/leaderboard" className="btn btn-outline-primary btn-sm">
-                    Leaderboard
-                </Link>
-                <Link to="/player/compare" className="btn btn-outline-primary btn-sm">
-                    Player Compare
-                </Link>
-                <Link to="/player/handicap" className="btn btn-outline-primary btn-sm">
-                    Handicap Guide
-                </Link>
-            </div>
             <PlayerList />
         </div>
     );
