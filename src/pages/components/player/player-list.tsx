@@ -146,6 +146,11 @@ function toDisplayRows(entries: PlayerListEntry[], scope: PlayerScope): DisplayR
     return rows;
 }
 
+function firstNameMatches(name: string, candidates: string[]): boolean {
+    const firstName = name.trim().split(/\s+/)[0]?.toLocaleLowerCase() ?? "";
+    return candidates.some((candidate) => candidate.trim().toLocaleLowerCase() === firstName);
+}
+
 const SortTh: FC<{
     label: string; sortKey: SortKey; active: SortKey; dir: SortDir;
     onSort: (k: SortKey) => void; className?: string; style?: CSSProperties;
@@ -174,6 +179,8 @@ interface PlayerListProps {
     title?: string;
     showTrend?: boolean;
     showRating?: boolean;
+    includeFirstNames?: string[];
+    excludeFirstNames?: string[];
 }
 
 const PlayerList: FC<PlayerListProps> = ({
@@ -182,6 +189,8 @@ const PlayerList: FC<PlayerListProps> = ({
     title = "Bowler Performance",
     showTrend = true,
     showRating = true,
+    includeFirstNames,
+    excludeFirstNames,
 }) => {
     const {theme} = useTheme();
     const isDark = theme === "dark";
@@ -205,8 +214,14 @@ const PlayerList: FC<PlayerListProps> = ({
     const sorted = useMemo(() => {
         if (!data) return [];
         const pinDefaultOrder = sortKey === "games" && sortDir === "desc";
-        return toDisplayRows(data, scope).sort((a, b) => compareRows(a, b, sortKey, sortDir, pinDefaultOrder));
-    }, [data, scope, sortKey, sortDir]);
+        return toDisplayRows(data, scope)
+            .filter((row) => {
+                if (includeFirstNames?.length && !firstNameMatches(row.name, includeFirstNames)) return false;
+                if (excludeFirstNames?.length && firstNameMatches(row.name, excludeFirstNames)) return false;
+                return true;
+            })
+            .sort((a, b) => compareRows(a, b, sortKey, sortDir, pinDefaultOrder));
+    }, [data, scope, sortKey, sortDir, includeFirstNames, excludeFirstNames]);
 
     return (
         <Card className="mb-0 h-100 bls-perf-card">
