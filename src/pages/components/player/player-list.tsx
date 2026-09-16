@@ -35,21 +35,19 @@ interface DisplayRow {
     highGame: number;
     highSeries: number;
     games200: number;
+    ratingDelta: number | null;
+    ratingGameCount: number;
     weekAverages?: number[];
     weekSeries?: number[];
 }
 
-function weekDelta(row: DisplayRow): number | null {
-    const book = row.average;
-    const weeks = row.weekAverages ?? [];
-    if (book == null || book <= 0 || weeks.length === 0) return null;
-    const ds = weeks.filter((w) => w > 0).map((w) => w - book);
-    if (ds.length === 0) return null;
-    return ds.reduce((s, n) => s + n, 0) / ds.length;
+function performanceDelta(row: DisplayRow): number | null {
+    if (row.ratingGameCount <= 0 || row.ratingDelta == null || Number.isNaN(row.ratingDelta)) return null;
+    return row.ratingDelta;
 }
 
 function rowRating(row: DisplayRow): number {
-    const delta = weekDelta(row);
+    const delta = performanceDelta(row);
     const rating = delta != null ? performanceRatingFromDelta(delta) : performanceRatingFromAverage(row.average);
     return rating ?? -1;
 }
@@ -77,6 +75,7 @@ function compareRows(a: DisplayRow, b: DisplayRow, key: SortKey, dir: SortDir, p
 
 function mergeSlices(slices: PlayerListSeasonSlice[]): Omit<DisplayRow, "id" | "name" | "weekAverages" | "weekSeries"> {
     let games = 0, pinfall = 0, highGame = 0, highSeries = 0, games200 = 0, weighted = 0;
+    let ratingWeighted = 0, ratingGameCount = 0;
     for (const s of slices) {
         games += s.games;
         pinfall += s.pinfall;
@@ -84,8 +83,21 @@ function mergeSlices(slices: PlayerListSeasonSlice[]): Omit<DisplayRow, "id" | "
         highSeries = Math.max(highSeries, s.highSeries);
         games200 += s.games200;
         if (s.average != null && s.games > 0) weighted += s.average * s.games;
+        if (s.ratingDelta != null && (s.ratingGameCount ?? 0) > 0) {
+            ratingWeighted += s.ratingDelta * (s.ratingGameCount ?? 0);
+            ratingGameCount += s.ratingGameCount ?? 0;
+        }
     }
-    return {games, pinfall, highGame, highSeries, games200, average: games > 0 ? weighted / games : null};
+    return {
+        games,
+        pinfall,
+        highGame,
+        highSeries,
+        games200,
+        average: games > 0 ? weighted / games : null,
+        ratingDelta: ratingGameCount > 0 ? ratingWeighted / ratingGameCount : null,
+        ratingGameCount,
+    };
 }
 
 function resolveCurrentSeason(entries: PlayerListEntry[]): string {
@@ -105,12 +117,21 @@ function toDisplayRows(entries: PlayerListEntry[], scope: PlayerScope): DisplayR
     for (const e of entries) {
         let stats: Omit<DisplayRow, "id" | "name" | "weekAverages" | "weekSeries">;
         if (scope === "career") {
-            stats = {average: e.average, games: e.games, pinfall: e.pinfall, highGame: e.highGame, highSeries: e.highSeries, games200: e.games200};
+            stats = {
+                average: e.average,
+                games: e.games,
+                pinfall: e.pinfall,
+                highGame: e.highGame,
+                highSeries: e.highSeries,
+                games200: e.games200,
+                ratingDelta: e.ratingDelta ?? null,
+                ratingGameCount: e.ratingGameCount ?? 0,
+            };
         } else if (scope === "current") {
             stats = mergeSlices(e.seasonSlices.filter((s) => s.season === currentSeason));
         } else if (scope === "last-season") {
             stats = mergeSlices(slicesForSeason(e.seasonSlices, lastSeason));
-                } else if (scope === "current-year") {
+        } else if (scope === "current-year") {
             stats = mergeSlices(e.calendarSlices.filter((s) => sliceMatchesLastYear(s.season, currentYear)));
         } else {
             stats = mergeSlices(e.calendarSlices.filter((s) => sliceMatchesLastYear(s.season, lastYear)));
@@ -238,10 +259,8 @@ const PlayerList: FC<PlayerListProps> = ({
                                 <tr><td colSpan={10} className="text-center text-body-secondary py-4">No bowlers with games in this scope.</td></tr>
                             )}
                             {sorted.map((p, idx) => {
-                                const delta = weekDelta(p);
+                                const delta = performanceDelta(p);
                                 const rating = delta != null ? performanceRatingFromDelta(delta) : performanceRatingFromAverage(p.average);
-                                const weeks = (p.weekAverages ?? []).filter((w) => w > 0);
-                                const compared = weeks.length > 0 ? weeks.reduce((s, n) => s + n, 0) / weeks.length : null;
                                 return (
                                     <tr key={p.id}>
                                         <td className="text-center text-body-secondary fw-semibold">{idx + 1}</td>
@@ -264,7 +283,13 @@ const PlayerList: FC<PlayerListProps> = ({
                                         )}
                                         {showRating && (
                                         <td className="text-center">
-                                            <RatingBadge rating={rating} delta={delta} bookAverage={p.average} comparedAverage={compared} sampleLabel="weekly averages vs book average" />
+                                            <RatingBadge
+                                                rating={rating}
+                                                delta={delta}
+                                                bookAverage={delta == null ? p.average : null}
+                                                comparedAverage={delta != null ? p.average : null}
+                                                sampleLabel="game scores vs entering average"
+                                            />
                                         </td>
                                         )}
                                     </tr>
@@ -278,10 +303,8 @@ const PlayerList: FC<PlayerListProps> = ({
                         <div className="text-center text-body-secondary py-4">No bowlers with games in this scope.</div>
                     )}
                     {sorted.map((p, idx) => {
-                        const delta = weekDelta(p);
+                        const delta = performanceDelta(p);
                         const rating = delta != null ? performanceRatingFromDelta(delta) : performanceRatingFromAverage(p.average);
-                        const weeks = (p.weekAverages ?? []).filter((w) => w > 0);
-                        const compared = weeks.length > 0 ? weeks.reduce((s, n) => s + n, 0) / weeks.length : null;
                         return (
                             <div className="bls-player-card" key={`card-${p.id}`}>
                                 <div className="bls-player-card-top">
@@ -289,7 +312,13 @@ const PlayerList: FC<PlayerListProps> = ({
                                         <div className="bls-player-card-meta">#{idx + 1}</div>
                                         <Link to={`/player/${p.id}`} className="bls-link bls-player-card-name">{p.name}</Link>
                                     </div>
-                                    {showRating && <RatingBadge rating={rating} delta={delta} bookAverage={p.average} comparedAverage={compared} sampleLabel="weekly averages vs book average" />}
+                                    {showRating && <RatingBadge
+                                        rating={rating}
+                                        delta={delta}
+                                        bookAverage={delta == null ? p.average : null}
+                                        comparedAverage={delta != null ? p.average : null}
+                                        sampleLabel="game scores vs entering average"
+                                    />}
                                 </div>
                                 <div className="bls-player-card-grid">
                                     <div className="bls-player-card-stat"><strong>{p.average != null ? numberFormat.format(p.average) : "—"}</strong><span>Avg</span></div>
@@ -310,8 +339,3 @@ const PlayerList: FC<PlayerListProps> = ({
 };
 
 export default PlayerList;
-
-
-
-
-
