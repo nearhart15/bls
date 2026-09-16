@@ -9,6 +9,10 @@ import NewsHighlights from "./components/news/news";
 import LeagueList from "./components/league/league-list";
 import PlayerList from "./components/player/player-list";
 
+const PINS_GO_BOOM = ["Nick", "Bindul", "Luke", "Brian"];
+const HOOKERS_AND_BOWL = ["Pat", "Greg", "Ty", "Mark"];
+const REGULAR_BOWLERS = [...PINS_GO_BOOM, ...HOOKERS_AND_BOWL];
+
 const Home: FC = () => {
     return (
         <>
@@ -64,13 +68,30 @@ const Home: FC = () => {
                 <div className="col-lg-5">
                     <LeagueList compact />
                 </div>
-                <div className="col-lg-7">
+                <div className="col-lg-7 d-grid gap-3">
                     <PlayerList
                         defaultScope="current-year"
                         lockScope
                         showTrend={false}
                         showRating={false}
-                        title={`Active bowlers (${new Date().getFullYear()})`}
+                        includeFirstNames={PINS_GO_BOOM}
+                        title="Pins Go Boom"
+                    />
+                    <PlayerList
+                        defaultScope="current-year"
+                        lockScope
+                        showTrend={false}
+                        showRating={false}
+                        includeFirstNames={HOOKERS_AND_BOWL}
+                        title="Hookers and Bowl"
+                    />
+                    <PlayerList
+                        defaultScope="current-year"
+                        lockScope
+                        showTrend={false}
+                        showRating={false}
+                        excludeFirstNames={REGULAR_BOWLERS}
+                        title="Subs"
                     />
                 </div>
             </div>
