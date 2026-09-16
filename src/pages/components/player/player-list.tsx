@@ -161,11 +161,11 @@ const SortTh: FC<{
 };
 
 const SCOPE_OPTIONS: {id: PlayerScope; label: string; hint: string}[] = [
-    {id: "career", label: "Career", hint: "All seasons combined"},
     {id: "current", label: "Current season", hint: "Most recent league season"},
     {id: "current-year", label: "This calendar year", hint: "Games bowled since January 1"},
     {id: "last-season", label: "Last season", hint: "The season before the current season"},
     {id: "last-year", label: "Last calendar year", hint: "Games bowled in the prior calendar year"},
+    {id: "career", label: "Career", hint: "All seasons combined"},
 ];
 
 interface PlayerListProps {
@@ -177,7 +177,7 @@ interface PlayerListProps {
 }
 
 const PlayerList: FC<PlayerListProps> = ({
-    defaultScope = "career",
+    defaultScope = "current",
     lockScope = false,
     title = "Bowler Performance",
     showTrend = true,
