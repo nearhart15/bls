@@ -7,7 +7,7 @@ import type {Moment} from "moment";
 import {leagueDetailsFetcher, leagueInfoListFetcher} from "../league/league-api";
 import type {LeagueMatchup} from "../league/league-matchup";
 
-export const SHOUTOUT_CACHE_CATEGORY = "shoutouts-from-notes-v1";
+export const SHOUTOUT_CACHE_CATEGORY = "shoutouts-from-notes-v2";
 
 export interface MatchNoteShoutOut {
     date: Moment;
@@ -50,6 +50,7 @@ export async function shoutOutsFromLastGameNotes(): Promise<MatchNoteShoutOut[]>
                     for (const matchup of team.matchups) {
                         if (!isPlayed(matchup)) continue;
                         const notes = (matchup.notes ?? []).map((n) => n.trim()).filter(Boolean);
+                        if (!notes.length) continue;
                         const date = matchDate(matchup);
                         if (!date) continue;
                         const oppId = matchup.opponent?.teamId;
@@ -81,7 +82,6 @@ export async function shoutOutsFromLastGameNotes(): Promise<MatchNoteShoutOut[]>
     const seen = new Set<string>();
     const unique: MatchNoteShoutOut[] = [];
     for (const item of onLatest) {
-        if (!item.notes.length) continue;
         const key = `${item.leagueId}|${item.teamId}|${item.week}|${item.notes.join("||")}`;
         if (seen.has(key)) continue;
         seen.add(key);
