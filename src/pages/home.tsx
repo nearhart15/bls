@@ -1,5 +1,5 @@
 /*
- * Home — shout-outs, tighter leagues, last-year bowlers © 2026
+ * Home — shout-outs, tighter leagues, current-year bowlers © 2026
  */
 
 import {type FC} from "react";
@@ -66,11 +66,11 @@ const Home: FC = () => {
                 </div>
                 <div className="col-lg-7">
                     <PlayerList
-                        defaultScope="last-year"
+                        defaultScope="current-year"
                         lockScope
                         showTrend={false}
                         showRating={false}
-                        title="Active bowlers (last year)"
+                        title={`Active bowlers (${new Date().getFullYear()})`}
                     />
                 </div>
             </div>
