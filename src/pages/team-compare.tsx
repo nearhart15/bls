@@ -103,9 +103,11 @@ const BinBinTeamCompare: FC = () => {
 
     useEffect(() => {
         if (leagueInfo && requestedLeague !== leagueInfo.id) {
-            setParams({league: leagueInfo.id ?? ""}, {replace: true});
+            const next = new URLSearchParams(params);
+            next.set("league", leagueInfo.id ?? "");
+            setParams(next, {replace: true});
         }
-    }, [leagueInfo, requestedLeague, setParams]);
+    }, [leagueInfo, requestedLeague, params, setParams]);
 
     const teams = leagueDetails?.teams.filter(team => team.teamStats != null) ?? [];
     const requestedA = params.get("a") ?? "";
@@ -158,7 +160,16 @@ const BinBinTeamCompare: FC = () => {
 };
 
 const TeamCompare: FC = () => {
-    const {source} = useDataSource();
+    const [params] = useSearchParams();
+    const {source, setSource} = useDataSource();
+    const requestedSource = params.get("source");
+    const linkedSource = requestedSource === "api" || requestedSource === "frame" ? requestedSource : null;
+
+    useEffect(() => {
+        if (linkedSource && linkedSource !== source) setSource(linkedSource);
+    }, [linkedSource, source, setSource]);
+
+    if (linkedSource && linkedSource !== source) return <Loader/>;
     return source === "api" ? <ApiTeamCompare/> : <BinBinTeamCompare/>;
 };
 
