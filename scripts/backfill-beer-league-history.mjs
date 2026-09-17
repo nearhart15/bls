@@ -3,6 +3,7 @@ import {createHash} from "node:crypto";
 import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join, resolve} from "node:path";
+import {pathToFileURL} from "node:url";
 import {parseBlsText} from "./import-beer-league.mjs";
 
 const BINBIN_LEAGUES_URL = process.env.BINBIN_LEAGUES_URL || "https://bls.bindul.name/data/leagues.json";
@@ -100,7 +101,6 @@ function archive(parsed, bytes) {
     const snapshot = {...parsed, archive: {week, revision, pdfSha256: hash, pdfFile, archivedAt: new Date().toISOString(), historicalBackfill: true}};
     writeFileSync(join(dir, `${base}.json`), `${JSON.stringify(snapshot, null, 2)}\n`);
     writeFileSync(join(dir, pdfFile), bytes);
-
     const indexPath = resolve(HISTORY_DIR, "index.json");
     let index = {snapshots: []};
     if (existsSync(indexPath)) index = JSON.parse(readFileSync(indexPath, "utf8"));
@@ -153,6 +153,6 @@ export async function backfillBeerLeagueHistory() {
     console.log(`Historical backfill complete: ${discovered} candidate PDFs checked, ${archived} new snapshots archived.`);
 }
 
-if (import.meta.url === new URL(`file://${process.argv[1]}`).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
     backfillBeerLeagueHistory().catch(error => { console.error(error instanceof Error ? error.stack : error); process.exitCode = 1; });
 }
