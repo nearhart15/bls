@@ -20,9 +20,6 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}preview/beer-league-pdf-import-test/#/beer-league
     steps:
       - name: Checkout production
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
