@@ -20,8 +20,7 @@ const Layout :FC = () => {
     const location = useLocation();
     const isFullLeagueInfo = location.pathname === "/beer-league" || location.pathname.startsWith("/beer-league/");
     const isTeamLeagueData = location.pathname === "/league" || location.pathname.startsWith("/league/");
-    const isTeamCompare = location.pathname === "/team/compare";
-    const isFrameOnlyStatsPage = location.pathname === "/player/handicap" || isTeamCompare;
+    const isFrameOnlyStatsPage = location.pathname === "/player/handicap";
     // Website-only player links use an api-* id. Those profiles have no BinBin
     // counterpart, so showing the global source switch would only lead to an error.
     const isApiOnlyPlayer = location.pathname.startsWith("/player/api-");
