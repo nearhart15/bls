@@ -51,7 +51,6 @@ const Layout :FC = () => {
                     </div>
                     <Navbar.Collapse id="bls-nav">
                         <Nav className="me-auto ms-lg-3 gap-lg-1">
-                            <Nav.Link as={Link} to="/">Home</Nav.Link>
                             <Nav.Link as={Link} to="/league">Team League Data</Nav.Link>
                             <Nav.Link as={Link} to="/beer-league">Full League Info</Nav.Link>
                             <NavDropdown title="Stats" id="players-nav">
