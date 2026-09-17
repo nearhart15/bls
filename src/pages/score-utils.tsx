@@ -21,7 +21,7 @@ import ScoreConverter from "./components/score/converter";
 const ScoreUtils: FC = ()=> {
     return (
         <>
-            <Container fluid={true}>
+            <Container fluid={true} className="bls-score-utils px-0">
                 <ScoreConverter />
             </Container>
         </>
