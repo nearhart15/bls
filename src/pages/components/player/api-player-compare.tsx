@@ -9,11 +9,11 @@ import {usePlayerIndexData} from "./use-player-index-data";
 const numberFormat = Intl.NumberFormat("en-US", {maximumFractionDigits: 1});
 const integerFormat = Intl.NumberFormat("en-US", {maximumFractionDigits: 0});
 
-type Metric = {
+interface Metric {
     label: string;
     get: (player: PlayerListEntry) => number | null;
     integer?: boolean;
-};
+}
 
 const metrics: Metric[] = [
     {label: "Average", get: player => player.average},
