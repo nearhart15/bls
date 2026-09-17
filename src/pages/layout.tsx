@@ -24,7 +24,7 @@ const Layout :FC = () => {
     const isFrameOnlyStatsPage = location.pathname === "/player/compare" || location.pathname === "/player/handicap";
     // Website-only player links use an api-* id. Those profiles have no BinBin
     // counterpart, so showing the global source switch would only lead to an error.
-    const isApiOnlyPlayer = /^\/player\/api-/.test(location.pathname);
+    const isApiOnlyPlayer = location.pathname.startsWith("/player/api-");
     const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage && !isApiOnlyPlayer;
 
     // The home screen is the BinBin-first overview. Reset to BinBin whenever the
