@@ -117,12 +117,12 @@ const ApiPlayerCompare: FC = () => {
     const activeMetrics = tab === "scoring" ? SCORING : tab === "volume" ? VOLUME : LATEST;
 
     if (isLoading) return <Loader />;
-    if (error != null) return <ErrorDisplay message="Error loading API player comparison." error={error} />;
+    if (error != null) return <ErrorDisplay message="Error loading A.B.C. player comparison." error={error} />;
 
     return (
         <div className="container-md bls-compare bls-fifa-compare">
             <div className="bls-compare-hero mb-3">
-                <span className="bls-hero-kicker">API Data · Head to head</span>
+                <span className="bls-hero-kicker">A.B.C. Data · Head to head</span>
                 <h1>Player Compare</h1>
                 <div className="text-body-secondary">Only statistics published by the Arapahoe league sheet are compared.</div>
             </div>
@@ -151,7 +151,7 @@ const ApiPlayerCompare: FC = () => {
                 <>
                     <div className="bls-fifa-heads mb-3">
                         <PlayerCard side="a" player={playerA} players={players} selectedId={idA} otherId={idB} onChange={setIdA} />
-                        <div className="bls-fifa-vs"><span>VS</span><Badge pill style={{background: "#6e6e73", color: "#fff"}}>API</Badge></div>
+                        <div className="bls-fifa-vs"><span>VS</span><Badge pill style={{background: "#6e6e73", color: "#fff"}}>A.B.C.</Badge></div>
                         <PlayerCard side="b" player={playerB} players={players} selectedId={idB} otherId={idA} onChange={setIdB} />
                     </div>
                     <div className="bls-fifa-tabs" role="tablist">
