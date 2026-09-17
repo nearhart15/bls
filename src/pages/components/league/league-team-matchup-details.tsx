@@ -83,6 +83,7 @@ const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, t
     const writeScoreOrLabel = (b: [number, ScoreLabel?]) => {
         const key = b[1] === "S" ? b[0].toString() + "S" : b[1];
         const label = key ? FrameScoreLabels.get(key) : undefined;
+        if (key === "X" || key === "/") return <span className="bls-frame-mark" title={label?.altText}>{key}</span>;
         return label ? <Icon iconName={label.iconName} title={label.altText}/> : <>{b[0]}</>;
     };
     const writeScoreLabelRow = (f: Frame) => <>{f.ballScores.slice(0, f.number === 10 ? 3 : 2).map((ball, i) => <div key={`${f.number}-${i}`}>{writeScoreOrLabel(ball)}</div>)}</>;
