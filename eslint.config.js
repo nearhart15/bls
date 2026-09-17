@@ -32,20 +32,9 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       ...reactX.configs['recommended-typescript'].rules,
       ...reactDom.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
-      '@typescript-eslint/restrict-template-expressions': [
-        'error',
-        {
-          'allowNumber': true,
-          'allowNullish': true,
-          'allowBoolean': true
-        }
-      ],
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      '@typescript-eslint/restrict-template-expressions': ['error', {'allowNumber': true, 'allowNullish': true, 'allowBoolean': true}],
       '@typescript-eslint/no-explicit-any': 'warn',
-      // Existing defensive guards and style preferences are advisory; runtime/type safety stays enforced.
       '@typescript-eslint/no-unnecessary-condition': 'warn',
       '@typescript-eslint/no-non-null-assertion': 'warn',
       '@typescript-eslint/prefer-nullish-coalescing': 'warn',
@@ -53,31 +42,24 @@ export default tseslint.config(
       '@typescript-eslint/prefer-optional-chain': 'warn',
       '@typescript-eslint/no-unnecessary-type-conversion': 'warn',
       '@typescript-eslint/restrict-plus-operands': ['error', {allowNumberAndString: true}],
-      // React Compiler is not enabled; keep migration diagnostics without blocking the current effect-based UI.
       'react-hooks/set-state-in-effect': 'warn',
-      'no-control-regex': 'off', // Input validation intentionally rejects control characters.
-
+      'no-control-regex': 'off',
     },
   },
   {
     files: ['src/pages/beer-league.tsx'],
-    rules: {
-      // React event handlers intentionally use concise state-setter callbacks in this preview UI.
-      '@typescript-eslint/no-confusing-void-expression': 'off',
-    },
+    rules: {'@typescript-eslint/no-confusing-void-expression': 'off'},
   },
   {
     files: ['src/pages/components/player/api-player-screens.tsx'],
-    rules: {
-      // DetailMetric is a closed object-shape alias; keep this stylistic preference advisory here.
-      '@typescript-eslint/consistent-type-definitions': 'warn',
-    },
+    rules: {'@typescript-eslint/consistent-type-definitions': 'warn'},
   },
   {
     files: ['src/pages/components/league/league-team-matchup-details.tsx'],
     rules: {
-      // The numbered-badge helper remains available to the legend while frame events move to outline interactions.
-      '@typescript-eslint/no-unused-vars': 'warn',
+      // Frame rendering uses a CSS custom property and concise nested iteration; both are type-safe here.
+      '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
+      '@typescript-eslint/no-confusing-void-expression': 'warn',
     },
   },
 )
