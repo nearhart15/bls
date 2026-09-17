@@ -47,6 +47,33 @@ const PlayerDetailPage: FC<{playerId: string}> = ({playerId}) => {
     return <PlayerDetail data={data} />;
 };
 
+const ApiPlayerDetailBridge: FC<{playerId: string}> = ({playerId}) => {
+    const frameFetcher = useCallback(() => aggregatePlayerData(playerId), [playerId]);
+    const apiFetcher = useCallback(() => apiPlayerListFetcher(), []);
+    const {data: frameData, isLoading: frameLoading, error: frameError} = useCachedFetcher<AggregatedPlayerData>(
+        frameFetcher,
+        PLAYER_DETAIL_CACHE_CATEGORY,
+        playerId,
+    );
+    const {data: apiPlayers, isLoading: apiLoading, error: apiError} = useCachedFetcher<PlayerListEntry[]>(
+        apiFetcher,
+        API_PLAYER_INDEX_CACHE_CATEGORY,
+    );
+
+    if (frameLoading || apiLoading) return <Loader />;
+    if (frameError) return <ErrorDisplay message="Error matching this BinBin player to A.B.C. data." error={frameError} />;
+    if (apiError) return <ErrorDisplay message="Error loading A.B.C. player data." error={apiError} />;
+
+    const normalizedName = normalizePlayerName(frameData?.player.name ?? playerId);
+    const apiPlayer = apiPlayers?.find(player => normalizePlayerName(player.name) === normalizedName);
+
+    if (apiPlayer) return <Navigate replace to={`/player/${apiPlayer.id}`} />;
+
+    // If this BinBin player has no A.B.C. counterpart, fall back to the A.B.C.
+    // player list instead of leaving the user on a broken detail route.
+    return <Navigate replace to="/player" />;
+};
+
 const Player: FC = () => {
     const {playerId} = useParams();
     const {source} = useDataSource();
@@ -57,7 +84,7 @@ const Player: FC = () => {
     if (source === "api") {
         if (playerId === "compare") return <ApiPlayerCompare />;
         if (playerId === "leaderboard") return <ApiPlayerLeaderboard />;
-        if (playerId) return <ApiPlayerDetail key={playerId} playerId={playerId} />;
+        if (playerId) return <ApiPlayerDetailBridge key={playerId} playerId={playerId} />;
         return <div className="container-md"><ApiPlayerList /></div>;
     }
 
