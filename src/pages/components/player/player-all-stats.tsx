@@ -161,6 +161,12 @@ export const AllStatsPanel: FC<{
     const [timeframe, setTimeframe] = useState("career");
     const [leagueId, setLeagueId] = useState("all");
     const viewingCurrentSeason = currentSeason.length > 0 && timeframe === currentSeason;
+    const currentSeasonLeagueId = useMemo(() => {
+        const mostRecent = appearanceSlicesFull
+            .filter((slice) => slice.season === currentSeason && Boolean(slice.leagueId))
+            .sort((a, b) => (b.lastBowled ?? 0) - (a.lastBowled ?? 0))[0]?.leagueId;
+        return mostRecent ?? appearances.find((appearance) => appearance.season === currentSeason)?.leagueId ?? "all";
+    }, [appearanceSlicesFull, appearances, currentSeason]);
     const applicableLeagueIds = useMemo(() => {
         if (timeframe === "career") return new Set(allLeagues.map(([id]) => id));
         if (timeframe === "last-year") {
@@ -220,7 +226,7 @@ export const AllStatsPanel: FC<{
                     className="bg-transparent border-0 p-0 link-primary text-decoration-underline fw-normal"
                     onClick={() => {
                         setTimeframe(currentSeason);
-                        setLeagueId("all");
+                        setLeagueId(currentSeasonLeagueId);
                     }}
                 >
                     Jump to current season
