@@ -4,9 +4,8 @@ import {NodePackageImporter} from "sass-embedded";
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Required for GitHub Pages project site. Preview deployments override this
-  // so they can live alongside the production build without replacing its URLs.
-  base: process.env.VITE_BASE_PATH || '/bls/',
+  // Required for GitHub Pages project site
+  base: '/bls/',
   plugins: [react()],
   build: {
     minify: true,
