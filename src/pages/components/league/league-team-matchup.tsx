@@ -52,8 +52,12 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
     const [weekPrefix, setWeekPrefix] = useState<LeagueBowlingDurationUnit>("WK");
     const [gamesPerMatchup, setGamesPerMatchup] = useState(3);
     const trackedOpponent = leagueDetails?.teams.find(team => team.id === matchup.opponent?.teamId);
-    const canCompare = Boolean(leagueDetails?.id && teamDetails.id && trackedOpponent?.id && teamDetails.teamStats && trackedOpponent.teamStats);
-    const compareUrl = canCompare ? `/team/compare?league=${encodeURIComponent(leagueDetails?.id ?? "")}&a=${encodeURIComponent(teamDetails.id ?? "")}&b=${encodeURIComponent(trackedOpponent?.id ?? "")}` : "";
+    const canOpenCompare = Boolean(leagueDetails?.id && teamDetails.id);
+    const compareParams = new URLSearchParams();
+    if (leagueDetails?.id) compareParams.set("league", leagueDetails.id);
+    if (teamDetails.id) compareParams.set("a", teamDetails.id);
+    if (trackedOpponent?.id) compareParams.set("b", trackedOpponent.id);
+    const compareUrl = `/team/compare?${compareParams.toString()}`;
 
     useEffect(() => {
         const today = moment();
@@ -78,12 +82,12 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
             <div><Stack direction="vertical" className="text-center h-100">
                 <div><small className={matchup.matchup.startsWith("POSITION") ? "text-danger" : ""}>{MatchupTypeConversion.get(matchup.matchup)}</small></div>
                 <div className="my-auto align-middle">{showMatchupDetails && <span className="fs-5">{matchup.pointsWonLost[0]} - {matchup.pointsWonLost[1]}</span>}</div>
-                {canCompare && <div className="my-1"><Link className="btn btn-outline-primary btn-sm py-0 px-2" to={compareUrl}>Compare</Link></div>}
+                {canOpenCompare && <div className="d-none d-sm-block my-1"><Link className="btn btn-outline-primary btn-sm py-0 px-2" to={compareUrl}>Team Compare</Link></div>}
                 <div className="d-none d-sm-block w-auto">{showMatchupDetails && <button type="button" className="bls-details-toggle" onClick={() => { toggleVisibility(matchup.week); }}>{isVisible(matchup.week) ? <><ArrowsCollapse className="fw-bold"/><br/><span className="fs-xs">Hide Game Details</span></> : <><ArrowsExpand className="fw-bold"/><br/><span className="fs-xs">Game Details</span></>}</button>}</div>
             </Stack></div>
             <div className="ms-auto"><Stack direction="vertical" className="mx-auto"><div className="text-end align-middle"><TeamNameInfo division={opponent.division} teamNumber={opponent.number} name={opponent.name} enteringPosition={opponent.enteringRank}/><br/>{isOpponentVacantOrAbsent && <><PersonX/>&nbsp;</>}<span className="fs-sm">hdcp: <span className={isOpponentVacantOrAbsent ? "text-decoration-line-through" : ""}>{calculateTeamHdcp(matchup.opponent?.scores?.series, matchup.opponent?.teamHdcp)}</span></span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.opponent?.scores} matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
         </Stack>
-        <Stack direction="horizontal" gap={0} className="d-block d-sm-none my-1"><div>{showMatchupDetails && <GameSummaryAndPoints teamNumber={teamDetails.number} teamScore={matchup.scores} currentBreakpoint={currentBreakpoint}/>}</div><div>{showMatchupDetails && <GameSummaryAndPoints teamNumber={opponent.number} teamScore={matchup.opponent?.scores} matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent} currentBreakpoint={currentBreakpoint}/>}</div>{showMatchupDetails && <button type="button" className="bls-details-toggle bls-details-toggle-wide my-1" onClick={() => { toggleVisibility(matchup.week); }}>{isVisible(matchup.week) ? <><BoxArrowUp/> Hide Details</> : <><BoxArrowDown/> Show Details</>}</button>}</Stack>
+        <Stack direction="horizontal" gap={0} className="d-block d-sm-none my-1"><div>{showMatchupDetails && <GameSummaryAndPoints teamNumber={teamDetails.number} teamScore={matchup.scores} currentBreakpoint={currentBreakpoint}/>}</div><div>{showMatchupDetails && <GameSummaryAndPoints teamNumber={opponent.number} teamScore={matchup.opponent?.scores} matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent} currentBreakpoint={currentBreakpoint}/>}</div>{canOpenCompare && <Link className="btn btn-outline-primary w-100 my-1" to={compareUrl}>Team Compare</Link>}{showMatchupDetails && <button type="button" className="bls-details-toggle bls-details-toggle-wide my-1" onClick={() => { toggleVisibility(matchup.week); }}>{isVisible(matchup.week) ? <><BoxArrowUp/> Hide Details</> : <><BoxArrowDown/> Show Details</>}</button>}</Stack>
         </CardBody>
         <CardBody className={`p-0 mx-1 my-1 ${isVisible(matchup.week) ? "d-block" : "d-none"}`}>{showMatchupDetails && <MatchupDetailsDisplay leagueDetails={leagueDetails} teamDetails={teamDetails} matchup={matchup} currentBreakpoint={currentBreakpoint}/>}</CardBody><div className="my-auto"/>
     </Card></Col>;
