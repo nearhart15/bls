@@ -64,10 +64,7 @@ const Layout :FC = () => {
                                     Clear Cache
                                 </NavDropdown.Item>
                                 <NavDropdown.Divider />
-                                <NavDropdown.Header>Appearance</NavDropdown.Header>
-                                <div className="bls-utilities-theme px-2 pb-2">
-                                    <ThemeToggle inMenu />
-                                </div>
+                                <ThemeToggle inMenu />
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
