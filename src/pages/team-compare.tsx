@@ -6,6 +6,8 @@ import {LEAGUE_DETAILS_CACHE_CATEGORY, LEAGUE_LIST_CACHE_CATEGORY, leagueDetails
 import type {LeagueDetails} from "../data/league/league-details";
 import {AvailableLeagues} from "../data/league/league-info";
 import type {TrackedLeagueTeam} from "../data/league/league-team-details";
+import ApiTeamCompare from "./components/league/api-team-compare";
+import {useDataSource} from "./components/data-source";
 import {useCachedFetcher} from "./components/cache/data-loader";
 import ErrorDisplay from "./components/error-display";
 import Loader from "./components/loader";
@@ -89,7 +91,7 @@ const TeamCard: FC<{side: "a" | "b"; team: TrackedLeagueTeam; teams: TrackedLeag
     </div>;
 };
 
-const TeamCompare: FC = () => {
+const BinBinTeamCompare: FC = () => {
     const [params, setParams] = useSearchParams();
     const {data: leagueList, isLoading: listLoading, error: listError} = useCachedFetcher<AvailableLeagues>(leagueInfoListFetcher, LEAGUE_LIST_CACHE_CATEGORY);
     const availableLeagues = useMemo(() => leagueList?.seasons.flatMap(season => season.leagues.filter(league => league.hasData() && league.teams.length > 1)) ?? [], [leagueList]);
@@ -153,6 +155,11 @@ const TeamCompare: FC = () => {
             </div></CardBody></Card>
         </> : <Card className="bls-profile-card"><CardBody>No two tracked teams with statistics are available for this league.</CardBody></Card>}
     </div>;
+};
+
+const TeamCompare: FC = () => {
+    const {source} = useDataSource();
+    return source === "api" ? <ApiTeamCompare/> : <BinBinTeamCompare/>;
 };
 
 export default TeamCompare;
