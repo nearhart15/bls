@@ -5311,5 +5311,12 @@
       "weekTotal": 371,
       "weekHandicapTotal": 578
     }
-  ]
+  ],
+  "archive": {
+    "week": 2,
+    "revision": 1,
+    "pdfSha256": "1342738d801a5f78fd8727c0fc813138da1b98027f717a39ac66818d87e77dd6",
+    "pdfFile": "week-02.pdf",
+    "archivedAt": "2026-09-17T01:36:44.240Z"
+  }
 }
