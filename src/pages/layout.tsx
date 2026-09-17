@@ -45,7 +45,7 @@ const Layout :FC = () => {
                                     aria-pressed={source === "frame"}
                                     title="Use stats calculated from BLS frame files"
                                 >
-                                    Frame Data
+                                    BinBin Data
                                 </Button>
                                 <Button
                                     variant={source === "api" ? "primary" : "outline-primary"}
