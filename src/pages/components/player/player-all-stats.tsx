@@ -155,10 +155,12 @@ export const AllStatsPanel: FC<{
     appearances: PlayerLeagueAppearance[];
 }> = ({careerStats, seasonSlicesFull, appearanceSlicesFull, appearances}) => {
     const seasons = [...new Set(seasonSlicesFull.map((s) => s.season).filter(Boolean) as string[])].sort((a, b) => b.localeCompare(a));
+    const currentSeason = seasons[0] ?? "";
     const leagues = [...new Map(appearances.map((a) => [a.leagueId, a.leagueName])).entries()];
     const lastYear = String(new Date().getFullYear() - 1);
     const [timeframe, setTimeframe] = useState("career");
     const [leagueId, setLeagueId] = useState("all");
+    const viewingCurrentSeason = currentSeason.length > 0 && timeframe === currentSeason && leagueId === "all";
 
     const selected = useMemo(() => {
         const candidates = timeframe === "last-year" ? appearanceSlicesFull.map(s => ({...s, season: lastYear, stats: s.calendarStats?.[lastYear] ?? new PlayerStats()})) : appearanceSlicesFull;
@@ -181,13 +183,26 @@ export const AllStatsPanel: FC<{
             : (leagueId !== "all" ? bookCandidates[0]?.stats : undefined);
         const leagueName = leagueId === "all" ? "All leagues" : (leagues.find(([id]) => id === leagueId)?.[1] ?? "League");
         const timeLabel = timeframe === "career" ? "Career" : timeframe === "last-year" ? lastYear : timeframe;
-        return {stats, extras, label: `${timeLabel} \u00b7 ${leagueName}`};
+        return {stats, extras, label: `${timeLabel} · ${leagueName}`};
     }, [careerStats, seasonSlicesFull, appearanceSlicesFull, appearances, timeframe, leagueId, lastYear, leagues]);
 
     return (
         <Card className="bls-profile-card mb-3">
             <div className="bls-profile-card-head">All stats</div>
             <CardBody>
+                {currentSeason && <div className="d-flex justify-content-end mb-3">
+                    <button
+                        type="button"
+                        className={`btn btn-sm ${viewingCurrentSeason ? "btn-primary" : "btn-outline-primary"}`}
+                        disabled={viewingCurrentSeason}
+                        onClick={() => {
+                            setTimeframe(currentSeason);
+                            setLeagueId("all");
+                        }}
+                    >
+                        Current season ({currentSeason})
+                    </button>
+                </div>}
                 <div className="bls-allstats-filters">
                     <label className="bls-allstats-filter">
                         <span>Timeframe</span>
