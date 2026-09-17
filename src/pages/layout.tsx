@@ -19,6 +19,8 @@ const Layout :FC = () => {
     const {source, setSource} = useDataSource();
     const location = useLocation();
     const isFullLeagueInfo = location.pathname === "/beer-league" || location.pathname.startsWith("/beer-league/");
+    const isTeamLeagueData = location.pathname === "/league" || location.pathname.startsWith("/league/");
+    const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData;
 
     const refreshApp = () => {
         clearCacheRef.current?.clearCache();
@@ -34,7 +36,7 @@ const Layout :FC = () => {
                         Bowling League Stats
                     </Navbar.Brand>
                     <div className="bls-nav-actions d-flex align-items-center gap-2 ms-auto order-lg-last">
-                        {!isFullLeagueInfo && (
+                        {showDataSourceToggle && (
                             <ButtonGroup size="sm" aria-label="Stats data source" className="bls-data-source-toggle">
                                 <Button
                                     variant={source === "frame" ? "primary" : "outline-primary"}
