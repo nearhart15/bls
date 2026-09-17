@@ -12,171 +12,28 @@ import {playerListFetcher} from "./player-api";
 import {PlayerInfo} from "./player-info";
 import moment from "moment";
 
-export interface PlayerLeagueAppearance {
-    season: string;
-    leagueId: string;
-    leagueName: string;
-    teamId: string;
-    teamName: string;
-    teamNumber: number;
-    status: string;
-    stats?: LeaguePlayerStats;
-}
-
-export interface PlayerSeasonStats {
-    season: string;
-    leagues: number;
-    games: number;
-    average: number;
-    pinfall: number;
-    highGame: number;
-    highSeries: number;
-    games200: number;
-    cleanGames: number;
-    hungCount: number;
-    turkeyCount: number;
-}
-
-export interface PlayerSliceStats {
-    season?: string;
-    leagueId?: string;
-    leagueName?: string;
-    teamId?: string;
-    lastBowled?: number;
-    calendarStats?: Record<string, PlayerStats>;
-    stats: PlayerStats;
-}
-
-export interface AggregatedPlayerData {
-    warnings?: string[];
-    player: PlayerInfo;
-    appearances: PlayerLeagueAppearance[];
-    careerStats: PlayerStats;
-    seasonStats: PlayerSeasonStats[];
-    seasonSlicesFull: PlayerSliceStats[];
-    appearanceSlicesFull: PlayerSliceStats[];
-}
-
-export interface PlayerListSeasonSlice {
-    metrics?: MetricCounts;
-    season: string;
-    average: number | null;
-    games: number;
-    pinfall: number;
-    highGame: number;
-    highSeries: number;
-    games200: number;
-    games300: number;
-    series600: number;
-    series800: number;
-    cleanGames: number;
-    hungCount: number;
-    turkeyCount: number;
-    firstBall: number | null;
-    strikePct: number | null;
-    sparePct: number | null;
-    singlePinPct: number | null;
-    openPct: number | null;
-    splitPct: number | null;
-    strikeToSparePct: number | null;
-    singlePinPickup: number | null;
-    lowGame: number | null;
-    lowSeries: number | null;
-    seriesCount: number;
-    ratingDelta?: number | null;
-    ratingGameCount?: number;
-}
-
-export interface PlayerAppearanceSlice {
-    metrics?: MetricCounts;
-    calendarSlices?: PlayerAppearanceSlice[];
-    season: string;
-    leagueId: string;
-    leagueName: string;
-    teamId: string;
-    teamName: string;
-    average: number | null;
-    games: number;
-    pinfall: number;
-    highGame: number;
-    highSeries: number;
-    games200: number;
-    games300: number;
-    series600: number;
-    series800: number;
-    cleanGames: number;
-    hungCount: number;
-    turkeyCount: number;
-    firstBall: number | null;
-    strikePct: number | null;
-    sparePct: number | null;
-    singlePinPct: number | null;
-    openPct: number | null;
-    splitPct: number | null;
-    strikeToSparePct: number | null;
-    singlePinPickup: number | null;
-    lowGame: number | null;
-    lowSeries: number | null;
-    seriesCount: number;
-    ratingDelta?: number | null;
-    ratingGameCount?: number;
-}
-
-export interface ApiDerivedPlayerStats {
-    handicap: number;
-    highHandicapGame: number;
-    highHandicapSeries: number;
-    latestGames: number[];
-    latestSeries: number | null;
-    latestHandicapSeries: number | null;
-    latestGameAverage: number | null;
-    latestHighGame: number | null;
-    latestLowGame: number | null;
-    seriesCount: number;
-    averageSeries: number | null;
-    known200Games: number;
-    known600Series: number;
-    known700Series: number;
-    known800Series: number;
-}
-
-export interface PlayerListEntry {
-    id: string;
-    name: string;
-    average: number | null;
-    games: number;
-    pinfall: number;
-    highGame: number;
-    highSeries: number;
-    games200: number;
-    seasonSlices: PlayerListSeasonSlice[];
-    calendarSlices: PlayerListSeasonSlice[];
-    appearanceSlices: PlayerAppearanceSlice[];
-    ratingDelta?: number | null;
-    ratingGameCount?: number;
-    weekAverages?: number[];
-    weekSeries?: number[];
-    lastBowled?: moment.Moment;
-    apiStats?: ApiDerivedPlayerStats;
-}
-
-export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail-v4-frame-pace";
-export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v9-scoped-rating";
-
-interface RatingSample {
-    season: string;
-    year: string;
-    leagueKey: string;
-    delta: number;
-}
-
-interface RosterScanResult {
-    warnings: string[];
-    dates: Map<TeamPlayerGameScore[], string>;
-    playerMap: Map<string, {name: string; lastBowled?: moment.Moment}>;
-    seriesByPlayerSeason: Map<string, Map<string, TeamPlayerGameScore[][]>>;
-    seriesByPlayer: Map<string, TeamPlayerGameScore[][]>;
-    seriesByPlayerLeague: Map<string, Map<string, TeamPlayerGameScore[][]>>;
-}
-
-// Rest of this module is unchanged below this point.
+export interface PlayerLeagueAppearance { season:string; leagueId:string; leagueName:string; teamId:string; teamName:string; teamNumber:number; status:string; stats?:LeaguePlayerStats; }
+export interface PlayerSeasonStats { season:string; leagues:number; games:number; average:number; pinfall:number; highGame:number; highSeries:number; games200:number; cleanGames:number; hungCount:number; turkeyCount:number; }
+export interface PlayerSliceStats { season?:string; leagueId?:string; leagueName?:string; teamId?:string; lastBowled?:number; calendarStats?:Record<string,PlayerStats>; stats:PlayerStats; }
+export interface AggregatedPlayerData { warnings?:string[]; player:PlayerInfo; appearances:PlayerLeagueAppearance[]; careerStats:PlayerStats; seasonStats:PlayerSeasonStats[]; seasonSlicesFull:PlayerSliceStats[]; appearanceSlicesFull:PlayerSliceStats[]; }
+export interface PlayerListSeasonSlice { metrics?:MetricCounts; season:string; average:number|null; games:number; pinfall:number; highGame:number; highSeries:number; games200:number; games300:number; series600:number; series800:number; cleanGames:number; hungCount:number; turkeyCount:number; firstBall:number|null; strikePct:number|null; sparePct:number|null; singlePinPct:number|null; openPct:number|null; splitPct:number|null; strikeToSparePct:number|null; singlePinPickup:number|null; lowGame:number|null; lowSeries:number|null; seriesCount:number; ratingDelta?:number|null; ratingGameCount?:number; }
+export interface PlayerAppearanceSlice extends PlayerListSeasonSlice { calendarSlices?:PlayerAppearanceSlice[]; leagueId:string; leagueName:string; teamId:string; teamName:string; }
+export interface PlayerListEntry { id:string; name:string; average:number|null; games:number; pinfall:number; highGame:number; highSeries:number; games200:number; seasonSlices:PlayerListSeasonSlice[]; calendarSlices:PlayerListSeasonSlice[]; appearanceSlices:PlayerAppearanceSlice[]; ratingDelta?:number|null; ratingGameCount?:number; weekAverages?:number[]; weekSeries?:number[]; lastBowled?:moment.Moment; }
+export const PLAYER_DETAIL_CACHE_CATEGORY="player-detail-v4-frame-pace";
+export const PLAYER_INDEX_CACHE_CATEGORY="player-index-v9-scoped-rating";
+interface RatingSample { season:string; year:string; leagueKey:string; delta:number; }
+interface RosterScanResult { warnings:string[]; dates:Map<TeamPlayerGameScore[],string>; playerMap:Map<string,{name:string;lastBowled?:moment.Moment}>; seriesByPlayerSeason:Map<string,Map<string,TeamPlayerGameScore[][]>>; seriesByPlayer:Map<string,TeamPlayerGameScore[][]>; seriesByPlayerLeague:Map<string,Map<string,TeamPlayerGameScore[][]>>; appearancesByPlayer:Map<string,PlayerLeagueAppearance[]>; ratingSamplesByPlayer:Map<string,RatingSample[]>; weekSeriesByPlayer:Map<string,number[]>; weekAveragesByPlayer:Map<string,number[]>; }
+async function scanAllRosters():Promise<RosterScanResult>{
+ const [players,leagues]=await Promise.all([playerListFetcher(),leagueInfoListFetcher()]); const dates=new Map<TeamPlayerGameScore[],string>(); const failures:string[]=[]; let loadedLeagues=0; const seen=new Set<string>(); const playerMap=new Map<string,{name:string;lastBowled?:moment.Moment}>(); for(const p of players.players) playerMap.set(p.id,{name:p.name??p.id,lastBowled:p.lastBowled});
+ const seriesByPlayerSeason=new Map<string,Map<string,TeamPlayerGameScore[][]>>(),seriesByPlayer=new Map<string,TeamPlayerGameScore[][]>(),appearancesByPlayer=new Map<string,PlayerLeagueAppearance[]>(),ratingSamplesByPlayer=new Map<string,RatingSample[]>(),weekSeriesByPlayer=new Map<string,number[]>(),weekAveragesByPlayer=new Map<string,number[]>(),seriesByPlayerLeague=new Map<string,Map<string,TeamPlayerGameScore[][]>>();
+ const addSeries=(playerId:string,season:string,leagueId:string,teamId:string,date:string,games:TeamPlayerGameScore[],week:number)=>{const recordKey=JSON.stringify([playerId,season,leagueId,teamId,date,week]);if(seen.has(recordKey))throw new Error("Duplicate player matchup: "+recordKey);seen.add(recordKey);dates.set(games,date);if(!seriesByPlayer.has(playerId))seriesByPlayer.set(playerId,[]);seriesByPlayer.get(playerId)!.push(games);if(!seriesByPlayerSeason.has(playerId))seriesByPlayerSeason.set(playerId,new Map());const bySeason=seriesByPlayerSeason.get(playerId)!;if(!bySeason.has(season))bySeason.set(season,[]);bySeason.get(season)!.push(games);const leagueKey=JSON.stringify([season,leagueId,teamId]);if(!seriesByPlayerLeague.has(playerId))seriesByPlayerLeague.set(playerId,new Map());const byLeague=seriesByPlayerLeague.get(playerId)!;if(!byLeague.has(leagueKey))byLeague.set(leagueKey,[]);byLeague.get(leagueKey)!.push(games);};
+ for(const season of leagues.seasons){const seasonLabel=season.season??"";for(const league of season.leagues){if(!league.hasData()||!league.dataLoc||!league.id)continue;try{const details=await leagueDetailsFetcher(league.dataLoc);loadedLeagues++;for(const team of details.teams){for(const rosterPlayer of team.roster){if(!rosterPlayer.id)continue;if(!playerMap.has(rosterPlayer.id))playerMap.set(rosterPlayer.id,{name:rosterPlayer.name??rosterPlayer.id});else if(rosterPlayer.name){const existing=playerMap.get(rosterPlayer.id)!;if(!existing.name||existing.name===rosterPlayer.id)existing.name=rosterPlayer.name;}const appearance:PlayerLeagueAppearance={season:seasonLabel,leagueId:league.id,leagueName:league.name??league.id,teamId:team.id??"",teamName:team.name??"",teamNumber:team.number,status:rosterPlayer.status??"REGULAR",stats:rosterPlayer.playerStats};if(!appearancesByPlayer.has(rosterPlayer.id))appearancesByPlayer.set(rosterPlayer.id,[]);appearancesByPlayer.get(rosterPlayer.id)!.push(appearance);const weekSeries:number[]=[],weekAvgs:number[]=[];for(const matchup of team.matchups){const ps=matchup.scores?.playerScores.find(s=>s.player===rosterPlayer.id);if(ps&&ps.games.length>0){const date=matchup.bowlDate??matchup.scheduledDate;if(!date?.isValid())throw new Error("Scored matchup has no valid date");const teamId=team.id??"";addSeries(rosterPlayer.id,seasonLabel,league.id,teamId,date.format("YYYY-MM-DD"),ps.games,matchup.week);const info=playerMap.get(rosterPlayer.id)!;if(!info.lastBowled||date.isAfter(info.lastBowled))info.lastBowled=date;if(ps.series?.scratchScore)weekSeries.push(ps.series.scratchScore);if(ps.series?.average)weekAvgs.push(ps.series.average);const enteringAverage=ps.hdcpSettingDay?0:ps.enteringAverage;const fallbackAverage=rosterPlayer.playerStats?.gameStats.average??0;const basis=enteringAverage>0?enteringAverage:fallbackAverage;if(basis>0){const samples=ratingSamplesByPlayer.get(rosterPlayer.id)??[];const leagueKey=JSON.stringify([seasonLabel,league.id,teamId]);for(const game of ps.games){if(game.blind||game.vacant||!Number.isFinite(game.scratchScore))continue;samples.push({season:seasonLabel,year:date.format("YYYY"),leagueKey,delta:game.scratchScore-basis});}ratingSamplesByPlayer.set(rosterPlayer.id,samples);}}}if(weekSeries.length>0){weekSeriesByPlayer.set(rosterPlayer.id,[...(weekSeriesByPlayer.get(rosterPlayer.id)??[]),...weekSeries]);weekAveragesByPlayer.set(rosterPlayer.id,[...(weekAveragesByPlayer.get(rosterPlayer.id)??[]),...weekAvgs]);}}}}catch(err){failures.push(`${league.id}: ${err instanceof Error?err.message:String(err)}`);}}}
+ if(failures.length&&loadedLeagues===0)throw new Error("Statistics are unavailable because some leagues could not be loaded. Retry after correcting: "+failures.join("; "));return{warnings:failures,dates,playerMap,seriesByPlayerSeason,seriesByPlayer,seriesByPlayerLeague,appearancesByPlayer,ratingSamplesByPlayer,weekSeriesByPlayer,weekAveragesByPlayer};}
+function statsFromSeries(allSeries:TeamPlayerGameScore[][]):PlayerStats{const stats=new PlayerStats();if(allSeries.length>0)calculatePlayerStats(allSeries,stats);return stats;}
+function ratingSummary(samples:RatingSample[]){let total=0,count=0;for(const sample of samples){if(!Number.isFinite(sample.delta))continue;total+=sample.delta;count++;}return{ratingDelta:count>0?total/count:null,ratingGameCount:count};}
+function ratioPct(rg:{pct:number;denominator:number}):number|null{return rg.denominator<=0?null:Math.round(rg.pct*1000)/10;}
+export function richFromStats(s:PlayerStats){const games=s.gameStats.count;return{metrics:metricCounts(s),average:games>0?s.gameStats.average:null,games,pinfall:s.pinfall,highGame:s.gameStats.max||0,highSeries:s.seriesStats.max||0,games200:s.games200,games300:s.games300,series600:s.series600,series800:s.series800,cleanGames:s.cleanGames,hungCount:s.hungCount,turkeyCount:s.turkeyCount,firstBall:s.firstBallCount>0?s.firstBallAverage:null,strikePct:ratioPct(s.strikes),sparePct:ratioPct(s.spares),singlePinPct:ratioPct(s.singlePinSpares),openPct:ratioPct(s.opens),splitPct:ratioPct(s.splits),strikeToSparePct:s.strikesToSpares.denominator>0?Math.round(s.strikesToSpares.pct*100)/100:null,singlePinPickup:s.singlePinGameCount>0?Math.round(s.allSinglePinsPickedUpAverage*10)/10:null,lowGame:s.gameStats.min||null,lowSeries:s.seriesStats.min||null,seriesCount:s.seriesStats.count||0};}
+function buildSeasonStats(seriesBySeason:Map<string,TeamPlayerGameScore[][]>|undefined):PlayerSeasonStats[]{if(!seriesBySeason)return[];const rows:PlayerSeasonStats[]=[];for(const[season,series]of seriesBySeason.entries()){const stats=statsFromSeries(series);rows.push({season,leagues:0,games:stats.gameStats.count,average:stats.gameStats.average,pinfall:stats.pinfall,highGame:stats.gameStats.max,highSeries:stats.seriesStats.max,games200:stats.games200,cleanGames:stats.cleanGames,hungCount:stats.hungCount,turkeyCount:stats.turkeyCount});}rows.sort((a,b)=>b.season.localeCompare(a.season));return rows;}
+export async function buildFullPlayerList():Promise<PlayerListEntry[]>{const scan=await scanAllRosters();const entries:PlayerListEntry[]=[];for(const[id,info]of scan.playerMap.entries()){const series=scan.seriesByPlayer.get(id)??[],stats=statsFromSeries(series),ratingSamples=scan.ratingSamplesByPlayer.get(id)??[],bySeason=scan.seriesByPlayerSeason.get(id),seasonSlices:PlayerListSeasonSlice[]=[];if(bySeason){for(const[season,seasonSeries]of bySeason.entries())seasonSlices.push({season,...richFromStats(statsFromSeries(seasonSeries)),...ratingSummary(ratingSamples.filter(sample=>sample.season===season))});seasonSlices.sort((a,b)=>b.season.localeCompare(a.season));}const appearanceSlices:PlayerAppearanceSlice[]=[];const leagueSeries=scan.seriesByPlayerLeague.get(id);for(const ap of scan.appearancesByPlayer.get(id)??[]){const key=JSON.stringify([ap.season,ap.leagueId,ap.teamId]),leagueGames=leagueSeries?.get(key)??[],appearanceRatingSamples=ratingSamples.filter(sample=>sample.leagueKey===key),computed=leagueGames.length>0?richFromStats(statsFromSeries(leagueGames)):null,st=ap.stats,games=computed?.games??st?.gameStats.count??0;const appearance:PlayerAppearanceSlice={metrics:computed?.metrics,season:ap.season,leagueId:ap.leagueId,leagueName:ap.leagueName,teamId:ap.teamId,teamName:ap.teamName,average:computed?.average??(games>0&&st?st.gameStats.average:null),games,pinfall:computed?.pinfall??st?.pinfall??0,highGame:computed?.highGame??st?.gameStats.max??0,highSeries:computed?.highSeries??st?.seriesStats.max??0,games200:computed?.games200??st?.games200??0,games300:computed?.games300??0,series600:computed?.series600??0,series800:computed?.series800??0,cleanGames:computed?.cleanGames??0,hungCount:computed?.hungCount??0,turkeyCount:computed?.turkeyCount??0,firstBall:computed?.firstBall??null,strikePct:computed?.strikePct??null,sparePct:computed?.sparePct??null,singlePinPct:computed?.singlePinPct??null,openPct:computed?.openPct??null,splitPct:computed?.splitPct??null,strikeToSparePct:computed?.strikeToSparePct??null,singlePinPickup:computed?.singlePinPickup??null,lowGame:computed?.lowGame??null,lowSeries:computed?.lowSeries??null,seriesCount:computed?.seriesCount??0,...ratingSummary(appearanceRatingSamples)};appearance.calendarSlices=Object.entries(calendarStats(leagueGames,scan.dates)).map(([year,calendarYearStats])=>({...appearance,season:year,...richFromStats(calendarYearStats),...ratingSummary(appearanceRatingSamples.filter(sample=>sample.year===year))}));appearanceSlices.push(appearance);}entries.push({id,name:info.name,average:stats.gameStats.count>0?stats.gameStats.average:null,games:stats.gameStats.count,pinfall:stats.pinfall,highGame:stats.gameStats.max,highSeries:stats.seriesStats.max,games200:stats.games200,seasonSlices,appearanceSlices,calendarSlices:Object.entries(calendarStats(series,scan.dates)).map(([season,calendarYearStats])=>({season,...richFromStats(calendarYearStats),...ratingSummary(ratingSamples.filter(sample=>sample.year===season))})),...ratingSummary(ratingSamples),weekAverages:scan.weekAveragesByPlayer.get(id),weekSeries:scan.weekSeriesByPlayer.get(id),lastBowled:info.lastBowled});}entries.sort((a,b)=>{if(b.games!==a.games)return b.games-a.games;if(a.average==null&&b.average==null)return a.name.localeCompare(b.name);if(a.average==null)return 1;if(b.average==null)return-1;if(b.average!==a.average)return b.average-a.average;return a.name.localeCompare(b.name);});return Object.assign(entries,{warnings:scan.warnings});}
+export async function aggregatePlayerData(playerId:string):Promise<AggregatedPlayerData>{const scan=await scanAllRosters(),info=scan.playerMap.get(playerId);if(!info)throw new Error(`Player not found: ${playerId}`);const player=new PlayerInfo();player.id=playerId;player.name=info.name;player.lastBowled=info.lastBowled;const appearances=scan.appearancesByPlayer.get(playerId)??[],careerStats=statsFromSeries(scan.seriesByPlayer.get(playerId)??[]),seasonStats=buildSeasonStats(scan.seriesByPlayerSeason.get(playerId));for(const row of seasonStats)row.leagues=new Set(appearances.filter(a=>a.season===row.season).map(a=>a.leagueId)).size;const seasonSlicesFull:PlayerSliceStats[]=[],bySeason=scan.seriesByPlayerSeason.get(playerId);if(bySeason){for(const[season,series]of bySeason.entries())seasonSlicesFull.push({season,stats:statsFromSeries(series)});seasonSlicesFull.sort((a,b)=>(b.season??"").localeCompare(a.season??""));}const appearanceSlicesFull:PlayerSliceStats[]=[],byLeague=scan.seriesByPlayerLeague.get(playerId);for(const ap of appearances){const key=JSON.stringify([ap.season,ap.leagueId,ap.teamId]),series=byLeague?.get(key)??[];appearanceSlicesFull.push({season:ap.season,leagueId:ap.leagueId,leagueName:ap.leagueName,teamId:ap.teamId,lastBowled:Math.max(0,...series.map(games=>Date.parse(scan.dates.get(games)??"")||0)),calendarStats:calendarStats(series,scan.dates),stats:series.length>0?statsFromSeries(series):(ap.stats??new PlayerStats())});}return{warnings:scan.warnings,player,appearances,careerStats,seasonStats,seasonSlicesFull,appearanceSlicesFull};}
+function calendarStats(series:TeamPlayerGameScore[][],dates:Map<TeamPlayerGameScore[],string>):Record<string,PlayerStats>{const groups=new Map<string,TeamPlayerGameScore[][]>();for(const games of series){const year=dates.get(games)?.slice(0,4);if(!year)continue;const group=groups.get(year)??[];group.push(games);groups.set(year,group);}return Object.fromEntries([...groups].map(([year,games])=>[year,statsFromSeries(games)]));}
