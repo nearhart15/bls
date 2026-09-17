@@ -27,7 +27,7 @@ interface BeerPlayer {
     highGame: number;
     highSeries: number;
     weekScoresRaw: string[];
-    weekScores: Array<number | null>;
+    weekScores: (number | null)[];
     weekTotal: number | null;
 }
 
@@ -65,8 +65,8 @@ const BeerLeague: FC = () => {
                 if (!response.ok) throw new Error(`Beer League data returned ${response.status}.`);
                 return response.json() as Promise<BeerLeagueData>;
             })
-            .then(setData)
-            .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : String(reason)));
+            .then((value) => { setData(value); })
+            .catch((reason: unknown) => { setError(reason instanceof Error ? reason.message : String(reason)); });
     }, []);
 
     const divisions = useMemo(() => [...new Set((data?.standings ?? []).map((team) => team.division).filter(Boolean))] as string[], [data]);
