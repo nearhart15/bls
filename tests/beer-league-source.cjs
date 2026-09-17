@@ -39,6 +39,27 @@ async function fetchOk(url, asBuffer = false) {
   return asBuffer ? Buffer.from(await response.arrayBuffer()) : await response.text();
 }
 
+function diagnostics(html) {
+  const allAnchors = anchors(html, LEAGUES_URL);
+  const scriptUrls = [...html.matchAll(/<script\b[^>]*src=["']([^"']+)["']/gi)].map(m => m[1]);
+  const interestingScripts = scriptUrls.filter(url => /league|elementor|wp-content|assets/i.test(url)).slice(-30);
+  const lower = html.toLowerCase();
+  const terms = ['beer', 'view league', 'league-options', 'wp-json', 'rest_url', 'ajaxurl'];
+  const snippets = {};
+  for (const term of terms) {
+    const index = lower.indexOf(term);
+    snippets[term] = index < 0 ? null : plainText(html.slice(Math.max(0, index - 300), index + 500));
+  }
+  return {
+    htmlBytes: Buffer.byteLength(html),
+    anchorCount: allAnchors.length,
+    containsBeer: /\bBeer\b/i.test(plainText(html)),
+    interestingAnchors: allAnchors.filter(a => /league|beer|stand|view/i.test(`${a.text} ${a.url}`)).slice(0, 40),
+    interestingScripts,
+    snippets
+  };
+}
+
 function findBeerLeaguePage(html) {
   const candidates = anchors(html, LEAGUES_URL)
     .filter(a => /view\s+league/i.test(a.text))
@@ -54,6 +75,7 @@ function findBeerLeaguePage(html) {
     .sort((a, b) => b.score - a.score);
 
   if (!candidates.length || candidates[0].score < 8) {
+    console.log('Directory diagnostics:', JSON.stringify(diagnostics(html), null, 2));
     throw new Error('Could not identify the Fall/Winter Beer league View League link.');
   }
   return candidates[0];
