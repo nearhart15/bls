@@ -21,7 +21,10 @@ const Layout :FC = () => {
     const isFullLeagueInfo = location.pathname === "/beer-league" || location.pathname.startsWith("/beer-league/");
     const isTeamLeagueData = location.pathname === "/league" || location.pathname.startsWith("/league/");
     const isFrameOnlyStatsPage = location.pathname === "/player/compare" || location.pathname === "/player/handicap";
-    const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage;
+    // Website-only player links use an api-* id. Those profiles have no BinBin
+    // counterpart, so showing the global source switch would only lead to an error.
+    const isApiOnlyPlayer = /^\/player\/api-/.test(location.pathname);
+    const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage && !isApiOnlyPlayer;
 
     const refreshApp = () => {
         clearCacheRef.current?.clearCache();
