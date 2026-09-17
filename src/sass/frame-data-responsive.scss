@@ -74,6 +74,8 @@ button.bls-frame.has-attributes:active {
 .bls-player-frame-row {
   margin-top: .38rem;
   margin-bottom: .55rem !important;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .bls-attr-toast-multi {
@@ -95,42 +97,93 @@ button.bls-frame.has-attributes:active {
   gap: .35rem;
 }
 
+/* Keep the legend itself from widening the frame-data card on phones. */
+.bls-attr-legend-icons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .3rem;
+  max-width: 100%;
+}
+
 @media (max-width: 767.98px) {
-  /* Keep the complete score sheet inside the card instead of creating a
-     horizontal scroller. Tablet-sized narrow layouts can fit all ten frames
-     on one fluid row. */
-  .hstack:has(> .bls-frame) {
+  /* Do not rely on :has() for the responsive frame layout. Older/in-app
+     mobile WebKit can be inconsistent here. Every player row contains one
+     frame stack, so target it directly and make it a fixed five-column grid.
+     Frames 1-5 occupy row one and 6-10 row two with no horizontal scrolling. */
+  .bls-player-frame-row {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .bls-player-frame-row > .row {
+    min-width: 0;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .bls-player-frame-row > .row > .col,
+  .bls-player-frame-row > .row > [class*="col-"] {
+    min-width: 0;
+    max-width: 100%;
+    padding-left: .1rem;
+    padding-right: .1rem;
+  }
+
+  .bls-player-frame-row .hstack {
     display: grid !important;
-    grid-template-columns: repeat(9, minmax(0, 1fr)) minmax(0, 1.25fr);
-    gap: .16rem !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: stretch;
+    gap: .22rem .18rem !important;
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    overflow: visible;
+    overflow: hidden;
     padding: .12rem 0;
   }
 
-  .hstack:has(> .bls-frame) > .bls-frame {
+  .bls-player-frame-row .hstack > .bls-frame {
+    box-sizing: border-box;
     width: 100% !important;
-    max-width: none !important;
+    max-width: 100% !important;
     min-width: 0 !important;
     flex: none !important;
   }
 
-  .bls-player-frame-row,
-  .bls-player-frame-row .row,
-  .bls-player-frame-row .col-md-10 {
-    min-width: 0;
-    max-width: 100%;
-  }
-
   .bls-frame {
-    min-height: 2.75rem;
-    padding: .22rem .04rem .18rem;
+    min-height: 2.95rem;
+    padding: .28rem .08rem .2rem;
   }
 
   .bls-frame-balls {
-    gap: .04rem;
+    gap: .05rem;
+  }
+
+  .bls-frame-balls > div {
+    min-width: .78rem;
+  }
+
+  .bls-frame-balls,
+  .bls-frame-cum {
+    font-size: .8rem;
+  }
+
+  .bls-player-frame-row {
+    margin-bottom: .42rem !important;
+  }
+}
+
+@media (max-width: 399.98px) {
+  /* Very narrow phones get slightly tighter cells while retaining readable
+     symbols and tap targets. */
+  .bls-player-frame-row .hstack {
+    gap: .16rem .12rem !important;
+  }
+
+  .bls-frame {
+    min-height: 2.8rem;
+    padding-inline: .04rem;
   }
 
   .bls-frame-balls > div {
@@ -139,33 +192,6 @@ button.bls-frame.has-attributes:active {
 
   .bls-frame-balls,
   .bls-frame-cum {
-    font-size: .72rem;
-  }
-
-  .bls-player-frame-row {
-    margin-bottom: .42rem !important;
-  }
-}
-
-@media (max-width: 575.98px) {
-  /* Phone portrait: two five-frame rows are much easier to read and tap than
-     ten tiny frames. Frames 1-5 occupy the first row and 6-10 the second. */
-  .hstack:has(> .bls-frame) {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: .22rem .18rem !important;
-  }
-
-  .bls-frame {
-    min-height: 2.95rem;
-    padding: .28rem .08rem .2rem;
-  }
-
-  .bls-frame-balls > div {
-    min-width: .82rem;
-  }
-
-  .bls-frame-balls,
-  .bls-frame-cum {
-    font-size: .8rem;
+    font-size: .74rem;
   }
 }
