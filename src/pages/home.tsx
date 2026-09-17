@@ -3,17 +3,22 @@
  */
 
 import {type FC} from "react";
+import {Link} from "react-router";
 import {BarChartFill, PeopleFill, TrophyFill} from "react-bootstrap-icons";
+import {Card, CardBody} from "react-bootstrap";
 
 import NewsHighlights from "./components/news/news";
 import LeagueList from "./components/league/league-list";
 import PlayerList from "./components/player/player-list";
+import {ApiPlayerList} from "./components/player/api-player-screens";
+import {useDataSource} from "./components/data-source";
 
 const PINS_GO_BOOM = ["Nick", "Bindul", "Luke", "Brian"];
 const HOOKERS_AND_BOWL = ["Patrick", "Greg", "Ty", "Mark"];
 const REGULAR_BOWLERS = [...PINS_GO_BOOM, ...HOOKERS_AND_BOWL];
 
 const Home: FC = () => {
+    const {source} = useDataSource();
     return (
         <>
             <section className="bls-hero">
@@ -38,63 +43,48 @@ const Home: FC = () => {
 
             <section className="bls-features d-none d-md-grid">
                 <div className="bls-feature">
-                    <div className="bls-feature-icon">
-                        <TrophyFill />
-                    </div>
+                    <div className="bls-feature-icon"><TrophyFill /></div>
                     <h3>League deep dives</h3>
                     <p>Standings, honor rolls, rules, and full matchup history.</p>
                 </div>
                 <div className="bls-feature">
-                    <div className="bls-feature-icon">
-                        <PeopleFill />
-                    </div>
+                    <div className="bls-feature-icon"><PeopleFill /></div>
                     <h3>Player careers</h3>
                     <p>Career averages, season splits, and every team appearance.</p>
                 </div>
                 <div className="bls-feature">
-                    <div className="bls-feature-icon">
-                        <BarChartFill />
-                    </div>
+                    <div className="bls-feature-icon"><BarChartFill /></div>
                     <h3>Frame-level detail</h3>
                     <p>Game sheets, charts, and the stats that fuel good-natured trash talk.</p>
                 </div>
             </section>
 
-            <div className="mb-3">
-                <NewsHighlights shoutOuts />
-            </div>
+            <div className="mb-3"><NewsHighlights shoutOuts /></div>
 
-            <div className="row g-3">
-                <div className="col-lg-5">
-                    <LeagueList compact />
+            {source === "api" ? (
+                <div className="row g-3">
+                    <div className="col-lg-4">
+                        <Card className="bls-profile-card h-100">
+                            <CardBody>
+                                <div className="text-uppercase small text-body-secondary fw-semibold mb-2">API Data</div>
+                                <h2 className="h4">Beer League</h2>
+                                <p className="text-body-secondary">League standings and every published bowler are loaded from the Arapahoe Bowling Center league sheet.</p>
+                                <Link className="btn btn-primary" to="/beer-league">Open Beer League</Link>
+                            </CardBody>
+                        </Card>
+                    </div>
+                    <div className="col-lg-8"><ApiPlayerList title="Beer League Bowlers" /></div>
                 </div>
-                <div className="col-lg-7 d-grid gap-3">
-                    <PlayerList
-                        defaultScope="current"
-                        lockScope
-                        showTrend={false}
-                        showRating={false}
-                        includeFirstNames={PINS_GO_BOOM}
-                        title="Pins Go Boom"
-                    />
-                    <PlayerList
-                        defaultScope="current"
-                        lockScope
-                        showTrend={false}
-                        showRating={false}
-                        includeFirstNames={HOOKERS_AND_BOWL}
-                        title="Hookers and Bowl"
-                    />
-                    <PlayerList
-                        defaultScope="current"
-                        lockScope
-                        showTrend={false}
-                        showRating={false}
-                        excludeFirstNames={REGULAR_BOWLERS}
-                        title="Subs"
-                    />
+            ) : (
+                <div className="row g-3">
+                    <div className="col-lg-5"><LeagueList compact /></div>
+                    <div className="col-lg-7 d-grid gap-3">
+                        <PlayerList defaultScope="current" lockScope showTrend={false} showRating={false} includeFirstNames={PINS_GO_BOOM} title="Pins Go Boom" />
+                        <PlayerList defaultScope="current" lockScope showTrend={false} showRating={false} includeFirstNames={HOOKERS_AND_BOWL} title="Hookers and Bowl" />
+                        <PlayerList defaultScope="current" lockScope showTrend={false} showRating={false} excludeFirstNames={REGULAR_BOWLERS} title="Subs" />
+                    </div>
                 </div>
-            </div>
+            )}
         </>
     );
 };
