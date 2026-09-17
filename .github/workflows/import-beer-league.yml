@@ -2,7 +2,7 @@ name: Import Beer League standings
 
 on:
   push:
-    branches: [beer-league-pdf-import-test]
+    branches: [main]
     paths-ignore:
       - public/data/beer-league.json
       - public/data/beer-league-history/**
@@ -17,10 +17,10 @@ jobs:
   import:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout production branch
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: main
 
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -44,5 +44,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/data/beer-league.json public/data/beer-league-history
-          git commit -m "Update Beer League standings data [skip ci]"
-          git push
+          git commit -m "Update Beer League standings data"
+          git push origin HEAD:main
