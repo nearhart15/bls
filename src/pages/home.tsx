@@ -10,7 +10,7 @@ import LeagueList from "./components/league/league-list";
 import PlayerList from "./components/player/player-list";
 
 const PINS_GO_BOOM = ["Nick", "Bindul", "Luke", "Brian"];
-const HOOKERS_AND_BOWL = ["Pat", "Greg", "Ty", "Mark"];
+const HOOKERS_AND_BOWL = ["Patrick", "Greg", "Ty", "Mark"];
 const REGULAR_BOWLERS = [...PINS_GO_BOOM, ...HOOKERS_AND_BOWL];
 
 const Home: FC = () => {
