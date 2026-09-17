@@ -89,7 +89,7 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
                               onClick={() => {
                                   void navigate(`/league/${String(leagueInfo.id)}/${OTHER_TEAMS}`);
                               }}>
-                        Other Teams
+                        Rosters
                     </Nav.Link>
                 </Nav.Item>
                 }
