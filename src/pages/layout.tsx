@@ -3,7 +3,7 @@ import DataQualityNotice from "./components/data-quality-notice";
  * Layout - glass nav + OLED shell (c) 2026
  */
 
-import {type FC, useEffect, useRef} from "react";
+import {type FC, useRef} from "react";
 import {Link, Outlet, useLocation} from "react-router";
 import {Button, ButtonGroup, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {ArrowClockwise} from "react-bootstrap-icons";
@@ -18,7 +18,6 @@ const Layout :FC = () => {
     const clearCacheRef = useRef<ClearCacheRef>(null);
     const {source, setSource} = useDataSource();
     const location = useLocation();
-    const isHome = location.pathname === "/";
     const isFullLeagueInfo = location.pathname === "/beer-league" || location.pathname.startsWith("/beer-league/");
     const isTeamLeagueData = location.pathname === "/league" || location.pathname.startsWith("/league/");
     const isFrameOnlyStatsPage = location.pathname === "/player/handicap";
@@ -26,10 +25,6 @@ const Layout :FC = () => {
     // counterpart, so showing the global source switch would only lead to an error.
     const isApiOnlyPlayer = location.pathname.startsWith("/player/api-");
     const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage && !isApiOnlyPlayer;
-
-    useEffect(() => {
-        if (isHome && source !== "frame") setSource("frame");
-    }, [isHome, source, setSource]);
 
     const refreshApp = () => {
         clearCacheRef.current?.clearCache();
