@@ -1,6 +1,6 @@
 import {type FC, useMemo, useState} from "react";
 import {Link} from "react-router";
-import {Alert, Badge, Card, CardBody, Col, Form, Row, Table} from "react-bootstrap";
+import {Alert, Badge, Card, CardBody, Col, Dropdown, Form, Row, Table} from "react-bootstrap";
 
 import type {PlayerListEntry} from "../../../data/player/player-aggregate";
 import ErrorDisplay from "../error-display";
@@ -10,6 +10,8 @@ import {usePlayerIndexData} from "./use-player-index-data";
 const numberFormat = Intl.NumberFormat("en-US", {maximumFractionDigits: 1});
 
 type ApiSort = "average" | "games" | "pinfall" | "highGame" | "highSeries";
+type ApiPlayerListSort = "name" | "team" | ApiSort;
+type SortDir = "asc" | "desc";
 
 function teamName(player: PlayerListEntry): string {
     return player.appearanceSlices[0]?.teamName ?? "—";
@@ -18,6 +20,44 @@ function teamName(player: PlayerListEntry): string {
 function value(player: PlayerListEntry, key: ApiSort): number {
     return player[key] ?? 0;
 }
+
+function compareApiPlayers(a: PlayerListEntry, b: PlayerListEntry, key: ApiPlayerListSort, dir: SortDir): number {
+    const multiplier = dir === "asc" ? 1 : -1;
+    let comparison: number;
+    if (key === "name") comparison = a.name.localeCompare(b.name);
+    else if (key === "team") comparison = teamName(a).localeCompare(teamName(b));
+    else comparison = value(a, key) - value(b, key);
+    if (comparison === 0) comparison = a.name.localeCompare(b.name);
+    return comparison * multiplier;
+}
+
+const SortHeader: FC<{
+    label: string;
+    sortKey: ApiPlayerListSort;
+    active: ApiPlayerListSort;
+    dir: SortDir;
+    onSort: (key: ApiPlayerListSort) => void;
+    className?: string;
+}> = ({label, sortKey, active, dir, onSort, className}) => {
+    const selected = active === sortKey;
+    return (
+        <th
+            className={`bls-sortable-th ${className ?? ""}${selected ? " is-sorted" : ""}`}
+            onClick={() => { onSort(sortKey); }}
+            onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    onSort(sortKey);
+                }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-sort={selected ? (dir === "asc" ? "ascending" : "descending") : "none"}
+        >
+            {label}{selected ? (dir === "asc" ? " ▲" : " ▼") : ""}
+        </th>
+    );
+};
 
 const ApiSourceNotice: FC = () => (
     <Alert variant="info" className="py-2">
@@ -28,17 +68,34 @@ const ApiSourceNotice: FC = () => (
 export const ApiPlayerList: FC<{title?: string; limit?: number}> = ({title = "API Player Stats", limit}) => {
     const {data, isLoading, error} = usePlayerIndexData();
     const [query, setQuery] = useState("");
-    const [sort, setSort] = useState<ApiSort>("average");
+    const [sort, setSort] = useState<ApiPlayerListSort>("average");
+    const [sortDir, setSortDir] = useState<SortDir>("desc");
+    const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
+
+    const teams = useMemo(() => Array.from(new Set((data ?? []).map(teamName))).sort((a, b) => a.localeCompare(b)), [data]);
+    const onSort = (key: ApiPlayerListSort) => {
+        if (key === sort) setSortDir((current) => current === "asc" ? "desc" : "asc");
+        else {
+            setSort(key);
+            setSortDir(key === "name" || key === "team" ? "asc" : "desc");
+        }
+    };
+    const toggleTeam = (team: string) => {
+        setSelectedTeams((current) => current.includes(team) ? current.filter((name) => name !== team) : [...current, team]);
+    };
     const players = useMemo(() => {
         const q = query.trim().toLocaleLowerCase();
         const rows = (data ?? [])
+            .filter((player) => selectedTeams.length === 0 || selectedTeams.includes(teamName(player)))
             .filter((player) => !q || `${player.name} ${teamName(player)}`.toLocaleLowerCase().includes(q))
-            .sort((a, b) => value(b, sort) - value(a, sort) || a.name.localeCompare(b.name));
+            .sort((a, b) => compareApiPlayers(a, b, sort, sortDir));
         return limit ? rows.slice(0, limit) : rows;
-    }, [data, query, sort, limit]);
+    }, [data, query, sort, sortDir, selectedTeams, limit]);
 
     if (isLoading) return <Loader />;
     if (error != null) return <ErrorDisplay message="Error loading API player stats." error={error} />;
+
+    const teamLabel = selectedTeams.length === 0 ? "All teams" : selectedTeams.length === 1 ? selectedTeams[0] : `${selectedTeams.length} teams`;
 
     return (
         <div>
@@ -48,19 +105,33 @@ export const ApiPlayerList: FC<{title?: string; limit?: number}> = ({title = "AP
                     <div><strong>{title}</strong> <Badge bg="secondary" pill>{players.length} bowlers</Badge></div>
                     <div className="d-flex flex-wrap gap-2">
                         <Form.Control size="sm" type="search" placeholder="Search bowler or team" value={query} onChange={(event) => { setQuery(event.target.value); }} style={{maxWidth: 240}} />
-                        <Form.Select size="sm" value={sort} onChange={(event) => { setSort(event.target.value as ApiSort); }} style={{maxWidth: 170}} aria-label="Sort API players">
-                            <option value="average">Average</option>
-                            <option value="games">Games</option>
-                            <option value="pinfall">Pins</option>
-                            <option value="highGame">High game</option>
-                            <option value="highSeries">High series</option>
-                        </Form.Select>
+                        <Dropdown autoClose="outside">
+                            <Dropdown.Toggle size="sm" variant="outline-secondary" aria-label="Filter API players by team">{teamLabel}</Dropdown.Toggle>
+                            <Dropdown.Menu style={{maxHeight: 320, overflowY: "auto", minWidth: 220}}>
+                                <Dropdown.Header>Teams</Dropdown.Header>
+                                <Dropdown.Item as="button" onClick={() => { setSelectedTeams([]); }} active={selectedTeams.length === 0}>All teams</Dropdown.Item>
+                                <Dropdown.Divider />
+                                {teams.map((team) => (
+                                    <div className="px-3 py-1" key={team}>
+                                        <Form.Check
+                                            type="checkbox"
+                                            id={`api-team-${team.replace(/[^a-z0-9]+/gi, "-").toLocaleLowerCase()}`}
+                                            label={team}
+                                            checked={selectedTeams.includes(team)}
+                                            onChange={() => { toggleTeam(team); }}
+                                        />
+                                    </div>
+                                ))}
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </div>
                 </CardBody>
                 <div className="table-responsive">
                     <Table hover size="sm" className="mb-0 align-middle">
-                        <thead><tr><th>#</th><th>Bowler</th><th>Team</th><th className="text-end">Avg</th><th className="text-end">Games</th><th className="text-end d-none d-md-table-cell">Pins</th><th className="text-end">HG</th><th className="text-end d-none d-sm-table-cell">HS</th></tr></thead>
-                        <tbody>{players.map((player, index) => (
+                        <thead><tr><th>#</th><SortHeader label="Bowler" sortKey="name" active={sort} dir={sortDir} onSort={onSort} /><SortHeader label="Team" sortKey="team" active={sort} dir={sortDir} onSort={onSort} /><SortHeader label="Avg" sortKey="average" active={sort} dir={sortDir} onSort={onSort} className="text-end" /><SortHeader label="Games" sortKey="games" active={sort} dir={sortDir} onSort={onSort} className="text-end" /><SortHeader label="Pins" sortKey="pinfall" active={sort} dir={sortDir} onSort={onSort} className="text-end d-none d-md-table-cell" /><SortHeader label="HG" sortKey="highGame" active={sort} dir={sortDir} onSort={onSort} className="text-end" /><SortHeader label="HS" sortKey="highSeries" active={sort} dir={sortDir} onSort={onSort} className="text-end d-none d-sm-table-cell" /></tr></thead>
+                        <tbody>
+                            {players.length === 0 && <tr><td colSpan={8} className="text-center text-body-secondary py-4">No bowlers match the selected teams and search.</td></tr>}
+                            {players.map((player, index) => (
                             <tr key={player.id}>
                                 <td className="text-body-secondary">{index + 1}</td>
                                 <td><Link className="bls-link fw-semibold" to={`/player/${player.id}`}>{player.name}</Link></td>
