@@ -33,6 +33,7 @@ import League from "./pages/league";
 import Player from "./pages/player";
 import NoPage from "./pages/nopage";
 import ScoreUtils from "./pages/score-utils";
+import BeerLeague from "./pages/beer-league";
 
 export default function App() {
     return (
@@ -42,6 +43,7 @@ export default function App() {
                 <Route path="/league/:leagueId?/:teamId?" element={<League/>}/>
                 <Route path="/player/:playerId?" element={<Player/>}/>
                 <Route path="/score-utils" element={<ScoreUtils/>}/>
+                <Route path="/beer-league" element={<BeerLeague/>}/>
                 <Route path="*" element={<NoPage/>}/>
             </Route>
         </Routes>
