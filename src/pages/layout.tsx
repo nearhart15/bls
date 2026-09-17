@@ -41,8 +41,8 @@ const Layout :FC = () => {
                             className="bls-theme-btn d-flex align-items-center gap-1"
                             size="sm"
                             onClick={refreshApp}
-                            aria-label="Refresh data"
-                            title="Refresh"
+                            aria-label="Clear cached data and refresh"
+                            title="Clear cached data and refresh"
                         >
                             <ArrowClockwise size={14} />
                             <span className="d-none d-md-inline">Refresh</span>
@@ -61,9 +61,6 @@ const Layout :FC = () => {
                             </NavDropdown>
                             <NavDropdown title="Utilities" id="utilities-nav">
                                 <NavDropdown.Item as={Link} to="/score-utils">Score Utilities</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="#" onClick={() => clearCacheRef.current?.clearCache()}>
-                                    Clear Cache
-                                </NavDropdown.Item>
                                 <NavDropdown.Divider />
                                 <ThemeToggle inMenu />
                             </NavDropdown>
