@@ -20,6 +20,7 @@ import 'bootswatch/dist/lumen/bootstrap.min.css';
 import './sass/bls.scss';
 import './sass/matchup-alignment.scss';
 import './sass/player-list-responsive.scss';
+import './sass/frame-data-responsive.scss';
 
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
