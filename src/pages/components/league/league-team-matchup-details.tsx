@@ -31,6 +31,7 @@ const FrameAttributeIcons = new Map<FrameAttributes, FrameAttributeIconInfo>([
     ["Clean-Game", {attribute: "Clean-Game", description: "Clean Game!", iconColor: "#4ade80", iconName: "Icon8CircleFill"}],
     ["Perfect-Game", {attribute: "Perfect-Game", description: "Perfect Game!!!", iconColor: "#fb923c", iconName: "Icon9CircleFill"}],
 ]);
+const FrameAttributeOrder = new Map(Array.from(FrameAttributeIcons.keys()).map((attribute, index) => [attribute, index]));
 
 interface FrameScoreLabelInfo { label: string; altText: string; iconName: keyof typeof icons; }
 const FrameScoreLabels = new Map<string, FrameScoreLabelInfo>([
@@ -87,7 +88,7 @@ const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, t
         return label ? <Icon iconName={label.iconName} title={label.altText}/> : <>{b[0]}</>;
     };
     const writeScoreLabelRow = (f: Frame) => <>{f.ballScores.slice(0, f.number === 10 ? 3 : 2).map((ball, i) => <div key={`${f.number}-${i}`}>{writeScoreOrLabel(ball)}</div>)}</>;
-    const attributeInfo = (frame: Frame) => frame.attributes.map(attribute => FrameAttributeIcons.get(attribute)).filter((info): info is FrameAttributeIconInfo => info !== undefined);
+    const attributeInfo = (frame: Frame) => frame.attributes.map(attribute => FrameAttributeIcons.get(attribute)).filter((info): info is FrameAttributeIconInfo => info !== undefined).sort((a, b) => (FrameAttributeOrder.get(a.attribute) ?? Number.MAX_SAFE_INTEGER) - (FrameAttributeOrder.get(b.attribute) ?? Number.MAX_SAFE_INTEGER));
     const outlineStyle = (attributes: FrameAttributeIconInfo[]): CSSProperties => {
         if (attributes.length === 0) return {};
         const colors = attributes.map(info => info.iconColor);
