@@ -20,7 +20,8 @@ const Layout :FC = () => {
     const location = useLocation();
     const isFullLeagueInfo = location.pathname === "/beer-league" || location.pathname.startsWith("/beer-league/");
     const isTeamLeagueData = location.pathname === "/league" || location.pathname.startsWith("/league/");
-    const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData;
+    const isFrameOnlyStatsPage = location.pathname === "/player/compare" || location.pathname === "/player/handicap";
+    const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage;
 
     const refreshApp = () => {
         clearCacheRef.current?.clearCache();
