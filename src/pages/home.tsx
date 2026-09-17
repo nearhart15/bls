@@ -1,5 +1,5 @@
 /*
- * Home — shout-outs, tighter leagues, current-year bowlers © 2026
+ * Home — shout-outs, tighter leagues, current-season bowlers © 2026
  */
 
 import {type FC} from "react";
@@ -70,7 +70,7 @@ const Home: FC = () => {
                 </div>
                 <div className="col-lg-7 d-grid gap-3">
                     <PlayerList
-                        defaultScope="current-year"
+                        defaultScope="current"
                         lockScope
                         showTrend={false}
                         showRating={false}
@@ -78,7 +78,7 @@ const Home: FC = () => {
                         title="Pins Go Boom"
                     />
                     <PlayerList
-                        defaultScope="current-year"
+                        defaultScope="current"
                         lockScope
                         showTrend={false}
                         showRating={false}
@@ -86,7 +86,7 @@ const Home: FC = () => {
                         title="Hookers and Bowl"
                     />
                     <PlayerList
-                        defaultScope="current-year"
+                        defaultScope="current"
                         lockScope
                         showTrend={false}
                         showRating={false}
