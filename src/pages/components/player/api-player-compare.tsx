@@ -63,7 +63,8 @@ const CompareBar: FC<{metric: Metric; playerA: PlayerListEntry; playerB: PlayerL
     const a = valueA ?? 0;
     const b = valueB ?? 0;
     const total = Math.max(0, a) + Math.max(0, b);
-    const fill = total > 0 ? Math.max(a, b) / total * 100 : 50;
+    const comparedValue = metric.lowerIsBetter ? Math.min(a, b) : Math.max(a, b);
+    const fill = total > 0 ? comparedValue / total * 100 : 50;
     const leader: "a" | "b" | "tie" = valueA == null || valueB == null || a === b
         ? "tie"
         : (metric.lowerIsBetter ? a < b : a > b) ? "a" : "b";
