@@ -48,18 +48,16 @@ const ConversionRadar: FC<{stats: PlayerStats}> = ({stats}) => {
     const strike = pct(stats.strikes);
     const spare = pct(stats.spares);
     const pickup = pct(stats.singlePinSpares);
-    const splitConv = pct(stats.splits);
     const closed = Math.round((100 - pct(stats.opens)) * 10) / 10;
     const firstBall = firstBallPct(stats.firstBallAverage);
     const displayVals = [
         `${strike}%`,
         `${spare}%`,
         `${pickup}%`,
-        `${splitConv}%`,
         `${closed}%`,
         `${(stats.firstBallAverage || 0).toFixed(1)} pins`,
     ];
-    const labels = ["Strike %", "Spare %", "Pickup %", "Split conv %", "Closed %", "First ball"];
+    const labels = ["Strike %", "Spare %", "Pickup %", "Closed %", "First ball"];
     const categories = narrow
         ? labels
         : labels.map((label, i) => `${displayVals[i]} ${label}`);
@@ -88,7 +86,7 @@ const ConversionRadar: FC<{stats: PlayerStats}> = ({stats}) => {
         <div className="bls-allstats-group">
             <div className="bls-allstats-group-head">Conversion</div>
             <div className="bls-radar-wrap">
-                <Chart key={`conv-${narrow ? "sm" : "lg"}-v2`} options={options} series={[{name: "Conversion", data: [strike, spare, pickup, splitConv, closed, firstBall]}]} type="radar" height={narrow ? 280 : 360} width="100%" />
+                <Chart key={`conv-${narrow ? "sm" : "lg"}-v3`} options={options} series={[{name: "Conversion", data: [strike, spare, pickup, closed, firstBall]}]} type="radar" height={narrow ? 280 : 360} width="100%" />
             </div>
         </div>
     );
