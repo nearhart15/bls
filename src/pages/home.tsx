@@ -3,9 +3,7 @@
  */
 
 import {type FC} from "react";
-import {Link} from "react-router";
 import {BarChartFill, PeopleFill, TrophyFill} from "react-bootstrap-icons";
-import {Card, CardBody} from "react-bootstrap";
 
 import NewsHighlights from "./components/news/news";
 import LeagueList from "./components/league/league-list";
@@ -64,19 +62,7 @@ const Home: FC = () => {
             <div className="mb-3"><NewsHighlights shoutOuts /></div>
 
             {source === "api" ? (
-                <div className="row g-3">
-                    <div className="col-lg-4">
-                        <Card className="bls-profile-card h-100">
-                            <CardBody>
-                                <div className="text-uppercase small text-body-secondary fw-semibold mb-2">API Data</div>
-                                <h2 className="h4">Beer League</h2>
-                                <p className="text-body-secondary">League standings and every published bowler are loaded from the Arapahoe Bowling Center league sheet.</p>
-                                <Link className="btn btn-primary" to="/beer-league">Open Beer League</Link>
-                            </CardBody>
-                        </Card>
-                    </div>
-                    <div className="col-lg-8"><ApiPlayerList title="Beer League Bowlers" /></div>
-                </div>
+                <ApiPlayerList title="Beer League Bowlers" />
             ) : (
                 <div className="row g-3">
                     <div className="col-lg-5"><LeagueList compact /></div>
