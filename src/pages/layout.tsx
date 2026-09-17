@@ -29,7 +29,7 @@ const Layout :FC = () => {
                         <img src={ImgBowlingLogo} alt="" width="28" height="28" />
                         Bowling League Stats
                     </Navbar.Brand>
-                    <div className="d-flex align-items-center gap-2 ms-auto order-lg-last">
+                    <div className="bls-nav-actions d-flex align-items-center gap-2 ms-auto order-lg-last">
                         <Button
                             className="bls-theme-btn d-flex align-items-center gap-1"
                             size="sm"
@@ -38,19 +38,24 @@ const Layout :FC = () => {
                             title="Refresh"
                         >
                             <ArrowClockwise size={14} />
-                            <span className="d-none d-sm-inline">Refresh</span>
+                            <span className="d-none d-md-inline">Refresh</span>
                         </Button>
-<Navbar.Toggle aria-controls="bls-nav" aria-label="Toggle navigation" />
+                        <Navbar.Toggle aria-controls="bls-nav" aria-label="Toggle navigation" />
                     </div>
                     <Navbar.Collapse id="bls-nav">
                         <Nav className="me-auto ms-lg-3 gap-lg-1">
                             <Nav.Link as={Link} to="/">Home</Nav.Link>
                             <Nav.Link as={Link} to="/league">Leagues</Nav.Link>
-                            <Nav.Link as={Link} to="/player">Players</Nav.Link>
-                            <Nav.Link as={Link} to="/player/leaderboard">Leaderboard</Nav.Link>
-                            <Nav.Link as={Link} to="/player/compare">Player Compare</Nav.Link>
-                            <Nav.Link as={Link} to="/player/handicap">Handicap Guide</Nav.Link>
+                            <NavDropdown title="Players" id="players-nav">
+                                <NavDropdown.Item as={Link} to="/player">Players</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/player/leaderboard">Leaderboard</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/player/compare">Player Compare</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/player/handicap">Handicap Guide</NavDropdown.Item>
+                            </NavDropdown>
                             <NavDropdown title="Utilities" id="utilities-nav">
+                                <NavDropdown.Item as={Link} to="/score-utils">
+                                    Score Utilities
+                                </NavDropdown.Item>
                                 <NavDropdown.Item
                                     as={Link}
                                     to="#"
@@ -58,13 +63,11 @@ const Layout :FC = () => {
                                 >
                                     Clear Cache
                                 </NavDropdown.Item>
-
-                                <NavDropdown.Item as="div" className="bls-utilities-theme">
+                                <NavDropdown.Divider />
+                                <NavDropdown.Header>Appearance</NavDropdown.Header>
+                                <div className="bls-utilities-theme px-2 pb-2">
                                     <ThemeToggle inMenu />
-                                </NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="/score-utils">
-                                    Score Utilities
-                                </NavDropdown.Item>
+                                </div>
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
@@ -94,5 +97,3 @@ const Layout :FC = () => {
 };
 
 export default Layout;
-
-
