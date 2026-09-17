@@ -18,11 +18,12 @@ interface Metric {
     label: string;
     get: (player: PlayerListEntry) => number | null;
     integer?: boolean;
+    lowerIsBetter?: boolean;
 }
 
 const SCORING: Metric[] = [
     {key: "average", label: "Average", get: player => player.average},
-    {key: "handicap", label: "Handicap", get: player => apiStats(player)?.handicap ?? null, integer: true},
+    {key: "handicap", label: "Handicap", get: player => apiStats(player)?.handicap ?? null, integer: true, lowerIsBetter: true},
     {key: "averageSeries", label: "Avg Series", get: player => apiStats(player)?.averageSeries ?? null},
     {key: "highGame", label: "High Game", get: player => player.highGame || null, integer: true},
     {key: "highSeries", label: "High Series", get: player => player.highSeries || null, integer: true},
@@ -63,7 +64,9 @@ const CompareBar: FC<{metric: Metric; playerA: PlayerListEntry; playerB: PlayerL
     const b = valueB ?? 0;
     const total = Math.max(0, a) + Math.max(0, b);
     const fill = total > 0 ? Math.max(a, b) / total * 100 : 50;
-    const leader: "a" | "b" | "tie" = valueA == null || valueB == null || a === b ? "tie" : a > b ? "a" : "b";
+    const leader: "a" | "b" | "tie" = valueA == null || valueB == null || a === b
+        ? "tie"
+        : (metric.lowerIsBetter ? a < b : a > b) ? "a" : "b";
     const color = leader === "a" ? COLOR_A : leader === "b" ? COLOR_B : "#6e6e73";
     return (
         <div className="bls-fifa-row">
