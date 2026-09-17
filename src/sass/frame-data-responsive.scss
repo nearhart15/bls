@@ -8,7 +8,7 @@
 .bls-frame {
   position: relative;
   min-width: 0;
-  min-height: 3.05rem;
+  min-height: 3.4rem;
   padding: .3rem .16rem .25rem;
   border: 1px solid var(--bls-border);
   border-radius: .38rem;
@@ -45,13 +45,18 @@ button.bls-frame.has-attributes:active {
   transform: scale(.97);
 }
 
+/* Ball values, strike/spare marks, and cumulative scores intentionally use
+   the same visual size so every part of a frame is equally readable. */
 .bls-frame-balls {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: .12rem;
-  min-height: 1.2rem;
+  min-height: 1.45rem;
   white-space: nowrap;
+  font-size: 1.55em;
+  font-weight: 700;
+  line-height: .95;
 }
 
 .bls-frame-balls > div {
@@ -62,19 +67,21 @@ button.bls-frame.has-attributes:active {
   line-height: 1;
 }
 
-/* Strikes and spares are plain bowling marks rather than boxed icons. Keep
-   them noticeably larger than the surrounding pin-count text. */
+/* X and / are plain bowling marks and inherit the exact same size as the
+   numeric ball values around them. */
 .bls-frame-mark {
   display: inline-block;
-  font-size: 1.55em;
-  font-weight: 700;
-  line-height: .85;
+  font-size: 1em;
+  font-weight: inherit;
+  line-height: inherit;
 }
 
 .bls-frame-cum {
-  min-height: 1.2rem;
+  min-height: 1.45rem;
   margin-top: .14rem;
-  line-height: 1.2rem;
+  font-size: 1.55em;
+  font-weight: 700;
+  line-height: 1;
   white-space: nowrap;
 }
 
@@ -160,7 +167,7 @@ button.bls-frame.has-attributes:active {
   }
 
   .bls-frame {
-    min-height: 2.7rem;
+    min-height: 2.9rem;
     padding: .22rem .01rem .16rem;
     border-radius: .3rem;
   }
@@ -183,9 +190,13 @@ button.bls-frame.has-attributes:active {
     height: .88em;
   }
 
+  /* Preserve the previous mobile strike/spare size, but raise every number to
+     that same size instead of making X and / larger than the rest. */
   .bls-frame-balls,
   .bls-frame-cum {
-    font-size: .68rem;
+    min-height: 1.15rem;
+    font-size: 1.05rem;
+    line-height: 1;
   }
 
   .bls-player-frame-row {
@@ -195,13 +206,13 @@ button.bls-frame.has-attributes:active {
 
 @media (max-width: 399.98px) {
   /* On very narrow phones, prioritize keeping the full ten-frame game visible
-     at once. Symbols remain tappable through the full frame button area. */
+     at once. All marks and numbers remain the same size as one another. */
   .bls-player-frame-row .hstack {
     gap: .025rem !important;
   }
 
   .bls-frame {
-    min-height: 2.5rem;
+    min-height: 2.7rem;
     padding: .18rem 0 .12rem;
   }
 
@@ -212,6 +223,7 @@ button.bls-frame.has-attributes:active {
 
   .bls-frame-balls,
   .bls-frame-cum {
-    font-size: .58rem;
+    min-height: 1rem;
+    font-size: .9rem;
   }
 }
