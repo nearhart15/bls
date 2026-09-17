@@ -54,7 +54,6 @@ jobs:
           VITE_BASE_PATH: /bls/preview/beer-league-pdf-import-test/
         run: |
           npm ci
-          npm run import:beer-league
           npm run build
 
       - name: Add preview to Pages artifact
