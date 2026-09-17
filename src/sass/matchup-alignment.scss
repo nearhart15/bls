@@ -20,3 +20,35 @@
   min-width: 0;
   justify-self: end;
 }
+
+/*
+ * Frame sheets use Bootstrap columns for the bowler name and the ten frames.
+ * Below md, an un-sized <Col> becomes a 50/50 column, which left half of the
+ * card empty and squeezed all ten frames into the other half. Stack the name
+ * above a full-width frame strip instead and let the frames share that width.
+ */
+@media (max-width: 767.98px) {
+  .row:has(.bls-frame) > .col {
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .row:has(.bls-frame) > .col:last-child > .hstack {
+    width: 100%;
+    gap: 0.2rem !important;
+    justify-content: space-between;
+  }
+
+  .row:has(.bls-frame) .bls-frame {
+    flex: 1 1 0;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .row:has(.bls-frame) .bls-player-name {
+    margin-bottom: 0.35rem;
+  }
+}
