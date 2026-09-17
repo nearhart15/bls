@@ -4,7 +4,7 @@ import {useId} from "react";
  * Dark mode / modern frame sheet © 2026
  */
 
-import {type FC, createContext, useContext, useEffect, useMemo, useState} from "react";
+import {type CSSProperties, type FC, createContext, useContext, useEffect, useMemo, useState} from "react";
 import {createPortal} from "react-dom";
 
 import {
@@ -86,18 +86,24 @@ const findPlayer = (teamDetails: TrackedLeagueTeam, playerId: string | undefined
 }
 
 const FrameAttrHintContext = createContext<{
-    active: FrameAttributeIconInfo | null;
-    setActive: (info: FrameAttributeIconInfo | null) => void;
-}>({active: null, setActive: () => undefined});
+    active: FrameAttributeIconInfo[];
+    setActive: (info: FrameAttributeIconInfo[]) => void;
+}>({active: [], setActive: () => undefined});
 
 const FrameAttrToast: FC = () => {
     const {active, setActive} = useContext(FrameAttrHintContext);
-    if (!active || typeof document === "undefined") return null;
+    if (active.length === 0 || typeof document === "undefined") return null;
     return createPortal(
-        <div className="bls-attr-toast" role="status">
-            <Icon iconName={active.iconName} color={active.iconColor}/>
-            <span style={{color: active.iconColor}}>{active.description}</span>
-            <button type="button" className="bls-attr-toast-close" aria-label="Dismiss" onClick={() => { setActive(null); }}>
+        <div className="bls-attr-toast bls-attr-toast-multi" role="status">
+            <div className="bls-attr-toast-events">
+                {active.map(info => (
+                    <div className="bls-attr-toast-event" key={info.attribute}>
+                        <Icon iconName={info.iconName} color={info.iconColor}/>
+                        <span style={{color: info.iconColor}}>{info.description}</span>
+                    </div>
+                ))}
+            </div>
+            <button type="button" className="bls-attr-toast-close" aria-label="Dismiss" onClick={() => { setActive([]); }}>
                 ×
             </button>
         </div>,
@@ -112,7 +118,7 @@ const FrameAttributeIcon :FC<FrameAttributeIconProps> = ({attribute}: FrameAttri
     const iconInfo = FrameAttributeIcons.get(attribute);
     const {setActive, active} = useContext(FrameAttrHintContext);
     if (!iconInfo) return null;
-    const isOn = active?.attribute === iconInfo.attribute;
+    const isOn = active.some(item => item.attribute === iconInfo.attribute);
     return (
         <button
             type="button"
@@ -121,7 +127,7 @@ const FrameAttributeIcon :FC<FrameAttributeIconProps> = ({attribute}: FrameAttri
             onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setActive(isOn ? null : iconInfo);
+                setActive(isOn ? [] : [iconInfo]);
             }}
         >
             <Icon iconName={iconInfo.iconName} color={iconInfo.iconColor}/>
@@ -135,14 +141,14 @@ const FrameAttributeIconLegend :FC = () => {
         <div className="bls-attr-legend">
             <div className="bls-attr-legend-icons">
                 {Array.from(FrameAttributeIcons.values()).map((icn) => {
-                    const isOn = active?.attribute === icn.attribute;
+                    const isOn = active.some(item => item.attribute === icn.attribute);
                     return (
                         <button
                             key={icn.attribute}
                             type="button"
                             className={`bls-attr-btn bls-attr-legend-item${isOn ? " is-active" : ""}`}
                             aria-label={icn.description}
-                            onClick={() => { setActive(isOn ? null : icn); }}
+                            onClick={() => { setActive(isOn ? [] : [icn]); }}
                         >
                             <Icon iconName={icn.iconName} color={icn.iconColor}/>
                         </button>
@@ -150,24 +156,24 @@ const FrameAttributeIconLegend :FC = () => {
                 })}
             </div>
             <div className="bls-attr-callout" aria-live="polite">
-                {active ? (
-                    <>
-                        <Icon iconName={active.iconName} color={active.iconColor}/>
-                        <span style={{color: active.iconColor}}>{active.description}</span>
-                    </>
-                ) : (
-                    <span className="text-body-secondary">Tap a numbered badge, or read the full list below</span>
+                {active.length > 0 ? active.map(info => (
+                    <span className="bls-attr-callout-item" key={info.attribute}>
+                        <Icon iconName={info.iconName} color={info.iconColor}/>
+                        <span style={{color: info.iconColor}}>{info.description}</span>
+                    </span>
+                )) : (
+                    <span className="text-body-secondary">Tap a colored frame or numbered badge for details</span>
                 )}
             </div>
             <ul className="bls-attr-guide">
                 {Array.from(FrameAttributeIcons.values()).map((icn) => {
-                    const isOn = active?.attribute === icn.attribute;
+                    const isOn = active.some(item => item.attribute === icn.attribute);
                     return (
                         <li key={icn.attribute}>
                             <button
                                 type="button"
                                 className={`bls-attr-guide-row${isOn ? " is-active" : ""}`}
-                                onClick={() => { setActive(isOn ? null : icn); }}
+                                onClick={() => { setActive(isOn ? [] : [icn]); }}
                             >
                                 <Icon iconName={icn.iconName} color={icn.iconColor}/>
                                 <span>{icn.description}</span>
@@ -197,12 +203,10 @@ interface TeamIndSeriesGameFramesProps extends MatchupDetailsDisplayProps {
 const TeamIndSeriesGameFramesV2 :FC<TeamIndSeriesGameFramesProps> = ({matchup, teamDetails, currentBreakpoint, gameIdx}: TeamIndSeriesGameFramesProps) => {
 
     const [smallScreen, setSmallScreen] = useState(false);
+    const {setActive} = useContext(FrameAttrHintContext);
 
     const playerNames: string[] | undefined = useMemo(() => matchup.scores?.playerScores.map(ps => findPlayer(teamDetails, ps.player)), [matchup, teamDetails]);
     const frames: Frame[][] | undefined = useMemo(() => matchup.scores?.playerScores.map(ps => ps.games[gameIdx].frames), [matchup, gameIdx]);
-    const hasAttributes: boolean[] | undefined = useMemo(() => matchup.scores?.playerScores.map(ps =>
-            !ps.games[gameIdx].frames.find(f => f.attributes.length > 0)),
-        [matchup, gameIdx]);
 
     useEffect(() => {
         setSmallScreen(isBreakpointSmallerThan(currentBreakpoint, BS_BP_XS) ?? false);
@@ -228,17 +232,23 @@ const TeamIndSeriesGameFramesV2 :FC<TeamIndSeriesGameFramesProps> = ({matchup, t
         </>);
     }
 
-    const frameDivW = (f: Frame)=> {
-        return f.number == 10 ? "13%" : "9%";
-    }
-
-    const pickFrames = (frames: Frame[])=> {
-        return frames.length > 0 ? frames : EmptyFrames;
-    }
+    const frameDivW = (f: Frame)=> f.number == 10 ? "13%" : "9%";
+    const pickFrames = (playerFrames: Frame[])=> playerFrames.length > 0 ? playerFrames : EmptyFrames;
+    const attributeInfo = (frame: Frame) => frame.attributes
+        .map(attribute => FrameAttributeIcons.get(attribute))
+        .filter((info): info is FrameAttributeIconInfo => info !== undefined);
+    const outlineStyle = (attributes: FrameAttributeIconInfo[]): CSSProperties => {
+        if (attributes.length === 0) return {};
+        const colors = attributes.map(info => info.iconColor);
+        const outline = colors.length === 1
+            ? colors[0]
+            : `conic-gradient(${colors.map((color, index) => `${color} ${(index / colors.length) * 100}% ${((index + 1) / colors.length) * 100}%`).join(", ")})`;
+        return {"--bls-frame-outline": outline} as CSSProperties;
+    };
 
     const keyPrefix = "fd-wk-" + matchup.week.toString() + "-" + gameIdx.toString() + "-";
     return (<>
-        {playerNames && frames && hasAttributes && playerNames.map((pn, pi) => <div key={keyPrefix + pi.toString()} className="mb-2">
+        {playerNames && frames && playerNames.map((pn, pi) => <div key={keyPrefix + pi.toString()} className="bls-player-frame-row mb-2">
             {smallScreen &&
                 <Row key={keyPrefix + "pn-ss-" + pi.toString()}>
                     <Col className="col-md-2">
@@ -254,27 +264,34 @@ const TeamIndSeriesGameFramesV2 :FC<TeamIndSeriesGameFramesProps> = ({matchup, t
                 }
                 <Col className="col-md-10">
                     <Stack direction="horizontal" gap={1}>
-                        {pickFrames(frames[pi]).map(frame => (
-                            <div className="bls-frame"
-                                 style={{width: frameDivW(frame), maxWidth: "48px"}}
-                                 key={keyPrefix + "pn-nss-" + pi.toString() + "-f-" + frame.number.toString()}>
-                                <div className="bls-frame-balls">
-                                    {writeScoreLabelRow(frame)}
-                                </div>
+                        {pickFrames(frames[pi]).map(frame => {
+                            const attributes = attributeInfo(frame);
+                            const frameContents = <>
+                                <div className="bls-frame-balls">{writeScoreLabelRow(frame)}</div>
                                 <div className="bls-frame-cum">{frame.cumulativeScore}</div>
-                                <div className="bls-frame-attrs fs-xxs">
-                                    {frame.attributes.map((a, i) =>
-                                        <FrameAttributeIcon attribute={a} key={keyPrefix + "pn-nss-" + pi.toString() + "-f-" + frame.number.toString() + "-att-" + i.toString()}/>
-                                    )}
-                                    {(!hasAttributes[pi] && frame.attributes.length == 0) && <>&nbsp;</>}
-                                </div>
-                            </div>
-                        ))}
+                            </>;
+                            const frameClass = `bls-frame${attributes.length > 0 ? " has-attributes" : ""}`;
+                            const frameStyle = {width: frameDivW(frame), maxWidth: "48px", ...outlineStyle(attributes)};
+                            const frameKey = keyPrefix + "pn-nss-" + pi.toString() + "-f-" + frame.number.toString();
+                            return attributes.length > 0 ? (
+                                <button
+                                    type="button"
+                                    className={frameClass}
+                                    style={frameStyle}
+                                    aria-label={`Frame ${frame.number}: ${attributes.map(info => info.description).join(", ")}`}
+                                    onClick={() => { setActive(attributes); }}
+                                    key={frameKey}
+                                >
+                                    {frameContents}
+                                </button>
+                            ) : (
+                                <div className={frameClass} style={frameStyle} key={frameKey}>{frameContents}</div>
+                            );
+                        })}
                     </Stack>
                 </Col>
             </Row>
-        </div>
-        )}
+        </div>)}
     </>)
 }
 
@@ -356,7 +373,7 @@ interface MatchupDetailsDisplayProps {
 }
 const MatchupDetailsDisplay: FC<MatchupDetailsDisplayProps> = ({leagueDetails, matchup, teamDetails, currentBreakpoint}: MatchupDetailsDisplayProps) => {
     const [hasFrameData, setHasFrameData] = useState(true);
-    const [activeAttr, setActiveAttr] = useState<FrameAttributeIconInfo | null>(null);
+    const [activeAttr, setActiveAttr] = useState<FrameAttributeIconInfo[]>([]);
 
     useEffect(() => {
         setHasFrameData(true);
