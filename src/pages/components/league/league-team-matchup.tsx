@@ -94,8 +94,7 @@ const GameSummaryAndPoints :FC<GameSummaryAndPointsProps> = ({teamNumber, teamSc
                     </>}
                     {showBlindAbsent && <>
                         {gameLoopArray.map((_g, i) =>
-                            <td className="p-1 text-decoration-line-through" key={"scratch-" + keyPrefix + "-" + i.toString()}>0</td>)
-                        }
+                            <td className="p-1 text-decoration-line-through" key={"scratch-" + keyPrefix + "-" + i.toString()}>0</td>)}
                         <td className="p-1 text-decoration-line-through">0</td>
                     </>}
                 </tr>
@@ -108,8 +107,7 @@ const GameSummaryAndPoints :FC<GameSummaryAndPointsProps> = ({teamNumber, teamSc
                     </>}
                     {showBlindAbsent && <>
                         {gameLoopArray.map((_g, i) =>
-                            <td className="p-1 text-decoration-line-through" key={"hdcp-" + keyPrefix + "-" + i.toString()}>0</td>
-                        )}
+                            <td className="p-1 text-decoration-line-through" key={"hdcp-" + keyPrefix + "-" + i.toString()}>0</td>)}
                         <td className="p-1 text-decoration-line-through">0</td>
                     </>}
                 </tr>
@@ -176,9 +174,9 @@ const MatchupDisplay :FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
     const calculateTeamHdcp = (seriesScore?: SeriesScore, preCalcHdcp?: number)=> {
         let hdcp = "UNKNOWN";
         if (seriesScore?.hdcp && seriesScore.games) {
-            hdcp = String(seriesScore.hdcp / seriesScore.games);
+            hdcp = Math.round(seriesScore.hdcp / seriesScore.games).toString();
         } else if (preCalcHdcp && preCalcHdcp > 0) {
-            hdcp = preCalcHdcp.toString();
+            hdcp = Math.round(preCalcHdcp).toString();
         }
         return hdcp;
     }
