@@ -156,11 +156,36 @@ export const AllStatsPanel: FC<{
 }> = ({careerStats, seasonSlicesFull, appearanceSlicesFull, appearances}) => {
     const seasons = [...new Set(seasonSlicesFull.map((s) => s.season).filter(Boolean) as string[])].sort((a, b) => b.localeCompare(a));
     const currentSeason = seasons[0] ?? "";
-    const leagues = [...new Map(appearances.map((a) => [a.leagueId, a.leagueName])).entries()];
+    const allLeagues = useMemo(() => [...new Map(appearances.map((a) => [a.leagueId, a.leagueName])).entries()], [appearances]);
     const lastYear = String(new Date().getFullYear() - 1);
     const [timeframe, setTimeframe] = useState("career");
     const [leagueId, setLeagueId] = useState("all");
-    const viewingCurrentSeason = currentSeason.length > 0 && timeframe === currentSeason && leagueId === "all";
+    const viewingCurrentSeason = currentSeason.length > 0 && timeframe === currentSeason;
+    const applicableLeagueIds = useMemo(() => {
+        if (timeframe === "career") return new Set(allLeagues.map(([id]) => id));
+        if (timeframe === "last-year") {
+            return new Set(
+                appearanceSlicesFull
+                    .filter((slice) => (slice.calendarStats?.[lastYear]?.gameStats.count ?? 0) > 0)
+                    .map((slice) => slice.leagueId)
+            );
+        }
+        return new Set(
+            appearances
+                .filter((appearance) => appearance.season === timeframe)
+                .map((appearance) => appearance.leagueId)
+        );
+    }, [allLeagues, appearanceSlicesFull, appearances, timeframe, lastYear]);
+    const leagues = useMemo(
+        () => allLeagues.filter(([id]) => applicableLeagueIds.has(id)),
+        [allLeagues, applicableLeagueIds]
+    );
+
+    useEffect(() => {
+        if (leagueId !== "all" && !applicableLeagueIds.has(leagueId)) {
+            setLeagueId("all");
+        }
+    }, [applicableLeagueIds, leagueId]);
 
     const selected = useMemo(() => {
         const candidates = timeframe === "last-year" ? appearanceSlicesFull.map(s => ({...s, season: lastYear, stats: s.calendarStats?.[lastYear] ?? new PlayerStats()})) : appearanceSlicesFull;
@@ -190,16 +215,15 @@ export const AllStatsPanel: FC<{
         <Card className="bls-profile-card mb-3">
             <div className="bls-profile-card-head d-flex align-items-center justify-content-between gap-2 flex-wrap">
                 <span>All stats</span>
-                {currentSeason && <button
+                {currentSeason && !viewingCurrentSeason && <button
                     type="button"
-                    className={`btn btn-sm rounded-pill px-3 ${viewingCurrentSeason ? "btn-primary" : "btn-outline-primary"}`}
-                    aria-pressed={viewingCurrentSeason}
+                    className="bg-transparent border-0 p-0 link-primary text-decoration-underline fw-normal"
                     onClick={() => {
                         setTimeframe(currentSeason);
                         setLeagueId("all");
                     }}
                 >
-                    Current · {currentSeason}
+                    Jump to current season
                 </button>}
             </div>
             <CardBody>
