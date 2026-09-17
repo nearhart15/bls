@@ -4,7 +4,7 @@ import DataQualityNotice from "./components/data-quality-notice";
  */
 
 import {type FC, useRef} from "react";
-import {Link, Outlet} from "react-router";
+import {Link, Outlet, useLocation} from "react-router";
 import {Button, ButtonGroup, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {ArrowClockwise} from "react-bootstrap-icons";
 
@@ -17,6 +17,8 @@ import {useDataSource} from "./components/data-source";
 const Layout :FC = () => {
     const clearCacheRef = useRef<ClearCacheRef>(null);
     const {source, setSource} = useDataSource();
+    const location = useLocation();
+    const isFullLeagueInfo = location.pathname === "/beer-league" || location.pathname.startsWith("/beer-league/");
 
     const refreshApp = () => {
         clearCacheRef.current?.clearCache();
@@ -32,24 +34,26 @@ const Layout :FC = () => {
                         Bowling League Stats
                     </Navbar.Brand>
                     <div className="bls-nav-actions d-flex align-items-center gap-2 ms-auto order-lg-last">
-                        <ButtonGroup size="sm" aria-label="Stats data source" className="bls-data-source-toggle">
-                            <Button
-                                variant={source === "frame" ? "primary" : "outline-primary"}
-                                onClick={() => { setSource("frame"); }}
-                                aria-pressed={source === "frame"}
-                                title="Use stats calculated from BLS frame files"
-                            >
-                                Frame Data
-                            </Button>
-                            <Button
-                                variant={source === "api" ? "primary" : "outline-primary"}
-                                onClick={() => { setSource("api"); }}
-                                aria-pressed={source === "api"}
-                                title="Use stats imported from the bowling center website"
-                            >
-                                API Data
-                            </Button>
-                        </ButtonGroup>
+                        {!isFullLeagueInfo && (
+                            <ButtonGroup size="sm" aria-label="Stats data source" className="bls-data-source-toggle">
+                                <Button
+                                    variant={source === "frame" ? "primary" : "outline-primary"}
+                                    onClick={() => { setSource("frame"); }}
+                                    aria-pressed={source === "frame"}
+                                    title="Use stats calculated from BLS frame files"
+                                >
+                                    Frame Data
+                                </Button>
+                                <Button
+                                    variant={source === "api" ? "primary" : "outline-primary"}
+                                    onClick={() => { setSource("api"); }}
+                                    aria-pressed={source === "api"}
+                                    title="Use stats imported from the bowling center website"
+                                >
+                                    API Data
+                                </Button>
+                            </ButtonGroup>
+                        )}
                         <Button
                             className="bls-theme-btn d-flex align-items-center gap-1"
                             size="sm"
