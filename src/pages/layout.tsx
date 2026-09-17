@@ -24,6 +24,7 @@ const Layout :FC = () => {
     // Website-only player links use an api-* id. Those profiles have no BinBin
     // counterpart, so showing the global source switch would only lead to an error.
     const isApiOnlyPlayer = location.pathname.startsWith("/player/api-");
+    const isApiLockedTeamCompare = location.pathname === "/team/compare" && new URLSearchParams(location.search).get("source") === "api";
     const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage && !isApiOnlyPlayer;
 
     const refreshApp = () => {
@@ -70,7 +71,7 @@ const Layout :FC = () => {
                     <div className="bls-data-source-bar mb-3" aria-label="Stats data source">
                         <span className="bls-data-source-label">Data source</span>
                         <ButtonGroup size="sm" className="bls-data-source-toggle">
-                            <Button variant={source === "frame" ? "primary" : "outline-primary"} onClick={() => { setSource("frame"); }} aria-pressed={source === "frame"} title="Use stats calculated from BLS frame files">BinBin Data</Button>
+                            {!isApiLockedTeamCompare && <Button variant={source === "frame" ? "primary" : "outline-primary"} onClick={() => { setSource("frame"); }} aria-pressed={source === "frame"} title="Use stats calculated from BLS frame files">BinBin Data</Button>}
                             <Button variant={source === "api" ? "primary" : "outline-primary"} onClick={() => { setSource("api"); }} aria-pressed={source === "api"} title="Use stats imported from the bowling center website">API Data</Button>
                         </ButtonGroup>
                     </div>
