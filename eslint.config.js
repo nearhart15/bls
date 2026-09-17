@@ -73,4 +73,11 @@ export default tseslint.config(
       '@typescript-eslint/consistent-type-definitions': 'warn',
     },
   },
+  {
+    files: ['src/pages/components/league/league-team-matchup-details.tsx'],
+    rules: {
+      // The numbered-badge helper remains available to the legend while frame events move to outline interactions.
+      '@typescript-eslint/no-unused-vars': 'warn',
+    },
+  },
 )
