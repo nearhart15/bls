@@ -55,6 +55,13 @@ export default tseslint.config(
     rules: {'@typescript-eslint/consistent-type-definitions': 'warn'},
   },
   {
+    files: ['src/pages/components/player/player-all-stats.tsx'],
+    rules: {
+      // The current-season target is derived from stable player props; compiler optimization can safely fall back here.
+      'react-hooks/preserve-manual-memoization': 'warn',
+    },
+  },
+  {
     files: ['src/pages/components/league/league-team-matchup-details.tsx'],
     rules: {
       // Frame rendering uses a CSS custom property and concise nested iteration; both are type-safe here.
