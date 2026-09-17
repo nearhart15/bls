@@ -107,10 +107,9 @@ button.bls-frame.has-attributes:active {
 }
 
 @media (max-width: 767.98px) {
-  /* Do not rely on :has() for the responsive frame layout. Older/in-app
-     mobile WebKit can be inconsistent here. Every player row contains one
-     frame stack, so target it directly and make it a fixed five-column grid.
-     Frames 1-5 occupy row one and 6-10 row two with no horizontal scrolling. */
+  /* Keep all ten frames on one row on mobile. The tenth frame gets a little
+     extra width for its possible third ball, while every cell is allowed to
+     shrink so the score sheet never needs horizontal scrolling. */
   .bls-player-frame-row {
     width: 100%;
     overflow-x: hidden;
@@ -127,20 +126,20 @@ button.bls-frame.has-attributes:active {
   .bls-player-frame-row > .row > [class*="col-"] {
     min-width: 0;
     max-width: 100%;
-    padding-left: .1rem;
-    padding-right: .1rem;
+    padding-left: .05rem;
+    padding-right: .05rem;
   }
 
   .bls-player-frame-row .hstack {
     display: grid !important;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(9, minmax(0, 1fr)) minmax(0, 1.35fr);
     align-items: stretch;
-    gap: .22rem .18rem !important;
+    gap: .08rem !important;
     width: 100%;
     max-width: 100%;
     min-width: 0;
     overflow: hidden;
-    padding: .12rem 0;
+    padding: .08rem 0;
   }
 
   .bls-player-frame-row .hstack > .bls-frame {
@@ -152,46 +151,58 @@ button.bls-frame.has-attributes:active {
   }
 
   .bls-frame {
-    min-height: 2.95rem;
-    padding: .28rem .08rem .2rem;
+    min-height: 2.7rem;
+    padding: .22rem .01rem .16rem;
+    border-radius: .3rem;
+  }
+
+  .bls-frame.has-attributes::before {
+    border-radius: .3rem;
   }
 
   .bls-frame-balls {
-    gap: .05rem;
+    gap: 0;
   }
 
   .bls-frame-balls > div {
-    min-width: .78rem;
+    min-width: 0;
+    flex: 1 1 0;
+  }
+
+  .bls-frame-balls svg {
+    width: .88em;
+    height: .88em;
   }
 
   .bls-frame-balls,
   .bls-frame-cum {
-    font-size: .8rem;
+    font-size: .68rem;
   }
 
   .bls-player-frame-row {
-    margin-bottom: .42rem !important;
+    margin-bottom: .32rem !important;
   }
 }
 
 @media (max-width: 399.98px) {
-  /* Very narrow phones get slightly tighter cells while retaining readable
-     symbols and tap targets. */
+  /* On very narrow phones, prioritize keeping the full ten-frame game visible
+     at once. Symbols remain tappable through the full frame button area. */
   .bls-player-frame-row .hstack {
-    gap: .16rem .12rem !important;
+    gap: .025rem !important;
   }
 
   .bls-frame {
-    min-height: 2.8rem;
-    padding-inline: .04rem;
+    min-height: 2.5rem;
+    padding: .18rem 0 .12rem;
   }
 
-  .bls-frame-balls > div {
-    min-width: .68rem;
+  .bls-frame-balls svg {
+    width: .8em;
+    height: .8em;
   }
 
   .bls-frame-balls,
   .bls-frame-cum {
-    font-size: .74rem;
+    font-size: .58rem;
   }
 }
