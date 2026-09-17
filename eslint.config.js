@@ -66,4 +66,11 @@ export default tseslint.config(
       '@typescript-eslint/no-confusing-void-expression': 'off',
     },
   },
+  {
+    files: ['src/pages/components/player/api-player-screens.tsx'],
+    rules: {
+      // DetailMetric is a closed object-shape alias; keep this stylistic preference advisory here.
+      '@typescript-eslint/consistent-type-definitions': 'warn',
+    },
+  },
 )
