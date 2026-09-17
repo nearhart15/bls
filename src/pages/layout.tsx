@@ -46,6 +46,7 @@ const Layout :FC = () => {
                         <Nav className="me-auto ms-lg-3 gap-lg-1">
                             <Nav.Link as={Link} to="/">Home</Nav.Link>
                             <Nav.Link as={Link} to="/league">Leagues</Nav.Link>
+                            <Nav.Link as={Link} to="/beer-league">Beer League</Nav.Link>
                             <NavDropdown title="Stats" id="players-nav">
                                 <NavDropdown.Item as={Link} to="/player">Players</NavDropdown.Item>
                                 <NavDropdown.Item as={Link} to="/player/leaderboard">Leaderboard</NavDropdown.Item>
@@ -55,9 +56,6 @@ const Layout :FC = () => {
                             <NavDropdown title="Utilities" id="utilities-nav">
                                 <NavDropdown.Item as={Link} to="/score-utils">
                                     Score Utilities
-                                </NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="/beer-league">
-                                    Beer League Import
                                 </NavDropdown.Item>
                                 <NavDropdown.Item
                                     as={Link}
