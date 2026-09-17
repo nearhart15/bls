@@ -10,9 +10,10 @@ import ErrorDisplay from "./components/error-display";
 import PlayerList from "./components/player/player-list";
 import PlayerDetail from "./components/player/player-detail";
 import PlayerCompare from "./components/player/player-compare";
+import ApiPlayerCompare from "./components/player/api-player-compare";
 import PlayerLeaderboard from "./components/player/player-leaderboard";
 import HandicapGuide from "./components/player/handicap-guide";
-import {ApiPlayerCompare, ApiPlayerDetail, ApiPlayerLeaderboard, ApiPlayerList} from "./components/player/api-player-screens";
+import {ApiPlayerDetail, ApiPlayerLeaderboard, ApiPlayerList} from "./components/player/api-player-screens";
 import {useDataSource} from "./components/data-source";
 import {useCachedFetcher} from "./components/cache/data-loader";
 import {
@@ -36,10 +37,6 @@ const PlayerDetailPage: FC<{playerId: string}> = ({playerId}) => {
     if (error) return <ErrorDisplay message="Error loading player stats." error={error} />;
     if (!data) return <ErrorDisplay message={`Player not found: ${playerId}`} />;
 
-    // The BinBin roster/index can contain bowlers before any frame-level scores
-    // have been recorded for them. In that case BinBin is not a real stat source
-    // for the player, so route to the matching API profile instead. API profile
-    // routes hide the source toggle, preventing a dead BinBin option.
     if (data.careerStats.gameStats.count === 0) {
         if (apiLoading) return <Loader />;
         const normalizedName = normalizePlayerName(data.player.name ?? playerId);
@@ -55,9 +52,6 @@ const Player: FC = () => {
     const {source} = useDataSource();
 
     if (playerId === "handicap") return <HandicapGuide />;
-
-    // API profile links are self-identifying so links from Full League Info work
-    // even when the user's global selector is currently set to BinBin Data.
     if (playerId?.startsWith("api-")) return <ApiPlayerDetail key={playerId} playerId={playerId} />;
 
     if (source === "api") {
