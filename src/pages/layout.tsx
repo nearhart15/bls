@@ -56,6 +56,9 @@ const Layout :FC = () => {
                                 <NavDropdown.Item as={Link} to="/score-utils">
                                     Score Utilities
                                 </NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/beer-league">
+                                    Beer League Import
+                                </NavDropdown.Item>
                                 <NavDropdown.Item
                                     as={Link}
                                     to="#"
