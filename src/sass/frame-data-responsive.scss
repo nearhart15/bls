@@ -96,39 +96,76 @@ button.bls-frame.has-attributes:active {
 }
 
 @media (max-width: 767.98px) {
-  /* Ten bowling frames stay on one stable score line. Swipe horizontally
-     when needed rather than squeezing or wrapping individual frames. */
+  /* Keep the complete score sheet inside the card instead of creating a
+     horizontal scroller. Tablet-sized narrow layouts can fit all ten frames
+     on one fluid row. */
   .hstack:has(> .bls-frame) {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    padding: .12rem .08rem .3rem;
+    display: grid !important;
+    grid-template-columns: repeat(9, minmax(0, 1fr)) minmax(0, 1.25fr);
+    gap: .16rem !important;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: visible;
+    padding: .12rem 0;
   }
 
   .hstack:has(> .bls-frame) > .bls-frame {
-    flex: 0 0 46px !important;
-    width: 46px !important;
-    max-width: 46px !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    flex: none !important;
   }
 
-  .hstack:has(> .bls-frame) > .bls-frame:last-child {
-    flex-basis: 58px !important;
-    width: 58px !important;
-    max-width: 58px !important;
+  .bls-player-frame-row,
+  .bls-player-frame-row .row,
+  .bls-player-frame-row .col-md-10 {
+    min-width: 0;
+    max-width: 100%;
   }
 
   .bls-frame {
-    min-height: 2.85rem;
-    padding-top: .25rem;
+    min-height: 2.75rem;
+    padding: .22rem .04rem .18rem;
+  }
+
+  .bls-frame-balls {
+    gap: .04rem;
+  }
+
+  .bls-frame-balls > div {
+    min-width: .68rem;
   }
 
   .bls-frame-balls,
   .bls-frame-cum {
-    font-size: .82rem;
+    font-size: .72rem;
   }
 
   .bls-player-frame-row {
-    margin-bottom: .48rem !important;
+    margin-bottom: .42rem !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Phone portrait: two five-frame rows are much easier to read and tap than
+     ten tiny frames. Frames 1-5 occupy the first row and 6-10 the second. */
+  .hstack:has(> .bls-frame) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: .22rem .18rem !important;
+  }
+
+  .bls-frame {
+    min-height: 2.95rem;
+    padding: .28rem .08rem .2rem;
+  }
+
+  .bls-frame-balls > div {
+    min-width: .82rem;
+  }
+
+  .bls-frame-balls,
+  .bls-frame-cum {
+    font-size: .8rem;
   }
 }
