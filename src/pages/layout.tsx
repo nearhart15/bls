@@ -46,7 +46,7 @@ const Layout :FC = () => {
                         <Nav className="me-auto ms-lg-3 gap-lg-1">
                             <Nav.Link as={Link} to="/">Home</Nav.Link>
                             <Nav.Link as={Link} to="/league">Leagues</Nav.Link>
-                            <NavDropdown title="Players" id="players-nav">
+                            <NavDropdown title="Stats" id="players-nav">
                                 <NavDropdown.Item as={Link} to="/player">Players</NavDropdown.Item>
                                 <NavDropdown.Item as={Link} to="/player/leaderboard">Leaderboard</NavDropdown.Item>
                                 <NavDropdown.Item as={Link} to="/player/compare">Player Compare</NavDropdown.Item>
