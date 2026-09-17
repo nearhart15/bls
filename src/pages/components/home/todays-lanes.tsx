@@ -50,11 +50,14 @@ const TodaysLanes: FC = () => {
                 const leagues = leagueList.seasons
                     .flatMap((season) => season.leagues)
                     .filter((league) => league.hasData() && (league.ongoing || league.teams.some((team) => isHomeTeam(team.name))));
-                const details = await Promise.all(leagues.map(async (league) => leagueDetailsFetcher(league.dataLoc!)));
+                const leagueEntries = await Promise.all(leagues.map(async (leagueInfo) => ({
+                    leagueInfo,
+                    details: await leagueDetailsFetcher(leagueInfo.dataLoc!),
+                })));
                 const rows: LaneAssignment[] = [];
                 const seen = new Set<string>();
-                for (const league of details) {
-                    if (!league.id) continue;
+                for (const {leagueInfo, details: league} of leagueEntries) {
+                    if (!leagueInfo.id) continue;
                     for (const team of league.teams) {
                         if (!isHomeTeam(team.name) || !team.id) continue;
                         for (const matchup of team.matchups) {
@@ -65,7 +68,7 @@ const TodaysLanes: FC = () => {
                             if (seen.has(key)) continue;
                             seen.add(key);
                             rows.push({
-                                leagueId: league.id,
+                                leagueId: leagueInfo.id,
                                 teamId: team.id,
                                 team: team.name ?? "Team",
                                 opponent: opponentTeam?.name ?? "Opponent TBD",
