@@ -39,3 +39,23 @@ test("parses BLS standings, divisions, rosters and substitutes", async () => {
   assert.equal(data.teams[0].players[1].weekTotal, 0);
   assert.equal(data.substitutes.length, 1);
 });
+
+test("prefers the current Fall/Winter season without a hard-coded year", async () => {
+  const { rankBeerLeagueItems } = await import("../scripts/import-beer-league.mjs");
+  const items = [
+    { title: "Beer", day: "Thursday", time: "8:00 pm", season_label: "Fall / Winter 2026–27" },
+    { title: "Beer", day: "Thursday", time: "8:00 pm", season_label: "Fall / Winter 2027–28" },
+  ];
+  const ranked = rankBeerLeagueItems(items, new Date("2027-09-15T12:00:00Z"));
+  assert.equal(ranked[0].item.season_label, "Fall / Winter 2027–28");
+});
+
+test("prefers summer during the summer window and Fall/Winter after rollover", async () => {
+  const { rankBeerLeagueItems } = await import("../scripts/import-beer-league.mjs");
+  const items = [
+    { title: "Beer", day: "Thursday", time: "8:00 pm", season_label: "Summer 2028" },
+    { title: "Beer", day: "Thursday", time: "8:00 pm", season_label: "Fall / Winter 2028–29" },
+  ];
+  assert.equal(rankBeerLeagueItems(items, new Date("2028-06-15T12:00:00Z"))[0].item.season_label, "Summer 2028");
+  assert.equal(rankBeerLeagueItems(items, new Date("2028-09-15T12:00:00Z"))[0].item.season_label, "Fall / Winter 2028–29");
+});
