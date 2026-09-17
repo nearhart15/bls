@@ -1,0 +1,22 @@
+/* Keep the matchup type centered independently of either team name width. */
+.card-body.py-0.px-1.mb-auto > .hstack.gap-2 {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content minmax(0, 1fr);
+  column-gap: 0.5rem !important;
+  align-items: stretch;
+}
+
+.card-body.py-0.px-1.mb-auto > .hstack.gap-2 > :first-child {
+  min-width: 0;
+  justify-self: start;
+}
+
+.card-body.py-0.px-1.mb-auto > .hstack.gap-2 > :nth-child(2) {
+  justify-self: center;
+  margin-inline: 0 !important;
+}
+
+.card-body.py-0.px-1.mb-auto > .hstack.gap-2 > :last-child {
+  min-width: 0;
+  justify-self: end;
+}

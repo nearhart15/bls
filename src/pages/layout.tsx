@@ -4,17 +4,24 @@ import DataQualityNotice from "./components/data-quality-notice";
  */
 
 import {type FC, useRef} from "react";
-import {Link, Outlet} from "react-router";
-import {Button, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {Link, Outlet, useLocation} from "react-router";
+import {Button, ButtonGroup, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {ArrowClockwise} from "react-bootstrap-icons";
 
 import ImgBowlingLogo from "../assets/bowling-svgrepo-com.svg";
 import ScrollToTop from "./components/scroll-to-top";
 import ClearCache, {type ClearCacheRef} from "./components/cache/clear-cache";
 import {ThemeToggle} from "./components/theme";
+import {useDataSource} from "./components/data-source";
 
 const Layout :FC = () => {
     const clearCacheRef = useRef<ClearCacheRef>(null);
+    const {source, setSource} = useDataSource();
+    const location = useLocation();
+    const isFullLeagueInfo = location.pathname === "/beer-league" || location.pathname.startsWith("/beer-league/");
+    const isTeamLeagueData = location.pathname === "/league" || location.pathname.startsWith("/league/");
+    const isFrameOnlyStatsPage = location.pathname === "/player/compare" || location.pathname === "/player/handicap";
+    const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage;
 
     const refreshApp = () => {
         clearCacheRef.current?.clearCache();
@@ -44,8 +51,8 @@ const Layout :FC = () => {
                     </div>
                     <Navbar.Collapse id="bls-nav">
                         <Nav className="me-auto ms-lg-3 gap-lg-1">
-                            <Nav.Link as={Link} to="/">Home</Nav.Link>
-                            <Nav.Link as={Link} to="/league">Leagues</Nav.Link>
+                            <Nav.Link as={Link} to="/league">Team League Data</Nav.Link>
+                            <Nav.Link as={Link} to="/beer-league">Full League Info</Nav.Link>
                             <NavDropdown title="Stats" id="players-nav">
                                 <NavDropdown.Item as={Link} to="/player">Players</NavDropdown.Item>
                                 <NavDropdown.Item as={Link} to="/player/leaderboard">Leaderboard</NavDropdown.Item>
@@ -53,14 +60,8 @@ const Layout :FC = () => {
                                 <NavDropdown.Item as={Link} to="/player/handicap">Handicap Guide</NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Utilities" id="utilities-nav">
-                                <NavDropdown.Item as={Link} to="/score-utils">
-                                    Score Utilities
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    as={Link}
-                                    to="#"
-                                    onClick={() => clearCacheRef.current?.clearCache()}
-                                >
+                                <NavDropdown.Item as={Link} to="/score-utils">Score Utilities</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="#" onClick={() => clearCacheRef.current?.clearCache()}>
                                     Clear Cache
                                 </NavDropdown.Item>
                                 <NavDropdown.Divider />
@@ -69,6 +70,30 @@ const Layout :FC = () => {
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
+
+                {showDataSourceToggle && (
+                    <div className="bls-data-source-bar mb-3" aria-label="Stats data source">
+                        <span className="bls-data-source-label">Data source</span>
+                        <ButtonGroup size="sm" className="bls-data-source-toggle">
+                            <Button
+                                variant={source === "frame" ? "primary" : "outline-primary"}
+                                onClick={() => { setSource("frame"); }}
+                                aria-pressed={source === "frame"}
+                                title="Use stats calculated from BLS frame files"
+                            >
+                                BinBin Data
+                            </Button>
+                            <Button
+                                variant={source === "api" ? "primary" : "outline-primary"}
+                                onClick={() => { setSource("api"); }}
+                                aria-pressed={source === "api"}
+                                title="Use stats imported from the bowling center website"
+                            >
+                                API Data
+                            </Button>
+                        </ButtonGroup>
+                    </div>
+                )}
 
                 <ScrollToTop />
                 <ClearCache ref={clearCacheRef}/>

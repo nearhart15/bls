@@ -18,6 +18,8 @@
 // Using the Bootswatch lumen theme - Switch to CDN later: https://bootswatch.com/help/
 import 'bootswatch/dist/lumen/bootstrap.min.css';
 import './sass/bls.scss';
+import './sass/matchup-alignment.scss';
+import './sass/player-list-responsive.scss';
 
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
@@ -26,6 +28,7 @@ import {Route, Routes, HashRouter} from "react-router";
 import {ContextCacheProvider} from "./pages/components/cache/context-cache";
 import G4Provider from "./pages/components/analytics/ga4-provider";
 import {ThemeProvider} from "./pages/components/theme";
+import {DataSourceProvider} from "./pages/components/data-source";
 
 import Layout from "./pages/layout";
 import Home from "./pages/home";
@@ -33,6 +36,7 @@ import League from "./pages/league";
 import Player from "./pages/player";
 import NoPage from "./pages/nopage";
 import ScoreUtils from "./pages/score-utils";
+import BeerLeague from "./pages/beer-league";
 
 export default function App() {
     return (
@@ -42,6 +46,7 @@ export default function App() {
                 <Route path="/league/:leagueId?/:teamId?" element={<League/>}/>
                 <Route path="/player/:playerId?" element={<Player/>}/>
                 <Route path="/score-utils" element={<ScoreUtils/>}/>
+                <Route path="/beer-league" element={<BeerLeague/>}/>
                 <Route path="*" element={<NoPage/>}/>
             </Route>
         </Routes>
@@ -54,11 +59,13 @@ createRoot(document.getElementById('root')!)
     <StrictMode>
         <HashRouter>
             <ThemeProvider>
-                <ContextCacheProvider>
-                    <G4Provider>
-                        <App/>
-                    </G4Provider>
-                </ContextCacheProvider>
+                <DataSourceProvider>
+                    <ContextCacheProvider>
+                        <G4Provider>
+                            <App/>
+                        </G4Provider>
+                    </ContextCacheProvider>
+                </DataSourceProvider>
             </ThemeProvider>
         </HashRouter>
     </StrictMode>

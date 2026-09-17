@@ -14,7 +14,7 @@ import {
     type FC,
     type ReactNode,
 } from "react";
-import {Button} from "react-bootstrap";
+import {Button, NavDropdown} from "react-bootstrap";
 import {MoonStarsFill, SunFill} from "react-bootstrap-icons";
 
 export type ThemeMode = "light" | "dark";
@@ -97,20 +97,37 @@ export function useTheme(): ThemeContextValue {
 export const ThemeToggle: FC<{inMenu?: boolean}> = ({inMenu = false}) => {
     const {theme, toggleTheme} = useTheme();
     const isDark = theme === "dark";
+    const label = isDark ? "Switch to Light Mode" : "Switch to Dark Mode";
+    const icon = isDark ? <SunFill size={14} /> : <MoonStarsFill size={14} />;
+
+    if (inMenu) {
+        return (
+            <NavDropdown.Item
+                as="button"
+                type="button"
+                onClick={toggleTheme}
+                aria-label={label}
+                title={label}
+            >
+                <span className="d-inline-flex align-items-center gap-2">
+                    {icon}
+                    <span>{label}</span>
+                </span>
+            </NavDropdown.Item>
+        );
+    }
 
     return (
         <Button
-            variant={inMenu ? "link" : "primary"}
-            className={inMenu ? "dropdown-item d-flex align-items-center gap-2 text-start" : "bls-theme-btn d-flex align-items-center gap-1 ms-lg-2"}
+            variant="primary"
+            className="bls-theme-btn d-flex align-items-center gap-1 ms-lg-2"
             size="sm"
             onClick={toggleTheme}
-            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={label}
+            title={label}
         >
-            {isDark ? <SunFill size={14} /> : <MoonStarsFill size={14} />}
-            <span className={inMenu ? "" : "d-none d-md-inline"}>
-                {inMenu ? (isDark ? "Switch to Light Mode" : "Switch to Dark Mode") : (isDark ? "Light" : "Dark")}
-            </span>
+            {icon}
+            <span className="d-none d-md-inline">{isDark ? "Light" : "Dark"}</span>
         </Button>
     );
 };

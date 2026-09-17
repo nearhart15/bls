@@ -4,7 +4,7 @@ import {NodePackageImporter} from "sass-embedded";
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Required for GitHub Pages project site: https://nearhart15.github.io/bls/
+  // Required for GitHub Pages project site
   base: '/bls/',
   plugins: [react()],
   build: {

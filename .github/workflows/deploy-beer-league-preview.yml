@@ -1,0 +1,69 @@
+name: Deploy Beer League preview
+
+on:
+  push:
+    branches: [beer-league-pdf-import-test]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  PREVIEW_PATH: preview/beer-league-pdf-import-test
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout production
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          path: production
+
+      - name: Checkout preview
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: beer-league-pdf-import-test
+          path: preview
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: preview/.nvmrc
+          cache: npm
+          cache-dependency-path: |
+            production/package-lock.json
+            preview/package-lock.json
+
+      - name: Build production site
+        working-directory: production
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build Beer League preview
+        working-directory: preview
+        run: |
+          npm ci
+          npm run build -- --base /bls/preview/beer-league-pdf-import-test/
+
+      - name: Add preview to Pages artifact
+        run: |
+          mkdir -p "production/dist/${PREVIEW_PATH}"
+          cp -a preview/dist/. "production/dist/${PREVIEW_PATH}/"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          path: production/dist
+
+      - name: Deploy preview
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

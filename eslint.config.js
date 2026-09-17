@@ -59,4 +59,11 @@ export default tseslint.config(
 
     },
   },
+  {
+    files: ['src/pages/beer-league.tsx'],
+    rules: {
+      // React event handlers intentionally use concise state-setter callbacks in this preview UI.
+      '@typescript-eslint/no-confusing-void-expression': 'off',
+    },
+  },
 )
