@@ -74,8 +74,8 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
         <>
             <LeagueSummary leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
             {/*Team selection Menu*/}
-            <Container fluid="true">
-            {leagueDetails && <Nav variant="pills" className="py-0 my-0">
+            <Container fluid="true" className="bls-team-nav-wrap px-0 px-sm-2">
+            {leagueDetails && <Nav variant="pills" className="bls-team-nav py-0 my-0 flex-nowrap">
                 {leagueDetails.teams.map(team => (
                     <Nav.Item key={team.id}>
                         <Nav.Link eventKey={team.id} active={currentDisplay == "TEAM" && displayedTeam === team.id}
