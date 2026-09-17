@@ -12,6 +12,8 @@ import PlayerDetail from "./components/player/player-detail";
 import PlayerCompare from "./components/player/player-compare";
 import PlayerLeaderboard from "./components/player/player-leaderboard";
 import HandicapGuide from "./components/player/handicap-guide";
+import {ApiPlayerCompare, ApiPlayerDetail, ApiPlayerLeaderboard, ApiPlayerList} from "./components/player/api-player-screens";
+import {useDataSource} from "./components/data-source";
 import {useCachedFetcher} from "./components/cache/data-loader";
 import {
     aggregatePlayerData,
@@ -41,15 +43,24 @@ const PlayerDetailPage: FC<{playerId: string}> = ({playerId}) => {
 
 const Player: FC = () => {
     const {playerId} = useParams();
+    const {source} = useDataSource();
+
+    if (playerId === "handicap") {
+        return <HandicapGuide />;
+    }
+
+    if (source === "api") {
+        if (playerId === "compare") return <ApiPlayerCompare />;
+        if (playerId === "leaderboard") return <ApiPlayerLeaderboard />;
+        if (playerId) return <ApiPlayerDetail key={playerId} playerId={playerId} />;
+        return <div className="container-md"><ApiPlayerList /></div>;
+    }
 
     if (playerId === "compare") {
         return <PlayerCompare />;
     }
     if (playerId === "leaderboard") {
         return <PlayerLeaderboard />;
-    }
-    if (playerId === "handicap") {
-        return <HandicapGuide />;
     }
 
     if (playerId) {
