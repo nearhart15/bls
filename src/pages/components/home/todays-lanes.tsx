@@ -14,12 +14,18 @@ interface LaneAssignment {
 }
 
 function normalize(value: string | undefined): string {
-    return (value ?? "").toLocaleLowerCase().replace(/[^a-z0-9]/g, "");
+    return (value ?? "").toLocaleLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]/g, "");
 }
 
 function isHomeTeam(name: string | undefined): boolean {
     const normalized = normalize(name);
     return HOME_TEAMS.some((team) => normalize(team) === normalized);
+}
+
+function homeTeamOrder(name: string): number {
+    const normalized = normalize(name);
+    const index = HOME_TEAMS.findIndex((team) => normalize(team) === normalized);
+    return index === -1 ? HOME_TEAMS.length : index;
 }
 
 function localDateKey(date: Date): string {
@@ -38,7 +44,9 @@ const TodaysLanes: FC = () => {
             try {
                 const today = localDateKey(new Date());
                 const leagueList = await leagueInfoListFetcher();
-                const leagues = leagueList.seasons.flatMap((season) => season.leagues).filter((league) => league.ongoing && league.hasData());
+                const leagues = leagueList.seasons
+                    .flatMap((season) => season.leagues)
+                    .filter((league) => league.hasData() && (league.ongoing || league.teams.some((team) => isHomeTeam(team.name))));
                 const details = await Promise.all(leagues.map(async (league) => leagueDetailsFetcher(league.dataLoc!)));
                 const rows: LaneAssignment[] = [];
                 const seen = new Set<string>();
@@ -61,6 +69,7 @@ const TodaysLanes: FC = () => {
                         }
                     }
                 }
+                rows.sort((a, b) => homeTeamOrder(a.team) - homeTeamOrder(b.team));
                 if (!cancelled) setAssignments(rows);
             } catch {
                 if (!cancelled) setAssignments([]);
