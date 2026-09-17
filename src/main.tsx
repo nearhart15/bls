@@ -34,6 +34,7 @@ import Layout from "./pages/layout";
 import Home from "./pages/home";
 import League from "./pages/league";
 import Player from "./pages/player";
+import TeamCompare from "./pages/team-compare";
 import NoPage from "./pages/nopage";
 import ScoreUtils from "./pages/score-utils";
 import BeerLeague from "./pages/beer-league";
@@ -45,6 +46,7 @@ export default function App() {
                 <Route index element={<Home/>}/>
                 <Route path="/league/:leagueId?/:teamId?" element={<League/>}/>
                 <Route path="/player/:playerId?" element={<Player/>}/>
+                <Route path="/team/compare" element={<TeamCompare/>}/>
                 <Route path="/score-utils" element={<ScoreUtils/>}/>
                 <Route path="/beer-league" element={<BeerLeague/>}/>
                 <Route path="*" element={<NoPage/>}/>
