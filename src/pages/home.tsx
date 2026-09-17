@@ -12,6 +12,7 @@ import LeagueList from "./components/league/league-list";
 import PlayerList from "./components/player/player-list";
 import {ApiPlayerList} from "./components/player/api-player-screens";
 import {useDataSource} from "./components/data-source";
+import TodaysLanes from "./components/home/todays-lanes";
 
 const PINS_GO_BOOM = ["Nick", "Bindul", "Luke", "Brian"];
 const HOOKERS_AND_BOWL = ["Patrick", "Greg", "Ty", "Mark"];
@@ -59,6 +60,7 @@ const Home: FC = () => {
                 </div>
             </section>
 
+            <TodaysLanes />
             <div className="mb-3"><NewsHighlights shoutOuts /></div>
 
             {source === "api" ? (
