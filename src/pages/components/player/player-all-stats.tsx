@@ -188,21 +188,21 @@ export const AllStatsPanel: FC<{
 
     return (
         <Card className="bls-profile-card mb-3">
-            <div className="bls-profile-card-head">All stats</div>
+            <div className="bls-profile-card-head d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                <span>All stats</span>
+                {currentSeason && <button
+                    type="button"
+                    className={`btn btn-sm rounded-pill px-3 ${viewingCurrentSeason ? "btn-primary" : "btn-outline-primary"}`}
+                    aria-pressed={viewingCurrentSeason}
+                    onClick={() => {
+                        setTimeframe(currentSeason);
+                        setLeagueId("all");
+                    }}
+                >
+                    Current · {currentSeason}
+                </button>}
+            </div>
             <CardBody>
-                {currentSeason && <div className="d-flex justify-content-end mb-3">
-                    <button
-                        type="button"
-                        className={`btn btn-sm ${viewingCurrentSeason ? "btn-primary" : "btn-outline-primary"}`}
-                        disabled={viewingCurrentSeason}
-                        onClick={() => {
-                            setTimeframe(currentSeason);
-                            setLeagueId("all");
-                        }}
-                    >
-                        Current season ({currentSeason})
-                    </button>
-                </div>}
                 <div className="bls-allstats-filters">
                     <label className="bls-allstats-filter">
                         <span>Timeframe</span>
