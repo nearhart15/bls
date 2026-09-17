@@ -68,9 +68,9 @@ const RECORD: Metric[] = [
 
 async function fetchApiTeams(): Promise<ApiLeagueData> {
     const response = await fetch(`${import.meta.env.BASE_URL}data/beer-league.json?ts=${Date.now()}`, {cache: "no-store"});
-    if (!response.ok) throw new Error(`API data returned ${response.status}.`);
+    if (!response.ok) throw new Error(`A.B.C. data returned ${response.status}.`);
     const data = await response.json() as ApiLeagueData;
-    if (data.status !== "ready") throw new Error("API data is not ready yet.");
+    if (data.status !== "ready") throw new Error("A.B.C. data is not ready yet.");
     return data;
 }
 
@@ -134,21 +134,21 @@ const ApiTeamCompare: FC = () => {
     };
 
     if (isLoading) return <Loader/>;
-    if (error) return <ErrorDisplay message="Error loading API team comparison data." error={error}/>;
+    if (error) return <ErrorDisplay message="Error loading A.B.C. team comparison data." error={error}/>;
 
     return <div className="container-md bls-compare bls-fifa-compare">
         <div className="bls-compare-hero mb-3">
-            <span className="bls-hero-kicker">API Data · Head to head</span>
+            <span className="bls-hero-kicker">A.B.C. Data · Head to head</span>
             <h1>Team Compare</h1>
             <div className="text-body-secondary">Only team statistics published by the Arapahoe league sheet are compared.</div>
         </div>
         <Card className="bls-profile-card mb-3 bls-fifa-panel"><CardBody>
-            <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap"><div><strong>{data?.league?.name ?? "Beer League"}</strong>{data?.league?.season ? <div className="text-body-secondary">{data.league.season}</div> : null}</div><Badge bg="info">API Data</Badge></div>
+            <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap"><div><strong>{data?.league?.name ?? "Beer League"}</strong>{data?.league?.season ? <div className="text-body-secondary">{data.league.season}</div> : null}</div><Badge bg="info">A.B.C. Data</Badge></div>
         </CardBody></Card>
         {teamA && teamB ? <>
             <div className="bls-fifa-heads mb-3">
                 <TeamCard side="a" team={teamA} teams={teams} otherNumber={teamB.number} onChange={number => { updateSelection("a", number); }}/>
-                <div className="bls-fifa-vs"><span>VS</span><Badge pill style={{background: "#6e6e73", color: "#fff"}}>API</Badge></div>
+                <div className="bls-fifa-vs"><span>VS</span><Badge pill style={{background: "#6e6e73", color: "#fff"}}>A.B.C.</Badge></div>
                 <TeamCard side="b" team={teamB} teams={teams} otherNumber={teamA.number} onChange={number => { updateSelection("b", number); }}/>
             </div>
             <div className="bls-fifa-tabs" role="tablist">
@@ -159,7 +159,7 @@ const ApiTeamCompare: FC = () => {
                 <div className="bls-fifa-col-title">{tab === "scoring" ? "Team scoring" : "League record"}</div>
                 {activeMetrics.map(metric => <CompareBar key={metric.key} metric={metric} teamA={teamA} teamB={teamB}/>) }
             </div></CardBody></Card>
-        </> : <Card className="bls-profile-card"><CardBody>No two API teams with statistics are available.</CardBody></Card>}
+        </> : <Card className="bls-profile-card"><CardBody>No two A.B.C. teams with statistics are available.</CardBody></Card>}
     </div>;
 };
 
