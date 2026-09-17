@@ -72,7 +72,7 @@ const Layout :FC = () => {
                         <span className="bls-data-source-label">Data source</span>
                         <ButtonGroup size="sm" className="bls-data-source-toggle">
                             {!isApiLockedTeamCompare && <Button variant={source === "frame" ? "primary" : "outline-primary"} onClick={() => { setSource("frame"); }} aria-pressed={source === "frame"} title="Use stats calculated from BLS frame files">BinBin Data</Button>}
-                            <Button variant={source === "api" ? "primary" : "outline-primary"} onClick={() => { setSource("api"); }} aria-pressed={source === "api"} title="Use stats imported from the bowling center website">API Data</Button>
+                            <Button variant={source === "api" ? "primary" : "outline-primary"} onClick={() => { setSource("api"); }} aria-pressed={source === "api"} title="Use stats imported from the bowling center website">A.B.C. Data</Button>
                         </ButtonGroup>
                     </div>
                 )}
