@@ -1,5 +1,5 @@
 import {type FC, useCallback, useEffect, useMemo, useState} from "react";
-import {Badge, Card, CardBody, Col, Form, Row} from "react-bootstrap";
+import {Badge, Card, CardBody, Form} from "react-bootstrap";
 import {useSearchParams} from "react-router";
 
 import {LEAGUE_DETAILS_CACHE_CATEGORY, LEAGUE_LIST_CACHE_CATEGORY, leagueDetailsFetcher, leagueInfoListFetcher} from "../data/league/league-api";
