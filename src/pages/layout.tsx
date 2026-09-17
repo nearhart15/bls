@@ -37,26 +37,6 @@ const Layout :FC = () => {
                         Bowling League Stats
                     </Navbar.Brand>
                     <div className="bls-nav-actions d-flex align-items-center gap-2 ms-auto order-lg-last">
-                        {showDataSourceToggle && (
-                            <ButtonGroup size="sm" aria-label="Stats data source" className="bls-data-source-toggle">
-                                <Button
-                                    variant={source === "frame" ? "primary" : "outline-primary"}
-                                    onClick={() => { setSource("frame"); }}
-                                    aria-pressed={source === "frame"}
-                                    title="Use stats calculated from BLS frame files"
-                                >
-                                    BinBin Data
-                                </Button>
-                                <Button
-                                    variant={source === "api" ? "primary" : "outline-primary"}
-                                    onClick={() => { setSource("api"); }}
-                                    aria-pressed={source === "api"}
-                                    title="Use stats imported from the bowling center website"
-                                >
-                                    API Data
-                                </Button>
-                            </ButtonGroup>
-                        )}
                         <Button
                             className="bls-theme-btn d-flex align-items-center gap-1"
                             size="sm"
@@ -81,14 +61,8 @@ const Layout :FC = () => {
                                 <NavDropdown.Item as={Link} to="/player/handicap">Handicap Guide</NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Utilities" id="utilities-nav">
-                                <NavDropdown.Item as={Link} to="/score-utils">
-                                    Score Utilities
-                                </NavDropdown.Item>
-                                <NavDropdown.Item
-                                    as={Link}
-                                    to="#"
-                                    onClick={() => clearCacheRef.current?.clearCache()}
-                                >
+                                <NavDropdown.Item as={Link} to="/score-utils">Score Utilities</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="#" onClick={() => clearCacheRef.current?.clearCache()}>
                                     Clear Cache
                                 </NavDropdown.Item>
                                 <NavDropdown.Divider />
@@ -97,6 +71,30 @@ const Layout :FC = () => {
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
+
+                {showDataSourceToggle && (
+                    <div className="bls-data-source-bar mb-3" aria-label="Stats data source">
+                        <span className="bls-data-source-label">Data source</span>
+                        <ButtonGroup size="sm" className="bls-data-source-toggle">
+                            <Button
+                                variant={source === "frame" ? "primary" : "outline-primary"}
+                                onClick={() => { setSource("frame"); }}
+                                aria-pressed={source === "frame"}
+                                title="Use stats calculated from BLS frame files"
+                            >
+                                BinBin Data
+                            </Button>
+                            <Button
+                                variant={source === "api" ? "primary" : "outline-primary"}
+                                onClick={() => { setSource("api"); }}
+                                aria-pressed={source === "api"}
+                                title="Use stats imported from the bowling center website"
+                            >
+                                API Data
+                            </Button>
+                        </ButtonGroup>
+                    </div>
+                )}
 
                 <ScrollToTop />
                 <ClearCache ref={clearCacheRef}/>
