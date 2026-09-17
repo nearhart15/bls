@@ -3,7 +3,7 @@
  */
 
 import {type FC, useCallback} from "react";
-import {useParams} from "react-router";
+import {Navigate, useParams} from "react-router";
 
 import Loader from "./components/loader";
 import ErrorDisplay from "./components/error-display";
@@ -19,14 +19,34 @@ import {
     aggregatePlayerData,
     type AggregatedPlayerData,
     PLAYER_DETAIL_CACHE_CATEGORY,
+    PLAYER_INDEX_CACHE_CATEGORY,
+    type PlayerListEntry,
 } from "../data/player/player-aggregate";
+import {apiPlayerListFetcher} from "../data/player/api-player-data";
+
+const API_PLAYER_INDEX_CACHE_CATEGORY = `${PLAYER_INDEX_CACHE_CATEGORY}-api`;
+const normalizePlayerName = (name: string) => name.toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]/g, "");
 
 const PlayerDetailPage: FC<{playerId: string}> = ({playerId}) => {
     const fetcher = useCallback(() => aggregatePlayerData(playerId), [playerId]);
+    const apiFetcher = useCallback(() => apiPlayerListFetcher(), []);
     const {data, isLoading, error} = useCachedFetcher<AggregatedPlayerData>(fetcher, PLAYER_DETAIL_CACHE_CATEGORY, playerId);
+    const {data: apiPlayers, isLoading: apiLoading} = useCachedFetcher<PlayerListEntry[]>(apiFetcher, API_PLAYER_INDEX_CACHE_CATEGORY);
     if (isLoading) return <Loader />;
     if (error) return <ErrorDisplay message="Error loading player stats." error={error} />;
     if (!data) return <ErrorDisplay message={`Player not found: ${playerId}`} />;
+
+    // The BinBin roster/index can contain bowlers before any frame-level scores
+    // have been recorded for them. In that case BinBin is not a real stat source
+    // for the player, so route to the matching API profile instead. API profile
+    // routes hide the source toggle, preventing a dead BinBin option.
+    if (data.careerStats.gameStats.count === 0) {
+        if (apiLoading) return <Loader />;
+        const normalizedName = normalizePlayerName(data.player.name ?? playerId);
+        const apiPlayer = apiPlayers?.find(player => normalizePlayerName(player.name) === normalizedName);
+        if (apiPlayer) return <Navigate replace to={`/player/${apiPlayer.id}`} />;
+    }
+
     return <PlayerDetail data={data} />;
 };
 
