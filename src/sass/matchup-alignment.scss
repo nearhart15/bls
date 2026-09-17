@@ -52,3 +52,56 @@
     margin-bottom: 0.35rem;
   }
 }
+
+/* On phones, keep the two matchup actions on a single compact row. Both use
+   the same treatment so Team Compare feels like a peer of Show/Hide Details. */
+@media (max-width: 575.98px) {
+  .bls-matchup-mobile-actions {
+    display: flex;
+    gap: .4rem;
+    width: 100%;
+    margin: .4rem 0 .15rem;
+  }
+
+  .bls-matchup-mobile-action {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .35rem;
+    padding: .5rem .4rem;
+    border: 1px solid var(--bls-border);
+    border-radius: 1rem;
+    background: var(--bls-surface-3);
+    color: var(--bls-text) !important;
+    font: inherit;
+    font-size: .9rem;
+    font-weight: 600;
+    line-height: 1.1;
+    text-align: center;
+    text-decoration: none !important;
+    box-shadow: none;
+  }
+
+  .bls-matchup-mobile-action:hover,
+  .bls-matchup-mobile-action:focus-visible {
+    border-color: var(--bls-accent);
+    background: var(--bls-accent-soft);
+    color: var(--bls-accent) !important;
+  }
+
+  .bls-matchup-mobile-action svg {
+    flex: 0 0 auto;
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 399.98px) {
+  .bls-matchup-mobile-action {
+    min-height: 2.8rem;
+    padding-inline: .25rem;
+    font-size: .8rem;
+  }
+}
