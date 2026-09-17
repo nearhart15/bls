@@ -1,0 +1,71 @@
+/* Weekly matchup frame sheet: keep bowling frames compact and readable. */
+.hstack:has(> .bls-frame) {
+  align-items: stretch;
+  gap: .2rem !important;
+  min-width: 0;
+}
+
+.bls-frame {
+  min-width: 0;
+  text-align: center;
+}
+
+.bls-frame-balls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .12rem;
+  min-height: 1.35rem;
+  white-space: nowrap;
+}
+
+.bls-frame-balls > div {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: .9rem;
+  line-height: 1;
+}
+
+.bls-frame-cum {
+  min-height: 1.35rem;
+  line-height: 1.35rem;
+  white-space: nowrap;
+}
+
+.bls-frame-attrs {
+  min-height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .1rem;
+}
+
+@media (max-width: 767.98px) {
+  /* Ten bowling frames are more useful as one stable score line than as
+     squeezed/wrapped columns. Swipe horizontally when the phone is narrow. */
+  .hstack:has(> .bls-frame) {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: .2rem;
+  }
+
+  .hstack:has(> .bls-frame) > .bls-frame {
+    flex: 0 0 46px !important;
+    width: 46px !important;
+    max-width: 46px !important;
+  }
+
+  .hstack:has(> .bls-frame) > .bls-frame:last-child {
+    flex-basis: 58px !important;
+    width: 58px !important;
+    max-width: 58px !important;
+  }
+
+  .bls-frame-balls,
+  .bls-frame-cum {
+    font-size: .82rem;
+  }
+}
