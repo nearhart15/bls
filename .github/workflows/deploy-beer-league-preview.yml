@@ -50,11 +50,9 @@ jobs:
 
       - name: Build Beer League preview
         working-directory: preview
-        env:
-          VITE_BASE_PATH: /bls/preview/beer-league-pdf-import-test/
         run: |
           npm ci
-          npm run build
+          npm run build -- --base /bls/preview/beer-league-pdf-import-test/
 
       - name: Add preview to Pages artifact
         run: |
