@@ -52,11 +52,19 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
     const [weekPrefix, setWeekPrefix] = useState<LeagueBowlingDurationUnit>("WK");
     const [gamesPerMatchup, setGamesPerMatchup] = useState(3);
     const trackedOpponent = leagueDetails?.teams.find(team => team.id === matchup.opponent?.teamId);
-    const canOpenCompare = Boolean(leagueDetails?.id && teamDetails.id);
+    const hasApiPair = teamDetails.number > 0 && (opponent.number ?? 0) > 0;
+    const canOpenCompare = Boolean(leagueDetails?.id && teamDetails.id && (trackedOpponent?.id || hasApiPair));
     const compareParams = new URLSearchParams();
-    if (leagueDetails?.id) compareParams.set("league", leagueDetails.id);
-    if (teamDetails.id) compareParams.set("a", teamDetails.id);
-    if (trackedOpponent?.id) compareParams.set("b", trackedOpponent.id);
+    if (trackedOpponent?.id && teamDetails.id && leagueDetails?.id) {
+        compareParams.set("source", "frame");
+        compareParams.set("league", leagueDetails.id);
+        compareParams.set("a", teamDetails.id);
+        compareParams.set("b", trackedOpponent.id);
+    } else if (hasApiPair) {
+        compareParams.set("source", "api");
+        compareParams.set("a", String(teamDetails.number));
+        compareParams.set("b", String(opponent.number));
+    }
     const compareUrl = `/team/compare?${compareParams.toString()}`;
 
     useEffect(() => {
