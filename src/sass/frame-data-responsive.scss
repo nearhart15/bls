@@ -10,7 +10,7 @@
   min-width: 0;
   min-height: 3.05rem;
   padding: .3rem .16rem .25rem;
-  border: 0;
+  border: 1px solid var(--bls-border);
   border-radius: .38rem;
   background: transparent;
   color: inherit;
@@ -60,6 +60,15 @@ button.bls-frame.has-attributes:active {
   justify-content: center;
   min-width: .9rem;
   line-height: 1;
+}
+
+/* Strikes and spares are plain bowling marks rather than boxed icons. Keep
+   them noticeably larger than the surrounding pin-count text. */
+.bls-frame-mark {
+  display: inline-block;
+  font-size: 1.55em;
+  font-weight: 700;
+  line-height: .85;
 }
 
 .bls-frame-cum {
