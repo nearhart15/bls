@@ -26,6 +26,7 @@ import {Route, Routes, HashRouter} from "react-router";
 import {ContextCacheProvider} from "./pages/components/cache/context-cache";
 import G4Provider from "./pages/components/analytics/ga4-provider";
 import {ThemeProvider} from "./pages/components/theme";
+import {DataSourceProvider} from "./pages/components/data-source";
 
 import Layout from "./pages/layout";
 import Home from "./pages/home";
@@ -56,11 +57,13 @@ createRoot(document.getElementById('root')!)
     <StrictMode>
         <HashRouter>
             <ThemeProvider>
-                <ContextCacheProvider>
-                    <G4Provider>
-                        <App/>
-                    </G4Provider>
-                </ContextCacheProvider>
+                <DataSourceProvider>
+                    <ContextCacheProvider>
+                        <G4Provider>
+                            <App/>
+                        </G4Provider>
+                    </ContextCacheProvider>
+                </DataSourceProvider>
             </ThemeProvider>
         </HashRouter>
     </StrictMode>
