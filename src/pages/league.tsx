@@ -43,7 +43,7 @@ const League :FC = () => {
             const leagueInfo = leagueListData.findLeague(leagueId);
             if (leagueInfo?.dataLoc == null) {
                 return (<>
-                    <LeagueList />
+                    <LeagueList compact />
                     <ErrorDisplay message="Incorrect League ID. Please select a correct league."/>
                 </>);
             }
@@ -51,7 +51,7 @@ const League :FC = () => {
         }
     }
 
-    return <LeagueList/>;
+    return <LeagueList compact/>;
 };
 
 export default League;
