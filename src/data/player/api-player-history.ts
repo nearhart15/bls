@@ -31,7 +31,7 @@ export interface ApiPlayerHistoryFile {
     generatedAt: string;
     importedWeeks: number;
     qualifyingTeam: string;
-    seasons: Array<{key: string; label: string; year: number; seasonCode: string; weeks: number; firstDate: string; lastDate: string}>;
+    seasons: {key: string; label: string; year: number; seasonCode: string; weeks: number; firstDate: string; lastDate: string}[];
     players: ApiHistoricalPlayer[];
 }
 
