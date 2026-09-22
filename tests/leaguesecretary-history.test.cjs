@@ -91,3 +91,10 @@ test("bowler data extraction does not depend on optional subscription markup", a
     assert.equal(rows.length, 1);
     assert.equal(rows[0].BowlerID, 160);
 });
+
+test("bowler data extraction handles LeagueSecretary escaped modal JSON", async () => {
+    const {extractLeagueBowlerData} = await importer;
+    const html = String.raw\`modal({\\"dataSource\\":[{\\"BowlerID\\":160,\\"BowlerName\\":\\"Earhart, Nick\\",\\"TotalPins\\":1736,\\"TotalGames\\":9}]})\`;
+    const rows = extractLeagueBowlerData(html);
+    assert.equal(rows[0].BowlerName, "Earhart, Nick");
+});
