@@ -4,69 +4,78 @@ const headers = {
   "accept": "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
 };
 
-function unique(values) {
-  return [...new Set(values)];
+const decode = value => value
+  .replaceAll("&amp;", "&")
+  .replaceAll("&quot;", "\"")
+  .replaceAll("&#x27;", "'")
+  .replaceAll("&#39;", "'")
+  .replaceAll("&lt;", "<")
+  .replaceAll("&gt;", ">");
+
+function strip(value) {
+  return decode(value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
 }
 
-function absolute(value, base) {
-  try { return new URL(value, base).href; } catch { return null; }
+function selectBlocks(html) {
+  return [...html.matchAll(/<select\b[^>]*>[\s\S]*?<\/select>/gi)]
+    .map(match => match[0])
+    .map(block => {
+      const open = block.match(/^<select\b[^>]*>/i)?.[0] ?? "";
+      const id = open.match(/\bid=["']([^"']+)["']/i)?.[1] ?? null;
+      const name = open.match(/\bname=["']([^"']+)["']/i)?.[1] ?? null;
+      const options = [...block.matchAll(/<option\b([^>]*)>([\s\S]*?)<\/option>/gi)].map(option => ({
+        value: decode(option[1].match(/\bvalue=["']([^"']*)["']/i)?.[1] ?? ""),
+        selected: /\bselected\b/i.test(option[1]),
+        text: strip(option[2]),
+      }));
+      return {id, name, options};
+    });
 }
 
-function interesting(value) {
-  return /api|recap|report|season|week|pdf|league|graphql|_next/i.test(value);
-}
-
-async function main() {
-  const response = await fetch(target, {redirect: "follow", headers});
+async function inspect(url, label) {
+  const response = await fetch(url, {redirect:"follow", headers});
   const html = await response.text();
+  console.log(`\n===== ${label} =====`);
   console.log(JSON.stringify({
-    target,
     status: response.status,
     finalUrl: response.url,
-    contentType: response.headers.get("content-type"),
     bytes: Buffer.byteLength(html),
     title: html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1] ?? null,
   }, null, 2));
 
-  const attrs = [...html.matchAll(/(?:href|src)=["']([^"']+)["']/gi)]
-    .map(match => absolute(match[1], response.url))
-    .filter(Boolean);
-  const direct = unique(attrs.filter(interesting));
-  console.log("\n=== Interesting page URLs ===");
-  direct.slice(0, 300).forEach(value => console.log(value));
+  console.log("\n--- selects ---");
+  console.log(JSON.stringify(selectBlocks(html), null, 2));
 
-  console.log("\n=== Inline endpoint/string candidates ===");
-  const strings = unique(
-    [...html.matchAll(/["'`](.{1,240}?)["'`]/g)]
-      .map(match => match[1])
-      .filter(value => interesting(value) && !/^[A-Za-z0-9 _.-]+$/.test(value))
-  );
-  strings.slice(0, 350).forEach(value => console.log(value));
+  console.log("\n--- forms ---");
+  const forms = [...html.matchAll(/<form\b([^>]*)>/gi)].map(match => ({
+    action: decode(match[1].match(/\baction=["']([^"']*)["']/i)?.[1] ?? ""),
+    method: match[1].match(/\bmethod=["']([^"']*)["']/i)?.[1] ?? "",
+    id: match[1].match(/\bid=["']([^"']*)["']/i)?.[1] ?? "",
+  }));
+  console.log(JSON.stringify(forms, null, 2));
 
-  const scriptUrls = unique(attrs.filter(value => /\.js(?:[?#]|$)/i.test(value))).slice(0, 40);
-  console.log(`\n=== JavaScript bundles (${scriptUrls.length}) ===`);
-  scriptUrls.forEach(value => console.log(value));
-
-  for (const url of scriptUrls) {
-    try {
-      const jsResponse = await fetch(url, {headers});
-      if (!jsResponse.ok) continue;
-      const js = await jsResponse.text();
-      const candidates = unique(
-        [...js.matchAll(/["'`](.{1,220}?)["'`]/g)]
-          .map(match => match[1])
-          .filter(value => interesting(value) && (/^\//.test(value) || /https?:|api|recap|report|season|week|pdf/i.test(value)))
-      );
-      if (!candidates.length) continue;
-      console.log(`\n--- ${url} ---`);
-      candidates.slice(0, 250).forEach(value => console.log(value));
-    } catch (error) {
-      console.log(`bundle error ${url}: ${error instanceof Error ? error.message : String(error)}`);
-    }
+  console.log("\n--- Pins Go Boom occurrences ---");
+  const lower = html.toLowerCase();
+  let index = 0, count = 0;
+  while ((index = lower.indexOf("pins go boom", index)) >= 0 && count < 30) {
+    console.log(strip(html.slice(Math.max(0,index-500), Math.min(html.length,index+800))));
+    index += 12; count += 1;
   }
+
+  const recapLinks = [...html.matchAll(/href=["']([^"']*\/league\/recaps\/133016[^"']*)["']/gi)]
+    .map(match => new URL(decode(match[1]), response.url).href);
+  console.log("\n--- recap links ---");
+  console.log([...new Set(recapLinks)].join("\n"));
+
+  const reportLinks = [...html.matchAll(/href=["']([^"']*(?:reports\/shared|\.pdf)[^"']*)["']/gi)]
+    .map(match => new URL(decode(match[1]), response.url).href);
+  console.log("\n--- report links ---");
+  console.log([...new Set(reportLinks)].join("\n"));
+
+  return {html, recapLinks};
 }
 
-main().catch(error => {
-  console.error(error instanceof Error ? error.stack : error);
-  process.exitCode = 1;
-});
+const first = await inspect(target, "recap sheets");
+const interactive = first.recapLinks.find(url => /\/league\/recaps\/133016\/\d{4}\/[fsw]\/\d+\/\d+/i.test(url))
+  || "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016";
+await inspect(interactive, "interactive recap");
