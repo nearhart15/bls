@@ -85,16 +85,24 @@ function extractBalancedJson(text, startIndex) {
 
 export function extractLeagueBowlerData(html) {
     const source = String(html);
-    const anchor = source.indexOf('jQuery("#subscribe_bowler")');
-    if (anchor < 0) throw new Error("LeagueSecretary bowler selector was not found.");
     const marker = '"dataSource":';
-    const markerIndex = source.indexOf(marker, anchor);
-    if (markerIndex < 0) throw new Error("LeagueSecretary bowler dataSource was not found.");
-    const arrayStart = source.indexOf("[", markerIndex + marker.length);
-    if (arrayStart < 0) throw new Error("LeagueSecretary bowler data array was not found.");
-    const rows = JSON.parse(extractBalancedJson(source, arrayStart));
-    if (!Array.isArray(rows)) throw new Error("LeagueSecretary bowler data was not an array.");
-    return rows;
+    let offset = 0;
+    while (offset < source.length) {
+        const markerIndex = source.indexOf(marker, offset);
+        if (markerIndex < 0) break;
+        const arrayStart = source.indexOf("[", markerIndex + marker.length);
+        if (arrayStart < 0) break;
+        try {
+            const rows = JSON.parse(extractBalancedJson(source, arrayStart));
+            if (Array.isArray(rows) && rows.some(row => row && typeof row === "object" && "BowlerID" in row && "BowlerName" in row)) {
+                return rows;
+            }
+        } catch {
+            // This page has multiple Kendo data sources. Keep scanning until the bowler array is found.
+        }
+        offset = markerIndex + marker.length;
+    }
+    throw new Error("LeagueSecretary bowler dataSource was not found.");
 }
 
 export function parseReportingPeriod(option) {
