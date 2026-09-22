@@ -1,0 +1,1403 @@
+{
+  "generatedAt": "2026-09-22T23:59:55.416Z",
+  "source": {
+    "provider": "LeagueSecretary",
+    "leagueId": 133016,
+    "url": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps-png/133016"
+  },
+  "qualifyingTeam": "Pins Go Boom!",
+  "totalReportingPeriods": 136,
+  "importedWeeks": 107,
+  "skippedWeeks": 29,
+  "seasons": [
+    {
+      "key": "2024-u",
+      "label": "Summer 2024",
+      "year": 2024,
+      "seasonCode": "u",
+      "weeks": 16,
+      "firstDate": "2024-05-09",
+      "lastDate": "2024-08-29"
+    },
+    {
+      "key": "2024-f",
+      "label": "Fall 2024",
+      "year": 2024,
+      "seasonCode": "f",
+      "weeks": 29,
+      "firstDate": "2024-09-05",
+      "lastDate": "2025-04-17"
+    },
+    {
+      "key": "2025-u",
+      "label": "Summer 2025",
+      "year": 2025,
+      "seasonCode": "u",
+      "weeks": 15,
+      "firstDate": "2025-05-08",
+      "lastDate": "2025-08-14"
+    },
+    {
+      "key": "2025-f",
+      "label": "Fall 2025",
+      "year": 2025,
+      "seasonCode": "f",
+      "weeks": 29,
+      "firstDate": "2025-09-04",
+      "lastDate": "2026-04-16"
+    },
+    {
+      "key": "2026-u",
+      "label": "Summer 2026",
+      "year": 2026,
+      "seasonCode": "u",
+      "weeks": 15,
+      "firstDate": "2026-05-07",
+      "lastDate": "2026-08-20"
+    },
+    {
+      "key": "2026-f",
+      "label": "Fall 2026",
+      "year": 2026,
+      "seasonCode": "f",
+      "weeks": 3,
+      "firstDate": "2026-09-03",
+      "lastDate": "2026-09-17"
+    }
+  ],
+  "snapshots": [
+    {
+      "season": "Fall 2026",
+      "seasonKey": "2026-f",
+      "week": 3,
+      "date": "2026-09-17",
+      "path": "fall-2026/week-03.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/f/3/0"
+    },
+    {
+      "season": "Fall 2026",
+      "seasonKey": "2026-f",
+      "week": 2,
+      "date": "2026-09-10",
+      "path": "fall-2026/week-02.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/f/2/0"
+    },
+    {
+      "season": "Fall 2026",
+      "seasonKey": "2026-f",
+      "week": 1,
+      "date": "2026-09-03",
+      "path": "fall-2026/week-01.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/f/1/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 15,
+      "date": "2026-08-20",
+      "path": "summer-2026/week-15.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/15/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 14,
+      "date": "2026-08-13",
+      "path": "summer-2026/week-14.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/14/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 13,
+      "date": "2026-08-06",
+      "path": "summer-2026/week-13.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/13/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 12,
+      "date": "2026-07-30",
+      "path": "summer-2026/week-12.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/12/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 11,
+      "date": "2026-07-23",
+      "path": "summer-2026/week-11.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/11/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 10,
+      "date": "2026-07-16",
+      "path": "summer-2026/week-10.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/10/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 9,
+      "date": "2026-07-09",
+      "path": "summer-2026/week-09.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/9/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 8,
+      "date": "2026-07-02",
+      "path": "summer-2026/week-08.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/8/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 7,
+      "date": "2026-06-25",
+      "path": "summer-2026/week-07.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/7/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 6,
+      "date": "2026-06-18",
+      "path": "summer-2026/week-06.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/6/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 5,
+      "date": "2026-06-11",
+      "path": "summer-2026/week-05.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/5/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 4,
+      "date": "2026-06-04",
+      "path": "summer-2026/week-04.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/4/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 3,
+      "date": "2026-05-28",
+      "path": "summer-2026/week-03.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/3/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 2,
+      "date": "2026-05-21",
+      "path": "summer-2026/week-02.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/2/0"
+    },
+    {
+      "season": "Summer 2026",
+      "seasonKey": "2026-u",
+      "week": 1,
+      "date": "2026-05-07",
+      "path": "summer-2026/week-01.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/1/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 30,
+      "date": "2026-04-16",
+      "path": "fall-2025/week-30.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/30/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 29,
+      "date": "2026-04-09",
+      "path": "fall-2025/week-29.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/29/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 28,
+      "date": "2026-04-02",
+      "path": "fall-2025/week-28.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/28/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 27,
+      "date": "2026-03-26",
+      "path": "fall-2025/week-27.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/27/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 26,
+      "date": "2026-03-19",
+      "path": "fall-2025/week-26.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/26/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 25,
+      "date": "2026-03-12",
+      "path": "fall-2025/week-25.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/25/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 24,
+      "date": "2026-03-05",
+      "path": "fall-2025/week-24.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/24/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 23,
+      "date": "2026-02-26",
+      "path": "fall-2025/week-23.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/23/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 22,
+      "date": "2026-02-19",
+      "path": "fall-2025/week-22.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/22/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 21,
+      "date": "2026-02-12",
+      "path": "fall-2025/week-21.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/21/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 20,
+      "date": "2026-02-05",
+      "path": "fall-2025/week-20.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/20/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 19,
+      "date": "2026-01-29",
+      "path": "fall-2025/week-19.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/19/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 18,
+      "date": "2026-01-22",
+      "path": "fall-2025/week-18.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/18/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 17,
+      "date": "2026-01-15",
+      "path": "fall-2025/week-17.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/17/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 16,
+      "date": "2026-01-08",
+      "path": "fall-2025/week-16.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/16/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 14,
+      "date": "2025-12-11",
+      "path": "fall-2025/week-14.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/14/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 13,
+      "date": "2025-12-04",
+      "path": "fall-2025/week-13.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/13/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 12,
+      "date": "2025-11-20",
+      "path": "fall-2025/week-12.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/12/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 11,
+      "date": "2025-11-13",
+      "path": "fall-2025/week-11.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/11/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 10,
+      "date": "2025-11-06",
+      "path": "fall-2025/week-10.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/10/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 9,
+      "date": "2025-10-30",
+      "path": "fall-2025/week-09.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/9/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 8,
+      "date": "2025-10-23",
+      "path": "fall-2025/week-08.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/8/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 7,
+      "date": "2025-10-16",
+      "path": "fall-2025/week-07.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/7/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 6,
+      "date": "2025-10-09",
+      "path": "fall-2025/week-06.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/6/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 5,
+      "date": "2025-10-02",
+      "path": "fall-2025/week-05.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/5/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 4,
+      "date": "2025-09-25",
+      "path": "fall-2025/week-04.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/4/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 3,
+      "date": "2025-09-18",
+      "path": "fall-2025/week-03.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/3/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 2,
+      "date": "2025-09-11",
+      "path": "fall-2025/week-02.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/2/0"
+    },
+    {
+      "season": "Fall 2025",
+      "seasonKey": "2025-f",
+      "week": 1,
+      "date": "2025-09-04",
+      "path": "fall-2025/week-01.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/1/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 15,
+      "date": "2025-08-14",
+      "path": "summer-2025/week-15.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/15/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 14,
+      "date": "2025-08-07",
+      "path": "summer-2025/week-14.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/14/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 13,
+      "date": "2025-07-31",
+      "path": "summer-2025/week-13.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/13/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 12,
+      "date": "2025-07-24",
+      "path": "summer-2025/week-12.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/12/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 11,
+      "date": "2025-07-17",
+      "path": "summer-2025/week-11.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/11/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 10,
+      "date": "2025-07-10",
+      "path": "summer-2025/week-10.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/10/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 9,
+      "date": "2025-07-03",
+      "path": "summer-2025/week-09.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/9/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 8,
+      "date": "2025-06-26",
+      "path": "summer-2025/week-08.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/8/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 7,
+      "date": "2025-06-19",
+      "path": "summer-2025/week-07.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/7/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 6,
+      "date": "2025-06-12",
+      "path": "summer-2025/week-06.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/6/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 5,
+      "date": "2025-06-05",
+      "path": "summer-2025/week-05.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/5/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 4,
+      "date": "2025-05-29",
+      "path": "summer-2025/week-04.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/4/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 3,
+      "date": "2025-05-22",
+      "path": "summer-2025/week-03.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/3/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 2,
+      "date": "2025-05-15",
+      "path": "summer-2025/week-02.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/2/0"
+    },
+    {
+      "season": "Summer 2025",
+      "seasonKey": "2025-u",
+      "week": 1,
+      "date": "2025-05-08",
+      "path": "summer-2025/week-01.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/1/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 30,
+      "date": "2025-04-17",
+      "path": "fall-2024/week-30.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/30/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 29,
+      "date": "2025-04-10",
+      "path": "fall-2024/week-29.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/29/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 28,
+      "date": "2025-04-03",
+      "path": "fall-2024/week-28.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/28/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 27,
+      "date": "2025-03-27",
+      "path": "fall-2024/week-27.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/27/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 26,
+      "date": "2025-03-20",
+      "path": "fall-2024/week-26.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/26/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 25,
+      "date": "2025-03-13",
+      "path": "fall-2024/week-25.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/25/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 24,
+      "date": "2025-03-06",
+      "path": "fall-2024/week-24.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/24/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 23,
+      "date": "2025-02-27",
+      "path": "fall-2024/week-23.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/23/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 22,
+      "date": "2025-02-20",
+      "path": "fall-2024/week-22.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/22/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 21,
+      "date": "2025-02-13",
+      "path": "fall-2024/week-21.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/21/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 20,
+      "date": "2025-02-06",
+      "path": "fall-2024/week-20.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/20/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 19,
+      "date": "2025-01-30",
+      "path": "fall-2024/week-19.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/19/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 18,
+      "date": "2025-01-23",
+      "path": "fall-2024/week-18.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/18/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 17,
+      "date": "2025-01-16",
+      "path": "fall-2024/week-17.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/17/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 16,
+      "date": "2025-01-09",
+      "path": "fall-2024/week-16.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/16/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 14,
+      "date": "2024-12-12",
+      "path": "fall-2024/week-14.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/14/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 13,
+      "date": "2024-12-05",
+      "path": "fall-2024/week-13.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/13/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 12,
+      "date": "2024-11-21",
+      "path": "fall-2024/week-12.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/12/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 11,
+      "date": "2024-11-14",
+      "path": "fall-2024/week-11.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/11/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 10,
+      "date": "2024-11-07",
+      "path": "fall-2024/week-10.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/10/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 9,
+      "date": "2024-10-31",
+      "path": "fall-2024/week-09.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/9/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 8,
+      "date": "2024-10-24",
+      "path": "fall-2024/week-08.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/8/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 7,
+      "date": "2024-10-17",
+      "path": "fall-2024/week-07.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/7/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 6,
+      "date": "2024-10-10",
+      "path": "fall-2024/week-06.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/6/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 5,
+      "date": "2024-10-03",
+      "path": "fall-2024/week-05.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/5/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 4,
+      "date": "2024-09-26",
+      "path": "fall-2024/week-04.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/4/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 3,
+      "date": "2024-09-19",
+      "path": "fall-2024/week-03.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/3/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 2,
+      "date": "2024-09-12",
+      "path": "fall-2024/week-02.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/2/0"
+    },
+    {
+      "season": "Fall 2024",
+      "seasonKey": "2024-f",
+      "week": 1,
+      "date": "2024-09-05",
+      "path": "fall-2024/week-01.json",
+      "bowlerCount": 208,
+      "teamCount": 40,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/1/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 16,
+      "date": "2024-08-29",
+      "path": "summer-2024/week-16.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/16/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 15,
+      "date": "2024-08-22",
+      "path": "summer-2024/week-15.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/15/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 14,
+      "date": "2024-08-15",
+      "path": "summer-2024/week-14.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/14/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 13,
+      "date": "2024-08-08",
+      "path": "summer-2024/week-13.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/13/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 12,
+      "date": "2024-08-01",
+      "path": "summer-2024/week-12.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/12/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 11,
+      "date": "2024-07-25",
+      "path": "summer-2024/week-11.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/11/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 10,
+      "date": "2024-07-18",
+      "path": "summer-2024/week-10.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/10/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 9,
+      "date": "2024-07-11",
+      "path": "summer-2024/week-09.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/9/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 8,
+      "date": "2024-06-27",
+      "path": "summer-2024/week-08.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/8/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 7,
+      "date": "2024-06-20",
+      "path": "summer-2024/week-07.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/7/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 6,
+      "date": "2024-06-13",
+      "path": "summer-2024/week-06.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/6/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 5,
+      "date": "2024-06-06",
+      "path": "summer-2024/week-05.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/5/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 4,
+      "date": "2024-05-30",
+      "path": "summer-2024/week-04.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/4/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 3,
+      "date": "2024-05-23",
+      "path": "summer-2024/week-03.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/3/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 2,
+      "date": "2024-05-16",
+      "path": "summer-2024/week-02.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/2/0"
+    },
+    {
+      "season": "Summer 2024",
+      "seasonKey": "2024-u",
+      "week": 1,
+      "date": "2024-05-09",
+      "path": "summer-2024/week-01.json",
+      "bowlerCount": 208,
+      "teamCount": 32,
+      "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/1/0"
+    }
+  ],
+  "skipped": [
+    {
+      "week": 15,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-04-18",
+      "sourceLabel": "Winter 2024 Week 15 04/18/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 14,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-04-11",
+      "sourceLabel": "Winter 2024 Week 14 04/11/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 13,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-04-04",
+      "sourceLabel": "Winter 2024 Week 13 04/04/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 12,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-03-28",
+      "sourceLabel": "Winter 2024 Week 12 03/28/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 11,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-03-21",
+      "sourceLabel": "Winter 2024 Week 11 03/21/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 10,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-03-07",
+      "sourceLabel": "Winter 2024 Week 10 03/07/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 9,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-02-29",
+      "sourceLabel": "Winter 2024 Week 9 02/29/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 8,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-02-22",
+      "sourceLabel": "Winter 2024 Week 8 02/22/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 7,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-02-15",
+      "sourceLabel": "Winter 2024 Week 7 02/15/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 6,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-02-08",
+      "sourceLabel": "Winter 2024 Week 6 02/08/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 5,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-02-01",
+      "sourceLabel": "Winter 2024 Week 5 02/01/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 4,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-01-25",
+      "sourceLabel": "Winter 2024 Week 4 01/25/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 3,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-01-18",
+      "sourceLabel": "Winter 2024 Week 3 01/18/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 2,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-01-11",
+      "sourceLabel": "Winter 2024 Week 2 01/11/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 1,
+      "year": 2024,
+      "seasonCode": "w",
+      "label": "Winter 2024",
+      "date": "2024-01-04",
+      "sourceLabel": "Winter 2024 Week 1 01/04/2024",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 14,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-12-14",
+      "sourceLabel": "Fall 2023 Week 14 12/14/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 13,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-12-07",
+      "sourceLabel": "Fall 2023 Week 13 12/07/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 12,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-11-30",
+      "sourceLabel": "Fall 2023 Week 12 11/30/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 11,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-11-16",
+      "sourceLabel": "Fall 2023 Week 11 11/16/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 10,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-11-09",
+      "sourceLabel": "Fall 2023 Week 10 11/09/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 9,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-11-02",
+      "sourceLabel": "Fall 2023 Week 9 11/02/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 8,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-10-26",
+      "sourceLabel": "Fall 2023 Week 8 10/26/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 7,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-10-19",
+      "sourceLabel": "Fall 2023 Week 7 10/19/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 6,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-10-12",
+      "sourceLabel": "Fall 2023 Week 6 10/12/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 5,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-10-05",
+      "sourceLabel": "Fall 2023 Week 5 10/05/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 4,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-09-28",
+      "sourceLabel": "Fall 2023 Week 4 09/28/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 3,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-09-21",
+      "sourceLabel": "Fall 2023 Week 3 09/21/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 2,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-09-14",
+      "sourceLabel": "Fall 2023 Week 2 09/14/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    },
+    {
+      "week": 1,
+      "year": 2023,
+      "seasonCode": "f",
+      "label": "Fall 2023",
+      "date": "2023-09-07",
+      "sourceLabel": "Fall 2023 Week 1 09/07/2023",
+      "reason": "Pins Go Boom! is not in this reporting period"
+    }
+  ]
+}
