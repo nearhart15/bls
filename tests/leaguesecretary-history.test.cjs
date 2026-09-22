@@ -83,3 +83,11 @@ test("reporting-period selector parses LeagueSecretary week metadata", async () 
         sourceLabel: "Fall 2026 Week 3 09/17/2026",
     });
 });
+
+test("bowler data extraction does not depend on optional subscription markup", async () => {
+    const {extractLeagueBowlerData} = await importer;
+    const html = '<script>widget({"dataSource":[{"id":1}]});other({"dataSource":[{"BowlerID":160,"BowlerName":"Earhart, Nick","TotalPins":1736,"TotalGames":9}]});</script>';
+    const rows = extractLeagueBowlerData(html);
+    assert.equal(rows.length, 1);
+    assert.equal(rows[0].BowlerID, 160);
+});
