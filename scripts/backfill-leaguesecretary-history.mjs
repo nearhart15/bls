@@ -84,7 +84,7 @@ function extractBalancedJson(text, startIndex) {
 }
 
 export function extractLeagueBowlerData(html) {
-    const source = String(html);
+    const source = String(html).replaceAll('\\"', '"');
     const marker = '"dataSource":';
     let offset = 0;
     while (offset < source.length) {
