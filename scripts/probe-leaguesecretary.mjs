@@ -64,6 +64,15 @@ async function inspect(url, label) {
 
   const recapLinks = [...html.matchAll(/href=["']([^"']*\/league\/recaps\/133016[^"']*)["']/gi)]
     .map(match => new URL(decode(match[1]), response.url).href);
+  console.log("\n--- embedded data context ---");
+  for (const needle of ["BowlerID", "TotalPins", "leagueRecapTeam", "gridRecap", "TeamID"]) {
+    const at = html.indexOf(needle);
+    if (at >= 0) {
+      console.log(`NEEDLE ${needle} @ ${at}`);
+      console.log(html.slice(Math.max(0, at - 3500), Math.min(html.length, at + 6500)));
+    }
+  }
+
   console.log("\n--- recap links ---");
   console.log([...new Set(recapLinks)].join("\n"));
 
