@@ -2,13 +2,15 @@
  * Home — shout-outs, tighter leagues, current-season bowlers © 2026
  */
 
-import {type FC} from "react";
+import {Suspense, lazy, type FC} from "react";
 import {BarChartFill, PeopleFill, TrophyFill} from "react-bootstrap-icons";
 
 import NewsHighlights from "./components/news/news";
 import LeagueList from "./components/league/league-list";
 import PlayerList from "./components/player/player-list";
-import {ApiPlayerList} from "./components/player/api-player-screens";
+import Loader from "./components/loader";
+
+const ApiPlayerList = lazy(async () => ({default: (await import("./components/player/api-player-screens")).ApiPlayerList}));
 import {useDataSource} from "./components/data-source";
 import TodaysLanes from "./components/home/todays-lanes";
 
@@ -62,7 +64,7 @@ const Home: FC = () => {
             <div className="mb-3"><NewsHighlights shoutOuts /></div>
 
             {source === "api" ? (
-                <ApiPlayerList title="Beer League Bowlers" />
+                <Suspense fallback={<Loader/>}><ApiPlayerList title="Beer League Bowlers" /></Suspense>
             ) : (
                 <div className="row g-3">
                     <div className="col-lg-5"><LeagueList compact /></div>
