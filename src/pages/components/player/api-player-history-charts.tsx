@@ -1,54 +1,38 @@
 /* Historical API player charts © 2026 */
 
-import {type FC, useCallback, useMemo} from "react";
+import {type FC, useMemo} from "react";
 import type {ApexOptions} from "apexcharts";
 
 import Chart from "../charts/safe-chart";
 import {baseChartOptions, chartPalette} from "../charts/chart-theme";
 import {useTheme} from "../theme";
-import {useCachedFetcher} from "../cache/data-loader";
+import type {ApiHistoricalPlayer} from "../../../data/player/api-player-history";
 import {
-    API_PLAYER_HISTORY_CACHE_CATEGORY,
-    API_PLAYER_HISTORY_INDEX_CACHE_CATEGORY,
-    apiHistoricalPlayerFetcher,
-    apiPlayerHistoryIndexFetcher,
-    findHistoricalPlayer,
-    type ApiHistoricalPlayerResult,
-    type ApiPlayerHistoryIndexFile,
-} from "../../../data/player/api-player-history";
+    API_PLAYER_TIMEFRAME_OPTIONS,
+    pointsForApiPlayerTimeframe,
+    type ApiPlayerTimeframe,
+} from "../../../data/player/api-player-timeframe";
 
-interface Props { playerName: string; teamName?: string; }
+interface Props {
+    historical: ApiHistoricalPlayer;
+    importedWeeks: number;
+    timeframe: ApiPlayerTimeframe;
+}
 
 function dateValue(date: string): number {
     return Date.parse(`${date}T12:00:00`);
 }
 
-const ApiPlayerHistoryCharts: FC<Props> = ({playerName, teamName}) => {
+const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe}) => {
     const {theme} = useTheme();
-    const indexFetcher = useCallback(() => apiPlayerHistoryIndexFetcher(), []);
-    const {data: indexData, isLoading: indexLoading, error: indexError} = useCachedFetcher<ApiPlayerHistoryIndexFile>(
-        indexFetcher,
-        API_PLAYER_HISTORY_INDEX_CACHE_CATEGORY,
+    const points = useMemo(
+        () => pointsForApiPlayerTimeframe(historical.history, timeframe),
+        [historical.history, timeframe],
     );
-    const historicalEntry = useMemo(
-        () => indexData ? findHistoricalPlayer(indexData, playerName, teamName) : null,
-        [indexData, playerName, teamName],
-    );
-    const sourcePlayerId = historicalEntry?.sourcePlayerId ?? 0;
-    const playerFetcher = useCallback(async (): Promise<ApiHistoricalPlayerResult> => ({
-        player: sourcePlayerId > 0 ? await apiHistoricalPlayerFetcher(sourcePlayerId) : null,
-    }), [sourcePlayerId]);
-    const {data: playerData, isLoading: playerLoading, error: playerError} = useCachedFetcher<ApiHistoricalPlayerResult>(
-        playerFetcher,
-        API_PLAYER_HISTORY_CACHE_CATEGORY,
-        String(sourcePlayerId),
-    );
-    const historical = playerData?.player ?? null;
-
-    if (indexLoading || playerLoading || indexError || playerError || !historical || historical.history.length < 2) return null;
+    if (points.length < 2) return null;
 
     const palette = chartPalette(theme);
-    const points = historical.history;
+    const timeframeLabel = API_PLAYER_TIMEFRAME_OPTIONS.find(option => option.value === timeframe)?.label ?? "Career";
     const avgBase = baseChartOptions(theme, "Average over time");
     const avgSeries: NonNullable<ApexOptions["series"]> = [
         {
@@ -122,19 +106,19 @@ const ApiPlayerHistoryCharts: FC<Props> = ({playerName, teamName}) => {
         <div className="mb-3">
             <div className="d-flex flex-wrap align-items-baseline justify-content-between gap-2 mb-2">
                 <h2 className="h5 mb-0">Historical trends</h2>
-                <span className="text-secondary small">{indexData?.importedWeeks ?? 0} Pins Go Boom league weeks</span>
+                <span className="text-secondary small">{importedWeeks} Pins Go Boom league weeks · {timeframeLabel}</span>
             </div>
             <p className="text-secondary small mb-3">
                 LeagueSecretary history uses the recorded weekly scratch scores. Season average is rebuilt from scratch pinfall and games; absentee or vacant scores stay out of the trend.
             </p>
             <div className="bls-surface-card p-2 p-md-3 mb-3">
                 <div className="bls-chart">
-                    <Chart key={`avg-${theme}-${historical.sourcePlayerId}-${points.length}`} options={avgOptions} series={avgSeries} type="line" width="100%" height={320} />
+                    <Chart key={`avg-${theme}-${historical.sourcePlayerId}-${timeframe}-${points.length}`} options={avgOptions} series={avgSeries} type="line" width="100%" height={320} />
                 </div>
             </div>
             <div className="bls-surface-card p-2 p-md-3">
                 <div className="bls-chart">
-                    <Chart key={`series-${theme}-${historical.sourcePlayerId}-${points.length}`} options={seriesOptions} series={seriesData} type="line" width="100%" height={300} />
+                    <Chart key={`series-${theme}-${historical.sourcePlayerId}-${timeframe}-${points.length}`} options={seriesOptions} series={seriesData} type="line" width="100%" height={300} />
                 </div>
             </div>
         </div>
