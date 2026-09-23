@@ -177,4 +177,12 @@ test("committed LeagueSecretary archive contains varying exact weekly history", 
         fall2026.filter(point => [1, 2, 3].includes(point.week)).map(point => [point.week, point.weekPins, point.weekSeries]),
         [[1, 548, 548], [2, 615, 615], [3, 573, 573]],
     );
+    assert.deepEqual(
+        fall2026.filter(point => [1, 2, 3].includes(point.week)).map(point => [point.week, point.weekScores, point.handicap]),
+        [
+            [1, [221, 185, 142], 25],
+            [2, [206, 220, 189], 25],
+            [3, [195, 206, 172], 15],
+        ],
+    );
 });
