@@ -83,7 +83,9 @@ const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe
               {
                   name: "Weekly Avg",
                   type: "line",
-                  data: progress\n                      .filter(point => point.weeklyValue != null)\n                      .map(point => ({x: dateValue(point.date), y: point.weeklyValue as number})),
+                  data: progress
+                      .filter(point => point.weeklyValue != null)
+                      .map(point => ({x: dateValue(point.date), y: point.weeklyValue as number})),
               },
               leagueSeries,
           ]
