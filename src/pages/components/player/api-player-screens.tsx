@@ -104,7 +104,7 @@ export const ApiPlayerDetail:FC<{playerId:string}>=({playerId})=>{
                 :`${timeframeLabel} · ${historicalPoints.filter(point=>(point.weekGames??0)>0).length} recorded scoring weeks`;
 
     return <div className="container-md">
-        {(indexError||historyError)&&<Alert variant="danger" className="py-2"><strong>Historical data error:</strong> Some archived player history could not be loaded. Current-season stats are still available.</Alert>}
+        {Boolean(indexError||historyError)&&<Alert variant="danger" className="py-2"><strong>Historical data error:</strong> Some archived player history could not be loaded. Current-season stats are still available.</Alert>}
         <div className="bls-compare-hero mb-3">
             <span className="bls-hero-kicker">API Player</span>
             <h1>{p.name}</h1>
