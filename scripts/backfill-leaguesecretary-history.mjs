@@ -328,6 +328,41 @@ export function buildPlayerHistory(snapshots) {
         .sort((a, b) => a.name.localeCompare(b.name) || a.sourcePlayerId - b.sourcePlayerId);
 }
 
+export function buildLeagueWeekHistory(snapshots) {
+    const ordered = [...snapshots].sort((a, b) => a.reporting.date.localeCompare(b.reporting.date) || a.reporting.week - b.reporting.week);
+    const ambiguousNames = new Set();
+
+    for (const snapshot of ordered) {
+        const idsByName = new Map();
+        for (const row of snapshot.bowlers) {
+            if (!row.sourcePlayerId || !row.normalizedName) continue;
+            const ids = idsByName.get(row.normalizedName) ?? new Set();
+            ids.add(row.sourcePlayerId);
+            idsByName.set(row.normalizedName, ids);
+        }
+        for (const [name, ids] of idsByName) if (ids.size > 1) ambiguousNames.add(name);
+    }
+
+    return ordered.map(snapshot => ({
+        season: snapshot.reporting.label,
+        seasonKey: seasonKey(snapshot.reporting),
+        week: snapshot.reporting.week,
+        date: snapshot.reporting.date,
+        bowlers: snapshot.bowlers
+            .filter(row => row.sourcePlayerId && row.normalizedName)
+            .map(row => ({
+                playerKey: ambiguousNames.has(row.normalizedName)
+                    ? row.normalizedName + ":" + row.sourcePlayerId
+                    : row.normalizedName,
+                weekGames: row.weekGames,
+                weekPins: row.weekPins,
+                weekSeries: row.weekSeries,
+                weekScores: (row.games ?? []).map(game => game.score),
+                handicap: row.handicap,
+            })),
+    }));
+}
+
 export async function backfillLeagueSecretaryHistory() {
     console.log(`Loading reporting periods from ${RECAP_SHEETS_URL}`);
     const baseHtml = await (await request(RECAP_SHEETS_URL)).text();
@@ -404,9 +439,15 @@ export async function backfillLeagueSecretaryHistory() {
         })),
     };
     writeFileSync(resolve(OUTPUT_DIR, "player-history-index.json"), `${JSON.stringify(historyIndex)}\n`);
+    const leagueWeekHistory = {
+        generatedAt: index.generatedAt,
+        qualifyingTeam: QUALIFYING_TEAM,
+        weeks: buildLeagueWeekHistory(snapshots),
+    };
+    writeFileSync(resolve(OUTPUT_DIR, "league-week-history.json"), `${JSON.stringify(leagueWeekHistory)}\n`);
     rmSync(resolve(OUTPUT_DIR, "player-history.json"), {force: true});
     console.log(`Imported ${snapshots.length} of ${periods.length} reporting weeks across ${seasons.length} qualifying seasons for ${players.length} bowlers.`);
-    return {index, historyIndex, players};
+    return {index, historyIndex, players, leagueWeekHistory};
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
