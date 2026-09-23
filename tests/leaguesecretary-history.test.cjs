@@ -213,4 +213,15 @@ test("committed LeagueSecretary archive contains varying exact weekly history", 
             [3, [195, 206, 172], 15],
         ],
     );
+
+    const leagueHistory = JSON.parse(fs.readFileSync(path.join(historyDir, "league-week-history.json"), "utf8"));
+    assert.equal(leagueHistory.weeks.length, index.importedWeeks);
+    const leagueWeek = leagueHistory.weeks.find(point => point.seasonKey === "2026-f" && point.week === 1);
+    assert.ok(leagueWeek);
+    const leagueNick = leagueWeek.bowlers.find(player => player.playerKey === "nickearhart");
+    assert.ok(leagueNick);
+    assert.deepEqual(
+        [leagueNick.weekScores, leagueNick.handicap, leagueNick.weekPins, leagueNick.weekSeries],
+        [[221, 185, 142], 25, 548, 548],
+    );
 });
