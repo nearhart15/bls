@@ -23,5 +23,16 @@ for (const [label, url] of routes) {
   const bowlerIds = [...html.matchAll(/BowlerID/g)].length;
   const totalPins = [...html.matchAll(/TotalPins/g)].length;
   console.log("\n===== " + label + " =====");
-  console.log(JSON.stringify({status: response.status, finalUrl: response.url, bytes: raw.length, reportLinks, pdfPaths, apiPaths, dataSources, bowlerIds, totalPins}, null, 2));
+  const contexts = {};
+  for (const needle of ["/League/InteractiveRecap", "leagueRecapTeam", "dataSource"]) {
+    const positions = [];
+    let at = 0;
+    while ((at = html.indexOf(needle, at)) >= 0 && positions.length < 8) {
+      positions.push(html.slice(Math.max(0, at - 1200), Math.min(html.length, at + 2600)));
+      at += needle.length;
+    }
+    contexts[needle] = positions;
+  }
+  const hiddenInputs = [...html.matchAll(/<input\b[^>]*type=["']hidden["'][^>]*>/gi)].map(m => m[0]).slice(0, 80);
+  console.log(JSON.stringify({status: response.status, finalUrl: response.url, bytes: raw.length, reportLinks, pdfPaths, apiPaths, dataSources, bowlerIds, totalPins, hiddenInputs, contexts}, null, 2));
 }
