@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {type FC} from "react";
+import {lazy, type FC} from "react";
 import {useParams} from "react-router";
 
 import Loader from "./components/loader";
@@ -26,7 +26,7 @@ import {
 import {AvailableLeagues} from "../data/league/league-info";
 import {useCachedFetcher} from "./components/cache/data-loader";
 import LeagueList from "./components/league/league-list";
-import LeagueDisplay from "./components/league/league-display";
+const LeagueDisplay = lazy(() => import("./components/league/league-display"));
 
 const League :FC = () => {
     const { leagueId, teamId } = useParams();
