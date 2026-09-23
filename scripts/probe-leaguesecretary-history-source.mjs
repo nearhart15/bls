@@ -36,3 +36,42 @@ for (const [label, url] of routes) {
   const hiddenInputs = [...html.matchAll(/<input\b[^>]*type=["']hidden["'][^>]*>/gi)].map(m => m[0]).slice(0, 80);
   console.log(JSON.stringify({status: response.status, finalUrl: response.url, bytes: raw.length, reportLinks, pdfPaths, apiPaths, dataSources, bowlerIds, totalPins, hiddenInputs, contexts}, null, 2));
 }
+
+
+console.log("\n===== period-specific recap endpoint =====");
+for (const probe of [
+  {label: "summer-2024-week-1-pins", year: 2024, season: "u", weekNum: 1, teamId: 26},
+  {label: "fall-2026-week-3-pins", year: 2026, season: "f", weekNum: 3, teamId: 24},
+]) {
+  const body = new URLSearchParams({
+    leagueId: "133016",
+    year: String(probe.year),
+    season: probe.season,
+    weekNum: String(probe.weekNum),
+    teamId: String(probe.teamId),
+    page: "1",
+    pageSize: "100",
+  });
+  const response = await fetch("https://www.leaguesecretary.com/League/InteractiveRecaps_Read", {
+    method: "POST",
+    headers: {
+      "user-agent": "BLS history-source probe",
+      "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+      accept: "application/json,text/plain,*/*",
+      "x-requested-with": "XMLHttpRequest",
+    },
+    body,
+  });
+  const text = await response.text();
+  let parsed = null;
+  try { parsed = JSON.parse(text); } catch {}
+  console.log(probe.label, JSON.stringify({
+    status: response.status,
+    contentType: response.headers.get("content-type"),
+    bytes: text.length,
+    total: parsed?.Total,
+    errors: parsed?.Errors,
+    rows: Array.isArray(parsed?.Data) ? parsed.Data.slice(0, 20) : null,
+    bodyPreview: parsed ? null : text.slice(0, 1200),
+  }, null, 2));
+}
