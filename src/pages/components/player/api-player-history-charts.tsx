@@ -1,16 +1,23 @@
 /* Historical API player charts © 2026 */
 
-import {type FC, useMemo, useState} from "react";
+import {type FC, useCallback, useMemo, useState} from "react";
 import type {ApexOptions} from "apexcharts";
 import {Form} from "react-bootstrap";
 
 import Chart from "../charts/safe-chart";
 import {baseChartOptions, chartPalette} from "../charts/chart-theme";
 import {useTheme} from "../theme";
-import type {ApiHistoricalPlayer} from "../../../data/player/api-player-history";
+import {useCachedFetcher} from "../cache/data-loader";
+import {
+    API_LEAGUE_HISTORY_CACHE_CATEGORY,
+    apiHistoricalLeagueFetcher,
+    type ApiHistoricalLeagueHistory,
+    type ApiHistoricalPlayer,
+} from "../../../data/player/api-player-history";
 import {
     API_PLAYER_PROGRESS_OPTIONS,
     API_PLAYER_TIMEFRAME_OPTIONS,
+    buildApiLeagueProgress,
     buildApiPlayerProgress,
     pointsForApiPlayerTimeframe,
     type ApiPlayerProgressMetric,
@@ -38,6 +45,20 @@ const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe
         () => buildApiPlayerProgress(points, metric),
         [points, metric],
     );
+    const leagueFetcher = useCallback(() => apiHistoricalLeagueFetcher(), []);
+    const {data: leagueData} = useCachedFetcher<ApiHistoricalLeagueHistory>(
+        leagueFetcher,
+        API_LEAGUE_HISTORY_CACHE_CATEGORY,
+    );
+    const leagueProgress = useMemo(
+        () => buildApiLeagueProgress(
+            leagueData?.weeks ?? [],
+            metric,
+            points[0]?.date,
+            points[points.length - 1]?.date,
+        ),
+        [leagueData, metric, points],
+    );
     if (points.length < 2) return null;
 
     const palette = chartPalette(theme);
@@ -46,10 +67,15 @@ const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe
     const hasValues = progress.some(point => point.value != null);
     const chartBase = baseChartOptions(theme, `${metricOption.label} over time`);
 
+    const leagueSeries = {
+        name: "League Avg",
+        type: "line" as const,
+        data: leagueProgress.map(point => ({x: dateValue(point.date), y: point.value})),
+    };
     const chartSeries: NonNullable<ApexOptions["series"]> = metric === "average"
         ? [
               {
-                  name: "Running Avg",
+                  name: historical.name,
                   type: "line",
                   data: progress.map(point => ({x: dateValue(point.date), y: point.value})),
               },
@@ -58,12 +84,16 @@ const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe
                   type: "line",
                   data: progress.map(point => ({x: dateValue(point.date), y: point.weeklyValue ?? null})),
               },
+              leagueSeries,
           ]
-        : [{
-              name: metricOption.label,
-              type: "line",
-              data: progress.map(point => ({x: dateValue(point.date), y: point.value})),
-          }];
+        : [
+              {
+                  name: historical.name,
+                  type: "line",
+                  data: progress.map(point => ({x: dateValue(point.date), y: point.value})),
+              },
+              leagueSeries,
+          ];
 
     const chartOptions: ApexOptions = {
         ...chartBase,
@@ -74,8 +104,12 @@ const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe
             type: "line",
         },
         series: chartSeries,
-        stroke: metric === "average" ? {curve: ["smooth", "straight"], width: [3, 2]} : {curve: "smooth", width: 3},
-        markers: metric === "average" ? {size: [2, 4], strokeWidth: 0} : {size: 3, strokeWidth: 0},
+        stroke: metric === "average"
+            ? {curve: ["smooth", "straight", "smooth"], width: [3, 2, 2.5]}
+            : {curve: ["smooth", "smooth"], width: [3, 2.5]},
+        markers: metric === "average"
+            ? {size: [2, 4, 0], strokeWidth: 0}
+            : {size: [3, 0], strokeWidth: 0},
         xaxis: {
             type: "datetime",
             labels: {datetimeUTC: false, format: "MMM yy", style: {colors: palette.text, fontSize: "11px"}},
@@ -91,12 +125,14 @@ const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe
         },
         tooltip: {
             ...chartBase.tooltip,
-            shared: metric === "average",
+            shared: true,
             intersect: false,
             x: {format: "dd MMM yyyy"},
             y: {
-                formatter: value => {
+                formatter: (value, opts) => {
                     if (value == null) return "—";
+                    const isLeagueAverage = opts?.seriesIndex === chartSeries.length - 1;
+                    if (metricOption.integer && isLeagueAverage) return Number(value).toFixed(1);
                     return metricOption.integer ? Math.round(Number(value)).toLocaleString() : Number(value).toFixed(1);
                 },
             },
@@ -125,7 +161,7 @@ const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe
                 </div>
             </div>
             <p className="text-secondary small mb-3">
-                Choose any player stat to see how it changed during the selected time frame. Totals, highs and achievement counts rebuild from the first recorded week in that range; absentee or vacant scores stay out.
+                Choose any player stat to see how it changed during the selected time frame. The League Avg line uses the same dates and calculation rules, so you can see how the player stacked up against the league. Totals, highs and achievement counts rebuild from the first recorded week in that range; absentee or vacant scores stay out.
             </p>
             <div className="bls-surface-card p-2 p-md-3">
                 {hasValues ? (
