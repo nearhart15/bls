@@ -33,6 +33,7 @@ export interface CacheEntry {
 
 export class Cache {
     cache = new Map<string, Map<string, CacheEntry>>();
+    private inFlight = new Map<string, Map<string, Promise<object>>>();
 
     get (category: string, key: string = SINGLE_ENTRY_CATEGORY_KEY ) : unknown {
         const categoryCache = this.getCategoryCache(category, false);
@@ -61,8 +62,32 @@ export class Cache {
         }
     }
 
+    getOrFetch<T extends object>(
+        category: string,
+        key: string = SINGLE_ENTRY_CATEGORY_KEY,
+        fetcher: () => Promise<T>,
+    ): Promise<T> {
+        let categoryRequests = this.inFlight.get(category);
+        const existing = categoryRequests?.get(key) as Promise<T> | undefined;
+        if (existing) return existing;
+
+        if (!categoryRequests) {
+            categoryRequests = new Map<string, Promise<object>>();
+            this.inFlight.set(category, categoryRequests);
+        }
+
+        const request = fetcher().finally(() => {
+            const requests = this.inFlight.get(category);
+            requests?.delete(key);
+            if (requests?.size === 0) this.inFlight.delete(category);
+        });
+        categoryRequests.set(key, request);
+        return request;
+    }
+
     clear() {
         this.cache.clear();
+        this.inFlight.clear();
     }
 
     private getCategoryCache(category: string, createIfMissing: boolean) {
