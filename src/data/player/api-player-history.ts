@@ -15,6 +15,8 @@ export interface ApiHistoricalPlayerPoint {
     weekPins: number | null;
     weekAverage: number | null;
     weekSeries: number | null;
+    weekScores?: number[];
+    handicap?: number | null;
     highGame: number;
     highSeries: number;
 }
