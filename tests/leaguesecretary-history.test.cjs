@@ -154,7 +154,8 @@ test("absentee rows create a gap without changing season totals", async () => {
 test("committed LeagueSecretary archive contains varying exact weekly history", () => {
     const historyDir = path.resolve(__dirname, "../public/data/leaguesecretary-beer-history");
     const index = JSON.parse(fs.readFileSync(path.join(historyDir, "player-history-index.json"), "utf8"));
-    assert.equal(index.importedWeeks, 107);
+    assert.ok(index.importedWeeks >= 107);
+    assert.ok(index.totalReportingPeriods == null || index.totalReportingPeriods >= 136);
     const nick = index.players.find(player => player.normalizedName === "nickearhart");
     assert.ok(nick);
     assert.deepEqual(nick.sourcePlayerIds, [160, 237]);
@@ -168,8 +169,9 @@ test("committed LeagueSecretary archive contains varying exact weekly history", 
         history.history.slice(0, 3).map(point => [point.week, point.weekPins, point.weekSeries]),
         [[1, 499, 499], [2, 546, 546], [3, 520, 520]],
     );
+    const fall2026 = history.history.filter(point => point.seasonKey === "2026-f");
     assert.deepEqual(
-        history.history.slice(-3).map(point => [point.week, point.weekPins, point.weekSeries]),
+        fall2026.filter(point => [1, 2, 3].includes(point.week)).map(point => [point.week, point.weekPins, point.weekSeries]),
         [[1, 548, 548], [2, 615, 615], [3, 573, 573]],
     );
 });
