@@ -314,6 +314,8 @@ export function buildPlayerHistory(snapshots) {
                 weekPins: row.weekPins,
                 weekAverage: row.weekAverage,
                 weekSeries: row.weekSeries,
+                weekScores: (row.games ?? []).map(game => game.score),
+                handicap: row.handicap,
                 highGame: totals.highGame,
                 highSeries: totals.highSeries,
             });
