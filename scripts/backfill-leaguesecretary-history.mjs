@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -272,17 +272,31 @@ export async function backfillLeagueSecretaryHistory() {
     };
     mkdirSync(resolve(OUTPUT_DIR), {recursive: true});
     writeFileSync(resolve(OUTPUT_DIR, "index.json"), `${JSON.stringify(index, null, 2)}\n`);
-    const history = {
+    const players = buildPlayerHistory(snapshots);
+    const playerDirectory = resolve(OUTPUT_DIR, "players");
+    rmSync(playerDirectory, {recursive: true, force: true});
+    mkdirSync(playerDirectory, {recursive: true});
+    for (const player of players) {
+        writeFileSync(resolve(playerDirectory, `${player.sourcePlayerId}.json`), `${JSON.stringify(player)}\n`);
+    }
+    const historyIndex = {
         generatedAt: index.generatedAt,
         source: index.source,
         qualifyingTeam: QUALIFYING_TEAM,
         seasons,
         importedWeeks: snapshots.length,
-        players: buildPlayerHistory(snapshots),
+        players: players.map(player => ({
+            sourcePlayerId: player.sourcePlayerId,
+            name: player.name,
+            sourceName: player.sourceName,
+            normalizedName: player.normalizedName,
+            teamNames: [...new Set(player.history.map(point => point.teamName).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
+        })),
     };
-    writeFileSync(resolve(OUTPUT_DIR, "player-history.json"), `${JSON.stringify(history, null, 2)}\n`);
-    console.log(`Imported ${snapshots.length} of ${periods.length} reporting weeks across ${seasons.length} qualifying seasons.`);
-    return {index, history};
+    writeFileSync(resolve(OUTPUT_DIR, "player-history-index.json"), `${JSON.stringify(historyIndex)}\n`);
+    rmSync(resolve(OUTPUT_DIR, "player-history.json"), {force: true});
+    console.log(`Imported ${snapshots.length} of ${periods.length} reporting weeks across ${seasons.length} qualifying seasons for ${players.length} bowlers.`);
+    return {index, historyIndex, players};
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
