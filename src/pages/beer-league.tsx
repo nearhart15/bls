@@ -1,4 +1,4 @@
-import {type FC,useCallback,useEffect,useMemo,useState} from "react";
+import {type FC,useCallback,useMemo,useState} from "react";
 import {Link} from "react-router";
 import {Accordion,Alert,Badge,Button,ButtonGroup,Card,Col,Form,Row,Spinner,Tab,Table,Tabs} from "react-bootstrap";
 import {buildFullPlayerList,PLAYER_INDEX_CACHE_CATEGORY,type PlayerListEntry} from "../data/player/player-aggregate";
@@ -11,22 +11,30 @@ interface BeerLeagueData{status:"pending"|"ready";message?:string;generatedAt:st
 interface LeaguePlayerRow extends BeerPlayer{teamNumber:number|null;teamName:string;division:string|null;isSub:boolean;apiPlayerId:string;framePlayer?:PlayerListEntry}
 type PlayerFilter="all"|"frame"|"website";
 
+const BEER_LEAGUE_CACHE_CATEGORY = "beer-league-import-v1";
+async function beerLeagueFetcher(): Promise<BeerLeagueData> {
+ const response = await fetch(`${import.meta.env.BASE_URL}data/beer-league.json`, {cache:"no-cache"});
+ if(!response.ok) throw new Error(`Beer League data returned ${response.status}.`);
+ return await response.json() as BeerLeagueData;
+}
+
 function normalizeName(name:string){return name.toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]/g,"");}
 function slug(name:string){return name.toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
 function apiPlayerId(teamNumber:number|null,name:string,index:number){return `api-${teamNumber??"sub"}-${slug(name)}-${index}`;}
 const PlayerSourceBadge:FC<{hasFrames:boolean}>=({hasFrames})=>hasFrames?<Badge bg="success">Frame data</Badge>:<Badge bg="secondary">Website stats</Badge>;
 
 const BeerLeague:FC=()=>{
- const[data,setData]=useState<BeerLeagueData|null>(null),[error,setError]=useState<string|null>(null),[playerFilter,setPlayerFilter]=useState<PlayerFilter>("all"),[playerSearch,setPlayerSearch]=useState("");
+ const[playerFilter,setPlayerFilter]=useState<PlayerFilter>("all"),[playerSearch,setPlayerSearch]=useState("");
+ const dataFetcher=useCallback(()=>beerLeagueFetcher(),[]);
+ const{data,isLoading,error}=useCachedFetcher<BeerLeagueData>(dataFetcher,BEER_LEAGUE_CACHE_CATEGORY);
  const frameFetcher=useCallback(()=>buildFullPlayerList(),[]);const{data:framePlayers,isLoading:framePlayersLoading}=useCachedFetcher<PlayerListEntry[]>(frameFetcher,PLAYER_INDEX_CACHE_CATEGORY);
- useEffect(()=>{fetch(`${import.meta.env.BASE_URL}data/beer-league.json?ts=${Date.now()}`,{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error(`Beer League data returned ${r.status}.`);return r.json() as Promise<BeerLeagueData>;}).then(setData).catch((reason:unknown)=>{setError(reason instanceof Error?reason.message:String(reason));});},[]);
  const divisions=useMemo(()=>[...new Set((data?.standings??[]).map(t=>t.division).filter(Boolean))] as string[],[data]);
  const frameByName=useMemo(()=>new Map((framePlayers??[]).map(p=>[normalizeName(p.name),p])),[framePlayers]);
  const allPlayers=useMemo<LeaguePlayerRow[]>(()=>{if(!data)return[];const roster=data.teams.flatMap(team=>team.players.map((player,index)=>({...player,teamNumber:team.number,teamName:team.name,division:team.division??null,isSub:false,apiPlayerId:apiPlayerId(team.number,player.name,index),framePlayer:frameByName.get(normalizeName(player.name))})));const subs=(data.substitutes??[]).map((player,index)=>({...player,teamNumber:null,teamName:"Substitute",division:null,isSub:true,apiPlayerId:apiPlayerId(null,player.name,index),framePlayer:frameByName.get(normalizeName(player.name))}));return[...roster,...subs];},[data,frameByName]);
  const activePlayers=useMemo(()=>allPlayers.filter(p=>p.games>0),[allPlayers]),frameDataPlayers=useMemo(()=>allPlayers.filter(p=>Boolean(p.framePlayer)),[allPlayers]),websitePlayers=useMemo(()=>allPlayers.filter(p=>!p.framePlayer),[allPlayers]);
  const visiblePlayers=useMemo(()=>{const q=normalizeName(playerSearch);return allPlayers.filter(p=>playerFilter==="all"||(playerFilter==="frame"?Boolean(p.framePlayer):!p.framePlayer)).filter(p=>!q||normalizeName(`${p.name} ${p.teamName}`).includes(q)).sort((a,b)=>b.games-a.games||b.average-a.average||a.name.localeCompare(b.name));},[allPlayers,playerFilter,playerSearch]);
  const leaders=useMemo(()=>{const e=activePlayers.filter(p=>!p.isSub);return{byAverage:[...e].sort((a,b)=>b.average-a.average||b.games-a.games).slice(0,10),byHighGame:[...e].sort((a,b)=>b.highGame-a.highGame||b.average-a.average).slice(0,10),byHighSeries:[...e].sort((a,b)=>b.highSeries-a.highSeries||b.average-a.average).slice(0,10),byPins:[...e].sort((a,b)=>b.pins-a.pins||b.games-a.games).slice(0,10)};},[activePlayers]);
- if(error)return <Alert variant="danger">Could not load the imported Beer League data: {error}</Alert>;if(!data)return <div className="d-flex align-items-center gap-2"><Spinner size="sm"/><span>Loading Beer League data…</span></div>;if(data.status!=="ready")return <Alert variant="info">{data.message??"Beer League import has not run yet."}</Alert>;
+ if(error)return <Alert variant="danger">Could not load the imported Beer League data: {error instanceof Error?error.message:String(error)}</Alert>;if(isLoading||!data)return <div className="d-flex align-items-center gap-2"><Spinner size="sm"/><span>Loading Beer League data…</span></div>;if(data.status!=="ready")return <Alert variant="info">{data.message??"Beer League import has not run yet."}</Alert>;
  const renderPlayerName=(p:LeaguePlayerRow)=><Link to={`/player/${p.framePlayer?.id??p.apiPlayerId}`} className="fw-semibold text-decoration-none">{p.name}</Link>;
  const leaderTable=(players:LeaguePlayerRow[],value:(p:LeaguePlayerRow)=>number,label:string)=><div className="table-responsive"><Table hover size="sm" className="mb-0 align-middle"><thead><tr><th>#</th><th>Bowler</th><th>Team</th><th className="text-end">{label}</th></tr></thead><tbody>{players.map((p,i)=><tr key={`${label}-${p.teamNumber}-${p.name}`}><td>{i+1}</td><td>{renderPlayerName(p)} <span className="ms-1"><PlayerSourceBadge hasFrames={Boolean(p.framePlayer)}/></span></td><td className="text-body-secondary">{p.teamName}</td><td className="text-end fw-semibold">{value(p).toLocaleString()}</td></tr>)}</tbody></Table></div>;
  return <div>
