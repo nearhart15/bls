@@ -1,0 +1,4098 @@
+{
+  "source": {
+    "provider": "LeagueSecretary",
+    "leagueId": 133016,
+    "url": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/4/0",
+    "endpoint": "https://www.leaguesecretary.com/League/InteractiveRecaps_Read"
+  },
+  "reporting": {
+    "week": 4,
+    "year": 2025,
+    "seasonCode": "f",
+    "label": "Fall 2025",
+    "date": "2025-09-25",
+    "sourceLabel": "Fall 2025 Week 4 09/25/2025"
+  },
+  "qualifyingTeam": "Pins Go Boom!",
+  "teams": [
+    {
+      "id": 26,
+      "name": "$h!t A Brick",
+      "number": 26,
+      "lane": null,
+      "pointsWon": null
+    },
+    {
+      "id": 20,
+      "name": "2 Fingers Sometimes 3",
+      "number": 20,
+      "lane": 19,
+      "pointsWon": 1
+    },
+    {
+      "id": 32,
+      "name": "Bada Bing!!!!",
+      "number": 32,
+      "lane": 10,
+      "pointsWon": 3
+    },
+    {
+      "id": 38,
+      "name": "Beer Frames",
+      "number": 38,
+      "lane": null,
+      "pointsWon": null
+    },
+    {
+      "id": 3,
+      "name": "Bourbon Achiever",
+      "number": 3,
+      "lane": 34,
+      "pointsWon": 0
+    },
+    {
+      "id": 24,
+      "name": "Bowl & a Blintz",
+      "number": 24,
+      "lane": 13,
+      "pointsWon": 0
+    },
+    {
+      "id": 10,
+      "name": "Brutal Poodle",
+      "number": 10,
+      "lane": 38,
+      "pointsWon": 3
+    },
+    {
+      "id": 2,
+      "name": "CUNTh",
+      "number": 2,
+      "lane": 26,
+      "pointsWon": 1
+    },
+    {
+      "id": 33,
+      "name": "Dammit Fiser",
+      "number": 33,
+      "lane": 20,
+      "pointsWon": 3
+    },
+    {
+      "id": 40,
+      "name": "Diamond Dogs",
+      "number": 40,
+      "lane": 5,
+      "pointsWon": 1
+    },
+    {
+      "id": 14,
+      "name": "Enye Menie Myne",
+      "number": 14,
+      "lane": 22,
+      "pointsWon": 2
+    },
+    {
+      "id": 39,
+      "name": "Flint Tropics",
+      "number": 39,
+      "lane": null,
+      "pointsWon": null
+    },
+    {
+      "id": 21,
+      "name": "From Da' Gutta",
+      "number": 21,
+      "lane": null,
+      "pointsWon": null
+    },
+    {
+      "id": 5,
+      "name": "Great Balls of Fire",
+      "number": 5,
+      "lane": 1,
+      "pointsWon": 2
+    },
+    {
+      "id": 23,
+      "name": "Gutter Butter",
+      "number": 23,
+      "lane": 30,
+      "pointsWon": 3
+    },
+    {
+      "id": 15,
+      "name": "Hold My Ballz",
+      "number": 15,
+      "lane": null,
+      "pointsWon": null
+    },
+    {
+      "id": 6,
+      "name": "Hookers & Bowl",
+      "number": 6,
+      "lane": 29,
+      "pointsWon": 1
+    },
+    {
+      "id": 35,
+      "name": "Inconsistently Consistent",
+      "number": 35,
+      "lane": null,
+      "pointsWon": null
+    },
+    {
+      "id": 28,
+      "name": "Irritable Bowl S",
+      "number": 28,
+      "lane": 9,
+      "pointsWon": 1
+    },
+    {
+      "id": 8,
+      "name": "Itchy",
+      "number": 8,
+      "lane": 32,
+      "pointsWon": 3
+    },
+    {
+      "id": 11,
+      "name": "Joe Mama",
+      "number": 11,
+      "lane": 33,
+      "pointsWon": 4
+    },
+    {
+      "id": 4,
+      "name": "Just Split On It",
+      "number": 4,
+      "lane": 18,
+      "pointsWon": 4
+    },
+    {
+      "id": 22,
+      "name": "Keep It 100",
+      "number": 22,
+      "lane": 15,
+      "pointsWon": 4
+    },
+    {
+      "id": 37,
+      "name": "Lads of Leisure",
+      "number": 37,
+      "lane": 11,
+      "pointsWon": 1
+    },
+    {
+      "id": 12,
+      "name": "Master Exploders",
+      "number": 12,
+      "lane": null,
+      "pointsWon": null
+    },
+    {
+      "id": 7,
+      "name": "Nine-Nine",
+      "number": 7,
+      "lane": 37,
+      "pointsWon": 1
+    },
+    {
+      "id": 16,
+      "name": "Ooo Weee",
+      "number": 16,
+      "lane": 36,
+      "pointsWon": 3
+    },
+    {
+      "id": 18,
+      "name": "Pin n' Juice",
+      "number": 18,
+      "lane": 31,
+      "pointsWon": 1
+    },
+    {
+      "id": 34,
+      "name": "Pins Go Boom!",
+      "number": 34,
+      "lane": 7,
+      "pointsWon": 3
+    },
+    {
+      "id": 13,
+      "name": "Pintourage",
+      "number": 13,
+      "lane": 3,
+      "pointsWon": 0
+    },
+    {
+      "id": 1,
+      "name": "Pork Missiles",
+      "number": 1,
+      "lane": 28,
+      "pointsWon": 4
+    },
+    {
+      "id": 9,
+      "name": "Salty Gutter Balls",
+      "number": 9,
+      "lane": 24,
+      "pointsWon": 2
+    },
+    {
+      "id": 17,
+      "name": "Split On My Ball",
+      "number": 17,
+      "lane": 12,
+      "pointsWon": 3
+    },
+    {
+      "id": 30,
+      "name": "STRIKE JUICE",
+      "number": 30,
+      "lane": 27,
+      "pointsWon": 0
+    },
+    {
+      "id": 29,
+      "name": "Team Blind Squirrel",
+      "number": 29,
+      "lane": null,
+      "pointsWon": null
+    },
+    {
+      "id": 36,
+      "name": "The Alley Cats",
+      "number": 36,
+      "lane": 4,
+      "pointsWon": 4
+    },
+    {
+      "id": 19,
+      "name": "The Strykettes",
+      "number": 19,
+      "lane": 40,
+      "pointsWon": 4
+    },
+    {
+      "id": 25,
+      "name": "Thumbs In",
+      "number": 25,
+      "lane": null,
+      "pointsWon": null
+    },
+    {
+      "id": 31,
+      "name": "Trash Pandas",
+      "number": 31,
+      "lane": 6,
+      "pointsWon": 3
+    },
+    {
+      "id": 27,
+      "name": "Turkey Club",
+      "number": 27,
+      "lane": 17,
+      "pointsWon": 0
+    }
+  ],
+  "bowlers": [
+    {
+      "sourcePlayerId": 266,
+      "sourceName": "Rogers, Mark",
+      "name": "Mark Rogers",
+      "normalizedName": "markrogers",
+      "teamId": 20,
+      "teamName": "2 Fingers Sometimes 3",
+      "teamNumber": 20,
+      "enteringAverage": 140,
+      "handicap": 63,
+      "games": [
+        {
+          "game": 1,
+          "score": 116,
+          "type": "S",
+          "raw": "116"
+        },
+        {
+          "game": 2,
+          "score": 164,
+          "type": "S",
+          "raw": "164"
+        },
+        {
+          "game": 3,
+          "score": 214,
+          "type": "S",
+          "raw": "214"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 494,
+      "weekAverage": 164.7,
+      "weekSeries": 494
+    },
+    {
+      "sourcePlayerId": 263,
+      "sourceName": "Rogers, Aimee",
+      "name": "Aimee Rogers",
+      "normalizedName": "aimeerogers",
+      "teamId": 20,
+      "teamName": "2 Fingers Sometimes 3",
+      "teamNumber": 20,
+      "enteringAverage": 117,
+      "handicap": 83,
+      "games": [
+        {
+          "game": 1,
+          "score": 106,
+          "type": "S",
+          "raw": "106"
+        },
+        {
+          "game": 2,
+          "score": 108,
+          "type": "S",
+          "raw": "108"
+        },
+        {
+          "game": 3,
+          "score": 119,
+          "type": "S",
+          "raw": "119"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 333,
+      "weekAverage": 111,
+      "weekSeries": 333
+    },
+    {
+      "sourcePlayerId": 268,
+      "sourceName": "Ammon, Matt",
+      "name": "Matt Ammon",
+      "normalizedName": "mattammon",
+      "teamId": 20,
+      "teamName": "2 Fingers Sometimes 3",
+      "teamNumber": 20,
+      "enteringAverage": 168,
+      "handicap": 37,
+      "games": [],
+      "weekGames": null,
+      "weekPins": null,
+      "weekAverage": null,
+      "weekSeries": null
+    },
+    {
+      "sourcePlayerId": 269,
+      "sourceName": "Self, Bruce",
+      "name": "Bruce Self",
+      "normalizedName": "bruceself",
+      "teamId": 20,
+      "teamName": "2 Fingers Sometimes 3",
+      "teamNumber": 20,
+      "enteringAverage": 207,
+      "handicap": 2,
+      "games": [
+        {
+          "game": 1,
+          "score": 177,
+          "type": "S",
+          "raw": "177"
+        },
+        {
+          "game": 2,
+          "score": 167,
+          "type": "S",
+          "raw": "167"
+        },
+        {
+          "game": 3,
+          "score": 166,
+          "type": "S",
+          "raw": "166"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 510,
+      "weekAverage": 170,
+      "weekSeries": 510
+    },
+    {
+      "sourcePlayerId": 159,
+      "sourceName": "Michaelis, Bj",
+      "name": "Bj Michaelis",
+      "normalizedName": "bjmichaelis",
+      "teamId": 32,
+      "teamName": "Bada Bing!!!!",
+      "teamNumber": 32,
+      "enteringAverage": 143,
+      "handicap": 60,
+      "games": [],
+      "weekGames": null,
+      "weekPins": null,
+      "weekAverage": null,
+      "weekSeries": null
+    },
+    {
+      "sourcePlayerId": 29,
+      "sourceName": "Swenson, Tim",
+      "name": "Tim Swenson",
+      "normalizedName": "timswenson",
+      "teamId": 32,
+      "teamName": "Bada Bing!!!!",
+      "teamNumber": 32,
+      "enteringAverage": 139,
+      "handicap": 63,
+      "games": [
+        {
+          "game": 1,
+          "score": 149,
+          "type": "S",
+          "raw": "149"
+        },
+        {
+          "game": 2,
+          "score": 156,
+          "type": "S",
+          "raw": "156"
+        },
+        {
+          "game": 3,
+          "score": 156,
+          "type": "S",
+          "raw": "156"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 461,
+      "weekAverage": 153.7,
+      "weekSeries": 461
+    },
+    {
+      "sourcePlayerId": 25,
+      "sourceName": "Miller, Greg",
+      "name": "Greg Miller",
+      "normalizedName": "gregmiller",
+      "teamId": 32,
+      "teamName": "Bada Bing!!!!",
+      "teamNumber": 32,
+      "enteringAverage": 178,
+      "handicap": 28,
+      "games": [
+        {
+          "game": 1,
+          "score": 231,
+          "type": "S",
+          "raw": "231"
+        },
+        {
+          "game": 2,
+          "score": 147,
+          "type": "S",
+          "raw": "147"
+        },
+        {
+          "game": 3,
+          "score": 165,
+          "type": "S",
+          "raw": "165"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 543,
+      "weekAverage": 181,
+      "weekSeries": 543
+    },
+    {
+      "sourcePlayerId": 27,
+      "sourceName": "Romero, Ted",
+      "name": "Ted Romero",
+      "normalizedName": "tedromero",
+      "teamId": 32,
+      "teamName": "Bada Bing!!!!",
+      "teamNumber": 32,
+      "enteringAverage": 193,
+      "handicap": 15,
+      "games": [
+        {
+          "game": 1,
+          "score": 151,
+          "type": "S",
+          "raw": "151"
+        },
+        {
+          "game": 2,
+          "score": 158,
+          "type": "S",
+          "raw": "158"
+        },
+        {
+          "game": 3,
+          "score": 189,
+          "type": "S",
+          "raw": "189"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 498,
+      "weekAverage": 166,
+      "weekSeries": 498
+    },
+    {
+      "sourcePlayerId": 179,
+      "sourceName": "Long, Drew",
+      "name": "Drew Long",
+      "normalizedName": "drewlong",
+      "teamId": 3,
+      "teamName": "Bourbon Achiever",
+      "teamNumber": 3,
+      "enteringAverage": 157,
+      "handicap": 47,
+      "games": [
+        {
+          "game": 1,
+          "score": 145,
+          "type": "S",
+          "raw": "145"
+        },
+        {
+          "game": 2,
+          "score": 192,
+          "type": "S",
+          "raw": "192"
+        },
+        {
+          "game": 3,
+          "score": 139,
+          "type": "S",
+          "raw": "139"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 476,
+      "weekAverage": 158.7,
+      "weekSeries": 476
+    },
+    {
+      "sourcePlayerId": 96,
+      "sourceName": "Tetrick, Tom",
+      "name": "Tom Tetrick",
+      "normalizedName": "tomtetrick",
+      "teamId": 3,
+      "teamName": "Bourbon Achiever",
+      "teamNumber": 3,
+      "enteringAverage": 194,
+      "handicap": 14,
+      "games": [
+        {
+          "game": 1,
+          "score": 153,
+          "type": "S",
+          "raw": "153"
+        },
+        {
+          "game": 2,
+          "score": 165,
+          "type": "S",
+          "raw": "165"
+        },
+        {
+          "game": 3,
+          "score": 186,
+          "type": "S",
+          "raw": "186"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 504,
+      "weekAverage": 168,
+      "weekSeries": 504
+    },
+    {
+      "sourcePlayerId": 18,
+      "sourceName": "Fowlds, Zach",
+      "name": "Zach Fowlds",
+      "normalizedName": "zachfowlds",
+      "teamId": 24,
+      "teamName": "Bowl & a Blintz",
+      "teamNumber": 24,
+      "enteringAverage": 182,
+      "handicap": 25,
+      "games": [],
+      "weekGames": null,
+      "weekPins": null,
+      "weekAverage": null,
+      "weekSeries": null
+    },
+    {
+      "sourcePlayerId": 108,
+      "sourceName": "Ballinger, Tyler",
+      "name": "Tyler Ballinger",
+      "normalizedName": "tylerballinger",
+      "teamId": 24,
+      "teamName": "Bowl & a Blintz",
+      "teamNumber": 24,
+      "enteringAverage": 162,
+      "handicap": 43,
+      "games": [
+        {
+          "game": 1,
+          "score": 173,
+          "type": "S",
+          "raw": "173"
+        },
+        {
+          "game": 2,
+          "score": 149,
+          "type": "S",
+          "raw": "149"
+        },
+        {
+          "game": 3,
+          "score": 125,
+          "type": "S",
+          "raw": "125"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 447,
+      "weekAverage": 149,
+      "weekSeries": 447
+    },
+    {
+      "sourcePlayerId": 328,
+      "sourceName": "Fowlds, Greg",
+      "name": "Greg Fowlds",
+      "normalizedName": "gregfowlds",
+      "teamId": 24,
+      "teamName": "Bowl & a Blintz",
+      "teamNumber": 24,
+      "enteringAverage": 120,
+      "handicap": 81,
+      "games": [],
+      "weekGames": null,
+      "weekPins": null,
+      "weekAverage": null,
+      "weekSeries": null
+    },
+    {
+      "sourcePlayerId": 26,
+      "sourceName": "Lever, Chris",
+      "name": "Chris Lever",
+      "normalizedName": "chrislever",
+      "teamId": 24,
+      "teamName": "Bowl & a Blintz",
+      "teamNumber": 24,
+      "enteringAverage": 174,
+      "handicap": 32,
+      "games": [
+        {
+          "game": 1,
+          "score": 175,
+          "type": "S",
+          "raw": "175"
+        },
+        {
+          "game": 2,
+          "score": 182,
+          "type": "S",
+          "raw": "182"
+        },
+        {
+          "game": 3,
+          "score": 183,
+          "type": "S",
+          "raw": "183"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 540,
+      "weekAverage": 180,
+      "weekSeries": 540
+    },
+    {
+      "sourcePlayerId": 153,
+      "sourceName": "Dillin, Darci",
+      "name": "Darci Dillin",
+      "normalizedName": "darcidillin",
+      "teamId": 10,
+      "teamName": "Brutal Poodle",
+      "teamNumber": 10,
+      "enteringAverage": 134,
+      "handicap": 68,
+      "games": [
+        {
+          "game": 1,
+          "score": 105,
+          "type": "S",
+          "raw": "105"
+        },
+        {
+          "game": 2,
+          "score": 125,
+          "type": "S",
+          "raw": "125"
+        },
+        {
+          "game": 3,
+          "score": 151,
+          "type": "S",
+          "raw": "151"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 381,
+      "weekAverage": 127,
+      "weekSeries": 381
+    },
+    {
+      "sourcePlayerId": 158,
+      "sourceName": "Rickher, Stephanie",
+      "name": "Stephanie Rickher",
+      "normalizedName": "stephanierickher",
+      "teamId": 10,
+      "teamName": "Brutal Poodle",
+      "teamNumber": 10,
+      "enteringAverage": 126,
+      "handicap": 75,
+      "games": [
+        {
+          "game": 1,
+          "score": 138,
+          "type": "S",
+          "raw": "138"
+        },
+        {
+          "game": 2,
+          "score": 117,
+          "type": "S",
+          "raw": "117"
+        },
+        {
+          "game": 3,
+          "score": 110,
+          "type": "S",
+          "raw": "110"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 365,
+      "weekAverage": 121.7,
+      "weekSeries": 365
+    },
+    {
+      "sourcePlayerId": 5,
+      "sourceName": "Root, Rachael",
+      "name": "Rachael Root",
+      "normalizedName": "rachaelroot",
+      "teamId": 2,
+      "teamName": "CUNTh",
+      "teamNumber": 2,
+      "enteringAverage": 113,
+      "handicap": 87,
+      "games": [],
+      "weekGames": null,
+      "weekPins": null,
+      "weekAverage": null,
+      "weekSeries": null
+    },
+    {
+      "sourcePlayerId": 6,
+      "sourceName": "Dupont, Jena",
+      "name": "Jena Dupont",
+      "normalizedName": "jenadupont",
+      "teamId": 2,
+      "teamName": "CUNTh",
+      "teamNumber": 2,
+      "enteringAverage": 148,
+      "handicap": 55,
+      "games": [
+        {
+          "game": 1,
+          "score": 123,
+          "type": "S",
+          "raw": "123"
+        },
+        {
+          "game": 2,
+          "score": 116,
+          "type": "S",
+          "raw": "116"
+        },
+        {
+          "game": 3,
+          "score": 146,
+          "type": "S",
+          "raw": "146"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 385,
+      "weekAverage": 128.3,
+      "weekSeries": 385
+    },
+    {
+      "sourcePlayerId": 7,
+      "sourceName": "Root, Jon",
+      "name": "Jon Root",
+      "normalizedName": "jonroot",
+      "teamId": 2,
+      "teamName": "CUNTh",
+      "teamNumber": 2,
+      "enteringAverage": 154,
+      "handicap": 50,
+      "games": [
+        {
+          "game": 1,
+          "score": 179,
+          "type": "S",
+          "raw": "179"
+        },
+        {
+          "game": 2,
+          "score": 181,
+          "type": "S",
+          "raw": "181"
+        },
+        {
+          "game": 3,
+          "score": 208,
+          "type": "S",
+          "raw": "208"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 568,
+      "weekAverage": 189.3,
+      "weekSeries": 568
+    },
+    {
+      "sourcePlayerId": 9,
+      "sourceName": "Dupont, Dustin",
+      "name": "Dustin Dupont",
+      "normalizedName": "dustindupont",
+      "teamId": 2,
+      "teamName": "CUNTh",
+      "teamNumber": 2,
+      "enteringAverage": 177,
+      "handicap": 29,
+      "games": [
+        {
+          "game": 1,
+          "score": 160,
+          "type": "S",
+          "raw": "160"
+        },
+        {
+          "game": 2,
+          "score": 194,
+          "type": "S",
+          "raw": "194"
+        },
+        {
+          "game": 3,
+          "score": 127,
+          "type": "S",
+          "raw": "127"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 481,
+      "weekAverage": 160.3,
+      "weekSeries": 481
+    },
+    {
+      "sourcePlayerId": 37,
+      "sourceName": "Hollander, Leslie",
+      "name": "Leslie Hollander",
+      "normalizedName": "lesliehollander",
+      "teamId": 33,
+      "teamName": "Dammit Fiser",
+      "teamNumber": 33,
+      "enteringAverage": 143,
+      "handicap": 60,
+      "games": [
+        {
+          "game": 1,
+          "score": 153,
+          "type": "S",
+          "raw": "153"
+        },
+        {
+          "game": 2,
+          "score": 162,
+          "type": "S",
+          "raw": "162"
+        },
+        {
+          "game": 3,
+          "score": 167,
+          "type": "S",
+          "raw": "167"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 482,
+      "weekAverage": 160.7,
+      "weekSeries": 482
+    },
+    {
+      "sourcePlayerId": 38,
+      "sourceName": "Hollander, Bas",
+      "name": "Bas Hollander",
+      "normalizedName": "bashollander",
+      "teamId": 33,
+      "teamName": "Dammit Fiser",
+      "teamNumber": 33,
+      "enteringAverage": 134,
+      "handicap": 68,
+      "games": [
+        {
+          "game": 1,
+          "score": 142,
+          "type": "S",
+          "raw": "142"
+        },
+        {
+          "game": 2,
+          "score": 135,
+          "type": "S",
+          "raw": "135"
+        },
+        {
+          "game": 3,
+          "score": 132,
+          "type": "S",
+          "raw": "132"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 409,
+      "weekAverage": 136.3,
+      "weekSeries": 409
+    },
+    {
+      "sourcePlayerId": 233,
+      "sourceName": "Eskanos, Jake",
+      "name": "Jake Eskanos",
+      "normalizedName": "jakeeskanos",
+      "teamId": 33,
+      "teamName": "Dammit Fiser",
+      "teamNumber": 33,
+      "enteringAverage": 153,
+      "handicap": 51,
+      "games": [
+        {
+          "game": 1,
+          "score": 120,
+          "type": "S",
+          "raw": "120"
+        },
+        {
+          "game": 2,
+          "score": 132,
+          "type": "S",
+          "raw": "132"
+        },
+        {
+          "game": 3,
+          "score": 129,
+          "type": "S",
+          "raw": "129"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 381,
+      "weekAverage": 127,
+      "weekSeries": 381
+    },
+    {
+      "sourcePlayerId": 234,
+      "sourceName": "Buist, Johno",
+      "name": "Johno Buist",
+      "normalizedName": "johnobuist",
+      "teamId": 33,
+      "teamName": "Dammit Fiser",
+      "teamNumber": 33,
+      "enteringAverage": 169,
+      "handicap": 36,
+      "games": [
+        {
+          "game": 1,
+          "score": 160,
+          "type": "S",
+          "raw": "160"
+        },
+        {
+          "game": 2,
+          "score": 202,
+          "type": "S",
+          "raw": "202"
+        },
+        {
+          "game": 3,
+          "score": 172,
+          "type": "S",
+          "raw": "172"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 534,
+      "weekAverage": 178,
+      "weekSeries": 534
+    },
+    {
+      "sourcePlayerId": 181,
+      "sourceName": "Ford, Paul",
+      "name": "Paul Ford",
+      "normalizedName": "paulford",
+      "teamId": 40,
+      "teamName": "Diamond Dogs",
+      "teamNumber": 40,
+      "enteringAverage": 165,
+      "handicap": 40,
+      "games": [
+        {
+          "game": 1,
+          "score": 170,
+          "type": "S",
+          "raw": "170"
+        },
+        {
+          "game": 2,
+          "score": 159,
+          "type": "S",
+          "raw": "159"
+        },
+        {
+          "game": 3,
+          "score": 167,
+          "type": "S",
+          "raw": "167"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 496,
+      "weekAverage": 165.3,
+      "weekSeries": 496
+    },
+    {
+      "sourcePlayerId": 186,
+      "sourceName": "Wills, David",
+      "name": "David Wills",
+      "normalizedName": "davidwills",
+      "teamId": 40,
+      "teamName": "Diamond Dogs",
+      "teamNumber": 40,
+      "enteringAverage": 145,
+      "handicap": 58,
+      "games": [
+        {
+          "game": 1,
+          "score": 154,
+          "type": "S",
+          "raw": "154"
+        },
+        {
+          "game": 2,
+          "score": 149,
+          "type": "S",
+          "raw": "149"
+        },
+        {
+          "game": 3,
+          "score": 134,
+          "type": "S",
+          "raw": "134"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 437,
+      "weekAverage": 145.7,
+      "weekSeries": 437
+    },
+    {
+      "sourcePlayerId": 200,
+      "sourceName": "Romero, Jd",
+      "name": "Jd Romero",
+      "normalizedName": "jdromero",
+      "teamId": 40,
+      "teamName": "Diamond Dogs",
+      "teamNumber": 40,
+      "enteringAverage": 114,
+      "handicap": 86,
+      "games": [
+        {
+          "game": 2,
+          "score": 116,
+          "type": "S",
+          "raw": "116"
+        },
+        {
+          "game": 3,
+          "score": 112,
+          "type": "S",
+          "raw": "112"
+        }
+      ],
+      "weekGames": 2,
+      "weekPins": 228,
+      "weekAverage": 114,
+      "weekSeries": null
+    },
+    {
+      "sourcePlayerId": 201,
+      "sourceName": "Hagfors, Stefan",
+      "name": "Stefan Hagfors",
+      "normalizedName": "stefanhagfors",
+      "teamId": 40,
+      "teamName": "Diamond Dogs",
+      "teamNumber": 40,
+      "enteringAverage": 193,
+      "handicap": 15,
+      "games": [
+        {
+          "game": 1,
+          "score": 168,
+          "type": "S",
+          "raw": "168"
+        },
+        {
+          "game": 2,
+          "score": 209,
+          "type": "S",
+          "raw": "209"
+        },
+        {
+          "game": 3,
+          "score": 203,
+          "type": "S",
+          "raw": "203"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 580,
+      "weekAverage": 193.3,
+      "weekSeries": 580
+    },
+    {
+      "sourcePlayerId": 113,
+      "sourceName": "Laws, Tim",
+      "name": "Tim Laws",
+      "normalizedName": "timlaws",
+      "teamId": 14,
+      "teamName": "Enye Menie Myne",
+      "teamNumber": 14,
+      "enteringAverage": 155,
+      "handicap": 49,
+      "games": [
+        {
+          "game": 1,
+          "score": 134,
+          "type": "S",
+          "raw": "134"
+        },
+        {
+          "game": 2,
+          "score": 177,
+          "type": "S",
+          "raw": "177"
+        },
+        {
+          "game": 3,
+          "score": 128,
+          "type": "S",
+          "raw": "128"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 439,
+      "weekAverage": 146.3,
+      "weekSeries": 439
+    },
+    {
+      "sourcePlayerId": 114,
+      "sourceName": "Gates, Dawn",
+      "name": "Dawn Gates",
+      "normalizedName": "dawngates",
+      "teamId": 14,
+      "teamName": "Enye Menie Myne",
+      "teamNumber": 14,
+      "enteringAverage": 155,
+      "handicap": 49,
+      "games": [
+        {
+          "game": 1,
+          "score": 185,
+          "type": "S",
+          "raw": "185"
+        },
+        {
+          "game": 2,
+          "score": 183,
+          "type": "S",
+          "raw": "183"
+        },
+        {
+          "game": 3,
+          "score": 194,
+          "type": "S",
+          "raw": "194"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 562,
+      "weekAverage": 187.3,
+      "weekSeries": 562
+    },
+    {
+      "sourcePlayerId": 115,
+      "sourceName": "Schroth, Dan",
+      "name": "Dan Schroth",
+      "normalizedName": "danschroth",
+      "teamId": 14,
+      "teamName": "Enye Menie Myne",
+      "teamNumber": 14,
+      "enteringAverage": 197,
+      "handicap": 11,
+      "games": [
+        {
+          "game": 1,
+          "score": 223,
+          "type": "S",
+          "raw": "223"
+        },
+        {
+          "game": 2,
+          "score": 167,
+          "type": "S",
+          "raw": "167"
+        },
+        {
+          "game": 3,
+          "score": 160,
+          "type": "S",
+          "raw": "160"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 550,
+      "weekAverage": 183.3,
+      "weekSeries": 550
+    },
+    {
+      "sourcePlayerId": 32,
+      "sourceName": "Roe, Kyle",
+      "name": "Kyle Roe",
+      "normalizedName": "kyleroe",
+      "teamId": 5,
+      "teamName": "Great Balls of Fire",
+      "teamNumber": 5,
+      "enteringAverage": 160,
+      "handicap": 45,
+      "games": [
+        {
+          "game": 1,
+          "score": 159,
+          "type": "S",
+          "raw": "159"
+        },
+        {
+          "game": 2,
+          "score": 162,
+          "type": "S",
+          "raw": "162"
+        },
+        {
+          "game": 3,
+          "score": 175,
+          "type": "S",
+          "raw": "175"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 496,
+      "weekAverage": 165.3,
+      "weekSeries": 496
+    },
+    {
+      "sourcePlayerId": 257,
+      "sourceName": "Khalil, Matt",
+      "name": "Matt Khalil",
+      "normalizedName": "mattkhalil",
+      "teamId": 5,
+      "teamName": "Great Balls of Fire",
+      "teamNumber": 5,
+      "enteringAverage": 143,
+      "handicap": 60,
+      "games": [
+        {
+          "game": 1,
+          "score": 144,
+          "type": "S",
+          "raw": "144"
+        },
+        {
+          "game": 2,
+          "score": 127,
+          "type": "S",
+          "raw": "127"
+        },
+        {
+          "game": 3,
+          "score": 145,
+          "type": "S",
+          "raw": "145"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 416,
+      "weekAverage": 138.7,
+      "weekSeries": 416
+    },
+    {
+      "sourcePlayerId": 315,
+      "sourceName": "Roe, Sean",
+      "name": "Sean Roe",
+      "normalizedName": "seanroe",
+      "teamId": 5,
+      "teamName": "Great Balls of Fire",
+      "teamNumber": 5,
+      "enteringAverage": 218,
+      "handicap": 0,
+      "games": [
+        {
+          "game": 1,
+          "score": 246,
+          "type": "S",
+          "raw": "246"
+        },
+        {
+          "game": 2,
+          "score": 215,
+          "type": "S",
+          "raw": "215"
+        },
+        {
+          "game": 3,
+          "score": 174,
+          "type": "S",
+          "raw": "174"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 635,
+      "weekAverage": 211.7,
+      "weekSeries": 635
+    },
+    {
+      "sourcePlayerId": 64,
+      "sourceName": "Greenagel, Jack",
+      "name": "Jack Greenagel",
+      "normalizedName": "jackgreenagel",
+      "teamId": 23,
+      "teamName": "Gutter Butter",
+      "teamNumber": 23,
+      "enteringAverage": 188,
+      "handicap": 19,
+      "games": [
+        {
+          "game": 1,
+          "score": 175,
+          "type": "S",
+          "raw": "175"
+        },
+        {
+          "game": 2,
+          "score": 161,
+          "type": "S",
+          "raw": "161"
+        },
+        {
+          "game": 3,
+          "score": 143,
+          "type": "S",
+          "raw": "143"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 479,
+      "weekAverage": 159.7,
+      "weekSeries": 479
+    },
+    {
+      "sourcePlayerId": 352,
+      "sourceName": "Staley, Casey",
+      "name": "Casey Staley",
+      "normalizedName": "caseystaley",
+      "teamId": 23,
+      "teamName": "Gutter Butter",
+      "teamNumber": 23,
+      "enteringAverage": 128,
+      "handicap": 73,
+      "games": [
+        {
+          "game": 1,
+          "score": 135,
+          "type": "S",
+          "raw": "135"
+        },
+        {
+          "game": 2,
+          "score": 132,
+          "type": "S",
+          "raw": "132"
+        },
+        {
+          "game": 3,
+          "score": 142,
+          "type": "S",
+          "raw": "142"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 409,
+      "weekAverage": 136.3,
+      "weekSeries": 409
+    },
+    {
+      "sourcePlayerId": 175,
+      "sourceName": "Flood, Gavin",
+      "name": "Gavin Flood",
+      "normalizedName": "gavinflood",
+      "teamId": 23,
+      "teamName": "Gutter Butter",
+      "teamNumber": 23,
+      "enteringAverage": 137,
+      "handicap": 65,
+      "games": [
+        {
+          "game": 1,
+          "score": 92,
+          "type": "S",
+          "raw": "92"
+        },
+        {
+          "game": 2,
+          "score": 132,
+          "type": "S",
+          "raw": "132"
+        },
+        {
+          "game": 3,
+          "score": 165,
+          "type": "S",
+          "raw": "165"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 389,
+      "weekAverage": 129.7,
+      "weekSeries": 389
+    },
+    {
+      "sourcePlayerId": 76,
+      "sourceName": "Haas, Drew",
+      "name": "Drew Haas",
+      "normalizedName": "drewhaas",
+      "teamId": 23,
+      "teamName": "Gutter Butter",
+      "teamNumber": 23,
+      "enteringAverage": 156,
+      "handicap": 48,
+      "games": [
+        {
+          "game": 1,
+          "score": 231,
+          "type": "S",
+          "raw": "231"
+        },
+        {
+          "game": 2,
+          "score": 164,
+          "type": "S",
+          "raw": "164"
+        },
+        {
+          "game": 3,
+          "score": 167,
+          "type": "S",
+          "raw": "167"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 562,
+      "weekAverage": 187.3,
+      "weekSeries": 562
+    },
+    {
+      "sourcePlayerId": 196,
+      "sourceName": "Brown, Patrick",
+      "name": "Patrick Brown",
+      "normalizedName": "patrickbrown",
+      "teamId": 6,
+      "teamName": "Hookers & Bowl",
+      "teamNumber": 6,
+      "enteringAverage": 130,
+      "handicap": 72,
+      "games": [
+        {
+          "game": 1,
+          "score": 155,
+          "type": "S",
+          "raw": "155"
+        },
+        {
+          "game": 2,
+          "score": 180,
+          "type": "S",
+          "raw": "180"
+        },
+        {
+          "game": 3,
+          "score": 143,
+          "type": "S",
+          "raw": "143"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 478,
+      "weekAverage": 159.3,
+      "weekSeries": 478
+    },
+    {
+      "sourcePlayerId": 197,
+      "sourceName": "Snyder, Mark",
+      "name": "Mark Snyder",
+      "normalizedName": "marksnyder",
+      "teamId": 6,
+      "teamName": "Hookers & Bowl",
+      "teamNumber": 6,
+      "enteringAverage": 149,
+      "handicap": 54,
+      "games": [
+        {
+          "game": 1,
+          "score": 152,
+          "type": "S",
+          "raw": "152"
+        },
+        {
+          "game": 2,
+          "score": 155,
+          "type": "S",
+          "raw": "155"
+        },
+        {
+          "game": 3,
+          "score": 133,
+          "type": "S",
+          "raw": "133"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 440,
+      "weekAverage": 146.7,
+      "weekSeries": 440
+    },
+    {
+      "sourcePlayerId": 198,
+      "sourceName": "Goulding, Ty",
+      "name": "Ty Goulding",
+      "normalizedName": "tygoulding",
+      "teamId": 6,
+      "teamName": "Hookers & Bowl",
+      "teamNumber": 6,
+      "enteringAverage": 168,
+      "handicap": 37,
+      "games": [
+        {
+          "game": 1,
+          "score": 143,
+          "type": "S",
+          "raw": "143"
+        },
+        {
+          "game": 2,
+          "score": 157,
+          "type": "S",
+          "raw": "157"
+        },
+        {
+          "game": 3,
+          "score": 107,
+          "type": "S",
+          "raw": "107"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 407,
+      "weekAverage": 135.7,
+      "weekSeries": 407
+    },
+    {
+      "sourcePlayerId": 202,
+      "sourceName": "Zick, Greg",
+      "name": "Greg Zick",
+      "normalizedName": "gregzick",
+      "teamId": 6,
+      "teamName": "Hookers & Bowl",
+      "teamNumber": 6,
+      "enteringAverage": 172,
+      "handicap": 34,
+      "games": [
+        {
+          "game": 1,
+          "score": 172,
+          "type": "S",
+          "raw": "172"
+        },
+        {
+          "game": 2,
+          "score": 179,
+          "type": "S",
+          "raw": "179"
+        },
+        {
+          "game": 3,
+          "score": 183,
+          "type": "S",
+          "raw": "183"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 534,
+      "weekAverage": 178,
+      "weekSeries": 534
+    },
+    {
+      "sourcePlayerId": 256,
+      "sourceName": "Mosier, Ethan",
+      "name": "Ethan Mosier",
+      "normalizedName": "ethanmosier",
+      "teamId": 28,
+      "teamName": "Irritable Bowl S",
+      "teamNumber": 28,
+      "enteringAverage": 135,
+      "handicap": 67,
+      "games": [
+        {
+          "game": 1,
+          "score": 163,
+          "type": "S",
+          "raw": "163"
+        },
+        {
+          "game": 2,
+          "score": 147,
+          "type": "S",
+          "raw": "147"
+        },
+        {
+          "game": 3,
+          "score": 116,
+          "type": "S",
+          "raw": "116"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 426,
+      "weekAverage": 142,
+      "weekSeries": 426
+    },
+    {
+      "sourcePlayerId": 116,
+      "sourceName": "Mosier, Eric",
+      "name": "Eric Mosier",
+      "normalizedName": "ericmosier",
+      "teamId": 28,
+      "teamName": "Irritable Bowl S",
+      "teamNumber": 28,
+      "enteringAverage": 143,
+      "handicap": 60,
+      "games": [
+        {
+          "game": 1,
+          "score": 138,
+          "type": "S",
+          "raw": "138"
+        },
+        {
+          "game": 2,
+          "score": 168,
+          "type": "S",
+          "raw": "168"
+        },
+        {
+          "game": 3,
+          "score": 112,
+          "type": "S",
+          "raw": "112"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 418,
+      "weekAverage": 139.3,
+      "weekSeries": 418
+    },
+    {
+      "sourcePlayerId": 174,
+      "sourceName": "Hanson, Hillary",
+      "name": "Hillary Hanson",
+      "normalizedName": "hillaryhanson",
+      "teamId": 28,
+      "teamName": "Irritable Bowl S",
+      "teamNumber": 28,
+      "enteringAverage": 120,
+      "handicap": 81,
+      "games": [
+        {
+          "game": 1,
+          "score": 118,
+          "type": "S",
+          "raw": "118"
+        },
+        {
+          "game": 2,
+          "score": 105,
+          "type": "S",
+          "raw": "105"
+        },
+        {
+          "game": 3,
+          "score": 126,
+          "type": "S",
+          "raw": "126"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 349,
+      "weekAverage": 116.3,
+      "weekSeries": 349
+    },
+    {
+      "sourcePlayerId": 87,
+      "sourceName": "Hanson, Tim",
+      "name": "Tim Hanson",
+      "normalizedName": "timhanson",
+      "teamId": 28,
+      "teamName": "Irritable Bowl S",
+      "teamNumber": 28,
+      "enteringAverage": 102,
+      "handicap": 97,
+      "games": [
+        {
+          "game": 1,
+          "score": 77,
+          "type": "S",
+          "raw": "77"
+        },
+        {
+          "game": 2,
+          "score": 90,
+          "type": "S",
+          "raw": "90"
+        },
+        {
+          "game": 3,
+          "score": 112,
+          "type": "S",
+          "raw": "112"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 279,
+      "weekAverage": 93,
+      "weekSeries": 279
+    },
+    {
+      "sourcePlayerId": 22,
+      "sourceName": "Major, Ted",
+      "name": "Ted Major",
+      "normalizedName": "tedmajor",
+      "teamId": 8,
+      "teamName": "Itchy",
+      "teamNumber": 8,
+      "enteringAverage": 131,
+      "handicap": 71,
+      "games": [
+        {
+          "game": 1,
+          "score": 98,
+          "type": "S",
+          "raw": "98"
+        },
+        {
+          "game": 2,
+          "score": 130,
+          "type": "S",
+          "raw": "130"
+        },
+        {
+          "game": 3,
+          "score": 165,
+          "type": "S",
+          "raw": "165"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 393,
+      "weekAverage": 131,
+      "weekSeries": 393
+    },
+    {
+      "sourcePlayerId": 44,
+      "sourceName": "Welsh, Chris",
+      "name": "Chris Welsh",
+      "normalizedName": "chriswelsh",
+      "teamId": 8,
+      "teamName": "Itchy",
+      "teamNumber": 8,
+      "enteringAverage": 116,
+      "handicap": 84,
+      "games": [
+        {
+          "game": 1,
+          "score": 127,
+          "type": "S",
+          "raw": "127"
+        },
+        {
+          "game": 2,
+          "score": 131,
+          "type": "S",
+          "raw": "131"
+        },
+        {
+          "game": 3,
+          "score": 122,
+          "type": "S",
+          "raw": "122"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 380,
+      "weekAverage": 126.7,
+      "weekSeries": 380
+    },
+    {
+      "sourcePlayerId": 46,
+      "sourceName": "Bonneau, Julie",
+      "name": "Julie Bonneau",
+      "normalizedName": "juliebonneau",
+      "teamId": 8,
+      "teamName": "Itchy",
+      "teamNumber": 8,
+      "enteringAverage": 142,
+      "handicap": 61,
+      "games": [
+        {
+          "game": 1,
+          "score": 142,
+          "type": "S",
+          "raw": "142"
+        },
+        {
+          "game": 2,
+          "score": 160,
+          "type": "S",
+          "raw": "160"
+        },
+        {
+          "game": 3,
+          "score": 128,
+          "type": "S",
+          "raw": "128"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 430,
+      "weekAverage": 143.3,
+      "weekSeries": 430
+    },
+    {
+      "sourcePlayerId": 52,
+      "sourceName": "Berkowitz, William",
+      "name": "William Berkowitz",
+      "normalizedName": "williamberkowitz",
+      "teamId": 8,
+      "teamName": "Itchy",
+      "teamNumber": 8,
+      "enteringAverage": 150,
+      "handicap": 54,
+      "games": [
+        {
+          "game": 1,
+          "score": 177,
+          "type": "S",
+          "raw": "177"
+        },
+        {
+          "game": 2,
+          "score": 136,
+          "type": "S",
+          "raw": "136"
+        },
+        {
+          "game": 3,
+          "score": 171,
+          "type": "S",
+          "raw": "171"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 484,
+      "weekAverage": 161.3,
+      "weekSeries": 484
+    },
+    {
+      "sourcePlayerId": 124,
+      "sourceName": "Ramey, Joe",
+      "name": "Joe Ramey",
+      "normalizedName": "joeramey",
+      "teamId": 11,
+      "teamName": "Joe Mama",
+      "teamNumber": 11,
+      "enteringAverage": 185,
+      "handicap": 22,
+      "games": [
+        {
+          "game": 1,
+          "score": 155,
+          "type": "S",
+          "raw": "155"
+        },
+        {
+          "game": 2,
+          "score": 144,
+          "type": "S",
+          "raw": "144"
+        },
+        {
+          "game": 3,
+          "score": 162,
+          "type": "S",
+          "raw": "162"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 461,
+      "weekAverage": 153.7,
+      "weekSeries": 461
+    },
+    {
+      "sourcePlayerId": 232,
+      "sourceName": "Norris, Eric",
+      "name": "Eric Norris",
+      "normalizedName": "ericnorris",
+      "teamId": 11,
+      "teamName": "Joe Mama",
+      "teamNumber": 11,
+      "enteringAverage": 161,
+      "handicap": 44,
+      "games": [
+        {
+          "game": 1,
+          "score": 211,
+          "type": "S",
+          "raw": "211"
+        },
+        {
+          "game": 2,
+          "score": 181,
+          "type": "S",
+          "raw": "181"
+        },
+        {
+          "game": 3,
+          "score": 182,
+          "type": "S",
+          "raw": "182"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 574,
+      "weekAverage": 191.3,
+      "weekSeries": 574
+    },
+    {
+      "sourcePlayerId": 235,
+      "sourceName": "Fahey, Brian",
+      "name": "Brian Fahey",
+      "normalizedName": "brianfahey",
+      "teamId": 11,
+      "teamName": "Joe Mama",
+      "teamNumber": 11,
+      "enteringAverage": 212,
+      "handicap": 0,
+      "games": [],
+      "weekGames": null,
+      "weekPins": null,
+      "weekAverage": null,
+      "weekSeries": null
+    },
+    {
+      "sourcePlayerId": 236,
+      "sourceName": "Yates, Joe",
+      "name": "Joe Yates",
+      "normalizedName": "joeyates",
+      "teamId": 11,
+      "teamName": "Joe Mama",
+      "teamNumber": 11,
+      "enteringAverage": 222,
+      "handicap": 0,
+      "games": [
+        {
+          "game": 1,
+          "score": 193,
+          "type": "S",
+          "raw": "193"
+        },
+        {
+          "game": 2,
+          "score": 191,
+          "type": "S",
+          "raw": "191"
+        },
+        {
+          "game": 3,
+          "score": 267,
+          "type": "S",
+          "raw": "267"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 651,
+      "weekAverage": 217,
+      "weekSeries": 651
+    },
+    {
+      "sourcePlayerId": 83,
+      "sourceName": "Jones, Shaun",
+      "name": "Shaun Jones",
+      "normalizedName": "shaunjones",
+      "teamId": 4,
+      "teamName": "Just Split On It",
+      "teamNumber": 4,
+      "enteringAverage": 151,
+      "handicap": 53,
+      "games": [
+        {
+          "game": 1,
+          "score": 149,
+          "type": "S",
+          "raw": "149"
+        },
+        {
+          "game": 2,
+          "score": 189,
+          "type": "S",
+          "raw": "189"
+        },
+        {
+          "game": 3,
+          "score": 168,
+          "type": "S",
+          "raw": "168"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 506,
+      "weekAverage": 168.7,
+      "weekSeries": 506
+    },
+    {
+      "sourcePlayerId": 133,
+      "sourceName": "Baker, Tyler",
+      "name": "Tyler Baker",
+      "normalizedName": "tylerbaker",
+      "teamId": 4,
+      "teamName": "Just Split On It",
+      "teamNumber": 4,
+      "enteringAverage": 170,
+      "handicap": 36,
+      "games": [
+        {
+          "game": 1,
+          "score": 232,
+          "type": "S",
+          "raw": "232"
+        },
+        {
+          "game": 2,
+          "score": 168,
+          "type": "S",
+          "raw": "168"
+        },
+        {
+          "game": 3,
+          "score": 205,
+          "type": "S",
+          "raw": "205"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 605,
+      "weekAverage": 201.7,
+      "weekSeries": 605
+    },
+    {
+      "sourcePlayerId": 55,
+      "sourceName": "Bickel, Matt",
+      "name": "Matt Bickel",
+      "normalizedName": "mattbickel",
+      "teamId": 4,
+      "teamName": "Just Split On It",
+      "teamNumber": 4,
+      "enteringAverage": 138,
+      "handicap": 64,
+      "games": [
+        {
+          "game": 1,
+          "score": 130,
+          "type": "S",
+          "raw": "130"
+        },
+        {
+          "game": 2,
+          "score": 133,
+          "type": "S",
+          "raw": "133"
+        },
+        {
+          "game": 3,
+          "score": 127,
+          "type": "S",
+          "raw": "127"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 390,
+      "weekAverage": 130,
+      "weekSeries": 390
+    },
+    {
+      "sourcePlayerId": 298,
+      "sourceName": "Fenton, Erik",
+      "name": "Erik Fenton",
+      "normalizedName": "erikfenton",
+      "teamId": 4,
+      "teamName": "Just Split On It",
+      "teamNumber": 4,
+      "enteringAverage": 131,
+      "handicap": 71,
+      "games": [
+        {
+          "game": 1,
+          "score": 152,
+          "type": "S",
+          "raw": "152"
+        },
+        {
+          "game": 2,
+          "score": 128,
+          "type": "S",
+          "raw": "128"
+        },
+        {
+          "game": 3,
+          "score": 146,
+          "type": "S",
+          "raw": "146"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 426,
+      "weekAverage": 142,
+      "weekSeries": 426
+    },
+    {
+      "sourcePlayerId": 216,
+      "sourceName": "Chavez, Jesus",
+      "name": "Jesus Chavez",
+      "normalizedName": "jesuschavez",
+      "teamId": 22,
+      "teamName": "Keep It 100",
+      "teamNumber": 22,
+      "enteringAverage": 120,
+      "handicap": 81,
+      "games": [],
+      "weekGames": null,
+      "weekPins": null,
+      "weekAverage": null,
+      "weekSeries": null
+    },
+    {
+      "sourcePlayerId": 86,
+      "sourceName": "Robinson, Kyle",
+      "name": "Kyle Robinson",
+      "normalizedName": "kylerobinson",
+      "teamId": 22,
+      "teamName": "Keep It 100",
+      "teamNumber": 22,
+      "enteringAverage": 140,
+      "handicap": 63,
+      "games": [
+        {
+          "game": 1,
+          "score": 150,
+          "type": "S",
+          "raw": "150"
+        },
+        {
+          "game": 2,
+          "score": 161,
+          "type": "S",
+          "raw": "161"
+        },
+        {
+          "game": 3,
+          "score": 109,
+          "type": "S",
+          "raw": "109"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 420,
+      "weekAverage": 140,
+      "weekSeries": 420
+    },
+    {
+      "sourcePlayerId": 43,
+      "sourceName": "Dirth, David",
+      "name": "David Dirth",
+      "normalizedName": "daviddirth",
+      "teamId": 22,
+      "teamName": "Keep It 100",
+      "teamNumber": 22,
+      "enteringAverage": 189,
+      "handicap": 18,
+      "games": [
+        {
+          "game": 1,
+          "score": 200,
+          "type": "S",
+          "raw": "200"
+        },
+        {
+          "game": 2,
+          "score": 182,
+          "type": "S",
+          "raw": "182"
+        },
+        {
+          "game": 3,
+          "score": 183,
+          "type": "S",
+          "raw": "183"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 565,
+      "weekAverage": 188.3,
+      "weekSeries": 565
+    },
+    {
+      "sourcePlayerId": 110,
+      "sourceName": "Garrison, Marc",
+      "name": "Marc Garrison",
+      "normalizedName": "marcgarrison",
+      "teamId": 37,
+      "teamName": "Lads of Leisure",
+      "teamNumber": 37,
+      "enteringAverage": 148,
+      "handicap": 55,
+      "games": [
+        {
+          "game": 1,
+          "score": 139,
+          "type": "S",
+          "raw": "139"
+        },
+        {
+          "game": 2,
+          "score": 202,
+          "type": "S",
+          "raw": "202"
+        },
+        {
+          "game": 3,
+          "score": 148,
+          "type": "S",
+          "raw": "148"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 489,
+      "weekAverage": 163,
+      "weekSeries": 489
+    },
+    {
+      "sourcePlayerId": 111,
+      "sourceName": "Warner, Max",
+      "name": "Max Warner",
+      "normalizedName": "maxwarner",
+      "teamId": 37,
+      "teamName": "Lads of Leisure",
+      "teamNumber": 37,
+      "enteringAverage": 144,
+      "handicap": 59,
+      "games": [
+        {
+          "game": 1,
+          "score": 121,
+          "type": "S",
+          "raw": "121"
+        },
+        {
+          "game": 2,
+          "score": 122,
+          "type": "S",
+          "raw": "122"
+        },
+        {
+          "game": 3,
+          "score": 155,
+          "type": "S",
+          "raw": "155"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 398,
+      "weekAverage": 132.7,
+      "weekSeries": 398
+    },
+    {
+      "sourcePlayerId": 118,
+      "sourceName": "Anderson, Devon",
+      "name": "Devon Anderson",
+      "normalizedName": "devonanderson",
+      "teamId": 37,
+      "teamName": "Lads of Leisure",
+      "teamNumber": 37,
+      "enteringAverage": 178,
+      "handicap": 28,
+      "games": [
+        {
+          "game": 1,
+          "score": 205,
+          "type": "S",
+          "raw": "205"
+        },
+        {
+          "game": 2,
+          "score": 152,
+          "type": "S",
+          "raw": "152"
+        },
+        {
+          "game": 3,
+          "score": 117,
+          "type": "S",
+          "raw": "117"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 474,
+      "weekAverage": 158,
+      "weekSeries": 474
+    },
+    {
+      "sourcePlayerId": 3,
+      "sourceName": "Spanbauer, John",
+      "name": "John Spanbauer",
+      "normalizedName": "johnspanbauer",
+      "teamId": 7,
+      "teamName": "Nine-Nine",
+      "teamNumber": 7,
+      "enteringAverage": 171,
+      "handicap": 35,
+      "games": [
+        {
+          "game": 1,
+          "score": 189,
+          "type": "S",
+          "raw": "189"
+        },
+        {
+          "game": 2,
+          "score": 193,
+          "type": "S",
+          "raw": "193"
+        },
+        {
+          "game": 3,
+          "score": 158,
+          "type": "S",
+          "raw": "158"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 540,
+      "weekAverage": 180,
+      "weekSeries": 540
+    },
+    {
+      "sourcePlayerId": 77,
+      "sourceName": "Illsley, Shirlee Jae",
+      "name": "Shirlee Jae Illsley",
+      "normalizedName": "shirleejaeillsley",
+      "teamId": 7,
+      "teamName": "Nine-Nine",
+      "teamNumber": 7,
+      "enteringAverage": 131,
+      "handicap": 71,
+      "games": [
+        {
+          "game": 1,
+          "score": 122,
+          "type": "S",
+          "raw": "122"
+        },
+        {
+          "game": 2,
+          "score": 130,
+          "type": "S",
+          "raw": "130"
+        },
+        {
+          "game": 3,
+          "score": 133,
+          "type": "S",
+          "raw": "133"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 385,
+      "weekAverage": 128.3,
+      "weekSeries": 385
+    },
+    {
+      "sourcePlayerId": 98,
+      "sourceName": "Wilds, Harrison",
+      "name": "Harrison Wilds",
+      "normalizedName": "harrisonwilds",
+      "teamId": 7,
+      "teamName": "Nine-Nine",
+      "teamNumber": 7,
+      "enteringAverage": 200,
+      "handicap": 9,
+      "games": [
+        {
+          "game": 1,
+          "score": 181,
+          "type": "S",
+          "raw": "181"
+        },
+        {
+          "game": 2,
+          "score": 171,
+          "type": "S",
+          "raw": "171"
+        },
+        {
+          "game": 3,
+          "score": 113,
+          "type": "S",
+          "raw": "113"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 465,
+      "weekAverage": 155,
+      "weekSeries": 465
+    },
+    {
+      "sourcePlayerId": 4,
+      "sourceName": "Spanbauer, Justin",
+      "name": "Justin Spanbauer",
+      "normalizedName": "justinspanbauer",
+      "teamId": 7,
+      "teamName": "Nine-Nine",
+      "teamNumber": 7,
+      "enteringAverage": 223,
+      "handicap": 0,
+      "games": [
+        {
+          "game": 1,
+          "score": 185,
+          "type": "S",
+          "raw": "185"
+        },
+        {
+          "game": 2,
+          "score": 185,
+          "type": "S",
+          "raw": "185"
+        },
+        {
+          "game": 3,
+          "score": 163,
+          "type": "S",
+          "raw": "163"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 533,
+      "weekAverage": 177.7,
+      "weekSeries": 533
+    },
+    {
+      "sourcePlayerId": 215,
+      "sourceName": "Mcqueen, Jeremiah",
+      "name": "Jeremiah Mcqueen",
+      "normalizedName": "jeremiahmcqueen",
+      "teamId": 16,
+      "teamName": "Ooo Weee",
+      "teamNumber": 16,
+      "enteringAverage": 200,
+      "handicap": 9,
+      "games": [
+        {
+          "game": 1,
+          "score": 204,
+          "type": "S",
+          "raw": "204"
+        },
+        {
+          "game": 2,
+          "score": 243,
+          "type": "S",
+          "raw": "243"
+        },
+        {
+          "game": 3,
+          "score": 201,
+          "type": "S",
+          "raw": "201"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 648,
+      "weekAverage": 216,
+      "weekSeries": 648
+    },
+    {
+      "sourcePlayerId": 61,
+      "sourceName": "Morris, Daniel",
+      "name": "Daniel Morris",
+      "normalizedName": "danielmorris",
+      "teamId": 16,
+      "teamName": "Ooo Weee",
+      "teamNumber": 16,
+      "enteringAverage": 135,
+      "handicap": 67,
+      "games": [
+        {
+          "game": 1,
+          "score": 133,
+          "type": "S",
+          "raw": "133"
+        },
+        {
+          "game": 2,
+          "score": 112,
+          "type": "S",
+          "raw": "112"
+        },
+        {
+          "game": 3,
+          "score": 132,
+          "type": "S",
+          "raw": "132"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 377,
+      "weekAverage": 125.7,
+      "weekSeries": 377
+    },
+    {
+      "sourcePlayerId": 213,
+      "sourceName": "Mcqueen, Nicholas",
+      "name": "Nicholas Mcqueen",
+      "normalizedName": "nicholasmcqueen",
+      "teamId": 16,
+      "teamName": "Ooo Weee",
+      "teamNumber": 16,
+      "enteringAverage": 163,
+      "handicap": 42,
+      "games": [
+        {
+          "game": 1,
+          "score": 114,
+          "type": "S",
+          "raw": "114"
+        },
+        {
+          "game": 2,
+          "score": 202,
+          "type": "S",
+          "raw": "202"
+        },
+        {
+          "game": 3,
+          "score": 202,
+          "type": "S",
+          "raw": "202"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 518,
+      "weekAverage": 172.7,
+      "weekSeries": 518
+    },
+    {
+      "sourcePlayerId": 214,
+      "sourceName": "Graham, Jason",
+      "name": "Jason Graham",
+      "normalizedName": "jasongraham",
+      "teamId": 16,
+      "teamName": "Ooo Weee",
+      "teamNumber": 16,
+      "enteringAverage": 199,
+      "handicap": 9,
+      "games": [
+        {
+          "game": 1,
+          "score": 215,
+          "type": "S",
+          "raw": "215"
+        },
+        {
+          "game": 2,
+          "score": 278,
+          "type": "S",
+          "raw": "278"
+        },
+        {
+          "game": 3,
+          "score": 210,
+          "type": "S",
+          "raw": "210"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 703,
+      "weekAverage": 234.3,
+      "weekSeries": 703
+    },
+    {
+      "sourcePlayerId": 243,
+      "sourceName": "Gomez, Otilia",
+      "name": "Otilia Gomez",
+      "normalizedName": "otiliagomez",
+      "teamId": 18,
+      "teamName": "Pin n' Juice",
+      "teamNumber": 18,
+      "enteringAverage": 135,
+      "handicap": 67,
+      "games": [
+        {
+          "game": 1,
+          "score": 144,
+          "type": "S",
+          "raw": "144"
+        },
+        {
+          "game": 2,
+          "score": 131,
+          "type": "S",
+          "raw": "131"
+        },
+        {
+          "game": 3,
+          "score": 126,
+          "type": "S",
+          "raw": "126"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 401,
+      "weekAverage": 133.7,
+      "weekSeries": 401
+    },
+    {
+      "sourcePlayerId": 240,
+      "sourceName": "Williams, Courtney",
+      "name": "Courtney Williams",
+      "normalizedName": "courtneywilliams",
+      "teamId": 18,
+      "teamName": "Pin n' Juice",
+      "teamNumber": 18,
+      "enteringAverage": 167,
+      "handicap": 38,
+      "games": [
+        {
+          "game": 1,
+          "score": 134,
+          "type": "S",
+          "raw": "134"
+        },
+        {
+          "game": 2,
+          "score": 181,
+          "type": "S",
+          "raw": "181"
+        },
+        {
+          "game": 3,
+          "score": 135,
+          "type": "S",
+          "raw": "135"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 450,
+      "weekAverage": 150,
+      "weekSeries": 450
+    },
+    {
+      "sourcePlayerId": 299,
+      "sourceName": "Martin, Kyle",
+      "name": "Kyle Martin",
+      "normalizedName": "kylemartin",
+      "teamId": 18,
+      "teamName": "Pin n' Juice",
+      "teamNumber": 18,
+      "enteringAverage": 150,
+      "handicap": 54,
+      "games": [
+        {
+          "game": 1,
+          "score": 210,
+          "type": "S",
+          "raw": "210"
+        },
+        {
+          "game": 2,
+          "score": 167,
+          "type": "S",
+          "raw": "167"
+        },
+        {
+          "game": 3,
+          "score": 157,
+          "type": "S",
+          "raw": "157"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 534,
+      "weekAverage": 178,
+      "weekSeries": 534
+    },
+    {
+      "sourcePlayerId": 160,
+      "sourceName": "Earhart, Nick",
+      "name": "Nick Earhart",
+      "normalizedName": "nickearhart",
+      "teamId": 34,
+      "teamName": "Pins Go Boom!",
+      "teamNumber": 34,
+      "enteringAverage": 167,
+      "handicap": 38,
+      "games": [
+        {
+          "game": 1,
+          "score": 190,
+          "type": "S",
+          "raw": "190"
+        },
+        {
+          "game": 2,
+          "score": 140,
+          "type": "S",
+          "raw": "140"
+        },
+        {
+          "game": 3,
+          "score": 159,
+          "type": "S",
+          "raw": "159"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 489,
+      "weekAverage": 163,
+      "weekSeries": 489
+    },
+    {
+      "sourcePlayerId": 176,
+      "sourceName": "Bhowmik, Bindul",
+      "name": "Bindul Bhowmik",
+      "normalizedName": "bindulbhowmik",
+      "teamId": 34,
+      "teamName": "Pins Go Boom!",
+      "teamNumber": 34,
+      "enteringAverage": 140,
+      "handicap": 63,
+      "games": [
+        {
+          "game": 1,
+          "score": 155,
+          "type": "S",
+          "raw": "155"
+        },
+        {
+          "game": 2,
+          "score": 152,
+          "type": "S",
+          "raw": "152"
+        },
+        {
+          "game": 3,
+          "score": 145,
+          "type": "S",
+          "raw": "145"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 452,
+      "weekAverage": 150.7,
+      "weekSeries": 452
+    },
+    {
+      "sourcePlayerId": 129,
+      "sourceName": "Grom, Brian",
+      "name": "Brian Grom",
+      "normalizedName": "briangrom",
+      "teamId": 34,
+      "teamName": "Pins Go Boom!",
+      "teamNumber": 34,
+      "enteringAverage": 199,
+      "handicap": 9,
+      "games": [
+        {
+          "game": 1,
+          "score": 204,
+          "type": "S",
+          "raw": "204"
+        },
+        {
+          "game": 2,
+          "score": 232,
+          "type": "S",
+          "raw": "232"
+        },
+        {
+          "game": 3,
+          "score": 173,
+          "type": "S",
+          "raw": "173"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 609,
+      "weekAverage": 203,
+      "weekSeries": 609
+    },
+    {
+      "sourcePlayerId": 187,
+      "sourceName": "Wiegand, Luke",
+      "name": "Luke Wiegand",
+      "normalizedName": "lukewiegand",
+      "teamId": 34,
+      "teamName": "Pins Go Boom!",
+      "teamNumber": 34,
+      "enteringAverage": 150,
+      "handicap": 54,
+      "games": [
+        {
+          "game": 1,
+          "score": 114,
+          "type": "S",
+          "raw": "114"
+        },
+        {
+          "game": 2,
+          "score": 143,
+          "type": "S",
+          "raw": "143"
+        },
+        {
+          "game": 3,
+          "score": 137,
+          "type": "S",
+          "raw": "137"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 394,
+      "weekAverage": 131.3,
+      "weekSeries": 394
+    },
+    {
+      "sourcePlayerId": 188,
+      "sourceName": "Foster, Pete",
+      "name": "Pete Foster",
+      "normalizedName": "petefoster",
+      "teamId": 13,
+      "teamName": "Pintourage",
+      "teamNumber": 13,
+      "enteringAverage": 174,
+      "handicap": 32,
+      "games": [
+        {
+          "game": 1,
+          "score": 184,
+          "type": "S",
+          "raw": "184"
+        },
+        {
+          "game": 2,
+          "score": 190,
+          "type": "S",
+          "raw": "190"
+        },
+        {
+          "game": 3,
+          "score": 191,
+          "type": "S",
+          "raw": "191"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 565,
+      "weekAverage": 188.3,
+      "weekSeries": 565
+    },
+    {
+      "sourcePlayerId": 189,
+      "sourceName": "Lamicq, Jr",
+      "name": "Jr Lamicq",
+      "normalizedName": "jrlamicq",
+      "teamId": 13,
+      "teamName": "Pintourage",
+      "teamNumber": 13,
+      "enteringAverage": 171,
+      "handicap": 35,
+      "games": [
+        {
+          "game": 1,
+          "score": 170,
+          "type": "S",
+          "raw": "170"
+        },
+        {
+          "game": 2,
+          "score": 152,
+          "type": "S",
+          "raw": "152"
+        },
+        {
+          "game": 3,
+          "score": 141,
+          "type": "S",
+          "raw": "141"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 463,
+      "weekAverage": 154.3,
+      "weekSeries": 463
+    },
+    {
+      "sourcePlayerId": 194,
+      "sourceName": "Singer, Mitch",
+      "name": "Mitch Singer",
+      "normalizedName": "mitchsinger",
+      "teamId": 13,
+      "teamName": "Pintourage",
+      "teamNumber": 13,
+      "enteringAverage": 189,
+      "handicap": 18,
+      "games": [
+        {
+          "game": 1,
+          "score": 170,
+          "type": "S",
+          "raw": "170"
+        },
+        {
+          "game": 2,
+          "score": 183,
+          "type": "S",
+          "raw": "183"
+        },
+        {
+          "game": 3,
+          "score": 172,
+          "type": "S",
+          "raw": "172"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 525,
+      "weekAverage": 175,
+      "weekSeries": 525
+    },
+    {
+      "sourcePlayerId": 190,
+      "sourceName": "Kruse, Steven",
+      "name": "Steven Kruse",
+      "normalizedName": "stevenkruse",
+      "teamId": 13,
+      "teamName": "Pintourage",
+      "teamNumber": 13,
+      "enteringAverage": 166,
+      "handicap": 39,
+      "games": [
+        {
+          "game": 1,
+          "score": 142,
+          "type": "S",
+          "raw": "142"
+        },
+        {
+          "game": 2,
+          "score": 181,
+          "type": "S",
+          "raw": "181"
+        },
+        {
+          "game": 3,
+          "score": 137,
+          "type": "S",
+          "raw": "137"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 460,
+      "weekAverage": 153.3,
+      "weekSeries": 460
+    },
+    {
+      "sourcePlayerId": 10,
+      "sourceName": "Foster, Brett",
+      "name": "Brett Foster",
+      "normalizedName": "brettfoster",
+      "teamId": 1,
+      "teamName": "Pork Missiles",
+      "teamNumber": 1,
+      "enteringAverage": 150,
+      "handicap": 54,
+      "games": [],
+      "weekGames": null,
+      "weekPins": null,
+      "weekAverage": null,
+      "weekSeries": null
+    },
+    {
+      "sourcePlayerId": 51,
+      "sourceName": "Markiewicz, Tyler",
+      "name": "Tyler Markiewicz",
+      "normalizedName": "tylermarkiewicz",
+      "teamId": 1,
+      "teamName": "Pork Missiles",
+      "teamNumber": 1,
+      "enteringAverage": 151,
+      "handicap": 53,
+      "games": [
+        {
+          "game": 1,
+          "score": 192,
+          "type": "S",
+          "raw": "192"
+        },
+        {
+          "game": 2,
+          "score": 192,
+          "type": "S",
+          "raw": "192"
+        },
+        {
+          "game": 3,
+          "score": 188,
+          "type": "S",
+          "raw": "188"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 572,
+      "weekAverage": 190.7,
+      "weekSeries": 572
+    },
+    {
+      "sourcePlayerId": 66,
+      "sourceName": "Graham, Chris",
+      "name": "Chris Graham",
+      "normalizedName": "chrisgraham",
+      "teamId": 1,
+      "teamName": "Pork Missiles",
+      "teamNumber": 1,
+      "enteringAverage": 148,
+      "handicap": 55,
+      "games": [
+        {
+          "game": 1,
+          "score": 137,
+          "type": "S",
+          "raw": "137"
+        },
+        {
+          "game": 2,
+          "score": 189,
+          "type": "S",
+          "raw": "189"
+        },
+        {
+          "game": 3,
+          "score": 176,
+          "type": "S",
+          "raw": "176"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 502,
+      "weekAverage": 167.3,
+      "weekSeries": 502
+    },
+    {
+      "sourcePlayerId": 147,
+      "sourceName": "Konczak, Kimberly",
+      "name": "Kimberly Konczak",
+      "normalizedName": "kimberlykonczak",
+      "teamId": 9,
+      "teamName": "Salty Gutter Balls",
+      "teamNumber": 9,
+      "enteringAverage": 95,
+      "handicap": 103,
+      "games": [
+        {
+          "game": 1,
+          "score": 109,
+          "type": "S",
+          "raw": "109"
+        },
+        {
+          "game": 2,
+          "score": 94,
+          "type": "S",
+          "raw": "94"
+        },
+        {
+          "game": 3,
+          "score": 101,
+          "type": "S",
+          "raw": "101"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 304,
+      "weekAverage": 101.3,
+      "weekSeries": 304
+    },
+    {
+      "sourcePlayerId": 68,
+      "sourceName": "Friesleben, Matt",
+      "name": "Matt Friesleben",
+      "normalizedName": "mattfriesleben",
+      "teamId": 9,
+      "teamName": "Salty Gutter Balls",
+      "teamNumber": 9,
+      "enteringAverage": 158,
+      "handicap": 46,
+      "games": [
+        {
+          "game": 1,
+          "score": 128,
+          "type": "S",
+          "raw": "128"
+        },
+        {
+          "game": 2,
+          "score": 127,
+          "type": "S",
+          "raw": "127"
+        },
+        {
+          "game": 3,
+          "score": 189,
+          "type": "S",
+          "raw": "189"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 444,
+      "weekAverage": 148,
+      "weekSeries": 444
+    },
+    {
+      "sourcePlayerId": 60,
+      "sourceName": "Konczak, Brian",
+      "name": "Brian Konczak",
+      "normalizedName": "briankonczak",
+      "teamId": 9,
+      "teamName": "Salty Gutter Balls",
+      "teamNumber": 9,
+      "enteringAverage": 162,
+      "handicap": 43,
+      "games": [
+        {
+          "game": 1,
+          "score": 162,
+          "type": "S",
+          "raw": "162"
+        },
+        {
+          "game": 2,
+          "score": 117,
+          "type": "S",
+          "raw": "117"
+        },
+        {
+          "game": 3,
+          "score": 91,
+          "type": "S",
+          "raw": "91"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 370,
+      "weekAverage": 123.3,
+      "weekSeries": 370
+    },
+    {
+      "sourcePlayerId": 69,
+      "sourceName": "Vogel, Eric",
+      "name": "Eric Vogel",
+      "normalizedName": "ericvogel",
+      "teamId": 9,
+      "teamName": "Salty Gutter Balls",
+      "teamNumber": 9,
+      "enteringAverage": 138,
+      "handicap": 64,
+      "games": [
+        {
+          "game": 1,
+          "score": 124,
+          "type": "S",
+          "raw": "124"
+        },
+        {
+          "game": 2,
+          "score": 123,
+          "type": "S",
+          "raw": "123"
+        },
+        {
+          "game": 3,
+          "score": 152,
+          "type": "S",
+          "raw": "152"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 399,
+      "weekAverage": 133,
+      "weekSeries": 399
+    },
+    {
+      "sourcePlayerId": 166,
+      "sourceName": "Talbot, Shea",
+      "name": "Shea Talbot",
+      "normalizedName": "sheatalbot",
+      "teamId": 17,
+      "teamName": "Split On My Ball",
+      "teamNumber": 17,
+      "enteringAverage": 168,
+      "handicap": 37,
+      "games": [
+        {
+          "game": 1,
+          "score": 139,
+          "type": "S",
+          "raw": "139"
+        },
+        {
+          "game": 2,
+          "score": 160,
+          "type": "S",
+          "raw": "160"
+        },
+        {
+          "game": 3,
+          "score": 169,
+          "type": "S",
+          "raw": "169"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 468,
+      "weekAverage": 156,
+      "weekSeries": 468
+    },
+    {
+      "sourcePlayerId": 170,
+      "sourceName": "Talbot, Melody",
+      "name": "Melody Talbot",
+      "normalizedName": "melodytalbot",
+      "teamId": 17,
+      "teamName": "Split On My Ball",
+      "teamNumber": 17,
+      "enteringAverage": 104,
+      "handicap": 95,
+      "games": [
+        {
+          "game": 1,
+          "score": 107,
+          "type": "S",
+          "raw": "107"
+        },
+        {
+          "game": 2,
+          "score": 117,
+          "type": "S",
+          "raw": "117"
+        },
+        {
+          "game": 3,
+          "score": 146,
+          "type": "S",
+          "raw": "146"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 370,
+      "weekAverage": 123.3,
+      "weekSeries": 370
+    },
+    {
+      "sourcePlayerId": 164,
+      "sourceName": "Lauterbach, Laura",
+      "name": "Laura Lauterbach",
+      "normalizedName": "lauralauterbach",
+      "teamId": 17,
+      "teamName": "Split On My Ball",
+      "teamNumber": 17,
+      "enteringAverage": 90,
+      "handicap": 108,
+      "games": [
+        {
+          "game": 1,
+          "score": 51,
+          "type": "S",
+          "raw": "51"
+        },
+        {
+          "game": 2,
+          "score": 113,
+          "type": "S",
+          "raw": "113"
+        },
+        {
+          "game": 3,
+          "score": 108,
+          "type": "S",
+          "raw": "108"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 272,
+      "weekAverage": 90.7,
+      "weekSeries": 272
+    },
+    {
+      "sourcePlayerId": 163,
+      "sourceName": "Rice, Devin",
+      "name": "Devin Rice",
+      "normalizedName": "devinrice",
+      "teamId": 17,
+      "teamName": "Split On My Ball",
+      "teamNumber": 17,
+      "enteringAverage": 203,
+      "handicap": 6,
+      "games": [
+        {
+          "game": 1,
+          "score": 193,
+          "type": "S",
+          "raw": "193"
+        },
+        {
+          "game": 2,
+          "score": 197,
+          "type": "S",
+          "raw": "197"
+        },
+        {
+          "game": 3,
+          "score": 184,
+          "type": "S",
+          "raw": "184"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 574,
+      "weekAverage": 191.3,
+      "weekSeries": 574
+    },
+    {
+      "sourcePlayerId": 195,
+      "sourceName": "Nash, Ered",
+      "name": "Ered Nash",
+      "normalizedName": "erednash",
+      "teamId": 30,
+      "teamName": "STRIKE JUICE",
+      "teamNumber": 30,
+      "enteringAverage": 127,
+      "handicap": 74,
+      "games": [
+        {
+          "game": 1,
+          "score": 137,
+          "type": "S",
+          "raw": "137"
+        },
+        {
+          "game": 2,
+          "score": 100,
+          "type": "S",
+          "raw": "100"
+        },
+        {
+          "game": 3,
+          "score": 114,
+          "type": "S",
+          "raw": "114"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 351,
+      "weekAverage": 117,
+      "weekSeries": 351
+    },
+    {
+      "sourcePlayerId": 12,
+      "sourceName": "Wallington, Tim",
+      "name": "Tim Wallington",
+      "normalizedName": "timwallington",
+      "teamId": 30,
+      "teamName": "STRIKE JUICE",
+      "teamNumber": 30,
+      "enteringAverage": 159,
+      "handicap": 45,
+      "games": [
+        {
+          "game": 1,
+          "score": 143,
+          "type": "S",
+          "raw": "143"
+        },
+        {
+          "game": 2,
+          "score": 168,
+          "type": "S",
+          "raw": "168"
+        },
+        {
+          "game": 3,
+          "score": 135,
+          "type": "S",
+          "raw": "135"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 446,
+      "weekAverage": 148.7,
+      "weekSeries": 446
+    },
+    {
+      "sourcePlayerId": 81,
+      "sourceName": "Nash, Tracie",
+      "name": "Tracie Nash",
+      "normalizedName": "tracienash",
+      "teamId": 30,
+      "teamName": "STRIKE JUICE",
+      "teamNumber": 30,
+      "enteringAverage": 120,
+      "handicap": 81,
+      "games": [
+        {
+          "game": 1,
+          "score": 112,
+          "type": "S",
+          "raw": "112"
+        },
+        {
+          "game": 2,
+          "score": 136,
+          "type": "S",
+          "raw": "136"
+        },
+        {
+          "game": 3,
+          "score": 152,
+          "type": "S",
+          "raw": "152"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 400,
+      "weekAverage": 133.3,
+      "weekSeries": 400
+    },
+    {
+      "sourcePlayerId": 11,
+      "sourceName": "Hudson, Mykal",
+      "name": "Mykal Hudson",
+      "normalizedName": "mykalhudson",
+      "teamId": 30,
+      "teamName": "STRIKE JUICE",
+      "teamNumber": 30,
+      "enteringAverage": 210,
+      "handicap": 0,
+      "games": [
+        {
+          "game": 1,
+          "score": 216,
+          "type": "S",
+          "raw": "216"
+        },
+        {
+          "game": 2,
+          "score": 181,
+          "type": "S",
+          "raw": "181"
+        },
+        {
+          "game": 3,
+          "score": 159,
+          "type": "S",
+          "raw": "159"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 556,
+      "weekAverage": 185.3,
+      "weekSeries": 556
+    },
+    {
+      "sourcePlayerId": 104,
+      "sourceName": "Larsen, Jim",
+      "name": "Jim Larsen",
+      "normalizedName": "jimlarsen",
+      "teamId": 36,
+      "teamName": "The Alley Cats",
+      "teamNumber": 36,
+      "enteringAverage": 140,
+      "handicap": 63,
+      "games": [
+        {
+          "game": 1,
+          "score": 172,
+          "type": "S",
+          "raw": "172"
+        },
+        {
+          "game": 2,
+          "score": 141,
+          "type": "S",
+          "raw": "141"
+        },
+        {
+          "game": 3,
+          "score": 145,
+          "type": "S",
+          "raw": "145"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 458,
+      "weekAverage": 152.7,
+      "weekSeries": 458
+    },
+    {
+      "sourcePlayerId": 107,
+      "sourceName": "Shelay, Eric",
+      "name": "Eric Shelay",
+      "normalizedName": "ericshelay",
+      "teamId": 36,
+      "teamName": "The Alley Cats",
+      "teamNumber": 36,
+      "enteringAverage": 143,
+      "handicap": 60,
+      "games": [
+        {
+          "game": 1,
+          "score": 145,
+          "type": "S",
+          "raw": "145"
+        },
+        {
+          "game": 2,
+          "score": 152,
+          "type": "S",
+          "raw": "152"
+        },
+        {
+          "game": 3,
+          "score": 132,
+          "type": "S",
+          "raw": "132"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 429,
+      "weekAverage": 143,
+      "weekSeries": 429
+    },
+    {
+      "sourcePlayerId": 57,
+      "sourceName": "Farmery, Danielle",
+      "name": "Danielle Farmery",
+      "normalizedName": "daniellefarmery",
+      "teamId": 36,
+      "teamName": "The Alley Cats",
+      "teamNumber": 36,
+      "enteringAverage": 115,
+      "handicap": 85,
+      "games": [
+        {
+          "game": 1,
+          "score": 112,
+          "type": "S",
+          "raw": "112"
+        },
+        {
+          "game": 2,
+          "score": 124,
+          "type": "S",
+          "raw": "124"
+        },
+        {
+          "game": 3,
+          "score": 114,
+          "type": "S",
+          "raw": "114"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 350,
+      "weekAverage": 116.7,
+      "weekSeries": 350
+    },
+    {
+      "sourcePlayerId": 300,
+      "sourceName": "Reed, Nick",
+      "name": "Nick Reed",
+      "normalizedName": "nickreed",
+      "teamId": 36,
+      "teamName": "The Alley Cats",
+      "teamNumber": 36,
+      "enteringAverage": 151,
+      "handicap": 53,
+      "games": [
+        {
+          "game": 1,
+          "score": 166,
+          "type": "S",
+          "raw": "166"
+        },
+        {
+          "game": 2,
+          "score": 192,
+          "type": "S",
+          "raw": "192"
+        },
+        {
+          "game": 3,
+          "score": 143,
+          "type": "S",
+          "raw": "143"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 501,
+      "weekAverage": 167,
+      "weekSeries": 501
+    },
+    {
+      "sourcePlayerId": 23,
+      "sourceName": "Luchetta, Nicole",
+      "name": "Nicole Luchetta",
+      "normalizedName": "nicoleluchetta",
+      "teamId": 19,
+      "teamName": "The Strykettes",
+      "teamNumber": 19,
+      "enteringAverage": 133,
+      "handicap": 69,
+      "games": [
+        {
+          "game": 1,
+          "score": 153,
+          "type": "S",
+          "raw": "153"
+        },
+        {
+          "game": 2,
+          "score": 125,
+          "type": "S",
+          "raw": "125"
+        },
+        {
+          "game": 3,
+          "score": 124,
+          "type": "S",
+          "raw": "124"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 402,
+      "weekAverage": 134,
+      "weekSeries": 402
+    },
+    {
+      "sourcePlayerId": 24,
+      "sourceName": "Fesi, Augi",
+      "name": "Augi Fesi",
+      "normalizedName": "augifesi",
+      "teamId": 19,
+      "teamName": "The Strykettes",
+      "teamNumber": 19,
+      "enteringAverage": 174,
+      "handicap": 32,
+      "games": [
+        {
+          "game": 1,
+          "score": 167,
+          "type": "S",
+          "raw": "167"
+        },
+        {
+          "game": 2,
+          "score": 199,
+          "type": "S",
+          "raw": "199"
+        },
+        {
+          "game": 3,
+          "score": 232,
+          "type": "S",
+          "raw": "232"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 598,
+      "weekAverage": 199.3,
+      "weekSeries": 598
+    },
+    {
+      "sourcePlayerId": 205,
+      "sourceName": "Rochette, Paul",
+      "name": "Paul Rochette",
+      "normalizedName": "paulrochette",
+      "teamId": 19,
+      "teamName": "The Strykettes",
+      "teamNumber": 19,
+      "enteringAverage": 145,
+      "handicap": 58,
+      "games": [
+        {
+          "game": 1,
+          "score": 169,
+          "type": "S",
+          "raw": "169"
+        },
+        {
+          "game": 2,
+          "score": 144,
+          "type": "S",
+          "raw": "144"
+        },
+        {
+          "game": 3,
+          "score": 186,
+          "type": "S",
+          "raw": "186"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 499,
+      "weekAverage": 166.3,
+      "weekSeries": 499
+    },
+    {
+      "sourcePlayerId": 70,
+      "sourceName": "Morrow, Jadon",
+      "name": "Jadon Morrow",
+      "normalizedName": "jadonmorrow",
+      "teamId": 31,
+      "teamName": "Trash Pandas",
+      "teamNumber": 31,
+      "enteringAverage": 145,
+      "handicap": 58,
+      "games": [
+        {
+          "game": 1,
+          "score": 151,
+          "type": "S",
+          "raw": "151"
+        },
+        {
+          "game": 2,
+          "score": 121,
+          "type": "S",
+          "raw": "121"
+        },
+        {
+          "game": 3,
+          "score": 123,
+          "type": "S",
+          "raw": "123"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 395,
+      "weekAverage": 131.7,
+      "weekSeries": 395
+    },
+    {
+      "sourcePlayerId": 71,
+      "sourceName": "Hindes, Ashley",
+      "name": "Ashley Hindes",
+      "normalizedName": "ashleyhindes",
+      "teamId": 31,
+      "teamName": "Trash Pandas",
+      "teamNumber": 31,
+      "enteringAverage": 131,
+      "handicap": 71,
+      "games": [
+        {
+          "game": 1,
+          "score": 131,
+          "type": "S",
+          "raw": "131"
+        },
+        {
+          "game": 2,
+          "score": 124,
+          "type": "S",
+          "raw": "124"
+        },
+        {
+          "game": 3,
+          "score": 178,
+          "type": "S",
+          "raw": "178"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 433,
+      "weekAverage": 144.3,
+      "weekSeries": 433
+    },
+    {
+      "sourcePlayerId": 72,
+      "sourceName": "Kuhn, Heather",
+      "name": "Heather Kuhn",
+      "normalizedName": "heatherkuhn",
+      "teamId": 31,
+      "teamName": "Trash Pandas",
+      "teamNumber": 31,
+      "enteringAverage": 131,
+      "handicap": 71,
+      "games": [
+        {
+          "game": 1,
+          "score": 210,
+          "type": "S",
+          "raw": "210"
+        },
+        {
+          "game": 2,
+          "score": 124,
+          "type": "S",
+          "raw": "124"
+        },
+        {
+          "game": 3,
+          "score": 156,
+          "type": "S",
+          "raw": "156"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 490,
+      "weekAverage": 163.3,
+      "weekSeries": 490
+    },
+    {
+      "sourcePlayerId": 148,
+      "sourceName": "Melendez, Gabe",
+      "name": "Gabe Melendez",
+      "normalizedName": "gabemelendez",
+      "teamId": 31,
+      "teamName": "Trash Pandas",
+      "teamNumber": 31,
+      "enteringAverage": 177,
+      "handicap": 29,
+      "games": [
+        {
+          "game": 1,
+          "score": 199,
+          "type": "S",
+          "raw": "199"
+        },
+        {
+          "game": 2,
+          "score": 214,
+          "type": "S",
+          "raw": "214"
+        },
+        {
+          "game": 3,
+          "score": 202,
+          "type": "S",
+          "raw": "202"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 615,
+      "weekAverage": 205,
+      "weekSeries": 615
+    },
+    {
+      "sourcePlayerId": 78,
+      "sourceName": "Heffernan, Jordan",
+      "name": "Jordan Heffernan",
+      "normalizedName": "jordanheffernan",
+      "teamId": 27,
+      "teamName": "Turkey Club",
+      "teamNumber": 27,
+      "enteringAverage": 108,
+      "handicap": 91,
+      "games": [
+        {
+          "game": 1,
+          "score": 117,
+          "type": "S",
+          "raw": "117"
+        },
+        {
+          "game": 2,
+          "score": 96,
+          "type": "S",
+          "raw": "96"
+        },
+        {
+          "game": 3,
+          "score": 121,
+          "type": "S",
+          "raw": "121"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 334,
+      "weekAverage": 111.3,
+      "weekSeries": 334
+    },
+    {
+      "sourcePlayerId": 294,
+      "sourceName": "Barth, Leo",
+      "name": "Leo Barth",
+      "normalizedName": "leobarth",
+      "teamId": 27,
+      "teamName": "Turkey Club",
+      "teamNumber": 27,
+      "enteringAverage": 163,
+      "handicap": 42,
+      "games": [
+        {
+          "game": 1,
+          "score": 181,
+          "type": "S",
+          "raw": "181"
+        },
+        {
+          "game": 2,
+          "score": 145,
+          "type": "S",
+          "raw": "145"
+        },
+        {
+          "game": 3,
+          "score": 145,
+          "type": "S",
+          "raw": "145"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 471,
+      "weekAverage": 157,
+      "weekSeries": 471
+    },
+    {
+      "sourcePlayerId": 79,
+      "sourceName": "Dechadenedes, Paul",
+      "name": "Paul Dechadenedes",
+      "normalizedName": "pauldechadenedes",
+      "teamId": 27,
+      "teamName": "Turkey Club",
+      "teamNumber": 27,
+      "enteringAverage": 154,
+      "handicap": 50,
+      "games": [
+        {
+          "game": 1,
+          "score": 148,
+          "type": "S",
+          "raw": "148"
+        },
+        {
+          "game": 2,
+          "score": 148,
+          "type": "S",
+          "raw": "148"
+        },
+        {
+          "game": 3,
+          "score": 174,
+          "type": "S",
+          "raw": "174"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 470,
+      "weekAverage": 156.7,
+      "weekSeries": 470
+    },
+    {
+      "sourcePlayerId": 80,
+      "sourceName": "Pomerico, David",
+      "name": "David Pomerico",
+      "normalizedName": "davidpomerico",
+      "teamId": 27,
+      "teamName": "Turkey Club",
+      "teamNumber": 27,
+      "enteringAverage": 171,
+      "handicap": 35,
+      "games": [
+        {
+          "game": 1,
+          "score": 180,
+          "type": "S",
+          "raw": "180"
+        },
+        {
+          "game": 2,
+          "score": 158,
+          "type": "S",
+          "raw": "158"
+        },
+        {
+          "game": 3,
+          "score": 154,
+          "type": "S",
+          "raw": "154"
+        }
+      ],
+      "weekGames": 3,
+      "weekPins": 492,
+      "weekAverage": 164,
+      "weekSeries": 492
+    }
+  ]
+}

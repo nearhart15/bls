@@ -10,6 +10,7 @@ const BINBIN_LEAGUES_URL = process.env.BINBIN_LEAGUES_URL || "https://bls.bindul
 const MEDIA_URL = "https://arapahoebowl.com/wp-json/wp/v2/media";
 const HISTORY_DIR = process.env.BEER_LEAGUE_HISTORY_DIR || "public/data/beer-league-history";
 const USER_AGENT = "BLS Beer League history backfill (+https://github.com/nearhart15/bls)";
+export const QUALIFYING_TEAM = "Pins Go Boom!";
 
 async function request(url) {
     const response = await fetch(url, {redirect: "follow", headers: {"user-agent": USER_AGENT, accept: "application/json,application/pdf,*/*;q=0.8"}});
@@ -80,6 +81,16 @@ function seasonSlug(season) {
     return season.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+function normalizeTeamName(value) {
+    return String(value ?? "").toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "");
+}
+
+export function hasQualifyingTeam(parsed, name = QUALIFYING_TEAM) {
+    const target = normalizeTeamName(name);
+    const rows = [...(parsed?.standings ?? []), ...(parsed?.teams ?? [])];
+    return rows.some(row => normalizeTeamName(row?.name) === target);
+}
+
 function archive(parsed, bytes) {
     const week = parsed.league.week;
     if (!Number.isInteger(week) || week < 1) return false;
@@ -124,6 +135,7 @@ async function parsePdf(url, media, year) {
         const parsed = parseBlsText(readFileSync(textPath, "utf8"), {directoryUrl: MEDIA_URL, pdfUrl: url});
         if (!/^beer\b/i.test(parsed.league.name ?? "") || !/^Thursday$/i.test(parsed.league.day ?? "")) return false;
         if (!parsed.standings.length || !parsed.teams.length) return false;
+        if (!hasQualifyingTeam(parsed)) return false;
         parsed.league.season = inferSeason(parsed, media, year);
         return archive(parsed, bytes);
     } finally {
