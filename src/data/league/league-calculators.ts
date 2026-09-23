@@ -479,10 +479,13 @@ export function assignScoresAndPoints(matchup: LeagueMatchup, scoringRules: Leag
         addGamesToSeries(teamScores.series, teamScores.games);
     }
 
-    if (matchup.opponent?.scores) {
-        // Set Handicap and Calculate totals
+    if (matchup.opponent?.scores?.games.length) {
+        // Preserve a recorded per-game handicap (for example when an opponent lineup changes mid-series).
+        // Fall back to the matchup-level team handicap for older data that does not provide one per game.
         matchup.opponent.scores.games.forEach((game) => {
-            game.hdcp = matchup.opponent?.teamHdcp ?? 0;
+            if (!game.hdcp || game.hdcp === 0) {
+                game.hdcp = matchup.opponent?.teamHdcp ?? 0;
+            }
             game.effectiveScratchScore = game.scratchScore;
             game.hdcpScore = game.effectiveScratchScore + game.hdcp;
         })
@@ -495,7 +498,7 @@ export function assignScoresAndPoints(matchup: LeagueMatchup, scoringRules: Leag
         const opponent = matchup.opponent;
         if (opponent.absent || opponent.vacant) {
             pointsCalculator.assignVacantOrAbsentOpponentPoints(matchup.scores, opponent.vacant, opponent.absent);
-        } else if (opponent.scores) {
+        } else if (opponent.scores?.games.length) {
             pointsCalculator.assignPoints(matchup.scores, opponent.scores);
         }
 
