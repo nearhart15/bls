@@ -10,10 +10,12 @@ import ErrorDisplay from "./components/error-display";
 import PlayerList from "./components/player/player-list";
 const PlayerDetail = lazy(() => import("./components/player/player-detail"));
 const PlayerCompare = lazy(() => import("./components/player/player-compare"));
-import ApiPlayerCompare from "./components/player/api-player-compare";
-import PlayerLeaderboard from "./components/player/player-leaderboard";
 const HandicapGuide = lazy(() => import("./components/player/handicap-guide"));
-import {ApiPlayerDetail, ApiPlayerLeaderboard, ApiPlayerList} from "./components/player/api-player-screens";
+const PlayerLeaderboard = lazy(() => import("./components/player/player-leaderboard"));
+const ApiPlayerCompare = lazy(() => import("./components/player/api-player-compare"));
+const ApiPlayerDetail = lazy(async () => ({default: (await import("./components/player/api-player-screens")).ApiPlayerDetail}));
+const ApiPlayerLeaderboard = lazy(async () => ({default: (await import("./components/player/api-player-screens")).ApiPlayerLeaderboard}));
+const ApiPlayerList = lazy(async () => ({default: (await import("./components/player/api-player-screens")).ApiPlayerList}));
 import {useDataSource} from "./components/data-source";
 import {useCachedFetcher} from "./components/cache/data-loader";
 import {
