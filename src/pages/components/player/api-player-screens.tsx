@@ -109,20 +109,7 @@ export const ApiPlayerDetail:FC<{playerId:string}>=({playerId})=>{
             <span className="bls-hero-kicker">API Player</span>
             <h1>{p.name}</h1>
             <div className="text-body-secondary">{a?.teamName??"Substitute"} · {a?.leagueName??"Beer League"}</div>
-            <div className="d-flex flex-wrap align-items-end justify-content-between gap-3 mt-3">
-                <div className="small text-body-secondary">{archiveStatus}</div>
-                <div style={{minWidth:190}}>
-                    <Form.Label className="small mb-1" htmlFor="api-player-timeframe">Time frame</Form.Label>
-                    <Form.Select
-                        id="api-player-timeframe"
-                        size="sm"
-                        value={timeframe}
-                        onChange={e=>{setTimeframe(e.target.value as ApiPlayerTimeframe);}}
-                    >
-                        {API_PLAYER_TIMEFRAME_OPTIONS.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}
-                    </Form.Select>
-                </div>
-            </div>
+            <div className="small text-body-secondary mt-3">{archiveStatus}</div>
         </div>
         {d&&d.latestGames.length>0&&<Card className="bls-profile-card mb-3">
             <CardBody>
@@ -141,6 +128,7 @@ export const ApiPlayerDetail:FC<{playerId:string}>=({playerId})=>{
             historical={historical}
             importedWeeks={indexData?.importedWeeks??0}
             timeframe={timeframe}
+            onTimeframeChange={setTimeframe}
         /></Suspense>}
         <Row className="g-3 mb-3">
             {detailMetrics.map(metric=>{
