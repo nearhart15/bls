@@ -2,17 +2,17 @@
  * Player routes (c) 2026
  */
 
-import {type FC, useCallback} from "react";
+import {lazy, type FC, useCallback} from "react";
 import {Navigate, useParams} from "react-router";
 
 import Loader from "./components/loader";
 import ErrorDisplay from "./components/error-display";
 import PlayerList from "./components/player/player-list";
-import PlayerDetail from "./components/player/player-detail";
-import PlayerCompare from "./components/player/player-compare";
+const PlayerDetail = lazy(() => import("./components/player/player-detail"));
+const PlayerCompare = lazy(() => import("./components/player/player-compare"));
 import ApiPlayerCompare from "./components/player/api-player-compare";
 import PlayerLeaderboard from "./components/player/player-leaderboard";
-import HandicapGuide from "./components/player/handicap-guide";
+const HandicapGuide = lazy(() => import("./components/player/handicap-guide"));
 import {ApiPlayerDetail, ApiPlayerLeaderboard, ApiPlayerList} from "./components/player/api-player-screens";
 import {useDataSource} from "./components/data-source";
 import {useCachedFetcher} from "./components/cache/data-loader";
