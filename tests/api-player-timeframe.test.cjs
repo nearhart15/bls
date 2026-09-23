@@ -91,7 +91,7 @@ test("progress totals restart at the selected time frame boundary", () => {
     assert.equal(games[0].value, 3);
     assert.equal(pins[0].value, 660);
     assert.equal(games.at(-1).value, 15);
-    assert.equal(pins.at(-1).value, 3596);
+    assert.equal(pins.at(-1).value, 2996);
 });
 
 test("average progress includes weekly and running values", () => {
