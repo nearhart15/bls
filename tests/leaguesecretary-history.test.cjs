@@ -207,26 +207,16 @@ test("committed LeagueSecretary archive contains varying exact weekly history", 
     );
 
     const leagueHistory = JSON.parse(fs.readFileSync(path.join(historyDir, "league-week-history.json"), "utf8"));
+    assert.equal(leagueHistory.version, 2);
     assert.equal(leagueHistory.weeks.length, index.importedWeeks);
-    if (leagueHistory.version === 2) {
-        const nickIndex = leagueHistory.players.indexOf("nickearhart");
-        assert.ok(nickIndex >= 0);
-        const leagueWeek = leagueHistory.weeks.find(([date, week]) => date === "2026-09-03" && week === 1);
-        assert.ok(leagueWeek);
-        const leagueNick = leagueWeek[2].find(row => row[0] === nickIndex);
-        assert.ok(leagueNick);
-        assert.deepEqual(
-            [leagueNick.slice(5), leagueNick[4], leagueNick[2], leagueNick[3]],
-            [[221, 185, 142], 25, 548, 548],
-        );
-    } else {
-        const leagueWeek = leagueHistory.weeks.find(point => point.seasonKey === "2026-f" && point.week === 1);
-        assert.ok(leagueWeek);
-        const leagueNick = leagueWeek.bowlers.find(player => player.playerKey === "nickearhart");
-        assert.ok(leagueNick);
-        assert.deepEqual(
-            [leagueNick.weekScores, leagueNick.handicap, leagueNick.weekPins, leagueNick.weekSeries],
-            [[221, 185, 142], 25, 548, 548],
-        );
-    }
+    const nickIndex = leagueHistory.players.indexOf("nickearhart");
+    assert.ok(nickIndex >= 0);
+    const leagueWeek = leagueHistory.weeks.find(([date, week]) => date === "2026-09-03" && week === 1);
+    assert.ok(leagueWeek);
+    const leagueNick = leagueWeek[2].find(row => row[0] === nickIndex);
+    assert.ok(leagueNick);
+    assert.deepEqual(
+        [leagueNick.slice(5), leagueNick[4], leagueNick[2], leagueNick[3]],
+        [[221, 185, 142], 25, 548, 548],
+    );
 });
