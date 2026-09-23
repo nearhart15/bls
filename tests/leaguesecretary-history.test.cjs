@@ -110,6 +110,34 @@ test("player history accumulates exact weekly scratch pinfall within each season
     assert.equal(players[0].history[1].handicap, 39);
 });
 
+test("league week history keeps compact benchmark inputs for every bowler", async () => {
+    const {buildLeagueWeekHistory} = await importer;
+    const weeks = buildLeagueWeekHistory([
+        snapshot(1, "2026-09-03", [
+            bowler({id: 160, scores: [221, 185, 142], handicap: 25}),
+            bowler({id: 231, name: "Sarah Scott", sourceName: "Scott, Sarah", teamId: 25, scores: [150, 160, 170], handicap: 45}),
+        ], "Fall 2026", 2026, "f"),
+    ]);
+    assert.equal(weeks.length, 1);
+    assert.equal(weeks[0].seasonKey, "2026-f");
+    assert.deepEqual(weeks[0].bowlers[0], {
+        playerKey: "nickearhart",
+        weekGames: 3,
+        weekPins: 548,
+        weekSeries: 548,
+        weekScores: [221, 185, 142],
+        handicap: 25,
+    });
+    assert.deepEqual(weeks[0].bowlers[1], {
+        playerKey: "sarahscott",
+        weekGames: 3,
+        weekPins: 480,
+        weekSeries: 480,
+        weekScores: [150, 160, 170],
+        handicap: 45,
+    });
+});
+
 test("the same bowler can keep one history when LeagueSecretary IDs change between seasons", async () => {
     const {buildPlayerHistory} = await importer;
     const players = buildPlayerHistory([
