@@ -363,6 +363,26 @@ export function buildLeagueWeekHistory(snapshots) {
     }));
 }
 
+export function compactLeagueWeekHistory(weeks) {
+    const players = [...new Set(weeks.flatMap(week => week.bowlers.map(bowler => bowler.playerKey)))].sort();
+    const playerIndex = new Map(players.map((playerKey, index) => [playerKey, index]));
+    return {
+        players,
+        weeks: weeks.map(week => [
+            week.date,
+            week.week,
+            week.bowlers.map(bowler => [
+                playerIndex.get(bowler.playerKey),
+                bowler.weekGames,
+                bowler.weekPins,
+                bowler.weekSeries,
+                bowler.handicap,
+                ...bowler.weekScores,
+            ]),
+        ]),
+    };
+}
+
 export async function backfillLeagueSecretaryHistory() {
     console.log(`Loading reporting periods from ${RECAP_SHEETS_URL}`);
     const baseHtml = await (await request(RECAP_SHEETS_URL)).text();
@@ -439,10 +459,13 @@ export async function backfillLeagueSecretaryHistory() {
         })),
     };
     writeFileSync(resolve(OUTPUT_DIR, "player-history-index.json"), `${JSON.stringify(historyIndex)}\n`);
+    const compactLeagueHistory = compactLeagueWeekHistory(buildLeagueWeekHistory(snapshots));
     const leagueWeekHistory = {
+        version: 2,
         generatedAt: index.generatedAt,
         qualifyingTeam: QUALIFYING_TEAM,
-        weeks: buildLeagueWeekHistory(snapshots),
+        players: compactLeagueHistory.players,
+        weeks: compactLeagueHistory.weeks,
     };
     writeFileSync(resolve(OUTPUT_DIR, "league-week-history.json"), `${JSON.stringify(leagueWeekHistory)}\n`);
     rmSync(resolve(OUTPUT_DIR, "player-history.json"), {force: true});
