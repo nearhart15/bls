@@ -127,3 +127,29 @@ for (const probe of [
     }, null, 2));
   }
 }
+
+
+console.log("\n===== recap API all-team probe =====");
+{
+  const pageUrl = "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/1/0";
+  const page = await fetch(pageUrl, {headers: {"user-agent": "BLS history-source probe"}});
+  const pageHtml = await page.text();
+  const token = pageHtml.match(/name="__RequestVerificationToken"[^>]*value="([^"]+)"/i)?.[1] ?? "";
+  const cookies = typeof page.headers.getSetCookie === "function" ? page.headers.getSetCookie() : [page.headers.get("set-cookie")].filter(Boolean);
+  const cookie = cookies.map(value => String(value).split(";")[0]).join("; ");
+  for (const candidate of [
+    {label:"team-zero", includeTeam:true, teamId:"0"},
+    {label:"team-omitted", includeTeam:false, teamId:""},
+  ]) {
+    const body = new URLSearchParams({leagueId:"133016",year:"2024",season:"u",weekNum:"1",page:"1",pageSize:"500",__RequestVerificationToken:token});
+    if (candidate.includeTeam) body.set("teamId", candidate.teamId);
+    const response = await fetch("https://www.leaguesecretary.com/League/InteractiveRecaps_Read", {
+      method:"POST",
+      headers:{"user-agent":"BLS history-source probe","content-type":"application/x-www-form-urlencoded; charset=UTF-8",accept:"application/json","x-requested-with":"XMLHttpRequest",referer:pageUrl,origin:"https://www.leaguesecretary.com",cookie},
+      body,
+    });
+    const text = await response.text();
+    let parsed=null; try { parsed=JSON.parse(text); } catch {}
+    console.log(candidate.label, JSON.stringify({status:response.status,total:parsed?.Total,teamHeaders:Array.isArray(parsed?.Data)?parsed.Data.filter(r=>r.IsHeader).map(r=>({id:r.TeamID,name:r.TeamName})):null,bytes:text.length,preview:parsed?null:text.slice(0,400)},null,2));
+  }
+}
