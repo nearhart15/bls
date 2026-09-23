@@ -51,8 +51,32 @@ export interface ApiHistoricalPlayerResult {
     player: ApiHistoricalPlayer | null;
 }
 
+export interface ApiHistoricalLeagueBowlerWeek {
+    playerKey: string;
+    weekGames: number | null;
+    weekPins: number | null;
+    weekSeries: number | null;
+    weekScores: number[];
+    handicap: number | null;
+}
+
+export interface ApiHistoricalLeagueWeek {
+    season: string;
+    seasonKey: string;
+    week: number;
+    date: string;
+    bowlers: ApiHistoricalLeagueBowlerWeek[];
+}
+
+export interface ApiHistoricalLeagueHistory {
+    generatedAt: string;
+    qualifyingTeam: string;
+    weeks: ApiHistoricalLeagueWeek[];
+}
+
 export const API_PLAYER_HISTORY_INDEX_CACHE_CATEGORY = "api-player-history-index-v3";
 export const API_PLAYER_HISTORY_CACHE_CATEGORY = "api-player-history-v3";
+export const API_LEAGUE_HISTORY_CACHE_CATEGORY = "api-league-history-v1";
 
 export function normalizeHistoricalPlayerName(name: string): string {
     return name.toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "");
@@ -80,4 +104,12 @@ export async function apiHistoricalPlayerFetcher(sourcePlayerId: number): Promis
     const response = await fetch(`${base}data/leaguesecretary-beer-history/players/${sourcePlayerId}.json`, {cache: "no-cache"});
     if (!response.ok) throw new Error(`Historical player stats unavailable (${response.status}).`);
     return await response.json() as ApiHistoricalPlayer;
+}
+
+
+export async function apiHistoricalLeagueFetcher(): Promise<ApiHistoricalLeagueHistory> {
+    const base = import.meta.env.BASE_URL || "/";
+    const response = await fetch(`${base}data/leaguesecretary-beer-history/league-week-history.json`, {cache: "no-cache"});
+    if (!response.ok) throw new Error(`Historical league stats unavailable (${response.status}).`);
+    return await response.json() as ApiHistoricalLeagueHistory;
 }
