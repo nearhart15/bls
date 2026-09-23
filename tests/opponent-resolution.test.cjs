@@ -123,6 +123,29 @@ test('unknown concrete opponent IDs and any recorded PENDING games still reject'
   }
 });
 
+test('recorded per-game opponent handicaps are preserved and rolled into series totals', async () => {
+  const data = fixture();
+  const matchup = data.team.matchups[0];
+  matchup.opponent.hdcp = 40;
+  matchup.opponent.scores.games = [
+    {'scratch-score': 150, hdcp: 31},
+    {'scratch-score': 180, hdcp: 32},
+    {'scratch-score': 200, hdcp: 33},
+  ];
+  const league = await fetchFixture(data);
+  const opponent = league.teams[0].matchups[0].opponent.scores;
+  assert.deepEqual(opponent.games.map(game => game.hdcp), [31, 32, 33]);
+  assert.deepEqual(opponent.games.map(game => game.hdcpScore), [181, 212, 233]);
+  assert.equal(opponent.series.hdcp, 96);
+  assert.equal(opponent.series.hdcpScore, 626);
+});
+
+test('missing per-game opponent handicaps still fall back to the matchup handicap', async () => {
+  const league = await fetchFixture(fixture());
+  const opponent = league.teams[0].matchups[0].opponent.scores;
+  assert.deepEqual(opponent.games.map(game => game.hdcp), [10, 10, 10]);
+});
+
 test('recorded zero-score games remain real games when empty schedules are normalized', async () => {
   const data = fixture();
   data.league['scoring-rules'].hdcp = {type: 'NONE'};
