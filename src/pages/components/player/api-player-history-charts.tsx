@@ -9,24 +9,43 @@ import {useTheme} from "../theme";
 import {useCachedFetcher} from "../cache/data-loader";
 import {
     API_PLAYER_HISTORY_CACHE_CATEGORY,
-    apiPlayerHistoryFetcher,
+    API_PLAYER_HISTORY_INDEX_CACHE_CATEGORY,
+    apiHistoricalPlayerFetcher,
+    apiPlayerHistoryIndexFetcher,
     findHistoricalPlayer,
-    type ApiPlayerHistoryFile,
+    type ApiHistoricalPlayerResult,
+    type ApiPlayerHistoryIndexFile,
 } from "../../../data/player/api-player-history";
 
-interface Props { playerName: string; }
+interface Props { playerName: string; teamName?: string; }
 
 function dateValue(date: string): number {
     return Date.parse(`${date}T12:00:00`);
 }
 
-const ApiPlayerHistoryCharts: FC<Props> = ({playerName}) => {
+const ApiPlayerHistoryCharts: FC<Props> = ({playerName, teamName}) => {
     const {theme} = useTheme();
-    const fetcher = useCallback(() => apiPlayerHistoryFetcher(), []);
-    const {data, isLoading, error} = useCachedFetcher<ApiPlayerHistoryFile>(fetcher, API_PLAYER_HISTORY_CACHE_CATEGORY);
-    const historical = useMemo(() => data ? findHistoricalPlayer(data, playerName) : null, [data, playerName]);
+    const indexFetcher = useCallback(() => apiPlayerHistoryIndexFetcher(), []);
+    const {data: indexData, isLoading: indexLoading, error: indexError} = useCachedFetcher<ApiPlayerHistoryIndexFile>(
+        indexFetcher,
+        API_PLAYER_HISTORY_INDEX_CACHE_CATEGORY,
+    );
+    const historicalEntry = useMemo(
+        () => indexData ? findHistoricalPlayer(indexData, playerName, teamName) : null,
+        [indexData, playerName, teamName],
+    );
+    const sourcePlayerId = historicalEntry?.sourcePlayerId ?? 0;
+    const playerFetcher = useCallback(async (): Promise<ApiHistoricalPlayerResult> => ({
+        player: sourcePlayerId > 0 ? await apiHistoricalPlayerFetcher(sourcePlayerId) : null,
+    }), [sourcePlayerId]);
+    const {data: playerData, isLoading: playerLoading, error: playerError} = useCachedFetcher<ApiHistoricalPlayerResult>(
+        playerFetcher,
+        API_PLAYER_HISTORY_CACHE_CATEGORY,
+        String(sourcePlayerId),
+    );
+    const historical = playerData?.player ?? null;
 
-    if (isLoading || error || !historical || historical.history.length < 2) return null;
+    if (indexLoading || playerLoading || indexError || playerError || !historical || historical.history.length < 2) return null;
 
     const palette = chartPalette(theme);
     const points = historical.history;
@@ -103,7 +122,7 @@ const ApiPlayerHistoryCharts: FC<Props> = ({playerName}) => {
         <div className="mb-3">
             <div className="d-flex flex-wrap align-items-baseline justify-content-between gap-2 mb-2">
                 <h2 className="h5 mb-0">Historical trends</h2>
-                <span className="text-secondary small">{data?.importedWeeks ?? 0} Pins Go Boom league weeks</span>
+                <span className="text-secondary small">{indexData?.importedWeeks ?? 0} Pins Go Boom league weeks</span>
             </div>
             <p className="text-secondary small mb-3">
                 LeagueSecretary history uses the recorded weekly scratch scores. Season average is rebuilt from scratch pinfall and games; absentee or vacant scores stay out of the trend.
