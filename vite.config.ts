@@ -14,10 +14,6 @@ export default defineConfig({
         codeSplitting: {
           groups: [
             {
-              name: 'react-bootstrap-icons',
-              test: /node_modules\/react-bootstrap-icons/
-            },
-            {
               name: 'apexcharts',
               test: /node_modules\/(react-apexcharts|apexcharts)/
             }
