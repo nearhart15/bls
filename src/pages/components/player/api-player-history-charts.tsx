@@ -101,7 +101,7 @@ const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe
         chart: {
             ...chartBase.chart,
             id: `api-player-progress-${historical.sourcePlayerId}-${metric}`,
-            height: 330,
+            height: 390,
             type: "line",
         },
         series: chartSeries,
@@ -116,6 +116,14 @@ const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe
             labels: {datetimeUTC: false, format: "MMM yy", style: {colors: palette.text, fontSize: "11px"}},
             axisBorder: {show: false},
             axisTicks: {show: false},
+        },
+        grid: {
+            ...chartBase.grid,
+            padding: {bottom: 20},
+        },
+        legend: {
+            ...chartBase.legend,
+            offsetY: 6,
         },
         yaxis: {
             decimalsInFloat: metricOption.integer ? 0 : 1,
@@ -184,14 +192,14 @@ const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe
             </p>
             <div className="bls-surface-card p-2 p-md-3">
                 {hasValues ? (
-                    <div className="bls-chart">
+                    <div className="bls-chart pb-3">
                         <Chart
                             key={`progress-${theme}-${historical.sourcePlayerId}-${timeframe}-${metric}-${points.length}`}
                             options={chartOptions}
                             series={chartSeries}
                             type="line"
                             width="100%"
-                            height={330}
+                            height={390}
                         />
                     </div>
                 ) : (
