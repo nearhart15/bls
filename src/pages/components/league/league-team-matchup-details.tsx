@@ -7,20 +7,69 @@ import {useId} from "react";
 import {type CSSProperties, type FC, createContext, useContext, useEffect, useMemo, useState} from "react";
 import {createPortal} from "react-dom";
 import {Row, Col, Badge, Table, Card, CardBody, CardFooter, Stack, ListGroup, ListGroupItem} from "react-bootstrap";
-import * as icons from 'react-bootstrap-icons';
+import {
+    Dash,
+    DashCircleDotted,
+    ExclamationTriangle,
+    FileExcel,
+    Icon0CircleFill,
+    Icon1Circle,
+    Icon1CircleFill,
+    Icon2Circle,
+    Icon2CircleFill,
+    Icon3Circle,
+    Icon3CircleFill,
+    Icon4Circle,
+    Icon4CircleFill,
+    Icon5Circle,
+    Icon5CircleFill,
+    Icon6Circle,
+    Icon7Circle,
+    Icon8Circle,
+    Icon8CircleFill,
+    Icon9Circle,
+    Icon9CircleFill,
+    SlashSquare,
+    type IconProps as BootstrapIconProps,
+} from "react-bootstrap-icons";
 import type {LeagueDetails} from "../../../data/league/league-details";
 import {Frame, type FrameAttributes, type LeagueMatchup, type ScoreLabel, TeamPlayerGameScore} from "../../../data/league/league-matchup";
 import {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import {type Breakpoint, BS_BP_SM, BS_BP_XS, isBreakpointSmallerThan} from "../ui-utils";
 import {CollapsibleContainer} from "../collapsible-container";
 
-interface IconProps extends icons.IconProps { iconName: keyof typeof icons; }
+const iconMap = {
+    Dash,
+    DashCircleDotted,
+    ExclamationTriangle,
+    FileExcel,
+    Icon0CircleFill,
+    Icon1Circle,
+    Icon1CircleFill,
+    Icon2Circle,
+    Icon2CircleFill,
+    Icon3Circle,
+    Icon3CircleFill,
+    Icon4Circle,
+    Icon4CircleFill,
+    Icon5Circle,
+    Icon5CircleFill,
+    Icon6Circle,
+    Icon7Circle,
+    Icon8Circle,
+    Icon8CircleFill,
+    Icon9Circle,
+    Icon9CircleFill,
+    SlashSquare,
+} as const;
+type IconName = keyof typeof iconMap;
+interface IconProps extends BootstrapIconProps { iconName: IconName; }
 export const Icon :FC<IconProps> = ({iconName, ...props}: IconProps) => {
-    const BootstrapIcon = icons[iconName];
+    const BootstrapIcon = iconMap[iconName];
     return <BootstrapIcon {...props}/>;
 }
 
-interface FrameAttributeIconInfo { attribute: FrameAttributes; description: string; iconColor: string; iconName: keyof typeof icons; }
+interface FrameAttributeIconInfo { attribute: FrameAttributes; description: string; iconColor: string; iconName: IconName; }
 const FrameAttributeIcons = new Map<FrameAttributes, FrameAttributeIconInfo>([
     ["Hung", {attribute: "Hung", description: "Got Hung!", iconColor: "#ff6b6b", iconName: "Icon0CircleFill"}],
     ["Star", {attribute: "Star", description: "Beer / Star Frame!", iconColor: "#a78bfa", iconName: "Icon1CircleFill"}],
@@ -33,7 +82,7 @@ const FrameAttributeIcons = new Map<FrameAttributes, FrameAttributeIconInfo>([
 ]);
 const FrameAttributeOrder = new Map(Array.from(FrameAttributeIcons.keys()).map((attribute, index) => [attribute, index]));
 
-interface FrameScoreLabelInfo { label: string; altText: string; iconName: keyof typeof icons; }
+interface FrameScoreLabelInfo { label: string; altText: string; iconName: IconName; }
 const FrameScoreLabels = new Map<string, FrameScoreLabelInfo>([
     ["X", {label: "X", altText: "Strike", iconName: "FileExcel"}], ["/", {label: "/", altText: "Spare", iconName: "SlashSquare"}],
     ["1S", {label: "1S", altText: "1 Split", iconName: "Icon1Circle"}], ["2S", {label: "2S", altText: "2 Split", iconName: "Icon2Circle"}],
