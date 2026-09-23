@@ -34,7 +34,7 @@ function snapshot(week, date, bowlers, season = "Summer 2024", year = 2024, seas
     return {reporting: {week, date, label: season, year, seasonCode}, bowlers};
 }
 
-function bowler({id, name = "Nick Earhart", sourceName = "Earhart, Nick", teamId = 26, scores = [182, 130, 187]} = {}) {
+function bowler({id, name = "Nick Earhart", sourceName = "Earhart, Nick", teamId = 26, scores = [182, 130, 187], handicap = 39} = {}) {
     const weekPins = scores.reduce((sum, score) => sum + score, 0);
     return {
         sourcePlayerId: id,
@@ -49,6 +49,7 @@ function bowler({id, name = "Nick Earhart", sourceName = "Earhart, Nick", teamId
         weekPins,
         weekAverage: Math.round((weekPins / scores.length) * 10) / 10,
         weekSeries: scores.length === 3 ? weekPins : null,
+        handicap,
     };
 }
 
@@ -105,6 +106,8 @@ test("player history accumulates exact weekly scratch pinfall within each season
     assert.equal(players[0].history[1].seasonAverage, 183.2);
     assert.equal(players[0].history[1].highGame, 200);
     assert.equal(players[0].history[1].highSeries, 600);
+    assert.deepEqual(players[0].history[1].weekScores, [200, 200, 200]);
+    assert.equal(players[0].history[1].handicap, 39);
 });
 
 test("the same bowler can keep one history when LeagueSecretary IDs change between seasons", async () => {
