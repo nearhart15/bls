@@ -58,6 +58,22 @@ test('cache expires at the configured millisecond boundary', () => {
   try{const cache=new Cache();cache.put('test','x',{});now+=899999;assert.ok(cache.get('test','x'));now++;assert.equal(cache.get('test','x'),null);}finally{Date.now=real;}
 });
 
+test('cache shares simultaneous requests for the same category and key', async () => {
+  const {Cache}=load('src/pages/components/cache/context-cache.tsx');
+  const cache=new Cache();
+  let calls=0, release;
+  const gate=new Promise(resolve=>{release=resolve;});
+  const fetcher=async()=>{calls++;await gate;return {ok:true};};
+  const first=cache.getOrFetch('players','all',fetcher);
+  const second=cache.getOrFetch('players','all',fetcher);
+  assert.equal(first,second);
+  assert.equal(calls,1);
+  release();
+  const [a,b]=await Promise.all([first,second]);
+  assert.deepEqual(a,{ok:true});
+  assert.equal(a,b);
+});
+
 test('remote input guards reject malformed counts and pollution fields', () => {
   for(const input of [{'games-per-week':-1},{'games-per-week':1e9},{frames:[['bad']]},JSON.parse('{"__proto__":{"polluted":true}}')])assert.throws(()=>validateJson(input));
   assert.equal({}.polluted,undefined);
