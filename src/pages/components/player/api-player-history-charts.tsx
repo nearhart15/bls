@@ -28,13 +28,14 @@ interface Props {
     historical: ApiHistoricalPlayer;
     importedWeeks: number;
     timeframe: ApiPlayerTimeframe;
+    onTimeframeChange: (timeframe: ApiPlayerTimeframe) => void;
 }
 
 function dateValue(date: string): number {
     return Date.parse(`${date}T12:00:00`);
 }
 
-const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe}) => {
+const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe, onTimeframeChange}) => {
     const {theme} = useTheme();
     const [metric, setMetric] = useState<ApiPlayerProgressMetric>("average");
     const points = useMemo(
@@ -146,18 +147,36 @@ const ApiPlayerHistoryCharts: FC<Props> = ({historical, importedWeeks, timeframe
                     <h2 className="h5 mb-1">Progress over time</h2>
                     <span className="text-secondary small">{importedWeeks} Pins Go Boom league weeks · {timeframeLabel}</span>
                 </div>
-                <div style={{minWidth: 210}}>
-                    <Form.Label className="small mb-1" htmlFor="api-player-progress-stat">Stat</Form.Label>
-                    <Form.Select
-                        id="api-player-progress-stat"
-                        size="sm"
-                        value={metric}
-                        onChange={event => { setMetric(event.target.value as ApiPlayerProgressMetric); }}
-                    >
-                        {API_PLAYER_PROGRESS_OPTIONS.map(option => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
-                        ))}
-                    </Form.Select>
+                <div
+                    className="d-grid gap-2"
+                    style={{gridTemplateColumns: "repeat(2, minmax(0, 1fr))", width: "min(100%, 440px)"}}
+                >
+                    <div>
+                        <Form.Label className="small mb-1" htmlFor="api-player-progress-stat">Stat</Form.Label>
+                        <Form.Select
+                            id="api-player-progress-stat"
+                            size="sm"
+                            value={metric}
+                            onChange={event => { setMetric(event.target.value as ApiPlayerProgressMetric); }}
+                        >
+                            {API_PLAYER_PROGRESS_OPTIONS.map(option => (
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                        </Form.Select>
+                    </div>
+                    <div>
+                        <Form.Label className="small mb-1" htmlFor="api-player-timeframe">Time frame</Form.Label>
+                        <Form.Select
+                            id="api-player-timeframe"
+                            size="sm"
+                            value={timeframe}
+                            onChange={event => { onTimeframeChange(event.target.value as ApiPlayerTimeframe); }}
+                        >
+                            {API_PLAYER_TIMEFRAME_OPTIONS.map(option => (
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                        </Form.Select>
+                    </div>
                 </div>
             </div>
             <p className="text-secondary small mb-3">
