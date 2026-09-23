@@ -20,7 +20,7 @@ function apiRows({teamId = 26, teamName = "Pins Go Boom!", playerId = 237, playe
         row[`Game${index + 1}`] = games[index] == null ? "" : String(games[index]);
         row[`ScoreType${index + 1}`] = types[index] ?? "0";
     }
-    row.Total = String(games.filter((score, index) => score != null && types[index] === "S").reduce((sum, score) => sum + score, 0));
+    row.Total = String(games.reduce((sum, score, index) => sum + (score != null && types[index] === "S" ? score : 0), 0));
     row.HandicapTotal = row.Total;
     return [
         {BowlerID: 0, BowlerTitle: teamName, IsHeader: true, IsTotal: false, TeamID: teamId, TeamName: teamName, LaneBowledOn: 34, TeamPointsWon: 2},
@@ -30,7 +30,7 @@ function apiRows({teamId = 26, teamName = "Pins Go Boom!", playerId = 237, playe
 }
 
 function snapshot(week, date, bowlers, season = "Summer 2024", year = 2024, seasonCode = "u") {
-    return {reporting: {week, date, label, year, seasonCode}, bowlers};
+    return {reporting: {week, date, label: season, year, seasonCode}, bowlers};
 }
 
 function bowler({id, name = "Nick Earhart", sourceName = "Earhart, Nick", teamId = 26, scores = [182, 130, 187]} = {}) {
@@ -54,7 +54,7 @@ function bowler({id, name = "Nick Earhart", sourceName = "Earhart, Nick", teamId
 test("reporting-period selector parses LeagueSecretary week metadata", async () => {
     const {extractSelectOptions, parseReportingPeriod} = await importer;
     const html = '<select id="leaguePngViewer-recaps-period"><option value="3|2026|f" selected>Fall 2026 Week 3 09/17/2026</option></select>';
-    const options = extractSelectOptions(jtml, "leaguePngViewer-recaps-period");
+    const options = extractSelectOptions(html, "leaguePngViewer-recaps-period");
     assert.equal(options.length, 1);
     assert.deepEqual(parseReportingPeriod(options[0]), {
         week: 3,
@@ -81,12 +81,12 @@ test("period-specific recap rows assign teams and use only scratch games", async
     assert.equal(nick.weekGames, 3);
     assert.equal(nick.weekPins, 499);
     assert.equal(nick.weekAverage, 166.3);
-    assert.equal(nick.weeekSeries, 499);
+    assert.equal(nick.weekSeries, 499);
     const absent = teams[1].players[0];
     assert.equal(absent.weekGames, null);
     assert.equal(absent.weekPins, null);
     assert.equal(absent.weekAverage, null);
-    assert.equal(absent.weeekSeries, null);
+    assert.equal(absent.weekSeries, null);
 });
 
 test("player history accumulates exact weekly scratch pinfall within each season", async () => {
@@ -114,6 +114,7 @@ test("the same bowler can keep one history when LeagueSecretary IDs change betwe
     ]);
     assert.equal(players.length, 1);
     assert.deepEqual(players[0].sourcePlayerIds, [160, 237]);
+    assert.equal(players[0].sourcePlayerId, 160);
     assert.equal(players[0].history.length, 2);
     assert.equal(players[0].history[1].games, 3);
     assert.equal(players[0].history[1].pins, 573);
@@ -132,4 +133,18 @@ test("duplicate names in the same reporting week remain separate", async () => {
     ]);
     assert.equal(players.length, 2);
     assert.deepEqual(players.map(player => player.sourcePlayerId).sort((a, b) => a - b), [1, 2]);
+});
+
+test("absentee rows create a gap without changing season totals", async () => {
+    const {parseRecapRows, buildPlayerHistory} = await importer;
+    const week1 = parseRecapRows(apiRows())[0].players;
+    const week2 = parseRecapRows(apiRows({games: [166, 166, 166], types: ["A", "A", "A"]}))[0].players;
+    const players = buildPlayerHistory([
+        snapshot(1, "2024-05-09", week1),
+        snapshot(2, "2024-05-16", week2),
+    ]);
+    assert.equal(players[0].history[1].games, 3);
+    assert.equal(players[0].history[1].pins, 499);
+    assert.equal(players[0].history[1].weekAverage, null);
+    assert.equal(players[0].history[1].seasonAverage, 166.3);
 });
