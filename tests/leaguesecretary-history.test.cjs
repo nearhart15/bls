@@ -5,74 +5,56 @@ const path = require("node:path");
 
 const importer = import(pathToFileURL(path.resolve(__dirname, "../scripts/backfill-leaguesecretary-history.mjs")).href);
 
-function bowler(id, name, games, pins) {
+function apiRows({teamId = 26, teamName = "Pins Go Boom!", playerId = 237, playerName = "Earhart, Nick", average = "166", games = [182, 130, 187], types = ["S", "S", "S"]} = {}) {
+    const row = {
+        BowlerID: playerId,
+        BowlerTitle: playerName,
+        Average: average,
+        Handicap: "39",
+        IsHeader: false,
+        IsTotal: false,
+        TeamID: 0,
+        TeamName: "",
+    };
+    for (let index = 0; index < 6; index += 1) {
+        row[`Game${index + 1}`] = games[index] == null ? "" : String(games[index]);
+        row[`ScoreType${index + 1}`] = types[index] ?? "0";
+    }
+    row.Total = String(games.filter((score, index) => score != null && types[index] === "S").reduce((sum, score) => sum + score, 0));
+    row.HandicapTotal = row.Total;
+    return [
+        {BowlerID: 0, BowlerTitle: teamName, IsHeader: true, IsTotal: false, TeamID: teamId, TeamName: teamName, LaneBowledOn: 34, TeamPointsWon: 2},
+        row,
+        {BowlerID: 0, BowlerTitle: "Total", IsHeader: false, IsTotal: true, Game1: "182", Game2: "130", Game3: "187", Total: row.Total, HandicapTotal: row.Total},
+    ];
+}
+
+function snapshot(week, date, bowlers, season = "Summer 2024", year = 2024, seasonCode = "u") {
+    return {reporting: {week, date, label, year, seasonCode}, bowlers};
+}
+
+function bowler({id, name = "Nick Earhart", sourceName = "Earhart, Nick", teamId = 26, scores = [182, 130, 187]} = {}) {
+    const weekPins = scores.reduce((sum, score) => sum + score, 0);
     return {
         sourcePlayerId: id,
-        sourceName: name,
-        name: name.includes(",") ? name.split(",").reverse().map(part => part.trim()).join(" ") : name,
-        teamId: 24,
+        sourceName,
+        name,
+        normalizedName: name.toLowerCase().replace(/[^a-z0-9]+/g, ""),
+        teamId,
         teamName: "Pins Go Boom!",
-        teamNumber: 18,
-        games,
-        pins,
-        average: games ? Math.floor(pins / games) : 0,
-        enteringAverage: 0,
-        handicap: 0,
-        highGame: 220,
-        highSeries: 600,
-        highHandicapGame: 0,
-        highHandicapSeries: 0,
+        teamNumber: teamId,
+        games: scores.map((score, index) => ({game: index + 1, score, type: "S", raw: String(score)})),
+        weekGames: scores.length,
+        weekPins,
+        weekAverage: Math.round((weekPins / scores.length) * 10) / 10,
+        weekSeries: scores.length === 3 ? weekPins : null,
     };
 }
-
-function snapshot(week, date, bowlers, season = "Fall 2026", year = 2026, seasonCode = "f") {
-    return {reporting: {week, date, label: season, year, seasonCode}, bowlers};
-}
-
-test("player history uses pin-weighted cumulative average and weekly deltas", async () => {
-    const {buildPlayerHistory} = await importer;
-    const players = buildPlayerHistory([
-        snapshot(1, "2026-09-03", [bowler(160, "Earhart, Nick", 3, 450)]),
-        snapshot(2, "2026-09-10", [bowler(160, "Earhart, Nick", 6, 930)]),
-    ]);
-    assert.equal(players.length, 1);
-    assert.equal(players[0].name, "Nick Earhart");
-    assert.equal(players[0].history[1].seasonAverage, 155);
-    assert.equal(players[0].history[1].weekGames, 3);
-    assert.equal(players[0].history[1].weekPins, 480);
-    assert.equal(players[0].history[1].weekAverage, 160);
-    assert.equal(players[0].history[1].weekSeries, 480);
-});
-
-test("weeks with no new games remain gaps instead of inventing scores", async () => {
-    const {buildPlayerHistory} = await importer;
-    const players = buildPlayerHistory([
-        snapshot(1, "2026-09-03", [bowler(160, "Earhart, Nick", 3, 450)]),
-        snapshot(2, "2026-09-10", [bowler(160, "Earhart, Nick", 3, 450)]),
-    ]);
-    const second = players[0].history[1];
-    assert.equal(second.weekGames, null);
-    assert.equal(second.weekPins, null);
-    assert.equal(second.weekAverage, null);
-    assert.equal(second.weekSeries, null);
-});
-
-test("duplicate names remain separate when LeagueSecretary BowlerIDs differ", async () => {
-    const {buildPlayerHistory} = await importer;
-    const players = buildPlayerHistory([
-        snapshot(1, "2026-09-03", [
-            bowler(1, "Smith, Alex", 3, 450),
-            bowler(2, "Smith, Alex", 3, 510),
-        ]),
-    ]);
-    assert.equal(players.length, 2);
-    assert.deepEqual(players.map(player => player.sourcePlayerId).sort((a, b) => a - b), [1, 2]);
-});
 
 test("reporting-period selector parses LeagueSecretary week metadata", async () => {
     const {extractSelectOptions, parseReportingPeriod} = await importer;
     const html = '<select id="leaguePngViewer-recaps-period"><option value="3|2026|f" selected>Fall 2026 Week 3 09/17/2026</option></select>';
-    const options = extractSelectOptions(html, "leaguePngViewer-recaps-period");
+    const options = extractSelectOptions(jtml, "leaguePngViewer-recaps-period");
     assert.equal(options.length, 1);
     assert.deepEqual(parseReportingPeriod(options[0]), {
         week: 3,
@@ -84,17 +66,70 @@ test("reporting-period selector parses LeagueSecretary week metadata", async () 
     });
 });
 
-test("bowler data extraction does not depend on optional subscription markup", async () => {
-    const {extractLeagueBowlerData} = await importer;
-    const html = '<script>widget({"dataSource":[{"id":1}]});other({"dataSource":[{"BowlerID":160,"BowlerName":"Earhart, Nick","TotalPins":1736,"TotalGames":9}]});</script>';
-    const rows = extractLeagueBowlerData(html);
-    assert.equal(rows.length, 1);
-    assert.equal(rows[0].BowlerID, 160);
+test("period-specific recap rows assign teams and use only scratch games", async () => {
+    const {parseRecapRows} = await importer;
+    const rows = [
+        ...apiRows(),
+        ...apiRows({teamId: 25, teamName: "Knuckles Deep", playerId: 231, playerName: "Scott, Sarah", average: "93", games: [93, 93, 93], types: ["A", "A", "A"]}),
+    ];
+    const teams = parseRecapRows(rows);
+    assert.equal(teams.length, 2);
+    const nick = teams[0].players[0];
+    assert.equal(nick.sourcePlayerId, 237);
+    assert.equal(nick.name, "Nick Earhart");
+    assert.equal(nick.teamName, "Pins Go Boom!");
+    assert.equal(nick.weekGames, 3);
+    assert.equal(nick.weekPins, 499);
+    assert.equal(nick.weekAverage, 166.3);
+    assert.equal(nick.weeekSeries, 499);
+    const absent = teams[1].players[0];
+    assert.equal(absent.weekGames, null);
+    assert.equal(absent.weekPins, null);
+    assert.equal(absent.weekAverage, null);
+    assert.equal(absent.weeekSeries, null);
 });
 
-test("bowler data extraction handles LeagueSecretary escaped modal JSON", async () => {
-    const {extractLeagueBowlerData} = await importer;
-    const html = 'modal({\\\"dataSource\\\":[{\\\"BowlerID\\\":160,\\\"BowlerName\\\":\\\"Earhart, Nick\\\",\\\"TotalPins\\\":1736,\\\"TotalGames\\\":9}]})';
-    const rows = extractLeagueBowlerData(html);
-    assert.equal(rows[0].BowlerName, "Earhart, Nick");
+test("player history accumulates exact weekly scratch pinfall within each season", async () => {
+    const {buildPlayerHistory} = await importer;
+    const players = buildPlayerHistory([
+        snapshot(1, "2024-05-09", [bowler({id: 237, scores: [182, 130, 187]})]),
+        snapshot(2, "2024-05-16", [bowler({id: 237, scores: [200, 200, 200]})]),
+    ]);
+    assert.equal(players.length, 1);
+    assert.equal(players[0].history[0].games, 3);
+    assert.equal(players[0].history[0].pins, 499);
+    assert.equal(players[0].history[0].seasonAverage, 166.3);
+    assert.equal(players[0].history[1].games, 6);
+    assert.equal(players[0].history[1].pins, 1099);
+    assert.equal(players[0].history[1].seasonAverage, 183.2);
+    assert.equal(players[0].history[1].highGame, 200);
+    assert.equal(players[0].history[1].highSeries, 600);
+});
+
+test("the same bowler can keep one history when LeagueSecretary IDs change between seasons", async () => {
+    const {buildPlayerHistory} = await importer;
+    const players = buildPlayerHistory([
+        snapshot(1, "2024-05-09", [bowler({id: 237})]),
+        snapshot(1, "2026-09-03", [bowler({id: 160, teamId: 24, scores: [195, 206, 172]})], "Fall 2026", 2026, "f"),
+    ]);
+    assert.equal(players.length, 1);
+    assert.deepEqual(players[0].sourcePlayerIds, [160, 237]);
+    assert.equal(players[0].history.length, 2);
+    assert.equal(players[0].history[1].games, 3);
+    assert.equal(players[0].history[1].pins, 573);
+    assert.equal(players[0].history[1].seasonAverage, 191);
+});
+
+test("duplicate names in the same reporting week remain separate", async () => {
+    const {buildPlayerHistory} = await importer;
+    const sameName = "Alex Smith";
+    const sameSource = "Smith, Alex";
+    const players = buildPlayerHistory([
+        snapshot(1, "2024-05-09", [
+            bowler({id: 1, name: sameName, sourceName: sameSource, scores: [150, 150, 150]}),
+            bowler({id: 2, name: sameName, sourceName: sameSource, teamId: 25, scores: [170, 170, 170]}),
+        ]),
+    ]);
+    assert.equal(players.length, 2);
+    assert.deepEqual(players.map(player => player.sourcePlayerId).sort((a, b) => a - b), [1, 2]);
 });
