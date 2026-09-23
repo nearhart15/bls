@@ -4,6 +4,7 @@ const load = require("./load-source.cjs");
 
 const {
     API_PLAYER_PROGRESS_OPTIONS,
+    buildApiLeagueProgress,
     buildApiPlayerProgress,
     pointsForApiPlayerTimeframe,
     summarizeApiPlayerHistory,
@@ -114,4 +115,43 @@ test("summary ignores absentee weeks with no scratch games", () => {
     assert.equal(summary.seriesCount, 2);
     assert.equal(summary.handicap, 17);
     assert.equal(summary.known200Games, 3);
+});
+
+
+test("league progress uses the same rolling rules as player progress", () => {
+    const weeks = [
+        {
+            season:"Summer 2026",seasonKey:"2026-u",week:15,date:"2026-08-20",
+            bowlers:[
+                {playerKey:"a",weekGames:3,weekPins:510,weekSeries:510,weekScores:[170,170,170],handicap:25},
+                {playerKey:"b",weekGames:3,weekPins:450,weekSeries:450,weekScores:[150,150,150],handicap:40},
+            ],
+        },
+        {
+            season:"Fall 2026",seasonKey:"2026-f",week:1,date:"2026-09-03",
+            bowlers:[
+                {playerKey:"a",weekGames:3,weekPins:600,weekSeries:600,weekScores:[200,200,200],handicap:20},
+                {playerKey:"b",weekGames:3,weekPins:450,weekSeries:450,weekScores:[150,150,150],handicap:40},
+            ],
+        },
+        {
+            season:"Fall 2026",seasonKey:"2026-f",week:2,date:"2026-09-10",
+            bowlers:[
+                {playerKey:"a",weekGames:3,weekPins:630,weekSeries:630,weekScores:[210,210,210],handicap:18},
+                {playerKey:"b",weekGames:3,weekPins:540,weekSeries:540,weekScores:[180,180,180],handicap:35},
+            ],
+        },
+    ];
+
+    const average = buildApiLeagueProgress(weeks, "average", "2026-09-03", "2026-09-10");
+    const games = buildApiLeagueProgress(weeks, "games", "2026-09-03", "2026-09-10");
+    const highGame = buildApiLeagueProgress(weeks, "highGame", "2026-09-03", "2026-09-10");
+    const handicap = buildApiLeagueProgress(weeks, "handicap", "2026-09-03", "2026-09-10");
+    const known200 = buildApiLeagueProgress(weeks, "known200Games", "2026-09-03", "2026-09-10");
+
+    assert.deepEqual(average.map(row => Math.round(row.value * 10) / 10), [175, 185]);
+    assert.deepEqual(games.map(row => row.value), [3, 6]);
+    assert.deepEqual(highGame.map(row => row.value), [175, 195]);
+    assert.deepEqual(handicap.map(row => row.value), [30, 26.5]);
+    assert.deepEqual(known200.map(row => row.value), [1.5, 3]);
 });
