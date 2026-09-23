@@ -3,7 +3,7 @@ import DataQualityNotice from "./components/data-quality-notice";
  * Layout - glass nav + OLED shell (c) 2026
  */
 
-import {type FC, useRef} from "react";
+import {Suspense, type FC, useRef} from "react";
 import {Link, Outlet, useLocation} from "react-router";
 import {Button, ButtonGroup, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {ArrowClockwise} from "react-bootstrap-icons";
@@ -13,6 +13,7 @@ import ScrollToTop from "./components/scroll-to-top";
 import ClearCache, {type ClearCacheRef} from "./components/cache/clear-cache";
 import {ThemeToggle} from "./components/theme";
 import {useDataSource} from "./components/data-source";
+import Loader from "./components/loader";
 
 const Layout :FC = () => {
     const clearCacheRef = useRef<ClearCacheRef>(null);
@@ -79,7 +80,7 @@ const Layout :FC = () => {
 
                 <ScrollToTop />
                 <ClearCache ref={clearCacheRef}/>
-                <main className="bls-main"><DataQualityNotice/><Outlet/></main>
+                <main className="bls-main"><DataQualityNotice/><Suspense fallback={<Loader/>}><Outlet/></Suspense></main>
                 <footer className="bls-footer">
                     <p className="mb-1">Contains fun data, empowers bragging rights, enables the nerds, and justifies adult money (well) spent at the Pro Shop.</p>
                     <p className="mb-0">Copyright &copy; 2025{" "}<span className="text-primary-emphasis">Pins Go Boom!</span> Bowling Team.</p>
