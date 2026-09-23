@@ -22,7 +22,7 @@ import './sass/matchup-alignment.scss';
 import './sass/player-list-responsive.scss';
 import './sass/frame-data-responsive.scss';
 
-import {StrictMode} from 'react'
+import {StrictMode, lazy} from 'react'
 import {createRoot} from 'react-dom/client'
 import {Route, Routes, HashRouter} from "react-router";
 
@@ -32,13 +32,13 @@ import {ThemeProvider} from "./pages/components/theme";
 import {DataSourceProvider} from "./pages/components/data-source";
 
 import Layout from "./pages/layout";
-import Home from "./pages/home";
-import League from "./pages/league";
-import Player from "./pages/player";
-import TeamCompare from "./pages/team-compare";
-import NoPage from "./pages/nopage";
-import ScoreUtils from "./pages/score-utils";
-import BeerLeague from "./pages/beer-league";
+const Home = lazy(() => import("./pages/home"));
+const League = lazy(() => import("./pages/league"));
+const Player = lazy(() => import("./pages/player"));
+const TeamCompare = lazy(() => import("./pages/team-compare"));
+const NoPage = lazy(() => import("./pages/nopage"));
+const ScoreUtils = lazy(() => import("./pages/score-utils"));
+const BeerLeague = lazy(() => import("./pages/beer-league"));
 
 export default function App() {
     return (
