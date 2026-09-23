@@ -1,9 +1,10 @@
 {
-  "generatedAt": "2026-09-23T00:11:30.295Z",
+  "generatedAt": "2026-09-23T00:35:21.511Z",
   "source": {
     "provider": "LeagueSecretary",
     "leagueId": 133016,
-    "url": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps-png/133016"
+    "url": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps-png/133016",
+    "endpoint": "https://www.leaguesecretary.com/League/InteractiveRecaps_Read"
   },
   "qualifyingTeam": "Pins Go Boom!",
   "totalReportingPeriods": 136,
@@ -72,7 +73,7 @@
       "week": 3,
       "date": "2026-09-17",
       "path": "fall-2026/week-03.json",
-      "bowlerCount": 208,
+      "bowlerCount": 157,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/f/3/0"
     },
@@ -82,7 +83,7 @@
       "week": 2,
       "date": "2026-09-10",
       "path": "fall-2026/week-02.json",
-      "bowlerCount": 208,
+      "bowlerCount": 145,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/f/2/0"
     },
@@ -92,7 +93,7 @@
       "week": 1,
       "date": "2026-09-03",
       "path": "fall-2026/week-01.json",
-      "bowlerCount": 208,
+      "bowlerCount": 141,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/f/1/0"
     },
@@ -102,7 +103,7 @@
       "week": 15,
       "date": "2026-08-20",
       "path": "summer-2026/week-15.json",
-      "bowlerCount": 208,
+      "bowlerCount": 160,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/15/0"
     },
@@ -112,7 +113,7 @@
       "week": 14,
       "date": "2026-08-13",
       "path": "summer-2026/week-14.json",
-      "bowlerCount": 208,
+      "bowlerCount": 146,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/14/0"
     },
@@ -122,7 +123,7 @@
       "week": 13,
       "date": "2026-08-06",
       "path": "summer-2026/week-13.json",
-      "bowlerCount": 208,
+      "bowlerCount": 146,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/13/0"
     },
@@ -132,7 +133,7 @@
       "week": 12,
       "date": "2026-07-30",
       "path": "summer-2026/week-12.json",
-      "bowlerCount": 208,
+      "bowlerCount": 145,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/12/0"
     },
@@ -142,7 +143,7 @@
       "week": 11,
       "date": "2026-07-23",
       "path": "summer-2026/week-11.json",
-      "bowlerCount": 208,
+      "bowlerCount": 143,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/11/0"
     },
@@ -152,7 +153,7 @@
       "week": 10,
       "date": "2026-07-16",
       "path": "summer-2026/week-10.json",
-      "bowlerCount": 208,
+      "bowlerCount": 145,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/10/0"
     },
@@ -162,7 +163,7 @@
       "week": 9,
       "date": "2026-07-09",
       "path": "summer-2026/week-09.json",
-      "bowlerCount": 208,
+      "bowlerCount": 138,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/9/0"
     },
@@ -172,7 +173,7 @@
       "week": 8,
       "date": "2026-07-02",
       "path": "summer-2026/week-08.json",
-      "bowlerCount": 208,
+      "bowlerCount": 134,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/8/0"
     },
@@ -182,7 +183,7 @@
       "week": 7,
       "date": "2026-06-25",
       "path": "summer-2026/week-07.json",
-      "bowlerCount": 208,
+      "bowlerCount": 138,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/7/0"
     },
@@ -192,7 +193,7 @@
       "week": 6,
       "date": "2026-06-18",
       "path": "summer-2026/week-06.json",
-      "bowlerCount": 208,
+      "bowlerCount": 140,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/6/0"
     },
@@ -202,7 +203,7 @@
       "week": 5,
       "date": "2026-06-11",
       "path": "summer-2026/week-05.json",
-      "bowlerCount": 208,
+      "bowlerCount": 146,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/5/0"
     },
@@ -212,7 +213,7 @@
       "week": 4,
       "date": "2026-06-04",
       "path": "summer-2026/week-04.json",
-      "bowlerCount": 208,
+      "bowlerCount": 140,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/4/0"
     },
@@ -222,7 +223,7 @@
       "week": 3,
       "date": "2026-05-28",
       "path": "summer-2026/week-03.json",
-      "bowlerCount": 208,
+      "bowlerCount": 150,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/3/0"
     },
@@ -232,7 +233,7 @@
       "week": 2,
       "date": "2026-05-21",
       "path": "summer-2026/week-02.json",
-      "bowlerCount": 208,
+      "bowlerCount": 152,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/2/0"
     },
@@ -242,7 +243,7 @@
       "week": 1,
       "date": "2026-05-07",
       "path": "summer-2026/week-01.json",
-      "bowlerCount": 208,
+      "bowlerCount": 154,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2026/u/1/0"
     },
@@ -252,7 +253,7 @@
       "week": 30,
       "date": "2026-04-16",
       "path": "fall-2025/week-30.json",
-      "bowlerCount": 208,
+      "bowlerCount": 160,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/30/0"
     },
@@ -262,7 +263,7 @@
       "week": 29,
       "date": "2026-04-09",
       "path": "fall-2025/week-29.json",
-      "bowlerCount": 208,
+      "bowlerCount": 145,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/29/0"
     },
@@ -272,7 +273,7 @@
       "week": 28,
       "date": "2026-04-02",
       "path": "fall-2025/week-28.json",
-      "bowlerCount": 208,
+      "bowlerCount": 143,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/28/0"
     },
@@ -282,7 +283,7 @@
       "week": 27,
       "date": "2026-03-26",
       "path": "fall-2025/week-27.json",
-      "bowlerCount": 208,
+      "bowlerCount": 139,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/27/0"
     },
@@ -292,7 +293,7 @@
       "week": 26,
       "date": "2026-03-19",
       "path": "fall-2025/week-26.json",
-      "bowlerCount": 208,
+      "bowlerCount": 121,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/26/0"
     },
@@ -302,7 +303,7 @@
       "week": 25,
       "date": "2026-03-12",
       "path": "fall-2025/week-25.json",
-      "bowlerCount": 208,
+      "bowlerCount": 152,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/25/0"
     },
@@ -312,7 +313,7 @@
       "week": 24,
       "date": "2026-03-05",
       "path": "fall-2025/week-24.json",
-      "bowlerCount": 208,
+      "bowlerCount": 142,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/24/0"
     },
@@ -322,7 +323,7 @@
       "week": 23,
       "date": "2026-02-26",
       "path": "fall-2025/week-23.json",
-      "bowlerCount": 208,
+      "bowlerCount": 144,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/23/0"
     },
@@ -332,7 +333,7 @@
       "week": 22,
       "date": "2026-02-19",
       "path": "fall-2025/week-22.json",
-      "bowlerCount": 208,
+      "bowlerCount": 134,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/22/0"
     },
@@ -342,7 +343,7 @@
       "week": 21,
       "date": "2026-02-12",
       "path": "fall-2025/week-21.json",
-      "bowlerCount": 208,
+      "bowlerCount": 146,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/21/0"
     },
@@ -352,7 +353,7 @@
       "week": 20,
       "date": "2026-02-05",
       "path": "fall-2025/week-20.json",
-      "bowlerCount": 208,
+      "bowlerCount": 147,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/20/0"
     },
@@ -362,7 +363,7 @@
       "week": 19,
       "date": "2026-01-29",
       "path": "fall-2025/week-19.json",
-      "bowlerCount": 208,
+      "bowlerCount": 149,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/19/0"
     },
@@ -372,7 +373,7 @@
       "week": 18,
       "date": "2026-01-22",
       "path": "fall-2025/week-18.json",
-      "bowlerCount": 208,
+      "bowlerCount": 150,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/18/0"
     },
@@ -382,7 +383,7 @@
       "week": 17,
       "date": "2026-01-15",
       "path": "fall-2025/week-17.json",
-      "bowlerCount": 208,
+      "bowlerCount": 145,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/17/0"
     },
@@ -392,7 +393,7 @@
       "week": 16,
       "date": "2026-01-08",
       "path": "fall-2025/week-16.json",
-      "bowlerCount": 208,
+      "bowlerCount": 135,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/16/0"
     },
@@ -402,7 +403,7 @@
       "week": 14,
       "date": "2025-12-11",
       "path": "fall-2025/week-14.json",
-      "bowlerCount": 208,
+      "bowlerCount": 127,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/14/0"
     },
@@ -412,7 +413,7 @@
       "week": 13,
       "date": "2025-12-04",
       "path": "fall-2025/week-13.json",
-      "bowlerCount": 208,
+      "bowlerCount": 129,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/13/0"
     },
@@ -422,7 +423,7 @@
       "week": 12,
       "date": "2025-11-20",
       "path": "fall-2025/week-12.json",
-      "bowlerCount": 208,
+      "bowlerCount": 129,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/12/0"
     },
@@ -432,7 +433,7 @@
       "week": 11,
       "date": "2025-11-13",
       "path": "fall-2025/week-11.json",
-      "bowlerCount": 208,
+      "bowlerCount": 120,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/11/0"
     },
@@ -442,7 +443,7 @@
       "week": 10,
       "date": "2025-11-06",
       "path": "fall-2025/week-10.json",
-      "bowlerCount": 208,
+      "bowlerCount": 125,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/10/0"
     },
@@ -452,7 +453,7 @@
       "week": 9,
       "date": "2025-10-30",
       "path": "fall-2025/week-09.json",
-      "bowlerCount": 208,
+      "bowlerCount": 121,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/9/0"
     },
@@ -462,7 +463,7 @@
       "week": 8,
       "date": "2025-10-23",
       "path": "fall-2025/week-08.json",
-      "bowlerCount": 208,
+      "bowlerCount": 128,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/8/0"
     },
@@ -472,7 +473,7 @@
       "week": 7,
       "date": "2025-10-16",
       "path": "fall-2025/week-07.json",
-      "bowlerCount": 208,
+      "bowlerCount": 123,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/7/0"
     },
@@ -482,7 +483,7 @@
       "week": 6,
       "date": "2025-10-09",
       "path": "fall-2025/week-06.json",
-      "bowlerCount": 208,
+      "bowlerCount": 109,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/6/0"
     },
@@ -492,7 +493,7 @@
       "week": 5,
       "date": "2025-10-02",
       "path": "fall-2025/week-05.json",
-      "bowlerCount": 208,
+      "bowlerCount": 123,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/5/0"
     },
@@ -502,7 +503,7 @@
       "week": 4,
       "date": "2025-09-25",
       "path": "fall-2025/week-04.json",
-      "bowlerCount": 208,
+      "bowlerCount": 113,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/4/0"
     },
@@ -512,7 +513,7 @@
       "week": 3,
       "date": "2025-09-18",
       "path": "fall-2025/week-03.json",
-      "bowlerCount": 208,
+      "bowlerCount": 116,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/3/0"
     },
@@ -522,7 +523,7 @@
       "week": 2,
       "date": "2025-09-11",
       "path": "fall-2025/week-02.json",
-      "bowlerCount": 208,
+      "bowlerCount": 114,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/2/0"
     },
@@ -532,7 +533,7 @@
       "week": 1,
       "date": "2025-09-04",
       "path": "fall-2025/week-01.json",
-      "bowlerCount": 208,
+      "bowlerCount": 113,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/f/1/0"
     },
@@ -542,7 +543,7 @@
       "week": 15,
       "date": "2025-08-14",
       "path": "summer-2025/week-15.json",
-      "bowlerCount": 208,
+      "bowlerCount": 153,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/15/0"
     },
@@ -552,7 +553,7 @@
       "week": 14,
       "date": "2025-08-07",
       "path": "summer-2025/week-14.json",
-      "bowlerCount": 208,
+      "bowlerCount": 149,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/14/0"
     },
@@ -562,7 +563,7 @@
       "week": 13,
       "date": "2025-07-31",
       "path": "summer-2025/week-13.json",
-      "bowlerCount": 208,
+      "bowlerCount": 144,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/13/0"
     },
@@ -572,7 +573,7 @@
       "week": 12,
       "date": "2025-07-24",
       "path": "summer-2025/week-12.json",
-      "bowlerCount": 208,
+      "bowlerCount": 147,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/12/0"
     },
@@ -582,7 +583,7 @@
       "week": 11,
       "date": "2025-07-17",
       "path": "summer-2025/week-11.json",
-      "bowlerCount": 208,
+      "bowlerCount": 118,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/11/0"
     },
@@ -592,7 +593,7 @@
       "week": 10,
       "date": "2025-07-10",
       "path": "summer-2025/week-10.json",
-      "bowlerCount": 208,
+      "bowlerCount": 147,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/10/0"
     },
@@ -602,7 +603,7 @@
       "week": 9,
       "date": "2025-07-03",
       "path": "summer-2025/week-09.json",
-      "bowlerCount": 208,
+      "bowlerCount": 134,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/9/0"
     },
@@ -612,7 +613,7 @@
       "week": 8,
       "date": "2025-06-26",
       "path": "summer-2025/week-08.json",
-      "bowlerCount": 208,
+      "bowlerCount": 137,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/8/0"
     },
@@ -622,7 +623,7 @@
       "week": 7,
       "date": "2025-06-19",
       "path": "summer-2025/week-07.json",
-      "bowlerCount": 208,
+      "bowlerCount": 144,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/7/0"
     },
@@ -632,7 +633,7 @@
       "week": 6,
       "date": "2025-06-12",
       "path": "summer-2025/week-06.json",
-      "bowlerCount": 208,
+      "bowlerCount": 144,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/6/0"
     },
@@ -642,7 +643,7 @@
       "week": 5,
       "date": "2025-06-05",
       "path": "summer-2025/week-05.json",
-      "bowlerCount": 208,
+      "bowlerCount": 148,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/5/0"
     },
@@ -652,7 +653,7 @@
       "week": 4,
       "date": "2025-05-29",
       "path": "summer-2025/week-04.json",
-      "bowlerCount": 208,
+      "bowlerCount": 153,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/4/0"
     },
@@ -662,7 +663,7 @@
       "week": 3,
       "date": "2025-05-22",
       "path": "summer-2025/week-03.json",
-      "bowlerCount": 208,
+      "bowlerCount": 147,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/3/0"
     },
@@ -672,7 +673,7 @@
       "week": 2,
       "date": "2025-05-15",
       "path": "summer-2025/week-02.json",
-      "bowlerCount": 208,
+      "bowlerCount": 145,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/2/0"
     },
@@ -682,7 +683,7 @@
       "week": 1,
       "date": "2025-05-08",
       "path": "summer-2025/week-01.json",
-      "bowlerCount": 208,
+      "bowlerCount": 150,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2025/u/1/0"
     },
@@ -692,7 +693,7 @@
       "week": 30,
       "date": "2025-04-17",
       "path": "fall-2024/week-30.json",
-      "bowlerCount": 208,
+      "bowlerCount": 144,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/30/0"
     },
@@ -702,7 +703,7 @@
       "week": 29,
       "date": "2025-04-10",
       "path": "fall-2024/week-29.json",
-      "bowlerCount": 208,
+      "bowlerCount": 149,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/29/0"
     },
@@ -712,7 +713,7 @@
       "week": 28,
       "date": "2025-04-03",
       "path": "fall-2024/week-28.json",
-      "bowlerCount": 208,
+      "bowlerCount": 151,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/28/0"
     },
@@ -722,7 +723,7 @@
       "week": 27,
       "date": "2025-03-27",
       "path": "fall-2024/week-27.json",
-      "bowlerCount": 208,
+      "bowlerCount": 146,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/27/0"
     },
@@ -732,7 +733,7 @@
       "week": 26,
       "date": "2025-03-20",
       "path": "fall-2024/week-26.json",
-      "bowlerCount": 208,
+      "bowlerCount": 120,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/26/0"
     },
@@ -742,7 +743,7 @@
       "week": 25,
       "date": "2025-03-13",
       "path": "fall-2024/week-25.json",
-      "bowlerCount": 208,
+      "bowlerCount": 134,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/25/0"
     },
@@ -752,7 +753,7 @@
       "week": 24,
       "date": "2025-03-06",
       "path": "fall-2024/week-24.json",
-      "bowlerCount": 208,
+      "bowlerCount": 148,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/24/0"
     },
@@ -762,7 +763,7 @@
       "week": 23,
       "date": "2025-02-27",
       "path": "fall-2024/week-23.json",
-      "bowlerCount": 208,
+      "bowlerCount": 144,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/23/0"
     },
@@ -772,7 +773,7 @@
       "week": 22,
       "date": "2025-02-20",
       "path": "fall-2024/week-22.json",
-      "bowlerCount": 208,
+      "bowlerCount": 133,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/22/0"
     },
@@ -782,7 +783,7 @@
       "week": 21,
       "date": "2025-02-13",
       "path": "fall-2024/week-21.json",
-      "bowlerCount": 208,
+      "bowlerCount": 147,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/21/0"
     },
@@ -792,7 +793,7 @@
       "week": 20,
       "date": "2025-02-06",
       "path": "fall-2024/week-20.json",
-      "bowlerCount": 208,
+      "bowlerCount": 146,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/20/0"
     },
@@ -802,7 +803,7 @@
       "week": 19,
       "date": "2025-01-30",
       "path": "fall-2024/week-19.json",
-      "bowlerCount": 208,
+      "bowlerCount": 154,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/19/0"
     },
@@ -812,7 +813,7 @@
       "week": 18,
       "date": "2025-01-23",
       "path": "fall-2024/week-18.json",
-      "bowlerCount": 208,
+      "bowlerCount": 144,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/18/0"
     },
@@ -822,7 +823,7 @@
       "week": 17,
       "date": "2025-01-16",
       "path": "fall-2024/week-17.json",
-      "bowlerCount": 208,
+      "bowlerCount": 133,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/17/0"
     },
@@ -832,7 +833,7 @@
       "week": 16,
       "date": "2025-01-09",
       "path": "fall-2024/week-16.json",
-      "bowlerCount": 208,
+      "bowlerCount": 129,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/16/0"
     },
@@ -842,7 +843,7 @@
       "week": 14,
       "date": "2024-12-12",
       "path": "fall-2024/week-14.json",
-      "bowlerCount": 208,
+      "bowlerCount": 123,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/14/0"
     },
@@ -852,7 +853,7 @@
       "week": 13,
       "date": "2024-12-05",
       "path": "fall-2024/week-13.json",
-      "bowlerCount": 208,
+      "bowlerCount": 118,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/13/0"
     },
@@ -862,7 +863,7 @@
       "week": 12,
       "date": "2024-11-21",
       "path": "fall-2024/week-12.json",
-      "bowlerCount": 208,
+      "bowlerCount": 115,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/12/0"
     },
@@ -872,7 +873,7 @@
       "week": 11,
       "date": "2024-11-14",
       "path": "fall-2024/week-11.json",
-      "bowlerCount": 208,
+      "bowlerCount": 117,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/11/0"
     },
@@ -882,7 +883,7 @@
       "week": 10,
       "date": "2024-11-07",
       "path": "fall-2024/week-10.json",
-      "bowlerCount": 208,
+      "bowlerCount": 106,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/10/0"
     },
@@ -892,7 +893,7 @@
       "week": 9,
       "date": "2024-10-31",
       "path": "fall-2024/week-09.json",
-      "bowlerCount": 208,
+      "bowlerCount": 95,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/9/0"
     },
@@ -902,7 +903,7 @@
       "week": 8,
       "date": "2024-10-24",
       "path": "fall-2024/week-08.json",
-      "bowlerCount": 208,
+      "bowlerCount": 107,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/8/0"
     },
@@ -912,7 +913,7 @@
       "week": 7,
       "date": "2024-10-17",
       "path": "fall-2024/week-07.json",
-      "bowlerCount": 208,
+      "bowlerCount": 110,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/7/0"
     },
@@ -922,7 +923,7 @@
       "week": 6,
       "date": "2024-10-10",
       "path": "fall-2024/week-06.json",
-      "bowlerCount": 208,
+      "bowlerCount": 105,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/6/0"
     },
@@ -932,7 +933,7 @@
       "week": 5,
       "date": "2024-10-03",
       "path": "fall-2024/week-05.json",
-      "bowlerCount": 208,
+      "bowlerCount": 108,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/5/0"
     },
@@ -942,7 +943,7 @@
       "week": 4,
       "date": "2024-09-26",
       "path": "fall-2024/week-04.json",
-      "bowlerCount": 208,
+      "bowlerCount": 111,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/4/0"
     },
@@ -952,7 +953,7 @@
       "week": 3,
       "date": "2024-09-19",
       "path": "fall-2024/week-03.json",
-      "bowlerCount": 208,
+      "bowlerCount": 115,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/3/0"
     },
@@ -962,7 +963,7 @@
       "week": 2,
       "date": "2024-09-12",
       "path": "fall-2024/week-02.json",
-      "bowlerCount": 208,
+      "bowlerCount": 111,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/2/0"
     },
@@ -972,7 +973,7 @@
       "week": 1,
       "date": "2024-09-05",
       "path": "fall-2024/week-01.json",
-      "bowlerCount": 208,
+      "bowlerCount": 111,
       "teamCount": 40,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/f/1/0"
     },
@@ -982,7 +983,7 @@
       "week": 16,
       "date": "2024-08-29",
       "path": "summer-2024/week-16.json",
-      "bowlerCount": 208,
+      "bowlerCount": 120,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/16/0"
     },
@@ -992,7 +993,7 @@
       "week": 15,
       "date": "2024-08-22",
       "path": "summer-2024/week-15.json",
-      "bowlerCount": 208,
+      "bowlerCount": 127,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/15/0"
     },
@@ -1002,7 +1003,7 @@
       "week": 14,
       "date": "2024-08-15",
       "path": "summer-2024/week-14.json",
-      "bowlerCount": 208,
+      "bowlerCount": 123,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/14/0"
     },
@@ -1012,7 +1013,7 @@
       "week": 13,
       "date": "2024-08-08",
       "path": "summer-2024/week-13.json",
-      "bowlerCount": 208,
+      "bowlerCount": 115,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/13/0"
     },
@@ -1022,7 +1023,7 @@
       "week": 12,
       "date": "2024-08-01",
       "path": "summer-2024/week-12.json",
-      "bowlerCount": 208,
+      "bowlerCount": 115,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/12/0"
     },
@@ -1032,7 +1033,7 @@
       "week": 11,
       "date": "2024-07-25",
       "path": "summer-2024/week-11.json",
-      "bowlerCount": 208,
+      "bowlerCount": 108,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/11/0"
     },
@@ -1042,7 +1043,7 @@
       "week": 10,
       "date": "2024-07-18",
       "path": "summer-2024/week-10.json",
-      "bowlerCount": 208,
+      "bowlerCount": 118,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/10/0"
     },
@@ -1052,7 +1053,7 @@
       "week": 9,
       "date": "2024-07-11",
       "path": "summer-2024/week-09.json",
-      "bowlerCount": 208,
+      "bowlerCount": 126,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/9/0"
     },
@@ -1062,7 +1063,7 @@
       "week": 8,
       "date": "2024-06-27",
       "path": "summer-2024/week-08.json",
-      "bowlerCount": 208,
+      "bowlerCount": 110,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/8/0"
     },
@@ -1072,7 +1073,7 @@
       "week": 7,
       "date": "2024-06-20",
       "path": "summer-2024/week-07.json",
-      "bowlerCount": 208,
+      "bowlerCount": 108,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/7/0"
     },
@@ -1082,7 +1083,7 @@
       "week": 6,
       "date": "2024-06-13",
       "path": "summer-2024/week-06.json",
-      "bowlerCount": 208,
+      "bowlerCount": 117,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/6/0"
     },
@@ -1092,7 +1093,7 @@
       "week": 5,
       "date": "2024-06-06",
       "path": "summer-2024/week-05.json",
-      "bowlerCount": 208,
+      "bowlerCount": 106,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/5/0"
     },
@@ -1102,7 +1103,7 @@
       "week": 4,
       "date": "2024-05-30",
       "path": "summer-2024/week-04.json",
-      "bowlerCount": 208,
+      "bowlerCount": 119,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/4/0"
     },
@@ -1112,7 +1113,7 @@
       "week": 3,
       "date": "2024-05-23",
       "path": "summer-2024/week-03.json",
-      "bowlerCount": 208,
+      "bowlerCount": 118,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/3/0"
     },
@@ -1122,7 +1123,7 @@
       "week": 2,
       "date": "2024-05-16",
       "path": "summer-2024/week-02.json",
-      "bowlerCount": 208,
+      "bowlerCount": 117,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/2/0"
     },
@@ -1132,7 +1133,7 @@
       "week": 1,
       "date": "2024-05-09",
       "path": "summer-2024/week-01.json",
-      "bowlerCount": 208,
+      "bowlerCount": 111,
       "teamCount": 32,
       "sourceUrl": "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026/league/recaps/133016/2024/u/1/0"
     }
