@@ -47,7 +47,10 @@ export function useCachedFetcher<T extends object>(fetcher :() => Promise<T>, ca
         }
         setData(null);
         setLoading(true);
-        fetcherRef.current().then((data) => {
+        const request = contextCache != null
+            ? contextCache.getOrFetch(category, key, () => fetcherRef.current())
+            : fetcherRef.current();
+        request.then((data) => {
                 if (cancelled) return;
                 const warnings = (data as DataQuality).warnings ?? [];
                 reportDataQuality(noticeId, warnings);
