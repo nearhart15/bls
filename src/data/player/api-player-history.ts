@@ -74,9 +74,26 @@ export interface ApiHistoricalLeagueHistory {
     weeks: ApiHistoricalLeagueWeek[];
 }
 
+type CompactLeagueBowler = [
+    playerIndex: number,
+    weekGames: number | null,
+    weekPins: number | null,
+    weekSeries: number | null,
+    handicap: number | null,
+    ...weekScores: number[],
+];
+
+interface CompactHistoricalLeagueHistory {
+    version: 2;
+    generatedAt: string;
+    qualifyingTeam: string;
+    players: string[];
+    weeks: [date: string, week: number, bowlers: CompactLeagueBowler[]][];
+}
+
 export const API_PLAYER_HISTORY_INDEX_CACHE_CATEGORY = "api-player-history-index-v3";
 export const API_PLAYER_HISTORY_CACHE_CATEGORY = "api-player-history-v3";
-export const API_LEAGUE_HISTORY_CACHE_CATEGORY = "api-league-history-v1";
+export const API_LEAGUE_HISTORY_CACHE_CATEGORY = "api-league-history-v2";
 
 export function normalizeHistoricalPlayerName(name: string): string {
     return name.toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "");
@@ -107,9 +124,34 @@ export async function apiHistoricalPlayerFetcher(sourcePlayerId: number): Promis
 }
 
 
+export function expandHistoricalLeagueHistory(data: CompactHistoricalLeagueHistory): ApiHistoricalLeagueHistory {
+    return {
+        generatedAt: data.generatedAt,
+        qualifyingTeam: data.qualifyingTeam,
+        weeks: data.weeks.map(([date, week, bowlers]) => ({
+            season: "",
+            seasonKey: "",
+            week,
+            date,
+            bowlers: bowlers.map(([playerIndex, weekGames, weekPins, weekSeries, handicap, ...weekScores]) => ({
+                playerKey: data.players[playerIndex] ?? String(playerIndex),
+                weekGames,
+                weekPins,
+                weekSeries,
+                weekScores,
+                handicap,
+            })),
+        })),
+    };
+}
+
 export async function apiHistoricalLeagueFetcher(): Promise<ApiHistoricalLeagueHistory> {
     const base = import.meta.env.BASE_URL || "/";
     const response = await fetch(`${base}data/leaguesecretary-beer-history/league-week-history.json`, {cache: "no-cache"});
     if (!response.ok) throw new Error(`Historical league stats unavailable (${response.status}).`);
-    return await response.json() as ApiHistoricalLeagueHistory;
+    const data = await response.json() as CompactHistoricalLeagueHistory;
+    if (data.version !== 2 || !Array.isArray(data.players) || !Array.isArray(data.weeks)) {
+        throw new Error("Historical league stats are in an unsupported format.");
+    }
+    return expandHistoricalLeagueHistory(data);
 }
