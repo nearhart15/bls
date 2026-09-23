@@ -1,4 +1,4 @@
-import {type FC, useCallback, useMemo, useState} from "react";
+import {Suspense, lazy, type FC, useCallback, useMemo, useState} from "react";
 import {Link} from "react-router";
 import {Alert, Badge, Card, CardBody, Col, Dropdown, Form, Row, Table} from "react-bootstrap";
 import type {PlayerListEntry} from "../../../data/player/player-aggregate";
@@ -23,7 +23,7 @@ import ErrorDisplay from "../error-display";
 import {useCachedFetcher} from "../cache/data-loader";
 import Loader from "../loader";
 import {usePlayerIndexData} from "./use-player-index-data";
-import ApiPlayerHistoryCharts from "./api-player-history-charts";
+const ApiPlayerHistoryCharts = lazy(() => import("./api-player-history-charts"));
 
 const numberFormat=Intl.NumberFormat("en-US",{maximumFractionDigits:1});
 type ApiSort="average"|"games"|"pinfall"|"highGame"|"highSeries"|"handicap"|"highHandicapGame"|"highHandicapSeries"|"latestSeries"|"latestAverage"|"averageSeries"|"seriesCount"|"known200Games"|"known600Series"|"known700Series";
@@ -137,11 +137,11 @@ export const ApiPlayerDetail:FC<{playerId:string}>=({playerId})=>{
                 </div>
             </CardBody>
         </Card>}
-        {historical&&<ApiPlayerHistoryCharts
+        {historical&&<Suspense fallback={<Loader/>}><ApiPlayerHistoryCharts
             historical={historical}
             importedWeeks={indexData?.importedWeeks??0}
             timeframe={timeframe}
-        />}
+        /></Suspense>}
         <Row className="g-3 mb-3">
             {detailMetrics.map(metric=>{
                 const raw=scopedMetricValue(p,metric,timeframe,historicalSummary);
