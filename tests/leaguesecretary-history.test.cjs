@@ -2,6 +2,7 @@ const assert = require("node:assert/strict");
 const test = require("node:test");
 const {pathToFileURL} = require("node:url");
 const path = require("node:path");
+const fs = require("node:fs");
 
 const importer = import(pathToFileURL(path.resolve(__dirname, "../scripts/backfill-leaguesecretary-history.mjs")).href);
 
@@ -147,4 +148,28 @@ test("absentee rows create a gap without changing season totals", async () => {
     assert.equal(players[0].history[1].pins, 499);
     assert.equal(players[0].history[1].weekAverage, null);
     assert.equal(players[0].history[1].seasonAverage, 166.3);
+});
+
+
+test("committed LeagueSecretary archive contains varying exact weekly history", () => {
+    const historyDir = path.resolve(__dirname, "../public/data/leaguesecretary-beer-history");
+    const index = JSON.parse(fs.readFileSync(path.join(historyDir, "player-history-index.json"), "utf8"));
+    assert.equal(index.importedWeeks, 107);
+    const nick = index.players.find(player => player.normalizedName === "nickearhart");
+    assert.ok(nick);
+    assert.deepEqual(nick.sourcePlayerIds, [160, 237]);
+
+    const history = JSON.parse(fs.readFileSync(path.join(historyDir, "players", `${nick.sourcePlayerId}.json`), "utf8"));
+    const scoringWeeks = history.history.filter(point => point.weekAverage != null);
+    assert.ok(scoringWeeks.length >= 90);
+    assert.ok(new Set(scoringWeeks.map(point => point.weekAverage)).size >= 50);
+
+    assert.deepEqual(
+        history.history.slice(0, 3).map(point => [point.week, point.weekPins, point.weekSeries]),
+        [[1, 499, 499], [2, 546, 546], [3, 520, 520]],
+    );
+    assert.deepEqual(
+        history.history.slice(-3).map(point => [point.week, point.weekPins, point.weekSeries]),
+        [[1, 548, 548], [2, 615, 615], [3, 573, 573]],
+    );
 });
