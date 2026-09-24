@@ -1,11 +1,14 @@
-import ApexChart from "react-apexcharts";
-import type {ComponentProps} from "react";
+import {lazy, Suspense, type ComponentProps} from "react";
 import type {ApexOptions} from "apexcharts";
+
+type ApexChartComponent = (typeof import("react-apexcharts"))["default"];
+type SafeChartProps = ComponentProps<ApexChartComponent>;
+const ApexChart = lazy(() => import("react-apexcharts"));
 
 export const escapeChartText = (value: string): string => value.replace(/[&<>"']/g, ch => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[ch]!));
 
 /** Apex owns HTML sinks. Encode data labels and replace its HTML legend/tooltip. */
-export default function SafeChart(props: ComponentProps<typeof ApexChart>) {
+export default function SafeChart(props: SafeChartProps) {
     const original = props.series ?? [];
     const series = original.map((s, i) => typeof s === "number" ? s : {...s, name: "Series " + (i + 1), data: s.data.map(point => typeof point === "object" && point !== null && !Array.isArray(point) && "x" in point && typeof point.x === "string" ? {...point, x: escapeChartText(point.x)} : point)}) as typeof original;
     const source = props.options ?? {};
@@ -23,5 +26,10 @@ export default function SafeChart(props: ComponentProps<typeof ApexChart>) {
             return node;
         }},
     };
-    return <><ApexChart {...props} options={options} series={series}/>{source.legend?.show !== false && original.length > 1 && <div className="d-flex justify-content-center gap-3 flex-wrap" aria-label="Chart legend">{original.map((item, i) => <span key={i} style={{color: typeof source.colors?.[i] === "string" ? source.colors[i] : undefined}}>{typeof item === "object" ? item.name : source.labels?.[i]}</span>)}</div>}</>;
+    return <>
+        <Suspense fallback={<div className="bls-chart-loading" aria-hidden="true"/>}>
+            <ApexChart {...props} options={options} series={series}/>
+        </Suspense>
+        {source.legend?.show !== false && original.length > 1 && <div className="d-flex justify-content-center gap-3 flex-wrap" aria-label="Chart legend">{original.map((item, i) => <span key={typeof item === "object" ? item.name ?? i : i} style={{color: typeof source.colors?.[i] === "string" ? source.colors[i] : undefined}}>{typeof item === "object" ? item.name : source.labels?.[i]}</span>)}</div>}
+    </>;
 }

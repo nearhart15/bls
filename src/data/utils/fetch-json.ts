@@ -96,7 +96,7 @@ export async function fetchJson(url: string): Promise<object> {
             signal: controller.signal,
             credentials: "omit",
             referrerPolicy: "no-referrer",
-            cache: "no-store",
+            cache: "no-cache",
         });
         if (!response.ok) throw new Error("Data request failed (HTTP " + response.status + ")");
         if (response.url) {

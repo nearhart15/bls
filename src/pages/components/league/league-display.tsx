@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import {type FC, useCallback, useEffect, useState} from "react";
+import {lazy, Suspense, type FC, useCallback, useEffect, useState} from "react";
 
 import {Container, Nav} from "react-bootstrap";
 
@@ -27,9 +27,11 @@ import type {LeagueDetails} from "../../../data/league/league-details";
 import type {LeagueInfo} from "../../../data/league/league-info";
 import {useCachedFetcher} from "../cache/data-loader";
 import LeagueSummary from "./league-summary";
-import LeagueTeamDetails from "./league-team-details";
-import OtherTeams from "./league-other-teams";
 import {useNavigate} from "react-router";
+import Loader from "../loader";
+
+const LeagueTeamDetails = lazy(() => import("./league-team-details"));
+const OtherTeams = lazy(() => import("./league-other-teams"));
 
 export type CurrentLeagueDetailsDisplay = "TEAM" | "OTHER_TEAMS";
 
@@ -98,8 +100,12 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
             {showInvalidTeamIdError && <ErrorDisplay message="Invalid Team Id, will display the first team, use the team navigation to select from available teams."
                                                      error={new Error("Entered Team Id: " + String(teamId))}
                                                      onClose={() => { void navigate(`/league/${String(leagueInfo.id)}`); }}/>}
-            {currentDisplay == "TEAM" && <LeagueTeamDetails leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint} teamId={displayedTeam} />}
-            {currentDisplay == "OTHER_TEAMS" && <OtherTeams leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading}/>}
+            {currentDisplay == "TEAM" && <Suspense fallback={<Loader/>}>
+                <LeagueTeamDetails leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint} teamId={displayedTeam} />
+            </Suspense>}
+            {currentDisplay == "OTHER_TEAMS" && <Suspense fallback={<Loader/>}>
+                <OtherTeams leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading}/>
+            </Suspense>}
         </>
     );
 }
