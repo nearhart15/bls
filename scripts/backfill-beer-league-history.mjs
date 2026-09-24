@@ -3,11 +3,11 @@ import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import {join, resolve} from "node:path";
 import {pathToFileURL} from "node:url";
 import {parseBlsText} from "./import-beer-league.mjs";
-import {assertTrustedUrl, MiB, pdfBytesToText, readLimitedBytes, readLimitedJson, safeFetch} from "./security-utils.mjs";
+import {assertTrustedUrl, MiB, pdfBytesToText, readLimitedBytes, readLimitedJson, safeFetch, safeWorkspacePath} from "./security-utils.mjs";
 
 const BINBIN_LEAGUES_URL = process.env.BINBIN_LEAGUES_URL || "https://bls.bindul.name/data/leagues.json";
 const MEDIA_URL = "https://arapahoebowl.com/wp-json/wp/v2/media";
-const HISTORY_DIR = process.env.BEER_LEAGUE_HISTORY_DIR || "public/data/beer-league-history";
+const HISTORY_DIR = safeWorkspacePath(process.env.BEER_LEAGUE_HISTORY_DIR || "public/data/beer-league-history");
 const USER_AGENT = "BLS Beer League history backfill (+https://github.com/nearhart15/bls)";
 const TRUSTED_HOSTS = ["arapahoebowl.com", "bls.bindul.name"];
 export const QUALIFYING_TEAM = "Pins Go Boom!";
@@ -21,10 +21,12 @@ async function request(url, options = {}) {
     return response;
 }
 
-function collectYears(value, years = new Set()) {
+function collectYears(value, years = new Set(), depth = 0, state = {nodes: 0}) {
+    state.nodes += 1;
+    if (depth > 20 || state.nodes > 10000) throw new Error("BinBin index is too deeply nested or too large.");
     if (typeof value === "string") for (const match of value.matchAll(/\b(20\d{2})\b/g)) years.add(Number(match[1]));
-    else if (Array.isArray(value)) for (const child of value) collectYears(child, years);
-    else if (value && typeof value === "object") for (const child of Object.values(value)) collectYears(child, years);
+    else if (Array.isArray(value)) for (const child of value) collectYears(child, years, depth + 1, state);
+    else if (value && typeof value === "object") for (const child of Object.values(value)) collectYears(child, years, depth + 1, state);
     return years;
 }
 
