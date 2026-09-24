@@ -54,7 +54,13 @@ test("new-tab anchors explicitly prevent opener access and referrer leakage", ()
 
 test("production CSP blocks high-risk browser capabilities", () => {
   const html = fs.readFileSync(path.resolve(__dirname, "../index.html"), "utf8");
-  const csp = html.match(/http-equiv="Content-Security-Policy"[^>]*content="([^"]+)"/i)?.[1] ?? "";
+  const marker = 'http-equiv="Content-Security-Policy" content="';
+  const start = html.indexOf(marker);
+  assert.ok(start >= 0, "CSP meta tag is missing");
+  const valueStart = start + marker.length;
+  const valueEnd = html.indexOf('"', valueStart);
+  assert.ok(valueEnd > valueStart, "CSP meta tag is malformed");
+  const csp = html.slice(valueStart, valueEnd);
   for (const directive of [
     "default-src 'self'",
     "script-src-attr 'none'",
@@ -67,5 +73,6 @@ test("production CSP blocks high-risk browser capabilities", () => {
   ]) {
     assert.ok(csp.includes(directive), `CSP is missing ${directive}`);
   }
-  assert.doesNotMatch(html, /fonts\.googleapis\.com|fonts\.gstatic\.com/i);
+  assert.equal(html.includes("fonts.googleapis.com"), false, "Google Fonts CSS must not be loaded");
+  assert.equal(html.includes("fonts.gstatic.com"), false, "Google Fonts assets must not be loaded");
 });
