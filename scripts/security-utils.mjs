@@ -1,5 +1,5 @@
 import {execFileSync} from "node:child_process";
-import {mkdtempSync, readFileSync, rmSync, statSync, writeFileSync} from "node:fs";
+import {closeSync, constants, fstatSync, mkdtempSync, openSync, readFileSync, rmSync, writeFileSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {isAbsolute, join, relative, resolve} from "node:path";
 
@@ -137,8 +137,16 @@ export function pdfBytesToText(bytes, options = {}) {
             env: childEnvironment(),
             windowsHide: true,
         });
-        if (statSync(textPath).size > maxTextBytes) throw new Error("Extracted PDF text is too large");
-        return readFileSync(textPath, "utf8");
+        const noFollow = typeof constants.O_NOFOLLOW === "number" ? constants.O_NOFOLLOW : 0;
+        const fd = openSync(textPath, constants.O_RDONLY | noFollow);
+        try {
+            const fileInfo = fstatSync(fd);
+            if (!fileInfo.isFile()) throw new Error("Extracted PDF output is not a regular file");
+            if (fileInfo.size > maxTextBytes) throw new Error("Extracted PDF text is too large");
+            return readFileSync(fd, "utf8");
+        } finally {
+            closeSync(fd);
+        }
     } finally {
         rmSync(workDir, {recursive: true, force: true});
     }
