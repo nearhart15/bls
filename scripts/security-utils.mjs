@@ -1,7 +1,7 @@
 import {execFileSync} from "node:child_process";
 import {mkdtempSync, readFileSync, rmSync, statSync, writeFileSync} from "node:fs";
 import {tmpdir} from "node:os";
-import {join} from "node:path";
+import {isAbsolute, join, relative, resolve} from "node:path";
 
 export const MiB = 1024 * 1024;
 
@@ -142,4 +142,15 @@ export function pdfBytesToText(bytes, options = {}) {
     } finally {
         rmSync(workDir, {recursive: true, force: true});
     }
+}
+
+
+export function safeWorkspacePath(value, root = process.cwd()) {
+    const raw = String(value ?? "");
+    if (!raw || raw.includes("\0") || isAbsolute(raw)) throw new Error("Output path must be a relative workspace path");
+    const workspace = resolve(root);
+    const target = resolve(workspace, raw);
+    const rel = relative(workspace, target);
+    if (!rel || rel === "." || rel.startsWith("..") || isAbsolute(rel)) throw new Error("Output path escapes the workspace");
+    return target;
 }
