@@ -2,13 +2,13 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import {assertTrustedUrl, MiB, pdfBytesToText, readLimitedBytes, readLimitedJson, readLimitedText, safeFetch} from "./security-utils.mjs";
+import {assertTrustedUrl, MiB, pdfBytesToText, readLimitedBytes, readLimitedJson, readLimitedText, safeFetch, safeWorkspacePath} from "./security-utils.mjs";
 
 const LEAGUES_URL = "https://arapahoebowl.com/league-options/";
 const AJAX_URL = new URL("/wp-admin/admin-ajax.php", LEAGUES_URL).href;
 const USER_AGENT = "BLS Beer League importer (+https://github.com/nearhart15/bls)";
-const OUTPUT = process.env.BEER_LEAGUE_OUTPUT || "public/data/beer-league.json";
-const HISTORY_DIR = process.env.BEER_LEAGUE_HISTORY_DIR || "public/data/beer-league-history";
+const OUTPUT = safeWorkspacePath(process.env.BEER_LEAGUE_OUTPUT || "public/data/beer-league.json");
+const HISTORY_DIR = safeWorkspacePath(process.env.BEER_LEAGUE_HISTORY_DIR || "public/data/beer-league-history");
 const TRUSTED_HOSTS = ["arapahoebowl.com"];
 
 function decodeHtml(value) { return value.replaceAll("&amp;", "&").replaceAll("&quot;", "\"").replaceAll("&#039;", "'").replaceAll("&apos;", "'").replaceAll("&lt;", "<").replaceAll("&gt;", ">"); }
@@ -20,9 +20,16 @@ async function request(url, options = {}) {
     if (!response.ok) throw new Error(`${response.status} ${response.statusText} fetching ${url}`);
     return response;
 }
-function publicActions(html){return [...new Set([...html.matchAll(/publicRequest\(\s*["']([^"']+)["']\s*\)/g)].map(m=>m[1]))];}
+function publicActions(html){return [...new Set([...html.matchAll(/publicRequest\(\s*["\']([^"\']+)["\']\s*\)/g)].map(m=>m[1]).filter(action=>/^[A-Za-z0-9_-]{1,80}$/.test(action)))].slice(0,50);}
 async function publicData(action){const r=await request(AJAX_URL,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded; charset=UTF-8"},body:new URLSearchParams({action}).toString()});const j=await readLimitedJson(r, 4 * MiB);if(!j?.success)throw new Error(`Public AJAX action ${action} failed.`);return j.data;}
-function objects(value,output=[]){if(!value||typeof value!=="object")return output;if(!Array.isArray(value))output.push(value);for(const child of Object.values(value))objects(child,output);return output;}
+function objects(value,output=[],depth=0,state={nodes:0}){
+    if(!value||typeof value!=="object")return output;
+    state.nodes+=1;
+    if(depth>20||state.nodes>10000)throw new Error("Public league data is too deeply nested or too large.");
+    if(!Array.isArray(value))output.push(value);
+    for(const child of Object.values(value))objects(child,output,depth+1,state);
+    return output;
+}
 
 export function seasonScore(seasonValue, now = new Date()) {
   const season = String(seasonValue ?? "");
