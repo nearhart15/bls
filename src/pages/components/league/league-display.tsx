@@ -100,8 +100,12 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
             {showInvalidTeamIdError && <ErrorDisplay message="Invalid Team Id, will display the first team, use the team navigation to select from available teams."
                                                      error={new Error("Entered Team Id: " + String(teamId))}
                                                      onClose={() => { void navigate(`/league/${String(leagueInfo.id)}`); }}/>}
-            {currentDisplay == "TEAM" && <LeagueTeamDetails leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint} teamId={displayedTeam} />}
-            {currentDisplay == "OTHER_TEAMS" && <OtherTeams leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading}/>}
+            {currentDisplay == "TEAM" && <Suspense fallback={<Loader/>}>
+                <LeagueTeamDetails leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint} teamId={displayedTeam} />
+            </Suspense>}
+            {currentDisplay == "OTHER_TEAMS" && <Suspense fallback={<Loader/>}>
+                <OtherTeams leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading}/>
+            </Suspense>}
         </>
     );
 }
