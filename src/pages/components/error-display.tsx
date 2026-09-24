@@ -57,9 +57,9 @@ const ErrorDisplay: FC<ErrorDisplayProps> = ({message, error, onClose} :ErrorDis
         };
     }, []);
 
-    const em = (error) ? (error as Error).name + " " + truncateMessage((error as Error).message) : null;
+    const em = (import.meta.env.DEV && error) ? (error as Error).name + " " + truncateMessage((error as Error).message) : null;
 
-    console.error("Error in BLS App: ", message, error);
+    if (import.meta.env.DEV) console.error("Error in BLS App: ", message, error);
     return (
         <Container fluid={true} id="error-display" className="d-flex justify-content-center">
             <Alert variant="warning" dismissible={true} onClose={onClose} style={{maxWidth: maxWidth}}>
