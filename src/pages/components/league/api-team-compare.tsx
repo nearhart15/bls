@@ -68,7 +68,7 @@ const RECORD: Metric[] = [
 ];
 
 async function fetchApiTeams(): Promise<ApiLeagueData> {
-    const data = await fetchJson(`${import.meta.env.BASE_URL}data/beer-league.json?ts=${Date.now()}`) as unknown as ApiLeagueData;
+    const data = await fetchJson(`${import.meta.env.BASE_URL}data/beer-league.json`) as unknown as ApiLeagueData;
     if (data.status !== "ready" || !Array.isArray(data.standings)) throw new Error("A.B.C. data is not ready or is malformed.");
     return data;
 }
