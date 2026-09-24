@@ -63,7 +63,7 @@ async function fetchFixture(data) {
   global.fetch = async url => {
     const file = new URL(url).pathname.split('/').pop();
     const body = file === 'league.json' ? data.league : file === 'team.json' ? data.team : undefined;
-    return new Response(JSON.stringify(body ?? {}), {status: body ? 200 : 404});
+    return new Response(JSON.stringify(body ?? {}), {status: body ? 200 : 404, headers: {"content-type": "application/json"}});
   };
   try {
     return await leagueDetailsFetcher('league.json');
