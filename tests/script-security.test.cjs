@@ -44,3 +44,13 @@ test("importer concurrency values are bounded", async () => {
   assert.equal(boundedEnvInt("-10", 4, 1, 12), 1);
   assert.equal(boundedEnvInt("bad", 4, 1, 12), 4);
 });
+
+
+test("workspace output paths cannot escape the repository", async () => {
+  const {safeWorkspacePath} = await securityUtils();
+  const root = path.resolve(__dirname, "..");
+  assert.equal(safeWorkspacePath("public/data/test.json", root), path.resolve(root, "public/data/test.json"));
+  assert.throws(() => safeWorkspacePath("../outside.json", root), /escapes/);
+  assert.throws(() => safeWorkspacePath(path.resolve(root, "absolute.json"), root), /relative/);
+  assert.throws(() => safeWorkspacePath("", root), /relative/);
+});
