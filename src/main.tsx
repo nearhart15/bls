@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-// Using the Bootswatch lumen theme - Switch to CDN later: https://bootswatch.com/help/
-import 'bootswatch/dist/lumen/bootstrap.min.css';
 import './sass/bls.scss';
 import './sass/matchup-alignment.scss';
 import './sass/player-list-responsive.scss';
