@@ -50,3 +50,22 @@ test("new-tab anchors explicitly prevent opener access and referrer leakage", ()
     }
   }
 });
+
+
+test("production CSP blocks high-risk browser capabilities", () => {
+  const html = fs.readFileSync(path.resolve(__dirname, "../index.html"), "utf8");
+  const csp = html.match(/http-equiv=["']Content-Security-Policy["'][^>]*content=["']([^"']+)["']/i)?.[1] ?? "";
+  for (const directive of [
+    "default-src 'self'",
+    "script-src-attr 'none'",
+    "object-src 'none'",
+    "frame-src 'none'",
+    "child-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "upgrade-insecure-requests",
+  ]) {
+    assert.ok(csp.includes(directive), `CSP is missing ${directive}`);
+  }
+  assert.doesNotMatch(html, /fonts\.googleapis\.com|fonts\.gstatic\.com/i);
+});
