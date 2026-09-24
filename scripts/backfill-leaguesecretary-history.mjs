@@ -1,14 +1,14 @@
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import {boundedEnvInt, MiB, readLimitedJson, readLimitedText, safeFetch} from "./security-utils.mjs";
+import {boundedEnvInt, MiB, readLimitedJson, readLimitedText, safeFetch, safeWorkspacePath} from "./security-utils.mjs";
 
 export const LEAGUE_ID = 133016;
 export const QUALIFYING_TEAM = "Pins Go Boom!";
 export const BASE_PAGE = "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026";
 export const RECAP_SHEETS_URL = `${BASE_PAGE}/league/recaps-png/${LEAGUE_ID}`;
 export const INTERACTIVE_RECAPS_URL = "https://www.leaguesecretary.com/League/InteractiveRecaps_Read";
-const OUTPUT_DIR = process.env.LEAGUESECRETARY_HISTORY_DIR || "public/data/leaguesecretary-beer-history";
+const OUTPUT_DIR = safeWorkspacePath(process.env.LEAGUESECRETARY_HISTORY_DIR || "public/data/leaguesecretary-beer-history");
 const USER_AGENT = "BLS historical importer (+https://github.com/nearhart15/bls)";
 const API_CONCURRENCY = boundedEnvInt(process.env.LEAGUESECRETARY_CONCURRENCY, 6, 1, 12);
 const TRUSTED_HOSTS = ["leaguesecretary.com"];
