@@ -85,9 +85,9 @@ test('remote input guards reject malformed counts and pollution fields', () => {
 test('HTTP errors and oversized bodies are rejected', async () => {
   const original=global.fetch;
   try{
-    global.fetch=async()=>new Response('{}',{status:404});await assert.rejects(fetchJson('https://test/'),/HTTP 404/);
-    global.fetch=async()=>new Response('{}',{headers:{'content-length':String(9*1024*1024)}});await assert.rejects(fetchJson('https://test/'),/too large/);
-    global.fetch=async()=>new Response('{"ok":true}');assert.deepEqual(await fetchJson('https://test/'),{ok:true});
+    global.fetch=async()=>new Response('{}',{status:404,headers:{'content-type':'application/json'}});await assert.rejects(fetchJson('https://bls.bindul.name/data/test.json'),/HTTP 404/);
+    global.fetch=async()=>new Response('{}',{headers:{'content-type':'application/json','content-length':String(9*1024*1024)}});await assert.rejects(fetchJson('https://bls.bindul.name/data/test.json'),/too large/);
+    global.fetch=async()=>new Response('{"ok":true}',{headers:{'content-type':'application/json'}});assert.deepEqual(await fetchJson('https://bls.bindul.name/data/test.json'),{ok:true});
   }finally{global.fetch=original;}
 });
 
