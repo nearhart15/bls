@@ -59,3 +59,13 @@ test("prefers summer during the summer window and Fall/Winter after rollover", a
   assert.equal(rankBeerLeagueItems(items, new Date("2028-06-15T12:00:00Z"))[0].item.season_label, "Summer 2028");
   assert.equal(rankBeerLeagueItems(items, new Date("2028-09-15T12:00:00Z"))[0].item.season_label, "Fall / Winter 2028–29");
 });
+
+
+test("preserves generatedAt when imported standings are otherwise unchanged", async () => {
+  const { preserveGeneratedAtIfUnchanged } = await import("../scripts/import-beer-league.mjs");
+  const existing = {status:"ready", generatedAt:"2026-09-23T12:00:00.000Z", league:{week:3}, standings:[{number:1}], teams:[]};
+  const same = {status:"ready", generatedAt:"2026-09-24T12:00:00.000Z", league:{week:3}, standings:[{number:1}], teams:[]};
+  const changed = {status:"ready", generatedAt:"2026-09-24T12:00:00.000Z", league:{week:4}, standings:[{number:1}], teams:[]};
+  assert.equal(preserveGeneratedAtIfUnchanged(same, existing).generatedAt, existing.generatedAt);
+  assert.equal(preserveGeneratedAtIfUnchanged(changed, existing).generatedAt, changed.generatedAt);
+});
