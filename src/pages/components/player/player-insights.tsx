@@ -299,7 +299,7 @@ export const InsightsPanel: FC<{
                         <button type="button" className="bls-insight-btn" onClick={() => { void copyPrompt(); }}>
                             {copied ? "Copied" : "Copy Grok prompt"}
                         </button>
-                        <a className="bls-insight-btn is-ghost" href="https://grok.com" target="_blank" rel="noreferrer">Open Grok</a>
+                        <a className="bls-insight-btn is-ghost" href="https://grok.com" target="_blank" rel="noopener noreferrer">Open Grok</a>
                     </div>
                     <pre className="bls-insight-prompt">{prompt}</pre>
                 </CardBody>
