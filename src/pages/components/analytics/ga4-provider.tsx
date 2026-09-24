@@ -20,6 +20,7 @@ import ReactGA from "react-ga4";
 
 const ANALYTICS_TEST_MODE :string = import.meta.env.VITE_GA4_TESTMODE; // Stupid JS / TS crap - can't read boolean config values, they come as string
 const DEFAULT_GA4_TRACKING_ID :string = import.meta.env.VITE_GA4_TRACKING_ID;
+const GA4_ID = /^G-[A-Z0-9]{6,20}$/;
 
 interface G4ProviderParams {
     trackingId?: string;
@@ -27,23 +28,23 @@ interface G4ProviderParams {
 }
 
 const G4Provider: FC<G4ProviderParams> = ({trackingId = DEFAULT_GA4_TRACKING_ID, children}) => {
-    const location = useLocation(); // Get current location for pageview tracking
+    const location = useLocation();
+    const validTrackingId = GA4_ID.test(trackingId) ? trackingId : undefined;
 
     useEffect(() => {
-        if (ANALYTICS_TEST_MODE === 'true') {
-            ReactGA.initialize(trackingId, {testMode: true});
-            // console.log("Initialized GA4 in TEST MODE with tracking ID: ", trackingId)
+        if (!validTrackingId) return;
+        if (ANALYTICS_TEST_MODE === "true") {
+            ReactGA.initialize(validTrackingId, {testMode: true});
         } else {
-            ReactGA.initialize(trackingId);
-            // console.log("Initialized GA4 with tracking ID: ", trackingId)
+            ReactGA.initialize(validTrackingId);
         }
-    }, [trackingId])
+    }, [validTrackingId]);
 
     useEffect(() => {
-        // Track pageviews on route changes
-        // TODO Figure out other modes of tracking
-        ReactGA.send({ hitType: 'pageview', page: location.pathname + location.search });
-    }, [location]);
+        if (!validTrackingId) return;
+        // Do not send query strings to analytics; they can contain user-selected IDs or filters.
+        ReactGA.send({hitType: "pageview", page: location.pathname});
+    }, [location.pathname, validTrackingId]);
 
     return <>{children}</>;
 }

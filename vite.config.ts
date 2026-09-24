@@ -1,44 +1,65 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import {defineConfig} from "vite";
+import react from "@vitejs/plugin-react";
 import {NodePackageImporter} from "sass-embedded";
 
-// https://vite.dev/config/
-export default defineConfig({
-  // Required for GitHub Pages project site
-  base: '/bls/',
-  plugins: [react()],
+const DEV_CONNECT = "connect-src 'self' https://bls.bindul.name https://*.google-analytics.com https://*.analytics.google.com";
+const DEV_CONNECT_WITH_HMR = DEV_CONNECT + " ws://localhost:* ws://127.0.0.1:*";
+
+export default defineConfig(({command}) => ({
+  base: "/bls/",
+  plugins: [
+    react(),
+    {
+      name: "bls-dev-csp",
+      transformIndexHtml(html) {
+        if (command !== "serve") return html;
+        return html
+          .replace(DEV_CONNECT, DEV_CONNECT_WITH_HMR)
+          .replace("; upgrade-insecure-requests", "");
+      },
+    },
+  ],
   build: {
     minify: true,
-    rolldownOptions : {
+    sourcemap: false,
+    rolldownOptions: {
       output: {
         codeSplitting: {
           groups: [
             {
-              name: 'apexcharts',
-              test: /node_modules\/(react-apexcharts|apexcharts)/
-            }
-          ]
-        }
-      }
-    },
-  },
-  // Silence Sass deprecation warnings. See note below.
-  css: {
-    preprocessorOptions: {
-      scss: {
-          // includePaths: ['./node_modules/'],
-          // See https://github.com/twbs/bootstrap/issues/40962
-          // See https://github.com/twbs/bootstrap/issues/41915
-          importers: [new NodePackageImporter()],
-          loadPaths: ['./node_modules/'],
-          silenceDeprecations: [
-              'import',
-              //'mixed-decls',
-              'color-functions',
-              'global-builtin',
-              'if-function',
+              name: "apexcharts",
+              test: /node_modules\/(react-apexcharts|apexcharts)/,
+            },
           ],
+        },
       },
     },
   },
-})
+  server: {
+    host: "127.0.0.1",
+    strictPort: true,
+    cors: false,
+    allowedHosts: ["localhost", "127.0.0.1"],
+    fs: {strict: true},
+  },
+  preview: {
+    host: "127.0.0.1",
+    strictPort: true,
+    cors: false,
+    allowedHosts: ["localhost", "127.0.0.1"],
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        importers: [new NodePackageImporter()],
+        loadPaths: ["./node_modules/"],
+        silenceDeprecations: [
+          "import",
+          "color-functions",
+          "global-builtin",
+          "if-function",
+        ],
+      },
+    },
+  },
+}));

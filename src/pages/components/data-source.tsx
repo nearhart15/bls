@@ -1,4 +1,5 @@
 import {createContext, type FC, type PropsWithChildren, useContext, useMemo, useState} from "react";
+import {readStorage, writeStorage} from "./safe-storage";
 
 export type DataSource = "frame" | "api";
 
@@ -12,14 +13,14 @@ const DataSourceContext = createContext<DataSourceContextValue | null>(null);
 
 export const DataSourceProvider: FC<PropsWithChildren> = ({children}) => {
     const [source, setSourceState] = useState<DataSource>(() => {
-        const saved = window.localStorage.getItem(STORAGE_KEY);
+        const saved = readStorage(STORAGE_KEY);
         return saved === "api" ? "api" : "frame";
     });
 
     const value = useMemo<DataSourceContextValue>(() => ({
         source,
         setSource: (next) => {
-            window.localStorage.setItem(STORAGE_KEY, next);
+            writeStorage(STORAGE_KEY, next);
             setSourceState(next);
         },
     }), [source]);

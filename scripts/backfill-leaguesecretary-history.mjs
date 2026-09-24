@@ -1,15 +1,17 @@
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import {boundedEnvInt, MiB, readLimitedJson, readLimitedText, safeFetch, safeWorkspacePath} from "./security-utils.mjs";
 
 export const LEAGUE_ID = 133016;
 export const QUALIFYING_TEAM = "Pins Go Boom!";
 export const BASE_PAGE = "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026";
 export const RECAP_SHEETS_URL = `${BASE_PAGE}/league/recaps-png/${LEAGUE_ID}`;
 export const INTERACTIVE_RECAPS_URL = "https://www.leaguesecretary.com/League/InteractiveRecaps_Read";
-const OUTPUT_DIR = process.env.LEAGUESECRETARY_HISTORY_DIR || "public/data/leaguesecretary-beer-history";
+const OUTPUT_DIR = safeWorkspacePath(process.env.LEAGUESECRETARY_HISTORY_DIR || "public/data/leaguesecretary-beer-history");
 const USER_AGENT = "BLS historical importer (+https://github.com/nearhart15/bls)";
-const API_CONCURRENCY = Math.max(1, Number.parseInt(process.env.LEAGUESECRETARY_CONCURRENCY || "6", 10) || 6);
+const API_CONCURRENCY = boundedEnvInt(process.env.LEAGUESECRETARY_CONCURRENCY, 6, 1, 12);
+const TRUSTED_HOSTS = ["leaguesecretary.com"];
 
 function sleep(ms) { return new Promise(resolvePromise => setTimeout(resolvePromise, ms)); }
 function decodeHtml(value) {
@@ -42,11 +44,10 @@ async function request(url, options = {}, attempts = 3) {
     let lastError;
     for (let attempt = 1; attempt <= attempts; attempt += 1) {
         try {
-            const response = await fetch(url, {
-                redirect: "follow",
+            const response = await safeFetch(url, {
                 ...options,
                 headers: {"user-agent": USER_AGENT, accept: "text/html,application/json,*/*;q=0.8", ...(options.headers || {})},
-            });
+            }, {allowedHosts: TRUSTED_HOSTS});
             if (!response.ok) throw new Error(`${response.status} ${response.statusText} fetching ${url}`);
             return response;
         } catch (error) {
@@ -103,7 +104,7 @@ function cookieHeader(response) {
 async function openRecapSession(period) {
     const url = recapPageUrl(period, 0);
     const response = await request(url);
-    const html = await response.text();
+    const html = await readLimitedText(response, 3 * MiB);
     const token = decodeHtml(html.match(/name=["']__RequestVerificationToken["'][^>]*value=["']([^"']+)["']/i)?.[1] ?? "");
     if (!token) throw new Error("LeagueSecretary request-verification token was not found for " + period.sourceLabel + ".");
     const teams = extractSelectOptions(html, "leagueRecapTeam")
@@ -136,9 +137,10 @@ async function fetchTeamRecapRows(period, teamId, session) {
         },
         body,
     });
-    const payload = await response.json();
+    const payload = await readLimitedJson(response, 5 * MiB);
     if (payload?.Errors) throw new Error("LeagueSecretary recap API returned errors for " + period.sourceLabel + ", team " + teamId + ": " + JSON.stringify(payload.Errors));
     if (!Array.isArray(payload?.Data)) throw new Error("LeagueSecretary recap API did not return rows for " + period.sourceLabel + ", team " + teamId + ".");
+    if (payload.Data.length > 1000) throw new Error("LeagueSecretary recap API returned too many rows.");
     return payload.Data;
 }
 
@@ -385,7 +387,7 @@ export function compactLeagueWeekHistory(weeks) {
 
 export async function backfillLeagueSecretaryHistory() {
     console.log(`Loading reporting periods from ${RECAP_SHEETS_URL}`);
-    const baseHtml = await (await request(RECAP_SHEETS_URL)).text();
+    const baseHtml = await readLimitedText(await request(RECAP_SHEETS_URL), 3 * MiB);
     const periods = extractSelectOptions(baseHtml, "leaguePngViewer-recaps-period").map(parseReportingPeriod).filter(Boolean);
     if (!periods.length) throw new Error("No LeagueSecretary reporting periods were found.");
 

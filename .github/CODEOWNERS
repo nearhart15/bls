@@ -1,0 +1,7 @@
+# Require repository-owner review when branch protection enables code-owner reviews.
+* @nearhart15
+/.github/workflows/ @nearhart15
+/package.json @nearhart15
+/package-lock.json @nearhart15
+/scripts/ @nearhart15
+/src/data/utils/ @nearhart15

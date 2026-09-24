@@ -1,3 +1,5 @@
+import {fetchJson} from "../utils/fetch-json";
+
 /* LeagueSecretary historical player trend data © 2026 */
 
 export interface ApiHistoricalPlayerPoint {
@@ -111,16 +113,13 @@ export function findHistoricalPlayer(data: ApiPlayerHistoryIndexFile, playerName
 
 export async function apiPlayerHistoryIndexFetcher(): Promise<ApiPlayerHistoryIndexFile> {
     const base = import.meta.env.BASE_URL || "/";
-    const response = await fetch(`${base}data/leaguesecretary-beer-history/player-history-index.json`, {cache: "no-cache"});
-    if (!response.ok) throw new Error(`Historical player index unavailable (${response.status}).`);
-    return await response.json() as ApiPlayerHistoryIndexFile;
+    return await fetchJson(`${base}data/leaguesecretary-beer-history/player-history-index.json`) as unknown as ApiPlayerHistoryIndexFile;
 }
 
 export async function apiHistoricalPlayerFetcher(sourcePlayerId: number): Promise<ApiHistoricalPlayer> {
+    if (!Number.isSafeInteger(sourcePlayerId) || sourcePlayerId < 1 || sourcePlayerId > 1_000_000_000) throw new Error("Invalid historical player ID.");
     const base = import.meta.env.BASE_URL || "/";
-    const response = await fetch(`${base}data/leaguesecretary-beer-history/players/${sourcePlayerId}.json`, {cache: "no-cache"});
-    if (!response.ok) throw new Error(`Historical player stats unavailable (${response.status}).`);
-    return await response.json() as ApiHistoricalPlayer;
+    return await fetchJson(`${base}data/leaguesecretary-beer-history/players/${sourcePlayerId}.json`) as unknown as ApiHistoricalPlayer;
 }
 
 
@@ -147,9 +146,7 @@ export function expandHistoricalLeagueHistory(data: CompactHistoricalLeagueHisto
 
 export async function apiHistoricalLeagueFetcher(): Promise<ApiHistoricalLeagueHistory> {
     const base = import.meta.env.BASE_URL || "/";
-    const response = await fetch(`${base}data/leaguesecretary-beer-history/league-week-history.json`, {cache: "no-cache"});
-    if (!response.ok) throw new Error(`Historical league stats unavailable (${response.status}).`);
-    const data = await response.json() as CompactHistoricalLeagueHistory;
+    const data = await fetchJson(`${base}data/leaguesecretary-beer-history/league-week-history.json`) as unknown as CompactHistoricalLeagueHistory;
     if (data.version !== 2 || !Array.isArray(data.players) || !Array.isArray(data.weeks)) {
         throw new Error("Historical league stats are in an unsupported format.");
     }
