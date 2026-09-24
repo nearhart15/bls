@@ -20,7 +20,6 @@ import {LeagueDetails} from "./league-details";
 import {AvailableLeagues} from "./league-info";
 import {TrackedLeagueTeam} from "./league-team-details";
 import {createJsonConverter} from "../utils/json-utils";
-import {decorateLeagueDetails} from "./league-calculators";
 
 export const LEAGUE_LIST_CACHE_CATEGORY = "league-list";
 export const LEAGUE_DETAILS_CACHE_CATEGORY = "league-details";
@@ -40,17 +39,13 @@ export const leagueDetailsFetcher = async(dataLoc: string) => {
     const leagueDetails: LeagueDetails = await fetchJson(dataUrl(APP_URL_BASE, dataLoc))
         .then((json: object) => createJsonConverter().deserialize<LeagueDetails>(json, LeagueDetails));
 
-    // Add team details
-    const teams: TrackedLeagueTeam[] = [];
-    for (let i = 0; i < leagueDetails.teams.length; i++) {
-        const team = leagueDetails.teams[i];
-        if (team.dataLoc && team.dataLoc.length > 0) {
-            const teamDetails = await leagueTeamDetailsFetcher(team.dataLoc);
-            teams.push(teamDetails);
-        } else {
-            teams.push(team);
-        }
-    }
+    // Load independent team files concurrently and overlap the heavy calculator chunk with I/O.
+    const [teams, {decorateLeagueDetails}] = await Promise.all([
+        Promise.all(leagueDetails.teams.map(async (team): Promise<TrackedLeagueTeam> =>
+            team.dataLoc && team.dataLoc.length > 0 ? leagueTeamDetailsFetcher(team.dataLoc) : team
+        )),
+        import("./league-calculators"),
+    ]);
     leagueDetails.teams = teams;
 
     validateLeague(leagueDetails);
