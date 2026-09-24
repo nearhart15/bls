@@ -12,7 +12,10 @@ export default defineConfig(({command}) => ({
     {
       name: "bls-dev-csp",
       transformIndexHtml(html) {
-        return command === "serve" ? html.replace(DEV_CONNECT, DEV_CONNECT_WITH_HMR) : html;
+        if (command !== "serve") return html;
+        return html
+          .replace(DEV_CONNECT, DEV_CONNECT_WITH_HMR)
+          .replace("; upgrade-insecure-requests", "");
       },
     },
   ],
