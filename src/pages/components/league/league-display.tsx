@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import {type FC, useCallback, useEffect, useState} from "react";
+import {lazy, Suspense, type FC, useCallback, useEffect, useState} from "react";
 
 import {Container, Nav} from "react-bootstrap";
 
@@ -27,9 +27,11 @@ import type {LeagueDetails} from "../../../data/league/league-details";
 import type {LeagueInfo} from "../../../data/league/league-info";
 import {useCachedFetcher} from "../cache/data-loader";
 import LeagueSummary from "./league-summary";
-import LeagueTeamDetails from "./league-team-details";
-import OtherTeams from "./league-other-teams";
 import {useNavigate} from "react-router";
+import Loader from "../loader";
+
+const LeagueTeamDetails = lazy(() => import("./league-team-details"));
+const OtherTeams = lazy(() => import("./league-other-teams"));
 
 export type CurrentLeagueDetailsDisplay = "TEAM" | "OTHER_TEAMS";
 
