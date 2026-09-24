@@ -68,10 +68,8 @@ const RECORD: Metric[] = [
 ];
 
 async function fetchApiTeams(): Promise<ApiLeagueData> {
-    const response = await fetch(`${import.meta.env.BASE_URL}data/beer-league.json?ts=${Date.now()}`, {cache: "no-store"});
-    if (!response.ok) throw new Error(`A.B.C. data returned ${response.status}.`);
-    const data = await response.json() as ApiLeagueData;
-    if (data.status !== "ready") throw new Error("A.B.C. data is not ready yet.");
+    const data = await fetchJson(`${import.meta.env.BASE_URL}data/beer-league.json?ts=${Date.now()}`) as unknown as ApiLeagueData;
+    if (data.status !== "ready" || !Array.isArray(data.standings)) throw new Error("A.B.C. data is not ready or is malformed.");
     return data;
 }
 
