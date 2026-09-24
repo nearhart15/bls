@@ -1,0 +1,5 @@
+Contact: https://github.com/nearhart15/bls/security/advisories/new
+Expires: 2027-09-23T23:59:59Z
+Preferred-Languages: en
+Canonical: https://nearhart15.github.io/bls/.well-known/security.txt
+Policy: https://github.com/nearhart15/bls/security/policy
