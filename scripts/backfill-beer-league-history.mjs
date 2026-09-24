@@ -1,19 +1,22 @@
-import {execFileSync} from "node:child_process";
 import {createHash} from "node:crypto";
-import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from "node:fs";
-import {tmpdir} from "node:os";
+import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import {join, resolve} from "node:path";
 import {pathToFileURL} from "node:url";
 import {parseBlsText} from "./import-beer-league.mjs";
+import {assertTrustedUrl, MiB, pdfBytesToText, readLimitedBytes, readLimitedJson, safeFetch} from "./security-utils.mjs";
 
 const BINBIN_LEAGUES_URL = process.env.BINBIN_LEAGUES_URL || "https://bls.bindul.name/data/leagues.json";
 const MEDIA_URL = "https://arapahoebowl.com/wp-json/wp/v2/media";
 const HISTORY_DIR = process.env.BEER_LEAGUE_HISTORY_DIR || "public/data/beer-league-history";
 const USER_AGENT = "BLS Beer League history backfill (+https://github.com/nearhart15/bls)";
+const TRUSTED_HOSTS = ["arapahoebowl.com", "bls.bindul.name"];
 export const QUALIFYING_TEAM = "Pins Go Boom!";
 
-async function request(url) {
-    const response = await fetch(url, {redirect: "follow", headers: {"user-agent": USER_AGENT, accept: "application/json,application/pdf,*/*;q=0.8"}});
+async function request(url, options = {}) {
+    const response = await safeFetch(url, {
+        ...options,
+        headers: {"user-agent": USER_AGENT, accept: "application/json,application/pdf,*/*;q=0.8", ...(options.headers || {})},
+    }, {allowedHosts: TRUSTED_HOSTS});
     if (!response.ok) throw new Error(`${response.status} ${response.statusText} fetching ${url}`);
     return response;
 }
@@ -48,10 +51,10 @@ async function mediaForYear(year) {
         url.searchParams.set("page", String(page));
         url.searchParams.set("after", `${year}-01-01T00:00:00`);
         url.searchParams.set("before", `${year}-12-31T23:59:59`);
-        const response = await fetch(url, {headers: {"user-agent": USER_AGENT, accept: "application/json"}});
+        const response = await request(url, {headers: {accept: "application/json"}});
         if (response.status === 400 && page > 1) break;
         if (!response.ok) throw new Error(`${response.status} ${response.statusText} fetching ${url}`);
-        const rows = await response.json();
+        const rows = await readLimitedJson(response, 4 * MiB);
         for (const row of rows) {
             const pdf = mediaPdfUrl(row);
             if (pdf) found.set(pdf, row);
@@ -123,28 +126,18 @@ function archive(parsed, bytes) {
 }
 
 async function parsePdf(url, media, year) {
-    const bytes = Buffer.from(await (await request(url)).arrayBuffer());
+    const bytes = Buffer.from(await readLimitedBytes(await request(assertTrustedUrl(url, TRUSTED_HOSTS)), 20 * MiB));
     if (bytes.subarray(0, 5).toString("ascii") !== "%PDF-") return false;
-    const workDir = join(tmpdir(), `bls-beer-backfill-${process.pid}-${Date.now()}`);
-    mkdirSync(workDir, {recursive: true});
-    const pdfPath = join(workDir, "standings.pdf");
-    const textPath = join(workDir, "standings.txt");
-    writeFileSync(pdfPath, bytes);
-    try {
-        execFileSync("pdftotext", ["-layout", "-nopgbrk", pdfPath, textPath], {stdio: "ignore"});
-        const parsed = parseBlsText(readFileSync(textPath, "utf8"), {directoryUrl: MEDIA_URL, pdfUrl: url});
+    const parsed = parseBlsText(pdfBytesToText(bytes, {prefix: "bls-beer-backfill-", maxTextBytes: 5 * MiB}), {directoryUrl: MEDIA_URL, pdfUrl: url});
         if (!/^beer\b/i.test(parsed.league.name ?? "") || !/^Thursday$/i.test(parsed.league.day ?? "")) return false;
         if (!parsed.standings.length || !parsed.teams.length) return false;
         if (!hasQualifyingTeam(parsed)) return false;
         parsed.league.season = inferSeason(parsed, media, year);
         return archive(parsed, bytes);
-    } finally {
-        rmSync(workDir, {recursive: true, force: true});
-    }
 }
 
 export async function backfillBeerLeagueHistory() {
-    const binbin = await (await request(BINBIN_LEAGUES_URL)).json();
+    const binbin = await readLimitedJson(await request(BINBIN_LEAGUES_URL), 4 * MiB);
     const years = yearsFromBinBinIndex(binbin);
     if (!years.length) throw new Error("Could not determine any BinBin league years.");
     console.log(`BinBin years: ${years.join(", ")}`);
