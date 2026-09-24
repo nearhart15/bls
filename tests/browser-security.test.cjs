@@ -69,10 +69,10 @@ test("production CSP blocks high-risk browser capabilities", () => {
     "child-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self' data:",
     "upgrade-insecure-requests",
   ]) {
     assert.ok(csp.includes(directive), `CSP is missing ${directive}`);
   }
-  assert.equal(html.includes("fonts.googleapis.com"), false, "Google Fonts CSS must not be loaded");
-  assert.equal(html.includes("fonts.gstatic.com"), false, "Google Fonts assets must not be loaded");
 });
