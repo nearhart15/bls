@@ -89,9 +89,9 @@ const LeagueSummaryInfo :FC<LeagueSummaryDataProps> = ({leagueDetails}: LeagueSu
                             <PropValueLine prop="League Id" value={o.leagueSecretary.leagueId}/>
                             <div className="d-flex flex-wrap gap-3 mt-1">
                                 {o.leagueSecretary.centerDashboardUrl &&
-                                    <a href={safeLeagueLink(o.leagueSecretary.centerDashboardUrl)} target="_blank" rel="noreferrer">Center Dashboard</a>}
+                                    <a href={safeLeagueLink(o.leagueSecretary.centerDashboardUrl)} target="_blank" rel="noopener noreferrer">Center Dashboard</a>}
                                 {o.leagueSecretary.leagueDashboardUrl &&
-                                    <a href={safeLeagueLink(o.leagueSecretary.leagueDashboardUrl)} target="_blank" rel="noreferrer">League Dashboard</a>}
+                                    <a href={safeLeagueLink(o.leagueSecretary.leagueDashboardUrl)} target="_blank" rel="noopener noreferrer">League Dashboard</a>}
                             </div>
                         </>
                         }
