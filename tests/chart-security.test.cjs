@@ -15,7 +15,7 @@ test('hostile player names and categories remain inert through actual ApexCharts
   const load=require('./load-source.cjs');const SafeChart=load('src/pages/components/charts/safe-chart.tsx').default;
   const payload='<img id="injected" src="invalid" onerror="window.executed=true">';
   const props={type:'radar',height:340,width:500,options:{chart:{animations:{enabled:false}},xaxis:{categories:[payload,'Spare','Single','First']}},series:[{name:payload,data:[10,20,30,40]},{name:'Control',data:[20,30,40,50]}]};
-  const tree=SafeChart(props);const safe=tree.props.children[0].props;
+  const tree=SafeChart(props);const chartBoundary=tree.props.children[0];const safe=chartBoundary.props.children.props;
   const {renderToStaticMarkup}=require('react-dom/server');w.document.querySelector('#legend').innerHTML=renderToStaticMarkup(tree.props.children[1]);
   w.eval(fs.readFileSync(require.resolve('apexcharts/dist/apexcharts.js'),'utf8'));
   const chart=new w.ApexCharts(w.document.querySelector('#chart'),{...safe.options,series:safe.series,chart:{type:'radar',height:340,width:500,animations:{enabled:false}}});
