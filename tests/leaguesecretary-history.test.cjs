@@ -145,6 +145,28 @@ test("the same bowler can keep one history when LeagueSecretary IDs change betwe
     assert.equal(players[0].history[1].seasonAverage, 191);
 });
 
+test("known historical name aliases merge into one bowler history", async () => {
+    const {buildPlayerHistory, buildLeagueWeekHistory} = await importer;
+    const players = buildPlayerHistory([
+        snapshot(1, "2025-09-04", [bowler({id: 24, name: "Augi Fesi", sourceName: "Fesi, Augi", scores: [152, 183, 159]})], "Fall 2025", 2025, "f"),
+        snapshot(1, "2026-05-07", [bowler({id: 35, name: "August Fesi", sourceName: "Fesi, August", scores: [152, 144, 167]})], "Summer 2026", 2026, "u"),
+        snapshot(3, "2026-09-17", [bowler({id: 24, name: "Augi Fesi", sourceName: "Fesi, Augi", scores: [212, 217, 200], handicap: 0})], "Fall 2026", 2026, "f"),
+    ]);
+    assert.equal(players.length, 1);
+    assert.equal(players[0].playerKey, "augifesi");
+    assert.equal(players[0].name, "Augi Fesi");
+    assert.equal(players[0].normalizedName, "augifesi");
+    assert.deepEqual(players[0].aliases, ["August Fesi"]);
+    assert.deepEqual(players[0].sourcePlayerIds, [24, 35]);
+    assert.equal(players[0].history.length, 3);
+
+    const weeks = buildLeagueWeekHistory([
+        snapshot(1, "2026-05-07", [bowler({id: 35, name: "August Fesi", sourceName: "Fesi, August", scores: [152, 144, 167]})], "Summer 2026", 2026, "u"),
+        snapshot(3, "2026-09-17", [bowler({id: 24, name: "Augi Fesi", sourceName: "Fesi, Augi", scores: [212, 217, 200], handicap: 0})], "Fall 2026", 2026, "f"),
+    ]);
+    assert.deepEqual(weeks.map(week => week.bowlers[0].playerKey), ["augifesi", "augifesi"]);
+});
+
 test("duplicate names in the same reporting week remain separate", async () => {
     const {buildPlayerHistory} = await importer;
     const sameName = "Alex Smith";
@@ -183,7 +205,8 @@ test("committed LeagueSecretary archive contains varying exact weekly history", 
     assert.ok(nick);
     assert.deepEqual(nick.sourcePlayerIds, [160, 237]);
 
-    const history = JSON.parse(fs.readFileSync(path.join(historyDir, "players", `${nick.sourcePlayerId}.json`), "utf8"));
+    const historyFile = nick.historyFile ?? `${nick.sourcePlayerId}.json`;
+    const history = JSON.parse(fs.readFileSync(path.join(historyDir, "players", historyFile), "utf8"));
     const scoringWeeks = history.history.filter(point => point.weekAverage != null);
     assert.ok(scoringWeeks.length >= 90);
     assert.ok(new Set(scoringWeeks.map(point => point.weekAverage)).size >= 50);
