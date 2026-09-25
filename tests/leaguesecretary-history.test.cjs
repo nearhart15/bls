@@ -229,6 +229,24 @@ test("committed LeagueSecretary archive contains varying exact weekly history", 
         ],
     );
 
+    const augi = index.players.find(player => player.normalizedName === "augifesi");
+    assert.ok(augi);
+    assert.deepEqual(augi.sourcePlayerIds, [24, 35]);
+    assert.deepEqual(augi.aliases, ["August Fesi"]);
+    assert.equal(index.players.some(player => player.normalizedName === "augustfesi"), false);
+    const augiHistory = JSON.parse(fs.readFileSync(path.join(historyDir, "players", augi.historyFile), "utf8"));
+    const augiScoring = augiHistory.history.filter(point => point.weekGames > 0);
+    assert.equal(augiScoring.reduce((sum, point) => sum + point.weekGames, 0), 168);
+    assert.equal(augiScoring.reduce((sum, point) => sum + point.weekPins, 0), 31361);
+    assert.equal(Math.max(...augiScoring.flatMap(point => point.weekScores)), 247);
+    assert.equal(Math.max(...augiScoring.map(point => point.weekSeries ?? 0)), 677);
+
+    const lachelle = index.players.find(player => player.normalizedName === "lachelletraverse");
+    assert.ok(lachelle);
+    assert.notEqual(lachelle.historyFile, augi.historyFile);
+    const lachelleHistory = JSON.parse(fs.readFileSync(path.join(historyDir, "players", lachelle.historyFile), "utf8"));
+    assert.equal(lachelleHistory.name, "Lachelle Traverse");
+
     const leagueHistory = JSON.parse(fs.readFileSync(path.join(historyDir, "league-week-history.json"), "utf8"));
     assert.equal(leagueHistory.version, 2);
     assert.equal(leagueHistory.weeks.length, index.importedWeeks);
