@@ -71,13 +71,14 @@ export const ApiPlayerDetail:FC<{playerId:string}>=({playerId})=>{
         [indexData,p,currentTeamName],
     );
     const sourcePlayerId=historicalEntry?.sourcePlayerId??0;
+    const historyFile=historicalEntry?.historyFile??(sourcePlayerId>0?`${sourcePlayerId}.json`:"");
     const playerHistoryFetcher=useCallback(async():Promise<ApiHistoricalPlayerResult>=>({
-        player:sourcePlayerId>0?await apiHistoricalPlayerFetcher(sourcePlayerId):null,
-    }),[sourcePlayerId]);
+        player:historyFile?await apiHistoricalPlayerFetcher(historyFile):null,
+    }),[historyFile]);
     const{data:historyData,isLoading:historyLoading,error:historyError}=useCachedFetcher<ApiHistoricalPlayerResult>(
         playerHistoryFetcher,
         API_PLAYER_HISTORY_CACHE_CATEGORY,
-        String(sourcePlayerId),
+        historyFile,
     );
     const historical=historyData?.player??null;
     const historicalPoints=useMemo(
