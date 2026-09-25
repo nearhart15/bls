@@ -24,20 +24,25 @@ export interface ApiHistoricalPlayerPoint {
 }
 
 export interface ApiHistoricalPlayer {
+    playerKey?: string;
     sourcePlayerId: number;
     sourcePlayerIds?: number[];
     name: string;
     sourceName: string;
     normalizedName: string;
+    aliases?: string[];
     history: ApiHistoricalPlayerPoint[];
 }
 
 export interface ApiHistoricalPlayerIndexEntry {
+    playerKey?: string;
+    historyFile?: string;
     sourcePlayerId: number;
     sourcePlayerIds?: number[];
     name: string;
     sourceName: string;
     normalizedName: string;
+    aliases?: string[];
     teamNames: string[];
 }
 
@@ -103,7 +108,11 @@ export function normalizeHistoricalPlayerName(name: string): string {
 
 export function findHistoricalPlayer(data: ApiPlayerHistoryIndexFile, playerName: string, teamName?: string): ApiHistoricalPlayerIndexEntry | null {
     const normalized = normalizeHistoricalPlayerName(playerName);
-    const matches = data.players.filter(player => player.normalizedName === normalized || normalizeHistoricalPlayerName(player.name) === normalized);
+    const matches = data.players.filter(player =>
+        player.normalizedName === normalized
+        || normalizeHistoricalPlayerName(player.name) === normalized
+        || (player.aliases ?? []).some(alias => normalizeHistoricalPlayerName(alias) === normalized),
+    );
     if (matches.length === 1) return matches[0];
     if (!teamName || matches.length === 0) return null;
     const normalizedTeam = normalizeHistoricalPlayerName(teamName);
@@ -116,10 +125,11 @@ export async function apiPlayerHistoryIndexFetcher(): Promise<ApiPlayerHistoryIn
     return await fetchJson(`${base}data/leaguesecretary-beer-history/player-history-index.json`) as unknown as ApiPlayerHistoryIndexFile;
 }
 
-export async function apiHistoricalPlayerFetcher(sourcePlayerId: number): Promise<ApiHistoricalPlayer> {
-    if (!Number.isSafeInteger(sourcePlayerId) || sourcePlayerId < 1 || sourcePlayerId > 1_000_000_000) throw new Error("Invalid historical player ID.");
+export async function apiHistoricalPlayerFetcher(source: number | string): Promise<ApiHistoricalPlayer> {
+    const historyFile = typeof source === "number" ? `${source}.json` : source;
+    if (!/^[a-z0-9][a-z0-9._-]*\.json$/i.test(historyFile)) throw new Error("Invalid historical player file.");
     const base = import.meta.env.BASE_URL || "/";
-    return await fetchJson(`${base}data/leaguesecretary-beer-history/players/${sourcePlayerId}.json`) as unknown as ApiHistoricalPlayer;
+    return await fetchJson(`${base}data/leaguesecretary-beer-history/players/${historyFile}`) as unknown as ApiHistoricalPlayer;
 }
 
 

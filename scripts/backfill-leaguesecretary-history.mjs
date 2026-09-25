@@ -21,7 +21,15 @@ function decodeHtml(value) {
 }
 function stripHtml(value) { return decodeHtml(String(value ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()); }
 function normalize(value) { return String(value ?? "").toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, ""); }
+const PLAYER_NAME_ALIASES = new Map([
+    ["augustfesi", "augifesi"],
+]);
+function canonicalPlayerName(value) {
+    const normalized = normalize(value);
+    return PLAYER_NAME_ALIASES.get(normalized) ?? normalized;
+}
 function slug(value) { return String(value ?? "").toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+function playerHistoryFileName(playerKey) { return playerKey.replace(/[^a-z0-9-]+/g, "--") + ".json"; }
 function round(value, digits = 1) { const scale = 10 ** digits; return Math.round(value * scale) / scale; }
 function numberOrZero(value) { const parsed = Number(value); return Number.isFinite(parsed) ? parsed : 0; }
 function numberOrNull(value) {
@@ -262,9 +270,10 @@ export function buildPlayerHistory(snapshots) {
         const idsByName = new Map();
         for (const row of snapshot.bowlers) {
             if (!row.sourcePlayerId || !row.normalizedName) continue;
-            const ids = idsByName.get(row.normalizedName) ?? new Set();
+            const canonicalName = canonicalPlayerName(row.normalizedName);
+            const ids = idsByName.get(canonicalName) ?? new Set();
             ids.add(row.sourcePlayerId);
-            idsByName.set(row.normalizedName, ids);
+            idsByName.set(canonicalName, ids);
         }
         for (const [name, ids] of idsByName) if (ids.size > 1) ambiguousNames.add(name);
     }
@@ -275,18 +284,22 @@ export function buildPlayerHistory(snapshots) {
         const season = seasonKey(snapshot.reporting);
         for (const row of snapshot.bowlers) {
             if (!row.sourcePlayerId || !row.normalizedName) continue;
-            const playerKey = ambiguousNames.has(row.normalizedName)
-                ? row.normalizedName + ":" + row.sourcePlayerId
-                : row.normalizedName;
+            const canonicalName = canonicalPlayerName(row.normalizedName);
+            const playerKey = ambiguousNames.has(canonicalName)
+                ? canonicalName + ":" + row.sourcePlayerId
+                : canonicalName;
             const current = players.get(playerKey) ?? {
+                playerKey,
                 sourcePlayerId: row.sourcePlayerId,
                 sourcePlayerIds: [],
                 name: row.name,
                 sourceName: row.sourceName,
-                normalizedName: row.normalizedName,
+                normalizedName: canonicalName,
+                aliases: [],
                 history: [],
             };
             current.sourcePlayerId = row.sourcePlayerId;
+            if (row.name && normalize(row.name) !== normalize(current.name) && !current.aliases.includes(row.name)) current.aliases.push(row.name);
             current.name = row.name || current.name;
             current.sourceName = row.sourceName || current.sourceName;
             if (!current.sourcePlayerIds.includes(row.sourcePlayerId)) current.sourcePlayerIds.push(row.sourcePlayerId);
@@ -326,7 +339,11 @@ export function buildPlayerHistory(snapshots) {
     }
 
     return [...players.values()]
-        .map(player => ({...player, sourcePlayerIds: [...player.sourcePlayerIds].sort((a, b) => a - b)}))
+        .map(player => ({
+            ...player,
+            sourcePlayerIds: [...player.sourcePlayerIds].sort((a, b) => a - b),
+            aliases: [...new Set(player.aliases)].filter(name => normalize(name) !== normalize(player.name)).sort((a, b) => a.localeCompare(b)),
+        }))
         .sort((a, b) => a.name.localeCompare(b.name) || a.sourcePlayerId - b.sourcePlayerId);
 }
 
@@ -338,9 +355,10 @@ export function buildLeagueWeekHistory(snapshots) {
         const idsByName = new Map();
         for (const row of snapshot.bowlers) {
             if (!row.sourcePlayerId || !row.normalizedName) continue;
-            const ids = idsByName.get(row.normalizedName) ?? new Set();
+            const canonicalName = canonicalPlayerName(row.normalizedName);
+            const ids = idsByName.get(canonicalName) ?? new Set();
             ids.add(row.sourcePlayerId);
-            idsByName.set(row.normalizedName, ids);
+            idsByName.set(canonicalName, ids);
         }
         for (const [name, ids] of idsByName) if (ids.size > 1) ambiguousNames.add(name);
     }
@@ -353,9 +371,9 @@ export function buildLeagueWeekHistory(snapshots) {
         bowlers: snapshot.bowlers
             .filter(row => row.sourcePlayerId && row.normalizedName)
             .map(row => ({
-                playerKey: ambiguousNames.has(row.normalizedName)
-                    ? row.normalizedName + ":" + row.sourcePlayerId
-                    : row.normalizedName,
+                playerKey: ambiguousNames.has(canonicalPlayerName(row.normalizedName))
+                    ? canonicalPlayerName(row.normalizedName) + ":" + row.sourcePlayerId
+                    : canonicalPlayerName(row.normalizedName),
                 weekGames: row.weekGames,
                 weekPins: row.weekPins,
                 weekSeries: row.weekSeries,
@@ -443,7 +461,7 @@ export async function backfillLeagueSecretaryHistory() {
     rmSync(playerDirectory, {recursive: true, force: true});
     mkdirSync(playerDirectory, {recursive: true});
     for (const player of players) {
-        writeFileSync(resolve(playerDirectory, `${player.sourcePlayerId}.json`), `${JSON.stringify(player)}\n`);
+        writeFileSync(resolve(playerDirectory, playerHistoryFileName(player.playerKey)), `${JSON.stringify(player)}\n`);
     }
     const historyIndex = {
         generatedAt: index.generatedAt,
@@ -452,11 +470,14 @@ export async function backfillLeagueSecretaryHistory() {
         seasons,
         importedWeeks: snapshots.length,
         players: players.map(player => ({
+            playerKey: player.playerKey,
+            historyFile: playerHistoryFileName(player.playerKey),
             sourcePlayerId: player.sourcePlayerId,
             sourcePlayerIds: player.sourcePlayerIds,
             name: player.name,
             sourceName: player.sourceName,
             normalizedName: player.normalizedName,
+            aliases: player.aliases,
             teamNames: [...new Set(player.history.map(point => point.teamName).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
         })),
     };
