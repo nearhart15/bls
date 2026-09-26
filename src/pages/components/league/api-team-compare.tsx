@@ -34,7 +34,7 @@ interface ApiStanding {
 
 interface ApiLeagueData {
     status: "pending" | "ready";
-    league?: {name: string; season: string | null};
+    league?: {name: string; season: string | null; date?: string | null; week?: number | null; totalWeeks?: number | null};
     standings: ApiStanding[];
 }
 
@@ -142,7 +142,7 @@ const ApiTeamCompare: FC = () => {
             <div className="text-body-secondary">Only team statistics published by the Arapahoe league sheet are compared.</div>
         </div>
         <Card className="bls-profile-card mb-3 bls-fifa-panel"><CardBody>
-            <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap"><div><strong>{data?.league?.name ?? "Beer League"}</strong>{data?.league?.season ? <div className="text-body-secondary">{data.league.season}</div> : null}</div><Badge bg="info">A.B.C. Data</Badge></div>
+            <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap"><div><strong>{data?.league?.name ?? "Beer League"}</strong>{data?.league ? <div className="text-body-secondary">{[data.league.season, data.league.week != null ? `Week ${data.league.week}` : null, data.league.date ? `Sheet ${data.league.date}` : null].filter(Boolean).join(" · ")}</div> : null}</div><Badge bg="info">A.B.C. Data</Badge></div>
         </CardBody></Card>
         {teamA && teamB ? <>
             <div className="bls-fifa-heads mb-3">
