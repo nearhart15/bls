@@ -69,7 +69,7 @@ test("prefers the newest standings week when the league page lists multiple PDFs
     { key: "standings_pdf", url: "https://arapahoebowl.com/wp-content/uploads/2026/08/Beer-Fall-2026-Standings-Wk-3.pdf?abc_pdf_v=1790102208" },
     { key: "html", url: "https://arapahoebowl.com/wp-content/uploads/2026/09/Beer-Fall-2026-Standings-Wk-4.pdf?abc_pdf_v=1790700000" },
   ]);
-  assert.match(ranked[0].url, /Wk-4\\.pdf/);
+  assert.match(ranked[0].url, /Wk-4\.pdf/);
   assert.equal(ranked[0].week, 4);
 });
 
