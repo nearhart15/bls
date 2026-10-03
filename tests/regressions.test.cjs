@@ -54,12 +54,12 @@ test('merged standard deviation, covered observations and zero percent', () => {
 });
 
 test('cache expires at the configured millisecond boundary', () => {
-  const {Cache}=load('src/pages/components/cache/context-cache.tsx');const real=Date.now;let now=1700000000000;Date.now=()=>now;
+  const {Cache}=load('src/pages/components/cache/cache.ts');const real=Date.now;let now=1700000000000;Date.now=()=>now;
   try{const cache=new Cache();cache.put('test','x',{});now+=899999;assert.ok(cache.get('test','x'));now++;assert.equal(cache.get('test','x'),null);}finally{Date.now=real;}
 });
 
 test('cache shares simultaneous requests for the same category and key', async () => {
-  const {Cache}=load('src/pages/components/cache/context-cache.tsx');
+  const {Cache}=load('src/pages/components/cache/cache.ts');
   const cache=new Cache();
   let calls=0, release;
   const gate=new Promise(resolve=>{release=resolve;});

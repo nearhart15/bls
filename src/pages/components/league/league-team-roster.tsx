@@ -5,7 +5,7 @@ import {useId} from "react";
  * Dashboard roster table © 2026
  */
 
-import {type FC, type ReactNode, useEffect, useState} from "react";
+import {type FC, type ReactNode, useMemo, useState} from "react";
 
 import {Card, CardBody, CardFooter, CardHeader, Col, Container, OverlayTrigger, Row, Table, Tooltip} from "react-bootstrap";
 import {DashSquare, Icon9Square, XCircle} from "react-bootstrap-icons";
@@ -236,11 +236,10 @@ interface PlayerDetailsProps {
 }
 const PlayerDetails :FC<PlayerDetailsProps> = ({playerDetailsDisplay, teamDetails, closePlayerDetails, currentBreakpoint} : PlayerDetailsProps) => {
 
-    const [playerGameData, setPlayerGameData] = useState<PlayerDayData[]>([]);
-
-    useEffect(() => {
-        setPlayerGameData(createGameTableData(teamDetails, playerDetailsDisplay));
-    }, [teamDetails, playerDetailsDisplay]);
+    const playerGameData = useMemo(
+        () => createGameTableData(teamDetails, playerDetailsDisplay),
+        [teamDetails, playerDetailsDisplay]
+    );
 
     const player: LeaguePlayer | undefined = teamDetails.roster.find(p => p.id == playerDetailsDisplay);
     const playerStats: LeaguePlayerStats | undefined = player?.playerStats;
@@ -271,12 +270,8 @@ interface LeagueTeamRosterProps {
     currentBreakpoint: Breakpoint;
     leagueDetailsLoading: boolean;
 }
-const LeagueTeamRoster: FC<LeagueTeamRosterProps> = ({teamDetails, currentBreakpoint, leagueDetailsLoading}: LeagueTeamRosterProps) => {
+const TeamRoster: FC<LeagueTeamRosterProps> = ({teamDetails, currentBreakpoint, leagueDetailsLoading}: LeagueTeamRosterProps) => {
     const [playerDetailsDisplay, setPlayerDetailsDisplay] = useState<string | undefined>(undefined);
-
-    useEffect(() => {
-        setPlayerDetailsDisplay(undefined);
-    }, [teamDetails]);
 
     const closePlayerDetails = () => {
         setPlayerDetailsDisplay(undefined);
@@ -304,5 +299,9 @@ const LeagueTeamRoster: FC<LeagueTeamRosterProps> = ({teamDetails, currentBreakp
         </CardBody>
     </>);
 }
+
+const LeagueTeamRoster: FC<LeagueTeamRosterProps> = props => (
+    <TeamRoster key={props.teamDetails.id} {...props}/>
+);
 
 export default LeagueTeamRoster;

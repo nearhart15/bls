@@ -5,7 +5,10 @@ type ApexChartComponent = (typeof import("react-apexcharts"))["default"];
 type SafeChartProps = ComponentProps<ApexChartComponent>;
 const ApexChart = lazy(() => import("react-apexcharts"));
 
-export const escapeChartText = (value: string): string => value.replace(/[&<>"']/g, ch => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[ch]!));
+const chartTextEntities = new Map([
+    ["&", "&amp;"], ["<", "&lt;"], [">", "&gt;"], ['"', "&quot;"], ["'", "&#39;"]
+]);
+const escapeChartText = (value: string): string => value.replace(/[&<>"']/g, ch => chartTextEntities.get(ch) ?? ch);
 
 /** Apex owns HTML sinks. Encode data labels and replace its HTML legend/tooltip. */
 export default function SafeChart(props: SafeChartProps) {

@@ -17,6 +17,7 @@ import type {LeaguePlayerStats} from "../../../data/league/league-team-details";
 import {FullStatsGrid} from "./player-detail-tables";
 import {useTheme} from "../theme";
 import {chartPalette} from "../charts/chart-theme";
+import {useIsNarrow} from "../use-viewport";
 
 function pct(rg: {numerator: number; denominator: number; pct: number}): number {
     if (rg.denominator <= 0) return 0;
@@ -29,17 +30,6 @@ function firstBallPct(n: number): number {
     return Math.round(Math.max(0, Math.min(100, (n / 10) * 100)) * 10) / 10;
 }
 
-function useIsNarrow(maxWidth = 767): boolean {
-    const [narrow, setNarrow] = useState(false);
-    useEffect(() => {
-        const mq = window.matchMedia(`(max-width: ${maxWidth}px)`);
-        const apply = () => { setNarrow(mq.matches); };
-        apply();
-        mq.addEventListener("change", apply);
-        return () => { mq.removeEventListener("change", apply); };
-    }, [maxWidth]);
-    return narrow;
-}
 
 const ConversionRadar: FC<{stats: PlayerStats}> = ({stats}) => {
     const {theme} = useTheme();

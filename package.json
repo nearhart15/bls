@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint . --max-warnings 228",
+    "lint": "eslint . --max-warnings 181",
     "preview": "vite preview",
     "dev:test": "vite --mode test-copy --host 127.0.0.1",
     "build:test": "tsc -b && vite build --mode test-copy",

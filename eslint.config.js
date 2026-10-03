@@ -61,12 +61,4 @@ export default tseslint.config(
       'react-hooks/preserve-manual-memoization': 'warn',
     },
   },
-  {
-    files: ['src/pages/components/league/league-team-matchup-details.tsx'],
-    rules: {
-      // Frame rendering uses a CSS custom property and concise nested iteration; both are type-safe here.
-      '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
-      '@typescript-eslint/no-confusing-void-expression': 'warn',
-    },
-  },
 )
