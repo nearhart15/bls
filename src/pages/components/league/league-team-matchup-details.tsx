@@ -1,10 +1,9 @@
-import {useId} from "react";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  * Dark mode / modern frame sheet © 2026
  */
 
-import {type CSSProperties, type FC, createContext, useContext, useEffect, useMemo, useState} from "react";
+import {type CSSProperties, type FC, createContext, use, useId, useMemo, useState} from "react";
 import {createPortal} from "react-dom";
 import {Row, Col, Badge, Table, Card, CardBody, CardFooter, Stack, ListGroup, ListGroupItem} from "react-bootstrap";
 import {
@@ -97,7 +96,7 @@ const findPlayer = (teamDetails: TrackedLeagueTeam, playerId: string | undefined
 const FrameAttrHintContext = createContext<{active: FrameAttributeIconInfo[]; setActive: (info: FrameAttributeIconInfo[]) => void;}>({active: [], setActive: () => undefined});
 
 const FrameAttrToast: FC = () => {
-    const {active, setActive} = useContext(FrameAttrHintContext);
+    const {active, setActive} = use(FrameAttrHintContext);
     if (active.length === 0 || typeof document === "undefined") return null;
     return createPortal(<div className="bls-attr-toast bls-attr-toast-multi" role="status">
         <div className="bls-attr-toast-events">{active.map(info => <div className="bls-attr-toast-event" key={info.attribute}><Icon iconName={info.iconName} color={info.iconColor}/><span style={{color: info.iconColor}}>{info.description}</span></div>)}</div>
@@ -106,7 +105,7 @@ const FrameAttrToast: FC = () => {
 };
 
 const FrameAttributeIconLegend: FC = () => {
-    const {active, setActive} = useContext(FrameAttrHintContext);
+    const {active, setActive} = use(FrameAttrHintContext);
     return <div className="bls-attr-legend">
         <div className="bls-attr-legend-icons">{Array.from(FrameAttributeIcons.values()).map(icn => {
             const isOn = active.some(item => item.attribute === icn.attribute);
@@ -120,16 +119,15 @@ const FrameAttributeIconLegend: FC = () => {
     </div>;
 };
 
-const EmptyFrames: Frame[] = Array.from({length: 10}, (_, i) => ({number: i + 1, ballScores: [[0, "A"]], cumulativeScore: 0, attributes: []} as Frame));
+const EmptyFrames: Frame[] = Array.from({length: 10}, (_, i) => ({number: i + 1, ballScores: [[0, "A"]], cumulativeScore: 0, attributes: []}));
 interface MatchupDetailsDisplayProps { leagueDetails: LeagueDetails | null; matchup: LeagueMatchup; teamDetails: TrackedLeagueTeam; currentBreakpoint?: Breakpoint; }
 interface TeamIndSeriesGameFramesProps extends MatchupDetailsDisplayProps { gameIdx: number; }
 
 const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, teamDetails, currentBreakpoint, gameIdx}) => {
-    const [smallScreen, setSmallScreen] = useState(false);
-    const {setActive} = useContext(FrameAttrHintContext);
+    const smallScreen = isBreakpointSmallerThan(currentBreakpoint, BS_BP_XS) ?? false;
+    const {setActive} = use(FrameAttrHintContext);
     const playerNames = useMemo(() => matchup.scores?.playerScores.map(ps => findPlayer(teamDetails, ps.player)), [matchup, teamDetails]);
     const frames = useMemo(() => matchup.scores?.playerScores.map(ps => ps.games[gameIdx].frames), [matchup, gameIdx]);
-    useEffect(() => { setSmallScreen(isBreakpointSmallerThan(currentBreakpoint, BS_BP_XS) ?? false); }, [currentBreakpoint]);
     const writeScoreOrLabel = (b: [number, ScoreLabel?]) => {
         const key = b[1] === "S" ? b[0].toString() + "S" : b[1];
         const label = key ? FrameScoreLabels.get(key) : undefined;
@@ -174,13 +172,11 @@ const TeamIndSeriesGameScoresSummary: FC<MatchupDetailsDisplayProps> = ({matchup
 };
 
 const MatchupDetailsDisplay: FC<MatchupDetailsDisplayProps> = ({leagueDetails, matchup, teamDetails, currentBreakpoint}) => {
-    const [hasFrameData, setHasFrameData] = useState(true);
+    const hasFrameData = !matchup.scores?.playerScores.some(player =>
+        player.games.some(game => !game.blind && !game.vacant && game.frames.length === 0)
+    );
     const [activeAttr, setActiveAttr] = useState<FrameAttributeIconInfo[]>([]);
-    useEffect(() => {
-        setHasFrameData(true);
-        matchup.scores?.playerScores.forEach(ps => ps.games.forEach(psg => { if (!psg.blind && !psg.vacant && psg.frames.length === 0) setHasFrameData(false); }));
-    }, [matchup]);
-    return <FrameAttrHintContext.Provider value={{active: activeAttr, setActive: setActiveAttr}}>
+    return <FrameAttrHintContext value={{active: activeAttr, setActive: setActiveAttr}}>
         <Row className="gy-1 gx-1"><Col><Card className="my-1 mx-0"><CardBody className="p-1"><TeamIndSeriesGameScoresSummary leagueDetails={leagueDetails} matchup={matchup} teamDetails={teamDetails} currentBreakpoint={currentBreakpoint}/></CardBody></Card></Col></Row>
         {hasFrameData && <Row className="gy-1 gx-1"><Col><Card className="p-0 m-0"><CollapsibleContainer headerTitle="Frame Data" divId={`${matchup.week}-framedata`} currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_SM}>
             <CardBody className="px-0 py-2 m-0"><Row className="row-cols-1 gy-2 gx-2 m-0 p-0">{matchup.scores?.games.map((_game, g) => <Col key={`frames-${matchup.week}-${g}`}><Card className="my-1 mx-0 h-100"><CardBody className="p-2"><div className={`bls-game-header ${isBreakpointSmallerThan(currentBreakpoint, BS_BP_SM) ? "fs-sm" : "fs-6"}`}>Game {g + 1}</div><TeamIndSeriesGameFramesV2 leagueDetails={leagueDetails} matchup={matchup} teamDetails={teamDetails} currentBreakpoint={currentBreakpoint} gameIdx={g}/></CardBody></Card></Col>)}</Row></CardBody>
@@ -188,7 +184,7 @@ const MatchupDetailsDisplay: FC<MatchupDetailsDisplayProps> = ({leagueDetails, m
         </CollapsibleContainer></Card></Col></Row>}
         {matchup.notes.length > 0 && <Row><Col><Card className="my-2 mx-0"><CardBody className="p-1"><Card.Subtitle className="p-2 mb-0">Notes</Card.Subtitle><ListGroup variant="flush">{matchup.notes.map((n, i) => <ListGroupItem className="fs-sm py-0 px-2 m-0" key={`notes-${matchup.week}-${i}`}>{n}</ListGroupItem>)}</ListGroup></CardBody></Card></Col></Row>}
         <FrameAttrToast/>
-    </FrameAttrHintContext.Provider>;
+    </FrameAttrHintContext>;
 };
 
 export default MatchupDetailsDisplay;

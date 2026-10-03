@@ -3,6 +3,7 @@
  */
 
 import type {FC} from "react";
+import {ratingClass} from "./performance-rating";
 import {OverlayTrigger, Popover} from "react-bootstrap";
 
 function barColor(value: number, mean: number, isDark: boolean): string {
@@ -61,61 +62,6 @@ export const Sparkline: FC<SparklineProps> = ({values, isDark = true, width = 72
         </svg>
     );
 };
-
-export function performanceGradeFromDelta(delta: number | null | undefined): string {
-    if (delta == null || Number.isNaN(delta)) return "-";
-    if (delta >= 15) return "A+";
-    if (delta >= 10) return "A";
-    if (delta >= 6) return "A-";
-    if (delta >= 3) return "B+";
-    if (delta >= 0) return "B";
-    if (delta >= -3) return "B-";
-    if (delta >= -6) return "C+";
-    if (delta >= -10) return "C";
-    if (delta >= -15) return "C-";
-    return "D";
-}
-
-export function performanceGrade(score: number | null | undefined, handicapBasis?: number | null): string {
-    if (score == null || score <= 0) return "-";
-    if (handicapBasis != null && handicapBasis > 0) return performanceGradeFromDelta(score - handicapBasis);
-    if (score >= 220) return "A+";
-    if (score >= 210) return "A";
-    if (score >= 200) return "A-";
-    if (score >= 190) return "B+";
-    if (score >= 180) return "B";
-    if (score >= 170) return "B-";
-    if (score >= 160) return "C+";
-    if (score >= 150) return "C";
-    if (score >= 140) return "C-";
-    return "D";
-}
-
-export function gradeClass(grade: string): string {
-    if (grade.startsWith("A")) return "bls-grade-a";
-    if (grade.startsWith("B")) return "bls-grade-b";
-    if (grade.startsWith("C")) return "bls-grade-c";
-    if (grade === "-") return "bls-grade-na";
-    return "bls-grade-d";
-}
-
-export function performanceRatingFromDelta(delta: number | null | undefined): number | null {
-    if (delta == null || Number.isNaN(delta)) return null;
-    return Math.round(Math.max(0, Math.min(100, 70 + delta * 1.2)));
-}
-
-export function performanceRatingFromAverage(avg: number | null | undefined): number | null {
-    if (avg == null || avg <= 0) return null;
-    return Math.round(Math.max(0, Math.min(100, 70 + (avg - 180) * 0.5)));
-}
-
-export function ratingClass(rating: number | null): string {
-    if (rating == null) return "bls-grade-na";
-    if (rating >= 80) return "bls-grade-a";
-    if (rating >= 65) return "bls-grade-b";
-    if (rating >= 50) return "bls-grade-c";
-    return "bls-grade-d";
-}
 
 function fmt1(n: number): string {
     return (Math.round(n * 10) / 10).toFixed(1);

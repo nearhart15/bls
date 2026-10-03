@@ -2,7 +2,7 @@
  * Player profile dashboard
  */
 
-import {type FC, useEffect, useState} from "react";
+import {type FC, useState} from "react";
 import {Link} from "react-router";
 import Chart from "../charts/safe-chart";
 import type {ApexOptions} from "apexcharts";
@@ -15,6 +15,7 @@ import type {
 import type {PlayerStats} from "../../../data/player/player-stats";
 import {useTheme} from "../theme";
 import {chartPalette} from "../charts/chart-theme";
+import {useIsNarrow} from "../use-viewport";
 import {
     AppearancesPanel,
     SeasonBreakdownTable,
@@ -39,17 +40,6 @@ function countScore(count: number, games: number): number {
     return Math.max(0, Math.min(100, (count / Math.max(1, games)) * 100));
 }
 
-function useIsNarrow(maxWidth = 767): boolean {
-    const [narrow, setNarrow] = useState(false);
-    useEffect(() => {
-        const mq = window.matchMedia(`(max-width: ${maxWidth}px)`);
-        const apply = () => { setNarrow(mq.matches); };
-        apply();
-        mq.addEventListener("change", apply);
-        return () => { mq.removeEventListener("change", apply); };
-    }, [maxWidth]);
-    return narrow;
-}
 
 interface RadialProps {
     label: string;

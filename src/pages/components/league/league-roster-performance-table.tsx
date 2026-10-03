@@ -10,7 +10,8 @@ import {PersonAdd, PersonFillLock} from "react-bootstrap-icons";
 import type {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import {useTheme} from "../theme";
 import {comparePinnedThen} from "../../../data/player/player-pin";
-import {MicroBarChart, performanceRatingFromAverage, performanceRatingFromDelta, RatingBadge, Sparkline} from "../charts/mini-charts";
+import {MicroBarChart, RatingBadge, Sparkline} from "../charts/mini-charts";
+import {performanceRatingFromAverage, performanceRatingFromDelta} from "../charts/performance-rating";
 import {createGameTableData} from "./league-team-roster-data";
 
 interface Props {

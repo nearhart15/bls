@@ -18,7 +18,8 @@ import ErrorDisplay from "../error-display";
 import {useTheme} from "../theme";
 import {comparePinnedThen} from "../../../data/player/player-pin";
 import {availableSeasons, slicesForSeason} from "../../../data/player/season-scope";
-import {MicroBarChart, performanceRatingFromAverage, performanceRatingFromDelta, RatingBadge, Sparkline} from "../charts/mini-charts";
+import {MicroBarChart, RatingBadge, Sparkline} from "../charts/mini-charts";
+import {performanceRatingFromAverage, performanceRatingFromDelta} from "../charts/performance-rating";
 
 const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 1});
 

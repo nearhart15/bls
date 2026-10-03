@@ -15,12 +15,12 @@
  */
 
 import * as React from "react";
-import {lazy, Suspense, type FC, useCallback, useEffect, useState} from "react";
+import {lazy, Suspense, type FC, useCallback} from "react";
 
 import {Container, Nav} from "react-bootstrap";
 
 import ErrorDisplay from "../error-display";
-import {type Breakpoint, BS_BP_XXL, getBreakpoint} from "../ui-utils";
+import {useBreakpoint} from "../use-viewport";
 
 import {LEAGUE_DETAILS_CACHE_CATEGORY, leagueDetailsFetcher} from "../../../data/league/league-api";
 import type {LeagueDetails} from "../../../data/league/league-details";
@@ -51,21 +51,9 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
     const selected = leagueDetails?.teams.find(team => team.id === teamId);
     const displayedTeam = selected?.id ?? leagueDetails?.teams[0]?.id ?? "";
     const showInvalidTeamIdError = Boolean(leagueDetails && teamId && currentDisplay === "TEAM" && !selected);
-    const [currentBreakpoint, setBreakpoint] = useState<Breakpoint>(BS_BP_XXL);
+    const currentBreakpoint = useBreakpoint();
 
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const handleResize = () => {
-            setBreakpoint(getBreakpoint());
-        };
-        window.addEventListener("resize", handleResize);
-        handleResize();
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
-
 
     if (leagueDetailsLoadError) {
         // Keeping error display here, so we don't end up with multiple alerts from each child component
