@@ -118,21 +118,22 @@ const CompareBar: FC<{metric: Metric; teamA: ApiStanding; teamB: ApiStanding}> =
 
 const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRosterPlayer[]}> = ({side, team, players}) => {
     const color = side === "a" ? COLOR_A : COLOR_B;
-    const sortedPlayers = [...players].sort((a, b) => b.average - a.average || a.name.localeCompare(b.name));
+    const sortedPlayers = players;
 
     return <Card className="bls-profile-card bls-fifa-panel h-100" style={{borderTop: `3px solid ${color}`}}>
         <CardBody className="p-0">
             <div className="d-flex align-items-center justify-content-between gap-2 flex-wrap p-3 border-bottom">
                 <div>
                     <div className="fw-semibold" style={{color}}>{team.name}</div>
-                    <div className="small text-body-secondary">{sortedPlayers.length} bowler{sortedPlayers.length === 1 ? "" : "s"}</div>
+                    <div className="small text-body-secondary">{sortedPlayers.length} bowler{sortedPlayers.length === 1 ? "" : "s"} · normal lineup order</div>
                 </div>
                 <Badge pill style={{background: color, color: "#fff"}}>Roster</Badge>
             </div>
             {sortedPlayers.length > 0 ? <div className="table-responsive">
                 <Table hover size="sm" className="mb-0 align-middle">
-                    <thead><tr><th>Bowler</th><th className="text-end">Avg</th><th className="text-end">HDCP</th><th className="text-end">Games</th></tr></thead>
-                    <tbody>{sortedPlayers.map(player => <tr key={player.name}>
+                    <thead><tr><th>Row</th><th>Bowler</th><th className="text-end">Avg</th><th className="text-end">HDCP</th><th className="text-end">Games</th></tr></thead>
+                    <tbody>{sortedPlayers.map((player, index) => <tr key={player.name}>
+                        <td className="fw-semibold">{index + 1}</td>
                         <td>{player.name}{player.status === "SUBSTITUTE" && <Badge bg="secondary" className="ms-2">Sub</Badge>}</td>
                         <td className="text-end">{numberFormat.format(player.average)}</td>
                         <td className="text-end">{integerFormat.format(player.handicap)}</td>
