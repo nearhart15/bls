@@ -79,31 +79,34 @@ const CompareBar: FC<{metric: Metric; teamA: TrackedLeagueTeam; teamB: TrackedLe
 
 const TeamRosterCard: FC<{side: "a" | "b"; team: TrackedLeagueTeam; opponent?: TrackedLeagueTeam}> = ({side, team, opponent}) => {
     const color = side === "a" ? COLOR_A : COLOR_B;
-    const players = team.roster;
+    // A player rating is the current scratch average. Players with no games are
+    // rostered but are not eligible for an active matchup row.
+    const players = team.roster.filter(player => (player.playerStats?.leagueGames ?? player.playerStats?.gameStats.count ?? 0) > 0);
 
     return <Card className="bls-profile-card bls-fifa-panel h-100" style={{borderTop: `3px solid ${color}`}}>
         <CardBody className="p-0">
             <div className="d-flex align-items-center justify-content-between gap-2 flex-wrap p-3 border-bottom">
                 <div>
                     <div className="fw-semibold" style={{color}}>{team.name}</div>
-                    <div className="small text-body-secondary">{players.length} bowler{players.length === 1 ? "" : "s"} · normal lineup order · handicap-adjusted edge highlighted</div>
+                    <div className="small text-body-secondary">{players.length} active bowler{players.length === 1 ? "" : "s"} · normal lineup order · player-rating edge highlighted</div>
                 </div>
                 <Badge pill style={{background: color, color: "#fff"}}>Roster</Badge>
             </div>
             {players.length > 0 ? <div className="table-responsive">
                 <Table hover size="sm" className="mb-0 align-middle">
-                    <thead><tr><th>Row</th><th>Bowler</th><th className="text-end">Avg</th><th className="text-end">HDCP</th><th className="text-end">Games</th></tr></thead>
+                    <thead><tr><th>Row</th><th>Bowler</th><th className="text-end">Rating</th><th className="text-end">Games</th></tr></thead>
                     <tbody>{players.map((player, index) => {
                         const average = player.playerStats?.leagueAverage ?? player.playerStats?.gameStats.average ?? null;
                         const handicap = player.playerStats?.leagueHandicap ?? null;
                         const games = player.playerStats?.leagueGames ?? player.playerStats?.gameStats.count ?? 0;
-                        const opponentPlayer = opponent?.roster[index];
+                        const opponentPlayers = opponent?.roster.filter(opponentPlayer =>
+                            (opponentPlayer.playerStats?.leagueGames ?? opponentPlayer.playerStats?.gameStats.count ?? 0) > 0
+                        ) ?? [];
+                        const opponentPlayer = opponentPlayers[index];
                         const opponentAverage = opponentPlayer?.playerStats?.leagueAverage ?? opponentPlayer?.playerStats?.gameStats.average ?? null;
-                        const opponentHandicap = opponentPlayer?.playerStats?.leagueHandicap ?? null;
-                        const projectedScore = average != null && handicap != null ? average + handicap : null;
-                        const opponentProjectedScore = opponentAverage != null && opponentHandicap != null ? opponentAverage + opponentHandicap : null;
-                        const rowWinner = projectedScore != null && opponentProjectedScore != null
-                            ? projectedScore === opponentProjectedScore ? "tie" : projectedScore > opponentProjectedScore ? side : side === "a" ? "b" : "a"
+                        const playerRating = average;
+                        const rowWinner = playerRating != null && opponentAverage != null
+                            ? playerRating === opponentAverage ? "tie" : playerRating > opponentAverage ? side : side === "a" ? "b" : "a"
                             : null;
                         const isWinner = rowWinner === side;
                         return <tr key={player.id ?? player.name} style={isWinner ? {background: `${color}14`} : undefined}>
@@ -113,8 +116,7 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: TrackedLeagueTeam; opponent?: T
                                 {player.status === "SUBSTITUTE" && <Badge bg="secondary" className="ms-2">Sub</Badge>}
                                 {isWinner && <Badge pill className="ms-2" style={{background: color, color: "#fff"}}>Row edge</Badge>}
                             </td>
-                            <td className="text-end">{average == null ? "—" : numberFormat.format(average)}</td>
-                            <td className="text-end">{handicap == null ? "—" : integerFormat.format(handicap)}</td>
+                            <td className="text-end">{playerRating == null ? "—" : numberFormat.format(playerRating)}</td>
                             <td className="text-end">{games}</td>
                         </tr>;
                     })}</tbody>
