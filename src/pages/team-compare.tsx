@@ -79,29 +79,26 @@ const CompareBar: FC<{metric: Metric; teamA: TrackedLeagueTeam; teamB: TrackedLe
 
 const TeamRosterCard: FC<{side: "a" | "b"; team: TrackedLeagueTeam}> = ({side, team}) => {
     const color = side === "a" ? COLOR_A : COLOR_B;
-    const players = [...team.roster].sort((a, b) => {
-        const averageA = a.playerStats?.leagueAverage ?? a.playerStats?.gameStats.average ?? 0;
-        const averageB = b.playerStats?.leagueAverage ?? b.playerStats?.gameStats.average ?? 0;
-        return averageB - averageA || (a.name ?? "").localeCompare(b.name ?? "");
-    });
+    const players = team.roster;
 
     return <Card className="bls-profile-card bls-fifa-panel h-100" style={{borderTop: `3px solid ${color}`}}>
         <CardBody className="p-0">
             <div className="d-flex align-items-center justify-content-between gap-2 flex-wrap p-3 border-bottom">
                 <div>
                     <div className="fw-semibold" style={{color}}>{team.name}</div>
-                    <div className="small text-body-secondary">{players.length} bowler{players.length === 1 ? "" : "s"}</div>
+                    <div className="small text-body-secondary">{players.length} bowler{players.length === 1 ? "" : "s"} · normal lineup order</div>
                 </div>
                 <Badge pill style={{background: color, color: "#fff"}}>Roster</Badge>
             </div>
             {players.length > 0 ? <div className="table-responsive">
                 <Table hover size="sm" className="mb-0 align-middle">
-                    <thead><tr><th>Bowler</th><th className="text-end">Avg</th><th className="text-end">HDCP</th><th className="text-end">Games</th></tr></thead>
-                    <tbody>{players.map(player => {
+                    <thead><tr><th>Row</th><th>Bowler</th><th className="text-end">Avg</th><th className="text-end">HDCP</th><th className="text-end">Games</th></tr></thead>
+                    <tbody>{players.map((player, index) => {
                         const average = player.playerStats?.leagueAverage ?? player.playerStats?.gameStats.average ?? null;
                         const handicap = player.playerStats?.leagueHandicap ?? null;
                         const games = player.playerStats?.leagueGames ?? player.playerStats?.gameStats.count ?? 0;
                         return <tr key={player.id ?? player.name}>
+                            <td className="fw-semibold">{index + 1}</td>
                             <td>
                                 {player.id ? <Link to={`/player/${player.id}`} className="bls-link-text text-decoration-none fw-semibold">{player.name}</Link> : player.name}
                                 {player.status === "SUBSTITUTE" && <Badge bg="secondary" className="ms-2">Sub</Badge>}
