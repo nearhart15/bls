@@ -116,7 +116,7 @@ const CompareBar: FC<{metric: Metric; teamA: ApiStanding; teamB: ApiStanding}> =
     </div>;
 };
 
-const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRosterPlayer[]}> = ({side, team, players}) => {
+const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRosterPlayer[]; opponentPlayers?: ApiRosterPlayer[]}> = ({side, team, players, opponentPlayers = []}) => {
     const color = side === "a" ? COLOR_A : COLOR_B;
     const sortedPlayers = players;
 
@@ -125,20 +125,28 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRoster
             <div className="d-flex align-items-center justify-content-between gap-2 flex-wrap p-3 border-bottom">
                 <div>
                     <div className="fw-semibold" style={{color}}>{team.name}</div>
-                    <div className="small text-body-secondary">{sortedPlayers.length} bowler{sortedPlayers.length === 1 ? "" : "s"} · normal lineup order</div>
+                    <div className="small text-body-secondary">{sortedPlayers.length} bowler{sortedPlayers.length === 1 ? "" : "s"} · normal lineup order · handicap-adjusted edge highlighted</div>
                 </div>
                 <Badge pill style={{background: color, color: "#fff"}}>Roster</Badge>
             </div>
             {sortedPlayers.length > 0 ? <div className="table-responsive">
                 <Table hover size="sm" className="mb-0 align-middle">
                     <thead><tr><th>Row</th><th>Bowler</th><th className="text-end">Avg</th><th className="text-end">HDCP</th><th className="text-end">Games</th></tr></thead>
-                    <tbody>{sortedPlayers.map((player, index) => <tr key={player.name}>
+                    <tbody>{sortedPlayers.map((player, index) => {
+                        const opponentPlayer = opponentPlayers[index];
+                        const projectedScore = player.average + player.handicap;
+                        const opponentProjectedScore = opponentPlayer ? opponentPlayer.average + opponentPlayer.handicap : null;
+                        const rowWinner = opponentProjectedScore == null
+                            ? null
+                            : projectedScore === opponentProjectedScore ? "tie" : projectedScore > opponentProjectedScore ? side : side === "a" ? "b" : "a";
+                        const isWinner = rowWinner === side;
+                        return <tr key={player.name} style={isWinner ? {background: `${color}14`} : undefined}>
                         <td className="fw-semibold">{index + 1}</td>
-                        <td>{player.name}{player.status === "SUBSTITUTE" && <Badge bg="secondary" className="ms-2">Sub</Badge>}</td>
+                        <td>{player.name}{player.status === "SUBSTITUTE" && <Badge bg="secondary" className="ms-2">Sub</Badge>}{isWinner && <Badge pill className="ms-2" style={{background: color, color: "#fff"}}>Row edge</Badge>}</td>
                         <td className="text-end">{numberFormat.format(player.average)}</td>
                         <td className="text-end">{integerFormat.format(player.handicap)}</td>
                         <td className="text-end">{player.games}</td>
-                    </tr>)}</tbody>
+                    </tr>; })}</tbody>
                 </Table>
             </div> : <div className="p-3 text-body-secondary">No roster data is available for this team.</div>}
         </CardBody>
@@ -203,8 +211,8 @@ const ApiTeamCompare: FC = () => {
                 const playersA = data?.teams?.find(team => team.number === teamA.number)?.players ?? [];
                 const playersB = data?.teams?.find(team => team.number === teamB.number)?.players ?? [];
                 return <div className="row g-3">
-                    <div className="col-12 col-lg-6"><TeamRosterCard side="a" team={teamA} players={playersA}/></div>
-                    <div className="col-12 col-lg-6"><TeamRosterCard side="b" team={teamB} players={playersB}/></div>
+                    <div className="col-12 col-lg-6"><TeamRosterCard side="a" team={teamA} players={playersA} opponentPlayers={playersB}/></div>
+                    <div className="col-12 col-lg-6"><TeamRosterCard side="b" team={teamB} players={playersB} opponentPlayers={playersA}/></div>
                 </div>;
             })() : <Card className="bls-profile-card bls-fifa-panel"><CardBody><div className="bls-fifa-col">
                 <div className="bls-fifa-col-title">{tab === "scoring" ? "Team scoring" : "League record"}</div>
