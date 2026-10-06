@@ -1,6 +1,6 @@
 import {fetchJson} from "../../../data/utils/fetch-json";
 import {type FC, useMemo, useState} from "react";
-import {Badge, Card, CardBody, Form} from "react-bootstrap";
+import {Badge, Card, CardBody, Form, Table} from "react-bootstrap";
 import {useSearchParams} from "react-router";
 
 import {useCachedFetcher} from "../cache/data-loader";
@@ -13,7 +13,7 @@ const numberFormat = Intl.NumberFormat("en-US", {maximumFractionDigits: 1});
 const integerFormat = Intl.NumberFormat("en-US", {maximumFractionDigits: 0});
 const API_TEAM_CACHE = "api-team-compare";
 
-type TabId = "scoring" | "record";
+type TabId = "scoring" | "record" | "roster";
 
 interface ApiStanding {
     division: string;
@@ -32,10 +32,25 @@ interface ApiStanding {
     highScratchSeries: number;
 }
 
+interface ApiRosterPlayer {
+    name: string;
+    average: number;
+    handicap: number;
+    games: number;
+    status?: "REGULAR" | "SUBSTITUTE";
+}
+
+interface ApiTeamRoster {
+    number: number;
+    name: string;
+    players: ApiRosterPlayer[];
+}
+
 interface ApiLeagueData {
     status: "pending" | "ready";
     league?: {name: string; season: string | null; date?: string | null; week?: number | null; totalWeeks?: number | null};
     standings: ApiStanding[];
+    teams?: ApiTeamRoster[];
 }
 
 interface Metric {
@@ -101,6 +116,34 @@ const CompareBar: FC<{metric: Metric; teamA: ApiStanding; teamB: ApiStanding}> =
     </div>;
 };
 
+const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRosterPlayer[]}> = ({side, team, players}) => {
+    const color = side === "a" ? COLOR_A : COLOR_B;
+    const sortedPlayers = [...players].sort((a, b) => b.average - a.average || a.name.localeCompare(b.name));
+
+    return <Card className="bls-profile-card bls-fifa-panel h-100" style={{borderTop: `3px solid ${color}`}}>
+        <CardBody className="p-0">
+            <div className="d-flex align-items-center justify-content-between gap-2 flex-wrap p-3 border-bottom">
+                <div>
+                    <div className="fw-semibold" style={{color}}>{team.name}</div>
+                    <div className="small text-body-secondary">{sortedPlayers.length} bowler{sortedPlayers.length === 1 ? "" : "s"}</div>
+                </div>
+                <Badge pill style={{background: color, color: "#fff"}}>Roster</Badge>
+            </div>
+            {sortedPlayers.length > 0 ? <div className="table-responsive">
+                <Table hover size="sm" className="mb-0 align-middle">
+                    <thead><tr><th>Bowler</th><th className="text-end">Avg</th><th className="text-end">HDCP</th><th className="text-end">Games</th></tr></thead>
+                    <tbody>{sortedPlayers.map(player => <tr key={player.name}>
+                        <td>{player.name}{player.status === "SUBSTITUTE" && <Badge bg="secondary" className="ms-2">Sub</Badge>}</td>
+                        <td className="text-end">{numberFormat.format(player.average)}</td>
+                        <td className="text-end">{integerFormat.format(player.handicap)}</td>
+                        <td className="text-end">{player.games}</td>
+                    </tr>)}</tbody>
+                </Table>
+            </div> : <div className="p-3 text-body-secondary">No roster data is available for this team.</div>}
+        </CardBody>
+    </Card>;
+};
+
 const TeamCard: FC<{side: "a" | "b"; team: ApiStanding; teams: ApiStanding[]; otherNumber: number; onChange: (number: number) => void}> = ({side, team, teams, otherNumber, onChange}) => {
     const color = side === "a" ? COLOR_A : COLOR_B;
     return <div className={`bls-fifa-pcard bls-fifa-pcard-${side}`} style={{borderColor: color, boxShadow: `0 0 18px ${color}40`}}>
@@ -153,11 +196,19 @@ const ApiTeamCompare: FC = () => {
             <div className="bls-fifa-tabs" role="tablist">
                 <button type="button" className={`bls-fifa-tab${tab === "scoring" ? " is-active" : ""}`} onClick={() => { setTab("scoring"); }}>Scoring</button>
                 <button type="button" className={`bls-fifa-tab${tab === "record" ? " is-active" : ""}`} onClick={() => { setTab("record"); }}>League Record</button>
+                <button type="button" className={`bls-fifa-tab${tab === "roster" ? " is-active" : ""}`} onClick={() => { setTab("roster"); }}>Rosters</button>
             </div>
-            <Card className="bls-profile-card bls-fifa-panel"><CardBody><div className="bls-fifa-col">
+            {tab === "roster" ? (() => {
+                const playersA = data?.teams?.find(team => team.number === teamA.number)?.players ?? [];
+                const playersB = data?.teams?.find(team => team.number === teamB.number)?.players ?? [];
+                return <div className="row g-3">
+                    <div className="col-12 col-lg-6"><TeamRosterCard side="a" team={teamA} players={playersA}/></div>
+                    <div className="col-12 col-lg-6"><TeamRosterCard side="b" team={teamB} players={playersB}/></div>
+                </div>;
+            })() : <Card className="bls-profile-card bls-fifa-panel"><CardBody><div className="bls-fifa-col">
                 <div className="bls-fifa-col-title">{tab === "scoring" ? "Team scoring" : "League record"}</div>
                 {activeMetrics.map(metric => <CompareBar key={metric.key} metric={metric} teamA={teamA} teamB={teamB}/>) }
-            </div></CardBody></Card>
+            </div></CardBody></Card>}
         </> : <Card className="bls-profile-card"><CardBody>No two A.B.C. teams with statistics are available.</CardBody></Card>}
     </div>;
 };
