@@ -77,7 +77,7 @@ const CompareBar: FC<{metric: Metric; teamA: TrackedLeagueTeam; teamB: TrackedLe
     </div>;
 };
 
-const TeamRosterCard: FC<{side: "a" | "b"; team: TrackedLeagueTeam}> = ({side, team}) => {
+const TeamRosterCard: FC<{side: "a" | "b"; team: TrackedLeagueTeam; opponent?: TrackedLeagueTeam}> = ({side, team, opponent}) => {
     const color = side === "a" ? COLOR_A : COLOR_B;
     const players = team.roster;
 
@@ -86,7 +86,7 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: TrackedLeagueTeam}> = ({side, t
             <div className="d-flex align-items-center justify-content-between gap-2 flex-wrap p-3 border-bottom">
                 <div>
                     <div className="fw-semibold" style={{color}}>{team.name}</div>
-                    <div className="small text-body-secondary">{players.length} bowler{players.length === 1 ? "" : "s"} · normal lineup order</div>
+                    <div className="small text-body-secondary">{players.length} bowler{players.length === 1 ? "" : "s"} · normal lineup order · handicap-adjusted edge highlighted</div>
                 </div>
                 <Badge pill style={{background: color, color: "#fff"}}>Roster</Badge>
             </div>
@@ -97,11 +97,21 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: TrackedLeagueTeam}> = ({side, t
                         const average = player.playerStats?.leagueAverage ?? player.playerStats?.gameStats.average ?? null;
                         const handicap = player.playerStats?.leagueHandicap ?? null;
                         const games = player.playerStats?.leagueGames ?? player.playerStats?.gameStats.count ?? 0;
-                        return <tr key={player.id ?? player.name}>
+                        const opponentPlayer = opponent?.roster[index];
+                        const opponentAverage = opponentPlayer?.playerStats?.leagueAverage ?? opponentPlayer?.playerStats?.gameStats.average ?? null;
+                        const opponentHandicap = opponentPlayer?.playerStats?.leagueHandicap ?? null;
+                        const projectedScore = average != null && handicap != null ? average + handicap : null;
+                        const opponentProjectedScore = opponentAverage != null && opponentHandicap != null ? opponentAverage + opponentHandicap : null;
+                        const rowWinner = projectedScore != null && opponentProjectedScore != null
+                            ? projectedScore === opponentProjectedScore ? "tie" : projectedScore > opponentProjectedScore ? side : side === "a" ? "b" : "a"
+                            : null;
+                        const isWinner = rowWinner === side;
+                        return <tr key={player.id ?? player.name} style={isWinner ? {background: `${color}14`} : undefined}>
                             <td className="fw-semibold">{index + 1}</td>
                             <td>
                                 {player.id ? <Link to={`/player/${player.id}`} className="bls-link-text text-decoration-none fw-semibold">{player.name}</Link> : player.name}
                                 {player.status === "SUBSTITUTE" && <Badge bg="secondary" className="ms-2">Sub</Badge>}
+                                {isWinner && <Badge pill className="ms-2" style={{background: color, color: "#fff"}}>Row edge</Badge>}
                             </td>
                             <td className="text-end">{average == null ? "—" : numberFormat.format(average)}</td>
                             <td className="text-end">{handicap == null ? "—" : integerFormat.format(handicap)}</td>
@@ -190,8 +200,8 @@ const BinBinTeamCompare: FC = () => {
                 <button type="button" className={`bls-fifa-tab${tab === "roster" ? " is-active" : ""}`} onClick={() => { setTab("roster"); }}>Rosters</button>
             </div>
             {tab === "roster" ? <div className="row g-3">
-                <div className="col-12 col-lg-6"><TeamRosterCard side="a" team={teamA}/></div>
-                <div className="col-12 col-lg-6"><TeamRosterCard side="b" team={teamB}/></div>
+                <div className="col-12 col-lg-6"><TeamRosterCard side="a" team={teamA} opponent={teamB}/></div>
+                <div className="col-12 col-lg-6"><TeamRosterCard side="b" team={teamB} opponent={teamA}/></div>
             </div> : <Card className="bls-profile-card bls-fifa-panel"><CardBody><div className="bls-fifa-col">
                 <div className="bls-fifa-col-title">{tab === "scoring" ? "Team scoring" : "League record"}</div>
                 {activeMetrics.map(metric => <CompareBar key={metric.key} metric={metric} teamA={teamA} teamB={teamB}/>) }
