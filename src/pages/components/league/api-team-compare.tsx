@@ -135,7 +135,7 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRoster
                     <tbody>{sortedPlayers.map((player, index) => {
                         const opponentPlayer = opponentPlayers[index];
                         const projectedScore = player.average + player.handicap;
-                        const opponentProjectedScore = opponentPlayer ? opponentPlayer.average + opponentPlayer.handicap : null;
+                        const opponentProjectedScore = index < opponentPlayers.length ? opponentPlayer.average + opponentPlayer.handicap : null;
                         const rowWinner = opponentProjectedScore == null
                             ? null
                             : projectedScore === opponentProjectedScore ? "tie" : projectedScore > opponentProjectedScore ? side : side === "a" ? "b" : "a";
