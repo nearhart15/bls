@@ -97,7 +97,6 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: TrackedLeagueTeam; opponent?: T
                     <thead><tr><th>Row</th><th>Bowler</th><th className="text-end">Rating</th><th className="text-end">Games</th></tr></thead>
                     <tbody>{players.map((player, index) => {
                         const average = player.playerStats?.leagueAverage ?? player.playerStats?.gameStats.average ?? null;
-                        const handicap = player.playerStats?.leagueHandicap ?? null;
                         const games = player.playerStats?.leagueGames ?? player.playerStats?.gameStats.count ?? 0;
                         const opponentPlayers = opponent?.roster.filter(opponentPlayer =>
                             (opponentPlayer.playerStats?.leagueGames ?? opponentPlayer.playerStats?.gameStats.count ?? 0) > 0
