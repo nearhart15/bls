@@ -3,6 +3,8 @@ import {type FC, useMemo, useState} from "react";
 import {Badge, Card, CardBody, Form, Table} from "react-bootstrap";
 import {useSearchParams} from "react-router";
 
+import {performanceRatingFromAverage} from "../charts/performance-rating";
+
 import {useCachedFetcher} from "../cache/data-loader";
 import ErrorDisplay from "../error-display";
 import Loader from "../loader";
@@ -136,8 +138,8 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRoster
                     <thead><tr><th>Row</th><th>Bowler</th><th className="text-end">Rating</th><th className="text-end">Games</th></tr></thead>
                     <tbody>{sortedPlayers.map((player, index) => {
                         const opponentPlayer = opponentPlayers.filter(opponent => opponent.games > 0)[index];
-                        const playerRating = player.average;
-                        const opponentRating = opponentPlayer?.average ?? null;
+                        const playerRating = performanceRatingFromAverage(player.average);
+                        const opponentRating = opponentPlayer ? performanceRatingFromAverage(opponentPlayer.average) : null;
                         const rowWinner = opponentRating == null
                             ? null
                             : playerRating === opponentRating ? "tie" : playerRating > opponentRating ? side : side === "a" ? "b" : "a";
@@ -145,7 +147,7 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRoster
                         return <tr key={player.name} style={isWinner ? {background: `${color}14`} : undefined}>
                         <td className="fw-semibold">{index + 1}</td>
                         <td>{player.name}{player.status === "SUBSTITUTE" && <Badge bg="secondary" className="ms-2">Sub</Badge>}{isWinner && <Badge pill className="ms-2" style={{background: color, color: "#fff"}}>Row edge</Badge>}</td>
-                        <td className="text-end">{numberFormat.format(playerRating)}</td>
+                        <td className="text-end">{playerRating == null ? "—" : numberFormat.format(playerRating)}</td>
                         <td className="text-end">{player.games}</td>
                     </tr>; })}</tbody>
                 </Table>
