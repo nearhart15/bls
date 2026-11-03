@@ -5,7 +5,7 @@ on:
     branches: [main]
   workflow_dispatch:
   workflow_run:
-    workflows: ["Import Beer League standings"]
+    workflows: ["Import Beer League standings", "Backfill Beer League history"]
     types: [completed]
     branches: [main]
 
@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 concurrency:
-  # A skipped, failed import must not cancel an in-flight code deployment.
+  # A skipped, failed data job must not cancel an in-flight code deployment.
   group: pages-${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion || 'success' }}
   cancel-in-progress: true
 
