@@ -162,9 +162,7 @@ const LeagueRules :FC<LeagueSummaryDataProps> = ({leagueDetails}: LeagueSummaryD
                     <span className="text-info-emphasis">{scoringRules.pointScoring.ppgPpsMatchupPointScoringConfig.pointsPerGameOnTie}</span> /game +&nbsp;
                     <span className="text-info-emphasis">{scoringRules.pointScoring.ppgPpsMatchupPointScoringConfig.pointsPerSeriesOnTie}</span> /series
                 </>}/>
-                {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
                 {scoringRules.pointScoring.ppgPpsMatchupPointScoringConfig.absentOpponentAllowed && <PropValueLine prop="Absent Opponent Scoring" value={scoringRules.pointScoring.ppgPpsMatchupPointScoringConfig.absentOpponentAllowed ? "Yes | " + createVacantOrAbsentScoringStatement(scoringRules.pointScoring.absentOpponentScoring) : "No"}/>}
-                {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
                 {scoringRules.pointScoring.ppgPpsMatchupPointScoringConfig.vacantOpponentAllowed && <PropValueLine prop="Vacant Team Opponent Scoring" value={scoringRules.pointScoring.ppgPpsMatchupPointScoringConfig.vacantOpponentAllowed ? "Yes | " + createVacantOrAbsentScoringStatement(scoringRules.pointScoring.vacantOpponentScoring) : "No"}/>}
             </>
         }
