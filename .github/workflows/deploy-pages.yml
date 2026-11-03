@@ -13,7 +13,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: pages
+  # A skipped, failed import must not cancel an in-flight code deployment.
+  group: pages-${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion || 'success' }}
   cancel-in-progress: true
 
 jobs:
