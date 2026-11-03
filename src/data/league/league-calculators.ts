@@ -174,7 +174,6 @@ function selectHandicapCalculator(leagueScoringRules: LeagueScoringRules | undef
     if (type) {
         if (type === "NONE") {
             return new ZeroHandicapCalculator();
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         } else if (type === "PCT_AVG_TO_TGT" && leagueScoringRules.handicap?.pctAvgToTargetConfig) {
             const config = leagueScoringRules.handicap.pctAvgToTargetConfig;
             return new PercentAverageToTargetHandicapCapculator(config.target, config.pctToTarget)
@@ -349,7 +348,6 @@ function setCrossPlayerFrameAttributes(matchup: LeagueMatchup) {
                 }
             }
         });
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!missingFrames) {
             const playerCount = allPlayerFrames.length;
             for (let f = 0; f < 10; f++) {
