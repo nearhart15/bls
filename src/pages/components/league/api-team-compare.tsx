@@ -120,8 +120,7 @@ const CompareBar: FC<{metric: Metric; teamA: ApiStanding; teamB: ApiStanding}> =
 
 const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRosterPlayer[]; opponentPlayers?: ApiRosterPlayer[]}> = ({side, team, players, opponentPlayers = []}) => {
     const color = side === "a" ? COLOR_A : COLOR_B;
-    // A player rating is the current scratch average. Players with no games are
-    // rostered but are not eligible for an active matchup row.
+    // Players with no games are rostered but are not eligible for an active matchup row.
     const sortedPlayers = players.filter(player => player.games > 0);
 
     return <Card className="bls-profile-card bls-fifa-panel h-100" style={{borderTop: `3px solid ${color}`}}>
@@ -140,7 +139,7 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRoster
                         const opponentPlayer = opponentPlayers.filter(opponent => opponent.games > 0)[index];
                         const playerRating = performanceRatingFromAverage(player.average);
                         const opponentRating = opponentPlayer ? performanceRatingFromAverage(opponentPlayer.average) : null;
-                        const rowWinner = opponentRating == null
+                        const rowWinner = playerRating == null || opponentRating == null
                             ? null
                             : playerRating === opponentRating ? "tie" : playerRating > opponentRating ? side : side === "a" ? "b" : "a";
                         const isWinner = rowWinner === side;

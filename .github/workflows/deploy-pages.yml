@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Import Beer League standings"]
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
@@ -14,6 +18,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
@@ -28,9 +33,6 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: npm
-
-      - name: Apply compatible dependency security fixes
-        run: npm audit fix --package-lock-only --ignore-scripts || true
 
       - name: Install dependencies without lifecycle scripts
         run: npm ci --ignore-scripts
