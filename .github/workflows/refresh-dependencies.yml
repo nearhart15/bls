@@ -1,0 +1,45 @@
+name: Refresh vulnerable dependencies
+
+on:
+  push:
+    branches:
+      - fix/dependency-audit-nov-2026
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dependency-refresh
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Apply non-breaking security updates
+        run: npm audit fix
+      - name: Install updated lockfile
+        run: npm ci --ignore-scripts
+      - name: Verify dependency audit
+        run: npm audit --audit-level=moderate
+      - name: Run project checks
+        run: npm run check
+      - name: Commit updated lockfile
+        run: |
+          if git diff --quiet -- package-lock.json; then
+            echo "No dependency lockfile changes were needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git commit -m "fix: update vulnerable npm dependencies"
+          git push
