@@ -31,7 +31,7 @@ const SAFE_MAX_WIDTH = "20rem";
 
 const subscribeToResize = (callback: () => void) => {
     window.addEventListener("resize", callback);
-    return () => window.removeEventListener("resize", callback);
+    return () => { window.removeEventListener("resize", callback); };
 };
 const getWindowWidth = () => window.innerWidth;
 const getServerWidth = () => 0;
