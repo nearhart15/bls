@@ -32,7 +32,6 @@ export const ContextCacheProvider: FC<ContextCacheProviderParams> = ({children} 
     );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useContextCache = () => {
     return use(ContextCache);
 }
