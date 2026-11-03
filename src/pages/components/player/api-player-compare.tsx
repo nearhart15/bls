@@ -107,7 +107,7 @@ const PlayerCard: FC<{
 };
 
 const ApiPlayerCompare: FC = () => {
-    const {data, isLoading, error} = usePlayerIndexData();
+    const {data, isLoading, error} = usePlayerIndexData("api");
     const [idA, setIdA] = useState("");
     const [idB, setIdB] = useState("");
     const [tab, setTab] = useState<TabId>("scoring");
