@@ -1,10 +1,10 @@
 {
   "status": "ready",
-  "generatedAt": "2026-11-03T02:28:49.275Z",
+  "generatedAt": "2026-11-03T13:12:40.129Z",
   "source": {
     "directoryUrl": "https://arapahoebowl.com/league-options/",
     "leaguePageUrl": "https://arapahoebowl.com/2026/08/22/beer-fall-winter-2026/",
-    "pdfUrl": "https://arapahoebowl.com/wp-content/uploads/2026/08/Beer-Fall-2026-Standings-Wk-9.pdf?abc_pdf_v=1793398762"
+    "pdfUrl": "https://arapahoebowl.com/wp-content/uploads/2026/11/Beer-Fall-2026-Standings-Wk-9-REV.pdf?abc_pdf_v=1793675449"
   },
   "league": {
     "name": "Beer Fall 2026",
@@ -19,6 +19,22 @@
     {
       "division": "Tastes Great!",
       "place": 1,
+      "number": 15,
+      "name": "The Alley Cats",
+      "won": 24,
+      "lost": 12,
+      "average": 611,
+      "handicap": 203,
+      "pinsWithHandicap": 23101,
+      "scratchPins": 18379,
+      "highHandicapGame": 973,
+      "highHandicapSeries": 2735,
+      "highScratchGame": 790,
+      "highScratchSeries": 2278
+    },
+    {
+      "division": "Tastes Great!",
+      "place": 2,
       "number": 17,
       "name": "Bourbon Achiever",
       "won": 24,
@@ -31,22 +47,6 @@
       "highHandicapSeries": 2717,
       "highScratchGame": 835,
       "highScratchSeries": 2376
-    },
-    {
-      "division": "Tastes Great!",
-      "place": 2,
-      "number": 15,
-      "name": "The Alley Cats",
-      "won": 23,
-      "lost": 13,
-      "average": 611,
-      "handicap": 203,
-      "pinsWithHandicap": 23101,
-      "scratchPins": 18379,
-      "highHandicapGame": 973,
-      "highHandicapSeries": 2735,
-      "highScratchGame": 790,
-      "highScratchSeries": 2278
     },
     {
       "division": "Tastes Great!",
@@ -163,6 +163,22 @@
     {
       "division": "Tastes Great!",
       "place": 10,
+      "number": 3,
+      "name": "Pintourage",
+      "won": 18,
+      "lost": 18,
+      "average": 691,
+      "handicap": 132,
+      "pinsWithHandicap": 21989,
+      "scratchPins": 17858,
+      "highHandicapGame": 942,
+      "highHandicapSeries": 2657,
+      "highScratchGame": 819,
+      "highScratchSeries": 2288
+    },
+    {
+      "division": "Tastes Great!",
+      "place": 11,
       "number": 16,
       "name": "Inconsistently Consistent",
       "won": 18,
@@ -178,7 +194,7 @@
     },
     {
       "division": "Tastes Great!",
-      "place": 11,
+      "place": 12,
       "number": 2,
       "name": "Lads of Leisure",
       "won": 18,
@@ -191,22 +207,6 @@
       "highHandicapSeries": 2723,
       "highScratchGame": 806,
       "highScratchSeries": 2276
-    },
-    {
-      "division": "Tastes Great!",
-      "place": 12,
-      "number": 3,
-      "name": "Pintourage",
-      "won": 18,
-      "lost": 18,
-      "average": 702,
-      "handicap": 123,
-      "pinsWithHandicap": 19749,
-      "scratchPins": 15987,
-      "highHandicapGame": 942,
-      "highHandicapSeries": 2657,
-      "highScratchGame": 819,
-      "highScratchSeries": 2288
     },
     {
       "division": "Tastes Great!",
@@ -882,7 +882,7 @@
         }
       ],
       "division": "Tastes Great!",
-      "place": 11,
+      "place": 12,
       "won": 18,
       "lost": 18,
       "average": 661,
@@ -894,63 +894,95 @@
       "players": [
         {
           "name": "JR Lamicq",
-          "average": 172,
-          "handicap": 34,
-          "pins": 3096,
-          "games": 18,
+          "average": 167,
+          "handicap": 38,
+          "pins": 3515,
+          "games": 21,
           "highGame": 235,
           "highSeries": 579,
           "highHandicapGame": 280,
           "highHandicapSeries": 714,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "92",
+            "185",
+            "142"
+          ],
+          "weekScores": [
+            92,
+            185,
+            142
+          ],
+          "weekTotal": 419,
+          "weekHandicapTotal": 521
         },
         {
           "name": "Steven Kruse",
-          "average": 177,
-          "handicap": 29,
-          "pins": 1593,
-          "games": 9,
+          "average": 173,
+          "handicap": 33,
+          "pins": 2077,
+          "games": 12,
           "highGame": 247,
           "highSeries": 654,
           "highHandicapGame": 284,
           "highHandicapSeries": 765,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "170",
+            "149",
+            "165"
+          ],
+          "weekScores": [
+            170,
+            149,
+            165
+          ],
+          "weekTotal": 484,
+          "weekHandicapTotal": 571
         },
         {
           "name": "Pete Foster",
-          "average": 172,
-          "handicap": 34,
-          "pins": 2074,
-          "games": 12,
+          "average": 174,
+          "handicap": 32,
+          "pins": 2610,
+          "games": 15,
           "highGame": 210,
           "highSeries": 570,
           "highHandicapGame": 237,
           "highHandicapSeries": 668,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "186",
+            "171",
+            "179"
+          ],
+          "weekScores": [
+            186,
+            171,
+            179
+          ],
+          "weekTotal": 536,
+          "weekHandicapTotal": 638
         },
         {
           "name": "Mitch Singer",
-          "average": 181,
-          "handicap": 26,
-          "pins": 3817,
-          "games": 21,
+          "average": 177,
+          "handicap": 29,
+          "pins": 4249,
+          "games": 24,
           "highGame": 255,
           "highSeries": 625,
           "highHandicapGame": 290,
           "highHandicapSeries": 730,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "136",
+            "139",
+            "157"
+          ],
+          "weekScores": [
+            136,
+            139,
+            157
+          ],
+          "weekTotal": 432,
+          "weekHandicapTotal": 510
         },
         {
           "name": "Jordan Arrick",
@@ -984,11 +1016,11 @@
         }
       ],
       "division": "Tastes Great!",
-      "place": 12,
+      "place": 10,
       "won": 18,
       "lost": 18,
-      "average": 702,
-      "handicap": 123
+      "average": 691,
+      "handicap": 132
     },
     {
       "number": 4,
@@ -2343,9 +2375,9 @@
         }
       ],
       "division": "Tastes Great!",
-      "place": 2,
-      "won": 23,
-      "lost": 13,
+      "place": 1,
+      "won": 24,
+      "lost": 12,
       "average": 611,
       "handicap": 203
     },
@@ -2447,7 +2479,7 @@
         }
       ],
       "division": "Tastes Great!",
-      "place": 10,
+      "place": 11,
       "won": 18,
       "lost": 18,
       "average": 608,
@@ -2543,7 +2575,7 @@
         }
       ],
       "division": "Tastes Great!",
-      "place": 1,
+      "place": 2,
       "won": 24,
       "lost": 12,
       "average": 692,
