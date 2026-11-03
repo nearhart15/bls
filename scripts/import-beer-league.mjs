@@ -81,7 +81,26 @@ function pdfWeek(url){try{const name=decodeURIComponent(new URL(url).pathname.sp
 function pdfSeasonYear(url){try{const name=decodeURIComponent(new URL(url).pathname.split("/").at(-1)??"");const years=[...name.matchAll(/\b(20\d{2})\b/g)].map(match=>Number(match[1]));return years.length?Math.max(...years):0;}catch{return 0;}}
 function pdfUploadPeriod(url){try{const match=new URL(url).pathname.match(/\/wp-content\/uploads\/(20\d{2})\/(0?[1-9]|1[0-2])\//i);return match?Number(match[1])*100+Number(match[2]):0;}catch{return 0;}}
 function pdfVersion(url){try{const parsed=new URL(url);for(const key of ["abc_pdf_v","version","ver","v"]){const raw=parsed.searchParams.get(key);if(raw&&/^\d{6,}$/.test(raw))return Number(raw);}return 0;}catch{return 0;}}
-export function rankStandingsPdfUrls(candidates){return [...candidates].map((entry,index)=>{let score=0;if(/stand/i.test(entry.key))score+=8;if(/beer/i.test(entry.url))score+=4;if(/stand/i.test(entry.url))score+=4;if(/wk|week/i.test(entry.url))score+=2;return{...entry,index,score,seasonYear:pdfSeasonYear(entry.url),week:pdfWeek(entry.url),uploadPeriod:pdfUploadPeriod(entry.url),version:pdfVersion(entry.url)};}).filter(entry=>entry.score>=4).sort((a,b)=>b.seasonYear-a.seasonYear||b.week-a.week||b.version-a.version||b.uploadPeriod-a.uploadPeriod||b.score-a.score||a.index-b.index);}
+export function rankStandingsPdfUrls(candidates) {
+    return candidates.filter(entry => {
+        // Bylaws can name next year's season and otherwise outrank this week's scores.
+        // Inspect both the document field and decoded filename before comparing dates.
+        try {
+            const pathname = decodeURIComponent(new URL(entry.url).pathname);
+            return !/by[-_\s]*laws?|rules/i.test(`${entry.key} ${pathname}`);
+        } catch {
+            return false;
+        }
+    }).map((entry, index) => {
+        let score = 0;
+        if (/stand/i.test(entry.key)) score += 8;
+        if (/beer/i.test(entry.url)) score += 4;
+        if (/stand/i.test(entry.url)) score += 4;
+        if (/wk|week/i.test(entry.url)) score += 2;
+        return {...entry, index, score, seasonYear: pdfSeasonYear(entry.url), week: pdfWeek(entry.url), uploadPeriod: pdfUploadPeriod(entry.url), version: pdfVersion(entry.url)};
+    }).filter(entry => entry.score >= 4)
+        .sort((a, b) => b.seasonYear - a.seasonYear || b.week - a.week || b.version - a.version || b.uploadPeriod - a.uploadPeriod || b.score - a.score || a.index - b.index);
+}
 function choosePdf(item,html,page){const a=urlsFromObject(item).filter(e=>/\.pdf(?:$|[?#])/i.test(e.url));const b=pdfUrlsFromHtml(html,page).map(url=>({key:"html",url}));return rankStandingsPdfUrls([...a,...b])[0]?.url??null;}
 function compactLines(text){return text.split(/\r?\n/).map(l=>l.replace(/\s+/g," ").trim()).filter(Boolean);}
 function points(v){const n=Number(String(v).replace("¾",".75").replace("½",".5").replace("¼",".25"));return Number.isFinite(n)?n:null;}

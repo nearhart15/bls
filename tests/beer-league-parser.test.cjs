@@ -81,3 +81,24 @@ test("preserves generatedAt when imported standings are otherwise unchanged", as
   assert.equal(preserveGeneratedAtIfUnchanged(same, existing).generatedAt, existing.generatedAt);
   assert.equal(preserveGeneratedAtIfUnchanged(changed, existing).generatedAt, changed.generatedAt);
 });
+
+test("selects current standings instead of next-year bylaws on the same league page", async () => {
+  const { rankStandingsPdfUrls } = await import("../scripts/import-beer-league.mjs");
+  const standings = "https://arapahoebowl.com/wp-content/uploads/2026/08/Beer-Fall-2026-Standings-Wk-9.pdf?abc_pdf_v=1793398762";
+  const ranked = rankStandingsPdfUrls([
+    { key: "html", url: "https://arapahoebowl.com/wp-content/uploads/2026/08/2026-2027-Fall-Beer-Bylaws.pdf?abc_pdf_v=1791497105" },
+    { key: "standings_pdf", url: "https://arapahoebowl.com/wp-content/uploads/2026/10/Beer-Fall-2026-Standings-Wk-5-REV.pdf" },
+    { key: "html", url: standings },
+  ]);
+  assert.equal(ranked[0].url, standings);
+  assert.equal(ranked.length, 2);
+});
+
+test("does not fall back to rules or bylaws when no standings PDF is available", async () => {
+  const { rankStandingsPdfUrls } = await import("../scripts/import-beer-league.mjs");
+  assert.deepEqual(rankStandingsPdfUrls([
+    { key: "html", url: "https://arapahoebowl.com/Beer-By%2DLaws-2027.pdf" },
+    { key: "rules_pdf", url: "https://arapahoebowl.com/Beer-2027.pdf" },
+    { key: "standings_pdf", url: "https://arapahoebowl.com/Beer-Rules.pdf" },
+  ]), []);
+});

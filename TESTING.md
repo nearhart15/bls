@@ -40,6 +40,7 @@ npm run preview -- --host 127.0.0.1 --port 4173
 ## Verification
 
 - `npm ci --ignore-scripts` installs the locked dependencies used by CI.
+- Pages deploys the same committed lockfile verified by CI; update dependencies on a branch and pass the audit and project checks before merging. The Minimatch override keeps lint dependencies on the patched 11.x release while their upstream ranges still select 10.x.
 - `npm run check` runs lint, all `tests/*.test.cjs` suites, the TypeScript/production build, and bundle-size budgets.
 - Lint allows at most 181 warnings, reduced from 228 in the code cleanup. Existing style, defensive-guard, and React migration diagnostics remain visible; correctness/type-safety rules remain enforced.
 - Tests cover chart injection through the actual ApexCharts library, malformed input, JSON field guards, cache expiry, frame scoring, variable series length, vacancy rules, statistics merging, calendar/team separation, partial failures, storage denial, trusted links, and blind-penalty policy.
