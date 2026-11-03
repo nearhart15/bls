@@ -38,7 +38,6 @@ export function useCachedFetcher<T extends object>(fetcher :() => Promise<T>, ca
         reportDataQuality(noticeId, []);
         if (contextCache != null) {
             const value = contextCache.get(category, key) as T;
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (value != null) {
                 setData(value);
                 setLoading(false);
