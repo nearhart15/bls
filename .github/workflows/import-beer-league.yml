@@ -14,7 +14,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: beer-league-import
+  # Both data writers update the same history index on main.
+  group: beer-league-data-main
   cancel-in-progress: false
 
 jobs:
@@ -57,4 +58,12 @@ jobs:
           git diff --cached --check
           git commit -m "Update Beer League standings data"
           AUTH="$(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 -w0)"
-          git -c "http.extraheader=AUTHORIZATION: basic $AUTH" push origin HEAD:main
+          for attempt in 1 2 3; do
+            git -c "http.extraheader=AUTHORIZATION: basic $AUTH" pull --rebase origin main
+            if git -c "http.extraheader=AUTHORIZATION: basic $AUTH" push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push attempt $attempt failed; refreshing main before retrying."
+          done
+          echo "Could not publish standings after three push attempts."
+          exit 1
