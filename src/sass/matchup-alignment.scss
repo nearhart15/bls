@@ -1,3 +1,17 @@
+/* Lighter, consistent week bands distinguish adjacent matchup cards in dark mode. */
+.bls-matchup-week-header {
+  background: #34485a;
+  color: #fff;
+  border-bottom: 1px solid #637b90;
+  border-radius: inherit;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.bls-matchup-week-header > .hstack {
+  min-height: 1.75rem;
+}
+
 /* Keep the matchup type centered independently of either team name width. */
 .card-body.py-0.px-1.mb-auto > .hstack.gap-2 {
   display: grid !important;

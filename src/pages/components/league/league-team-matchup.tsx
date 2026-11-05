@@ -77,7 +77,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
     const compareUrl = `/team/compare?${compareParams.toString()}`;
 
     return <Col><Card border={showMatchupDetails ? "primary" : "dark"} className="mx-auto px-0 py-0 w-100">
-        <CardHeader className={`text-light fw-semibold px-2 py-0 ${showMatchupDetails ? "bg-primary" : "bg-dark"}`}><Stack direction="horizontal" gap={3}>
+        <CardHeader className="bls-matchup-week-header fw-semibold px-2 py-1"><Stack direction="horizontal" gap={3}>
             <div>{weekPrefix} {twoDigitNumberFormat.format(matchup.week)}</div><div>{matchup.scheduledDate?.format("DD MMM")}</div>
             <div className="me-auto">{matchup.bowlDate && !matchup.bowlDate.isSame(matchup.scheduledDate, "day") && <>&nbsp;<small><Badge bg="light">{matchup.bowlDate.isBefore(matchup.scheduledDate, "day") ? "Pre-Bowl" : "Post-Bowl"}</Badge></small></>}</div>
             <div>Lanes {twoDigitNumberFormat.format(matchup.lanes[0])} - {twoDigitNumberFormat.format(matchup.lanes[1])}</div>
