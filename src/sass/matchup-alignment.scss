@@ -119,3 +119,43 @@
     font-size: .8rem;
   }
 }
+
+/* Both matchup actions share the week heading's slate-blue palette and shape. */
+.bls-matchup-desktop-action,
+.bls-matchup-mobile-action {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  min-height: 2.45rem;
+  padding: .4rem .8rem !important;
+  border: 1px solid #637b90 !important;
+  border-radius: .85rem !important;
+  background: #34485a !important;
+  color: #fff !important;
+  font: inherit;
+  font-weight: 600 !important;
+  font-size: .9rem !important;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none !important;
+  white-space: nowrap;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+
+.bls-matchup-desktop-action:hover,
+.bls-matchup-desktop-action:focus-visible,
+.bls-matchup-mobile-action:hover,
+.bls-matchup-mobile-action:focus-visible {
+  background: #455e73 !important;
+  border-color: #91a9bc !important;
+  color: #fff !important;
+}
+
+.bls-matchup-desktop-action svg,
+.bls-matchup-mobile-action svg {
+  flex: 0 0 auto;
+  font-size: 1rem;
+}
+
