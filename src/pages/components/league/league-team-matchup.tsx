@@ -28,7 +28,7 @@ const GameSummaryAndPoints: FC<GameSummaryAndPointsProps> = ({teamNumber, teamSc
     const showBlindAbsent = isBlindOrAbsent ?? false;
     const keyPrefix = useId();
     const gameLoopArray = new Array<number>(matchupGames).fill(0);
-    return <Table bordered size="sm" className={`p-0 lh-1 my-1 text-end ${isBreakpointSmallerThan(currentBreakpoint, BS_BP_XS) ? "fs-xs" : ""}`}><tbody>
+    return <Table bordered size="sm" className={`bls-matchup-score-table p-0 lh-1 my-1 text-end ${isBreakpointSmallerThan(currentBreakpoint, BS_BP_XS) ? "fs-xs" : ""}`}><tbody>
         <tr>
             {teamNumber != null && teamNumber > 0 && <td rowSpan={2} className="align-middle text-center fw-semibold">#{teamNumber}{showBlindAbsent && <PersonX/>}</td>}
             {!showBlindAbsent ? <>{teamScore?.games.map((g, i) => <td className="p-1" key={`scratch-${keyPrefix}-${i}`}>{g.effectiveScratchScore}</td>)}<td className="p-1">{teamScore?.series.effectiveScratchScore}</td></> : <>{gameLoopArray.map((_g, i) => <td className="p-1 text-decoration-line-through" key={`scratch-${keyPrefix}-${i}`}>0</td>)}<td className="p-1 text-decoration-line-through">0</td></>}
@@ -76,21 +76,21 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
     }
     const compareUrl = `/team/compare?${compareParams.toString()}`;
 
-    return <Col><Card border={showMatchupDetails ? "primary" : "dark"} className="mx-auto px-0 py-0 w-100">
+    return <Col><Card border={showMatchupDetails ? "primary" : "dark"} className="bls-matchup-card mx-auto px-0 py-0 w-100">
         <CardHeader className="bls-matchup-week-header fw-semibold px-2 py-1"><Stack direction="horizontal" gap={3}>
             <div>{weekPrefix} {twoDigitNumberFormat.format(matchup.week)}</div><div>{matchup.scheduledDate?.format("DD MMM")}</div>
             <div className="me-auto">{matchup.bowlDate && !matchup.bowlDate.isSame(matchup.scheduledDate, "day") && <>&nbsp;<small><Badge bg="light">{matchup.bowlDate.isBefore(matchup.scheduledDate, "day") ? "Pre-Bowl" : "Post-Bowl"}</Badge></small></>}</div>
             <div>Lanes {twoDigitNumberFormat.format(matchup.lanes[0])} - {twoDigitNumberFormat.format(matchup.lanes[1])}</div>
         </Stack></CardHeader>
         <CardBody className="py-0 px-1 mb-auto"><Stack direction="horizontal" gap={2}>
-            <div className="me-auto"><Stack direction="vertical" className="mx-auto"><div className="align-middle"><TeamNameInfo division={teamDetails.division} teamNumber={teamDetails.number} name={teamDetails.name} enteringPosition={matchup.enteringRank}/><br/><span className="fs-sm">hdcp: {calculateTeamHdcp(matchup.scores?.games, matchup.scores?.series, teamDetails.teamStats?.handicap)}</span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.scores} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
-            <div><Stack direction="vertical" className="text-center h-100">
+            <div className="bls-matchup-team bls-matchup-team-home"><Stack direction="vertical" className="mx-auto"><div className="align-middle"><TeamNameInfo division={teamDetails.division} teamNumber={teamDetails.number} name={teamDetails.name} enteringPosition={matchup.enteringRank}/><br/><span className="fs-sm">hdcp: {calculateTeamHdcp(matchup.scores?.games, matchup.scores?.series, teamDetails.teamStats?.handicap)}</span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.scores} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
+            <div className="bls-matchup-center"><Stack direction="vertical" className="text-center h-100">
                 <div><small className={matchup.matchup.startsWith("POSITION") ? "text-danger" : ""}>{MatchupTypeConversion.get(matchup.matchup)}</small></div>
                 <div className="my-auto align-middle">{showMatchupDetails && <span className="fs-5">{matchup.pointsWonLost[0]} - {matchup.pointsWonLost[1]}</span>}</div>
                 {canOpenCompare && <div className="d-none d-sm-block my-1"><Link className="bls-matchup-desktop-action" to={compareUrl}>Team Compare</Link></div>}
                 <div className="d-none d-sm-block w-auto">{showMatchupDetails && <button type="button" className="bls-details-toggle bls-matchup-desktop-action" onClick={() => { setDetailsExpanded(expanded => !expanded); }}>{detailsExpanded ? <><ArrowsCollapse/><span>Hide Game Details</span></> : <><ArrowsExpand/><span>Game Details</span></>}</button>}</div>
             </Stack></div>
-            <div className="ms-auto"><Stack direction="vertical" className="mx-auto"><div className="text-end align-middle"><TeamNameInfo division={opponent.division} teamNumber={opponent.number} name={opponent.name} enteringPosition={opponent.enteringRank}/><br/>{isOpponentVacantOrAbsent && <><PersonX/>&nbsp;</>}<span className="fs-sm">hdcp: <span className={isOpponentVacantOrAbsent ? "text-decoration-line-through" : ""}>{calculateTeamHdcp(matchup.opponent?.scores?.games, matchup.opponent?.scores?.series, matchup.opponent?.teamHdcp)}</span></span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.opponent?.scores} matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
+            <div className="bls-matchup-team bls-matchup-team-away"><Stack direction="vertical" className="mx-auto"><div className="text-end align-middle"><TeamNameInfo division={opponent.division} teamNumber={opponent.number} name={opponent.name} enteringPosition={opponent.enteringRank}/><br/>{isOpponentVacantOrAbsent && <><PersonX/>&nbsp;</>}<span className="fs-sm">hdcp: <span className={isOpponentVacantOrAbsent ? "text-decoration-line-through" : ""}>{calculateTeamHdcp(matchup.opponent?.scores?.games, matchup.opponent?.scores?.series, matchup.opponent?.teamHdcp)}</span></span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.opponent?.scores} matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
         </Stack>
         <Stack direction="horizontal" gap={0} className="d-block d-sm-none my-1">
             <div>{showMatchupDetails && <GameSummaryAndPoints teamNumber={teamDetails.number} teamScore={matchup.scores} currentBreakpoint={currentBreakpoint}/>}</div>
