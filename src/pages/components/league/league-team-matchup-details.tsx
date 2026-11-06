@@ -150,7 +150,7 @@ const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, t
                 const attributes = attributeInfo(frame);
                 const contents = <><div className="bls-frame-balls">{writeScoreLabelRow(frame)}</div><div className="bls-frame-cum">{frame.cumulativeScore}</div></>;
                 const className = `bls-frame${attributes.length > 0 ? " has-attributes" : ""}`;
-                const style = {width: frame.number === 10 ? "13%" : "9%", maxWidth: "48px", ...outlineStyle(attributes)};
+                const style = outlineStyle(attributes);
                 const key = `${keyPrefix}${pi}-f-${frame.number}`;
                 return attributes.length > 0 ? <button type="button" className={className} style={style} aria-label={`Frame ${frame.number}: ${attributes.map(info => info.description).join(", ")}`} onClick={() => { setActive(attributes); }} key={key}>{contents}</button> : <div className={className} style={style} key={key}>{contents}</div>;
             })}</Stack></Col>
