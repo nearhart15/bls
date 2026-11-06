@@ -293,27 +293,38 @@ button.bls-frame.has-attributes:active {
   }
 }
 
-/* Portrait phones: preserve legible numbers and clear frame boundaries rather
-   than squeezing ten cells into widths narrower than their contents. */
+/* Phone portrait: show frames 1–5 above 6–10. Five wider cells per
+   row keep ball marks and cumulative scores legible without sideways scrolling. */
 @media (max-width: 575.98px) {
   .bls-player-frame-row {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
   .bls-player-frame-row .hstack:has(> .bls-frame) {
-    grid-template-columns: repeat(9, minmax(2.7rem, 1fr)) minmax(3.6rem, 1.35fr);
-    min-width: 30rem;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     width: 100%;
-    overflow: visible;
-    gap: .18rem !important;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    gap: .28rem !important;
   }
   .bls-player-frame-row .bls-frame {
-    padding: .26rem .08rem .22rem;
-    min-height: 3.2rem;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: .28rem .08rem .24rem;
+    min-height: 3.1rem;
   }
   .bls-player-frame-row .bls-frame-balls,
   .bls-player-frame-row .bls-frame-cum {
-    font-size: .88rem;
+    font-size: clamp(.82rem, 3.3vw, 1.05rem);
     min-height: 1.1rem;
+  }
+  .bls-player-frame-row .bls-frame-balls {
+    gap: .03rem;
+  }
+  .bls-player-frame-row .bls-frame-cum {
+    margin-top: .2rem;
   }
 }
