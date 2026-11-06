@@ -3,7 +3,6 @@
  */
 
 import type {FC} from "react";
-import {Link} from "react-router";
 import {Table} from "react-bootstrap";
 import {PersonAdd, PersonFillLock} from "react-bootstrap-icons";
 
@@ -54,7 +53,7 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
 
     return (
         <div className="bls-perf-scroll">
-            <Table className="bls-perf-table mb-0" size="sm" hover responsive>
+            <Table className="bls-perf-table mb-0" size="sm" responsive>
                 <thead>
                     <tr>
                         <th className="text-center" style={{width: "2.25rem"}}>#</th>
@@ -93,8 +92,18 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                         const compared = weekAvgs.filter((w) => w > 0);
                         const comparedAvg = compared.length > 0 ? compared.reduce((s, n) => s + n, 0) / compared.length : avg ?? null;
                         const hung = p.id ? hungCountForPlayer(teamDetails, p.id) : (stats?.hungCount ?? 0);
+                        const isSelected = Boolean(p.id) && selectedPlayerId === p.id;
+                        const selectPlayer = () => { if (p.id) onSelectPlayer(p.id); };
                         return (
-                            <tr key={p.id} className={selectedPlayerId === p.id ? "table-active" : undefined}>
+                            <tr
+                                key={p.id}
+                                className={`bls-perf-row${isSelected ? " bls-perf-selected" : ""}`}
+                                onClick={(event) => {
+                                    // Rating badges have their own popover; do not change the bowler.
+                                    if ((event.target as Element).closest("button, a")) return;
+                                    selectPlayer();
+                                }}
+                            >
                                 <td className="text-center text-body-secondary fw-semibold">{idx + 1}</td>
                                 <td>
                                     <div className="d-flex align-items-center gap-2">
@@ -102,9 +111,9 @@ const LeagueRosterPerformanceTable: FC<Props> = ({
                                             {p.status === "REGULAR" ? <PersonFillLock size={14} /> : <PersonAdd size={14} />}
                                         </span>
                                         <div className="min-w-0">
-                                            <Link to="#" className="bls-link fw-semibold" onClick={(e) => { e.preventDefault(); if (p.id) onSelectPlayer(p.id); }}>
+                                            <button type="button" className="bls-link bls-bowler-select fw-semibold" onClick={selectPlayer} aria-expanded={isSelected} disabled={!p.id}>
                                                 {p.name}
-                                            </Link>
+                                            </button>
                                             <div className="fs-xs text-body-secondary">
                                                 {teamDetails.name}{p.status === "SUBSTITUTE" ? " · Sub" : ""}
                                             </div>
