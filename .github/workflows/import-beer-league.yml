@@ -1,11 +1,9 @@
 name: Import Beer League standings
 
+# Code pushes already deploy the website. Running this data importer on every
+# push caused a second Pages deployment when the importer completed.
+# Keep scheduled/manual refreshes so bowling standings still update automatically.
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - public/data/beer-league.json
-      - public/data/beer-league-history/**
   workflow_dispatch:
   schedule:
     - cron: "30 12 * * *"
