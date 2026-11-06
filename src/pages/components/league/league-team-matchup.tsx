@@ -45,7 +45,7 @@ const calculateTeamHdcp = (gameScores?: GameScore[], seriesScore?: SeriesScore, 
         const average = handicaps.reduce((sum, value) => sum + value, 0) / handicaps.length;
         return handicaps.every(value => value === handicaps[0])
             ? String(handicaps[0])
-            : `~${average.toFixed(0)} [${handicaps.join(", ")}]`;
+            : String(Math.round(average));
     }
     if (seriesScore?.hdcp && seriesScore.games) return Math.round(seriesScore.hdcp / seriesScore.games).toString();
     return preCalcHdcp && preCalcHdcp > 0 ? Math.round(preCalcHdcp).toString() : "UNKNOWN";
