@@ -283,7 +283,7 @@ const TeamRoster: FC<LeagueTeamRosterProps> = ({teamDetails, currentBreakpoint, 
             <Card className="mx-2 bls-perf-card">
                 <CardHeader className="d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <span>Bowler Performance</span>
-                    <span className="fs-xs text-body-secondary">Tap a name for full stats</span>
+                    <span className="fs-xs text-body-secondary">Tap a row for full stats</span>
                 </CardHeader>
                 <LeagueRosterPerformanceTable
                     teamDetails={teamDetails}

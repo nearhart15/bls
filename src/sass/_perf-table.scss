@@ -244,8 +244,40 @@
   white-space: nowrap;
 }
 
-.bls-perf-table tbody tr:hover td {
-  background: var(--bls-accent-soft);
+/* Only the open detail panel determines the blue selection, including on touch
+   devices where :hover may otherwise remain stuck on a previously tapped row. */
+.bls-perf-table tbody tr.bls-perf-row {
+  cursor: pointer;
+}
+
+.bls-perf-table tbody tr.bls-perf-selected > td {
+  --bs-table-bg-state: var(--bls-accent-soft);
+}
+
+.bls-perf-table tbody tr.bls-perf-selected > td:first-child {
+  border-inline-start: 3px solid var(--bls-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bls-perf-table tbody tr.bls-perf-row:not(.bls-perf-selected):hover > td {
+    --bs-table-bg-state: var(--bls-surface-2);
+  }
+}
+
+.bls-bowler-select {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.bls-bowler-select:focus-visible {
+  outline: 2px solid var(--bls-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 .tabular-nums {
