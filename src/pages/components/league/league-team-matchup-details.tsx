@@ -178,7 +178,7 @@ const MatchupDetailsDisplay: FC<MatchupDetailsDisplayProps> = ({leagueDetails, m
     const [activeAttr, setActiveAttr] = useState<FrameAttributeIconInfo[]>([]);
     return <FrameAttrHintContext value={{active: activeAttr, setActive: setActiveAttr}}>
         <Row className="gy-1 gx-1"><Col><Card className="my-1 mx-0"><CardBody className="p-1"><TeamIndSeriesGameScoresSummary leagueDetails={leagueDetails} matchup={matchup} teamDetails={teamDetails} currentBreakpoint={currentBreakpoint}/></CardBody></Card></Col></Row>
-        {hasFrameData && <Row className="gy-1 gx-1"><Col><Card className="p-0 m-0"><CollapsibleContainer headerTitle="Frame Data" divId={`${matchup.week}-framedata`} currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_SM}>
+        {hasFrameData && <Row className="gy-1 gx-1"><Col><Card className="p-0 m-0"><CollapsibleContainer headerTitle="Frame Data" divId={`${matchup.week}-framedata`} currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_SM} alwaysShowToggle>
             <CardBody className="px-0 py-2 m-0"><Row className="row-cols-1 gy-2 gx-2 m-0 p-0">{matchup.scores?.games.map((_game, g) => <Col key={`frames-${matchup.week}-${g}`}><Card className="my-1 mx-0 h-100"><CardBody className="p-2"><div className={`bls-game-header ${isBreakpointSmallerThan(currentBreakpoint, BS_BP_SM) ? "fs-sm" : "fs-6"}`}>Game {g + 1}</div><TeamIndSeriesGameFramesV2 leagueDetails={leagueDetails} matchup={matchup} teamDetails={teamDetails} currentBreakpoint={currentBreakpoint} gameIdx={g}/></CardBody></Card></Col>)}</Row></CardBody>
             <CardFooter className="fs-xs text-center text-body-secondary"><FrameAttributeIconLegend/></CardFooter>
         </CollapsibleContainer></Card></Col></Row>}
