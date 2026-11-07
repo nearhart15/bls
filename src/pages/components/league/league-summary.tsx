@@ -266,14 +266,16 @@ export interface LeagueSummaryParams {
     leagueDetails: LeagueDetails | null;
     leagueDetailsLoading: boolean;
     currentBreakpoint: Breakpoint;
+    showJumpToCurrentWeek?: boolean;
     children?: ReactNode;
 }
-const LeagueSummary: FC<LeagueSummaryParams> = ({leagueDetails, leagueDetailsLoading, currentBreakpoint, children}) => {
+const LeagueSummary: FC<LeagueSummaryParams> = ({leagueDetails, leagueDetailsLoading, currentBreakpoint, showJumpToCurrentWeek = false, children}) => {
     return (
         <>
             <Card border="primary" className="mb-2 mx-0 px-0">
                 <CardHeader className="px-2">
-                    League Summary
+                    <span>League Summary</span>
+                    {showJumpToCurrentWeek && leagueDetails && <a href="#bls-current-week" className="btn btn-sm bls-jump-current-week ms-2" style={{float: "right"}}>↓ Jump to Current Week</a>}
                     {leagueDetails && !leagueDetails.completed && <Badge bg="success" className="align-middle float-end"><PlayCircleFill/> Ongoing</Badge>}
                 </CardHeader>
                 {/*Still Loading*/}
