@@ -52,8 +52,8 @@ const calculateTeamHdcp = (gameScores?: GameScore[], seriesScore?: SeriesScore, 
 };
 const twoDigitNumberFormat = Intl.NumberFormat("en-US", {style: "decimal", minimumIntegerDigits: 2});
 
-interface MatchupDisplayProps { leagueDetails: LeagueDetails | null; matchup: LeagueMatchup; teamDetails: TrackedLeagueTeam; currentBreakpoint?: Breakpoint; }
-const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDetails, currentBreakpoint}) => {
+interface MatchupDisplayProps { anchorId?: string; leagueDetails: LeagueDetails | null; matchup: LeagueMatchup; teamDetails: TrackedLeagueTeam; currentBreakpoint?: Breakpoint; }
+const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDetails, currentBreakpoint, anchorId}) => {
     const [detailsExpanded, setDetailsExpanded] = useState(false);
     const showMatchupDetails = Boolean(matchup.bowlDate && !matchup.bowlDate.isAfter(moment()) && matchup.scores?.games.length);
     const isOpponentVacantOrAbsent = Boolean(matchup.opponent?.absent || matchup.opponent?.vacant);
@@ -76,7 +76,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
     }
     const compareUrl = `/team/compare?${compareParams.toString()}`;
 
-    return <Col><Card border={showMatchupDetails ? "primary" : "dark"} className="bls-matchup-card mx-auto px-0 py-0 w-100">
+    return <Col id={anchorId} className="bls-matchup-week-anchor"><Card border={showMatchupDetails ? "primary" : "dark"} className="bls-matchup-card mx-auto px-0 py-0 w-100">
         <CardHeader className="bls-matchup-week-header fw-semibold px-2 py-1"><Stack direction="horizontal" gap={3}>
             <div>{weekPrefix} {twoDigitNumberFormat.format(matchup.week)}</div><div>{matchup.scheduledDate?.format("DD MMM")}</div>
             <div className="me-auto">{matchup.bowlDate && !matchup.bowlDate.isSame(matchup.scheduledDate, "day") && <>&nbsp;<small><Badge bg="light">{matchup.bowlDate.isBefore(matchup.scheduledDate, "day") ? "Pre-Bowl" : "Post-Bowl"}</Badge></small></>}</div>
@@ -107,6 +107,9 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
 
 interface LeagueTeamMatchupsProps { leagueDetails: LeagueDetails | null; teamDetails: TrackedLeagueTeam; currentBreakpoint: Breakpoint; leagueDetailsLoading: boolean; }
 const LeagueTeamMatchup: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails, leagueDetailsLoading, currentBreakpoint}) => {
+    const today = moment();
+    const scheduled = teamDetails.matchups.filter(matchup => matchup.scheduledDate);
+    const current = scheduled.filter(matchup => !matchup.scheduledDate?.isAfter(today, "day")).at(-1) ?? scheduled[0];
     return <>
         {leagueDetailsLoading && <div className="card-body"><Loader/></div>}
         <CardBody className="px-0 py-1 border border-secondary-subtle">
@@ -115,6 +118,7 @@ const LeagueTeamMatchup: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDeta
                 <CardBody className="mx-0 px-1 px-sm-2 py-2">
                     <Row className="row-cols-1 row-cols-lg-2 g-2">
                         {teamDetails.matchups.map(matchup => <MatchupDisplay
+                            anchorId={matchup === current ? "bls-current-week" : undefined}
                             key={`${leagueDetails?.id}-${teamDetails.id}-${matchup.week}`}
                             leagueDetails={leagueDetails}
                             matchup={matchup}
