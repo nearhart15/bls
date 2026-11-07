@@ -109,7 +109,7 @@ interface LeagueTeamMatchupsProps { leagueDetails: LeagueDetails | null; teamDet
 const LeagueTeamMatchup: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails, leagueDetailsLoading, currentBreakpoint}) => {
     const today = moment();
     const scheduled = teamDetails.matchups.filter(matchup => matchup.scheduledDate);
-    const current = scheduled.filter(matchup => !matchup.scheduledDate?.isAfter(today, "day")).at(-1) ?? scheduled[0];
+    const current = scheduled.filter(matchup => !matchup.scheduledDate?.isAfter(today, "day")).slice(-1)[0] ?? scheduled[0];
     return <>
         {leagueDetailsLoading && <div className="card-body"><Loader/></div>}
         <CardBody className="px-0 py-1 border border-secondary-subtle">
