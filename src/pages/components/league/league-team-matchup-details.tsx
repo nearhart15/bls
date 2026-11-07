@@ -123,7 +123,7 @@ const EmptyFrames: Frame[] = Array.from({length: 10}, (_, i) => ({number: i + 1,
 interface MatchupDetailsDisplayProps { leagueDetails: LeagueDetails | null; matchup: LeagueMatchup; teamDetails: TrackedLeagueTeam; currentBreakpoint?: Breakpoint; }
 interface TeamIndSeriesGameFramesProps extends MatchupDetailsDisplayProps { gameIdx: number; }
 
-const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, teamDetails, currentBreakpoint, gameIdx}) => {
+const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, teamDetails, gameIdx}) => {
     const {setActive} = use(FrameAttrHintContext);
     const playerNames = useMemo(() => matchup.scores?.playerScores.map(ps => findPlayer(teamDetails, ps.player)), [matchup, teamDetails]);
     const frames = useMemo(() => matchup.scores?.playerScores.map(ps => ps.games[gameIdx].frames), [matchup, gameIdx]);
