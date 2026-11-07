@@ -390,3 +390,47 @@ button.bls-frame.has-attributes:active {
     font-size: clamp(.8rem, 3.7vw, 1rem);
   }
 }
+
+/* Scale scores to the *frame cell*, not the viewport. A three-digit running
+   total must fit within each cell, even in a two-column tablet matchup. */
+.bls-player-frame-row .bls-frame {
+  container-type: inline-size;
+}
+
+.bls-player-frame-row .bls-frame-cum {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding-inline: 0;
+  font-size: clamp(.68rem, 30cqw, 1.3rem);
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  text-align: center;
+}
+
+.bls-player-frame-row .bls-frame-balls {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  font-size: clamp(.68rem, 33cqw, 1.3rem);
+  line-height: 1.2;
+  gap: 0;
+}
+
+.bls-player-frame-row .bls-frame-balls > div {
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.bls-player-frame-row .bls-frame:nth-child(10) .bls-frame-balls {
+  font-size: clamp(.66rem, 24cqw, 1.25rem);
+}
+
+@media (max-width: 767.98px) {
+  .bls-player-frame-row .bls-frame-cum {
+    font-size: clamp(.78rem, 30cqw, 1.3rem);
+  }
+  .bls-player-frame-row .bls-frame-balls {
+    font-size: clamp(.78rem, 33cqw, 1.3rem);
+  }
+}
