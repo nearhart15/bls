@@ -328,3 +328,65 @@ button.bls-frame.has-attributes:active {
     margin-top: .2rem;
   }
 }
+
+/* Full-width scorecards: a dedicated name line prevents the fixed 2/10
+   Bootstrap split from stealing space and clipping cumulative scores. */
+.bls-player-frame-row .bls-frame-player-heading {
+  display: block;
+  margin: 0 0 .3rem;
+  font-size: clamp(.95rem, 1.35vw, 1.12rem);
+  font-weight: 600;
+}
+
+.bls-player-frame-row > .row {
+  margin-inline: 0;
+  width: 100%;
+}
+
+.bls-player-frame-row > .row > .col-12 {
+  padding-inline: 0;
+  min-width: 0;
+}
+
+.bls-player-frame-row .hstack:has(> .bls-frame) {
+  grid-template-columns: repeat(9, minmax(0, 1fr)) minmax(0, 1.45fr);
+  gap: clamp(.2rem, .45vw, .5rem) !important;
+  overflow: visible;
+}
+
+.bls-player-frame-row .bls-frame {
+  padding: .3rem .08rem .24rem;
+  overflow: hidden;
+}
+
+.bls-player-frame-row .bls-frame-balls,
+.bls-player-frame-row .bls-frame-cum {
+  font-size: clamp(.85rem, 1.55vw, 1.3rem);
+  letter-spacing: 0;
+}
+
+@media (max-width: 767.98px) {
+  .bls-player-frame-row .hstack:has(> .bls-frame) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: .35rem !important;
+    overflow: visible;
+  }
+  .bls-player-frame-row .bls-frame {
+    min-height: 3.4rem;
+    padding: .35rem .12rem .3rem;
+  }
+  .bls-player-frame-row .bls-frame-balls,
+  .bls-player-frame-row .bls-frame-cum {
+    font-size: clamp(.9rem, 3.3vw, 1.15rem);
+  }
+}
+
+@media (max-width: 399.98px) {
+  .bls-player-frame-row .hstack:has(> .bls-frame) {
+    gap: .2rem !important;
+  }
+  .bls-player-frame-row .bls-frame-balls,
+  .bls-player-frame-row .bls-frame-cum {
+    font-size: clamp(.8rem, 3.7vw, 1rem);
+  }
+}

@@ -123,8 +123,7 @@ const EmptyFrames: Frame[] = Array.from({length: 10}, (_, i) => ({number: i + 1,
 interface MatchupDetailsDisplayProps { leagueDetails: LeagueDetails | null; matchup: LeagueMatchup; teamDetails: TrackedLeagueTeam; currentBreakpoint?: Breakpoint; }
 interface TeamIndSeriesGameFramesProps extends MatchupDetailsDisplayProps { gameIdx: number; }
 
-const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, teamDetails, currentBreakpoint, gameIdx}) => {
-    const smallScreen = isBreakpointSmallerThan(currentBreakpoint, BS_BP_XS) ?? false;
+const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, teamDetails, gameIdx}) => {
     const {setActive} = use(FrameAttrHintContext);
     const playerNames = useMemo(() => matchup.scores?.playerScores.map(ps => findPlayer(teamDetails, ps.player)), [matchup, teamDetails]);
     const frames = useMemo(() => matchup.scores?.playerScores.map(ps => ps.games[gameIdx].frames), [matchup, gameIdx]);
@@ -144,9 +143,9 @@ const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, t
     };
     const keyPrefix = `fd-wk-${matchup.week}-${gameIdx}-`;
     return <>{playerNames && frames && playerNames.map((pn, pi) => <div key={keyPrefix + pi} className="bls-player-frame-row mb-2">
-        {smallScreen && <Row><Col className="col-md-2"><div className="bls-player-name fs-sm">{pn}</div></Col></Row>}
-        <Row className="g-1 align-items-center">{!smallScreen && <Col className="col-md-2"><div className="bls-player-name">{pn}</div></Col>}
-            <Col className="col-md-10"><Stack direction="horizontal" gap={1}>{(frames[pi].length > 0 ? frames[pi] : EmptyFrames).map(frame => {
+        <div className="bls-player-name bls-frame-player-heading">{pn}</div>
+        <Row className="g-1 align-items-center">
+            <Col xs={12}><Stack direction="horizontal" gap={1}>{(frames[pi].length > 0 ? frames[pi] : EmptyFrames).map(frame => {
                 const attributes = attributeInfo(frame);
                 const contents = <><div className="bls-frame-balls">{writeScoreLabelRow(frame)}</div><div className="bls-frame-cum">{frame.cumulativeScore}</div></>;
                 const className = `bls-frame${attributes.length > 0 ? " has-attributes" : ""}`;
