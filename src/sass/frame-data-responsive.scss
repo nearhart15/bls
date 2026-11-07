@@ -434,3 +434,15 @@ button.bls-frame.has-attributes:active {
     font-size: clamp(.78rem, 33cqw, 1.3rem);
   }
 }
+
+/* The tenth frame is 1.45x wider to hold a third delivery. Its running
+   total should use the same type scale as frames 1–9, not 1.45x larger. */
+.bls-player-frame-row .bls-frame:nth-child(10) .bls-frame-cum {
+  font-size: clamp(.68rem, 20.7cqw, 1.3rem);
+}
+
+@media (max-width: 767.98px) {
+  .bls-player-frame-row .bls-frame:nth-child(10) .bls-frame-cum {
+    font-size: clamp(.78rem, 20.7cqw, 1.3rem);
+  }
+}
