@@ -62,6 +62,7 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
 
     return (
         <>
+            {leagueDetails && currentDisplay === "TEAM" && <div className="d-flex justify-content-end px-2 pt-1"><a className="btn btn-sm bls-jump-current-week" href="#bls-current-week">↓ Jump to Current Week</a></div>}
             <LeagueSummary leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
             {/*Team selection Menu*/}
             <Container fluid="true" className="bls-team-nav-wrap px-0 px-sm-2">
