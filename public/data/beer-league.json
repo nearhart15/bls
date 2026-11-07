@@ -1,15 +1,15 @@
 {
   "status": "ready",
-  "generatedAt": "2026-11-03T13:12:40.129Z",
+  "generatedAt": "2026-11-07T17:49:27.866Z",
   "source": {
     "directoryUrl": "https://arapahoebowl.com/league-options/",
     "leaguePageUrl": "https://arapahoebowl.com/2026/08/22/beer-fall-winter-2026/",
-    "pdfUrl": "https://arapahoebowl.com/wp-content/uploads/2026/11/Beer-Fall-2026-Standings-Wk-9-REV.pdf?abc_pdf_v=1793675449"
+    "pdfUrl": "https://arapahoebowl.com/wp-content/uploads/2026/08/Beer-Fall-2026-Standings-Wk-10.pdf?abc_pdf_v=1794019817"
   },
   "league": {
     "name": "Beer Fall 2026",
-    "date": "10/29/2026",
-    "week": 9,
+    "date": "11/05/2026",
+    "week": 10,
     "totalWeeks": 15,
     "day": "Thursday",
     "time": "08:00 pm",
@@ -19,30 +19,14 @@
     {
       "division": "Tastes Great!",
       "place": 1,
-      "number": 15,
-      "name": "The Alley Cats",
-      "won": 24,
-      "lost": 12,
-      "average": 611,
-      "handicap": 203,
-      "pinsWithHandicap": 23101,
-      "scratchPins": 18379,
-      "highHandicapGame": 973,
-      "highHandicapSeries": 2735,
-      "highScratchGame": 790,
-      "highScratchSeries": 2278
-    },
-    {
-      "division": "Tastes Great!",
-      "place": 2,
       "number": 17,
       "name": "Bourbon Achiever",
-      "won": 24,
-      "lost": 12,
-      "average": 692,
-      "handicap": 132,
-      "pinsWithHandicap": 22687,
-      "scratchPins": 19744,
+      "won": 27,
+      "lost": 13,
+      "average": 698,
+      "handicap": 129,
+      "pinsWithHandicap": 25283,
+      "scratchPins": 21944,
       "highHandicapGame": 990,
       "highHandicapSeries": 2717,
       "highScratchGame": 835,
@@ -50,15 +34,31 @@
     },
     {
       "division": "Tastes Great!",
+      "place": 2,
+      "number": 15,
+      "name": "The Alley Cats",
+      "won": 25,
+      "lost": 15,
+      "average": 605,
+      "handicap": 209,
+      "pinsWithHandicap": 25430,
+      "scratchPins": 20099,
+      "highHandicapGame": 973,
+      "highHandicapSeries": 2735,
+      "highScratchGame": 790,
+      "highScratchSeries": 2278
+    },
+    {
+      "division": "Tastes Great!",
       "place": 3,
       "number": 18,
       "name": "Pins Go Boom!",
-      "won": 22,
-      "lost": 14,
-      "average": 725,
-      "handicap": 101,
-      "pinsWithHandicap": 22705,
-      "scratchPins": 18326,
+      "won": 24,
+      "lost": 16,
+      "average": 719,
+      "handicap": 107,
+      "pinsWithHandicap": 25086,
+      "scratchPins": 20404,
       "highHandicapGame": 997,
       "highHandicapSeries": 2845,
       "highScratchGame": 796,
@@ -67,10 +67,42 @@
     {
       "division": "Tastes Great!",
       "place": 4,
+      "number": 10,
+      "name": "Diamond Dogs",
+      "won": 22,
+      "lost": 18,
+      "average": 645,
+      "handicap": 173,
+      "pinsWithHandicap": 24979,
+      "scratchPins": 19366,
+      "highHandicapGame": 938,
+      "highHandicapSeries": 2623,
+      "highScratchGame": 741,
+      "highScratchSeries": 2059
+    },
+    {
+      "division": "Tastes Great!",
+      "place": 5,
+      "number": 3,
+      "name": "Pintourage",
+      "won": 22,
+      "lost": 18,
+      "average": 693,
+      "handicap": 131,
+      "pinsWithHandicap": 24546,
+      "scratchPins": 20019,
+      "highHandicapGame": 942,
+      "highHandicapSeries": 2657,
+      "highScratchGame": 819,
+      "highScratchSeries": 2288
+    },
+    {
+      "division": "Tastes Great!",
+      "place": 6,
       "number": 14,
       "name": "Trash Pandas",
       "won": 22,
-      "lost": 14,
+      "lost": 18,
       "average": 666,
       "handicap": 154,
       "pinsWithHandicap": 22237,
@@ -82,11 +114,107 @@
     },
     {
       "division": "Tastes Great!",
-      "place": 5,
+      "place": 7,
+      "number": 19,
+      "name": "Dirty Turkeys",
+      "won": 21,
+      "lost": 19,
+      "average": 606,
+      "handicap": 209,
+      "pinsWithHandicap": 24474,
+      "scratchPins": 18540,
+      "highHandicapGame": 921,
+      "highHandicapSeries": 2670,
+      "highScratchGame": 715,
+      "highScratchSeries": 2052
+    },
+    {
+      "division": "Tastes Great!",
+      "place": 8,
+      "number": 16,
+      "name": "Inconsistently Consistent",
+      "won": 21,
+      "lost": 19,
+      "average": 605,
+      "handicap": 209,
+      "pinsWithHandicap": 24373,
+      "scratchPins": 18043,
+      "highHandicapGame": 883,
+      "highHandicapSeries": 2526,
+      "highScratchGame": 685,
+      "highScratchSeries": 1896
+    },
+    {
+      "division": "Tastes Great!",
+      "place": 9,
+      "number": 13,
+      "name": "Itchy",
+      "won": 19.5,
+      "lost": 20.5,
+      "average": 510,
+      "handicap": 295,
+      "pinsWithHandicap": 24447,
+      "scratchPins": 16737,
+      "highHandicapGame": 915,
+      "highHandicapSeries": 2613,
+      "highScratchGame": 677,
+      "highScratchSeries": 1880
+    },
+    {
+      "division": "Tastes Great!",
+      "place": 10,
+      "number": 12,
+      "name": "Gr8 Balls of Fire",
+      "won": 19,
+      "lost": 21,
+      "average": 687,
+      "handicap": 137,
+      "pinsWithHandicap": 25146,
+      "scratchPins": 19149,
+      "highHandicapGame": 920,
+      "highHandicapSeries": 2636,
+      "highScratchGame": 752,
+      "highScratchSeries": 2063
+    },
+    {
+      "division": "Tastes Great!",
+      "place": 11,
+      "number": 5,
+      "name": "$h!t A Brick",
+      "won": 19,
+      "lost": 21,
+      "average": 620,
+      "handicap": 197,
+      "pinsWithHandicap": 24708,
+      "scratchPins": 18666,
+      "highHandicapGame": 905,
+      "highHandicapSeries": 2574,
+      "highScratchGame": 715,
+      "highScratchSeries": 2026
+    },
+    {
+      "division": "Tastes Great!",
+      "place": 12,
+      "number": 8,
+      "name": "Pork Missiles",
+      "won": 19,
+      "lost": 21,
+      "average": 583,
+      "handicap": 228,
+      "pinsWithHandicap": 24399,
+      "scratchPins": 17445,
+      "highHandicapGame": 914,
+      "highHandicapSeries": 2542,
+      "highScratchGame": 682,
+      "highScratchSeries": 1846
+    },
+    {
+      "division": "Tastes Great!",
+      "place": 13,
       "number": 7,
       "name": "Keep It 100",
       "won": 19,
-      "lost": 17,
+      "lost": 21,
       "average": 678,
       "handicap": 144,
       "pinsWithHandicap": 22611,
@@ -98,111 +226,47 @@
     },
     {
       "division": "Tastes Great!",
-      "place": 6,
-      "number": 10,
-      "name": "Diamond Dogs",
-      "won": 19,
-      "lost": 17,
-      "average": 645,
-      "handicap": 173,
-      "pinsWithHandicap": 22496,
-      "scratchPins": 17402,
-      "highHandicapGame": 938,
-      "highHandicapSeries": 2623,
-      "highScratchGame": 741,
-      "highScratchSeries": 2059
-    },
-    {
-      "division": "Tastes Great!",
-      "place": 7,
-      "number": 13,
-      "name": "Itchy",
-      "won": 18.5,
-      "lost": 17.5,
-      "average": 506,
-      "handicap": 298,
-      "pinsWithHandicap": 21910,
-      "scratchPins": 14857,
-      "highHandicapGame": 915,
-      "highHandicapSeries": 2613,
-      "highScratchGame": 651,
-      "highScratchSeries": 1767
-    },
-    {
-      "division": "Tastes Great!",
-      "place": 8,
-      "number": 5,
-      "name": "$h!t A Brick",
+      "place": 14,
+      "number": 1,
+      "name": "We're Sizzlen!!",
       "won": 18,
-      "lost": 18,
-      "average": 620,
-      "handicap": 196,
-      "pinsWithHandicap": 22286,
-      "scratchPins": 16832,
-      "highHandicapGame": 905,
-      "highHandicapSeries": 2574,
-      "highScratchGame": 715,
-      "highScratchSeries": 2026
+      "lost": 22,
+      "average": 702,
+      "handicap": 122,
+      "pinsWithHandicap": 24642,
+      "scratchPins": 20697,
+      "highHandicapGame": 924,
+      "highHandicapSeries": 2576,
+      "highScratchGame": 827,
+      "highScratchSeries": 2294
     },
     {
       "division": "Tastes Great!",
-      "place": 9,
-      "number": 19,
-      "name": "Dirty Turkeys",
+      "place": 15,
+      "number": 11,
+      "name": "Turkey Club",
       "won": 18,
-      "lost": 18,
-      "average": 619,
-      "handicap": 198,
-      "pinsWithHandicap": 22091,
-      "scratchPins": 16769,
-      "highHandicapGame": 921,
-      "highHandicapSeries": 2670,
-      "highScratchGame": 715,
-      "highScratchSeries": 2052
+      "lost": 22,
+      "average": 587,
+      "handicap": 225,
+      "pinsWithHandicap": 24485,
+      "scratchPins": 17993,
+      "highHandicapGame": 896,
+      "highHandicapSeries": 2505,
+      "highScratchGame": 676,
+      "highScratchSeries": 1926
     },
     {
       "division": "Tastes Great!",
-      "place": 10,
-      "number": 3,
-      "name": "Pintourage",
-      "won": 18,
-      "lost": 18,
-      "average": 691,
-      "handicap": 132,
-      "pinsWithHandicap": 21989,
-      "scratchPins": 17858,
-      "highHandicapGame": 942,
-      "highHandicapSeries": 2657,
-      "highScratchGame": 819,
-      "highScratchSeries": 2288
-    },
-    {
-      "division": "Tastes Great!",
-      "place": 11,
-      "number": 16,
-      "name": "Inconsistently Consistent",
-      "won": 18,
-      "lost": 18,
-      "average": 608,
-      "handicap": 207,
-      "pinsWithHandicap": 21972,
-      "scratchPins": 16263,
-      "highHandicapGame": 883,
-      "highHandicapSeries": 2526,
-      "highScratchGame": 685,
-      "highScratchSeries": 1896
-    },
-    {
-      "division": "Tastes Great!",
-      "place": 12,
+      "place": 16,
       "number": 2,
       "name": "Lads of Leisure",
       "won": 18,
-      "lost": 18,
-      "average": 661,
-      "handicap": 159,
-      "pinsWithHandicap": 21952,
-      "scratchPins": 18361,
+      "lost": 22,
+      "average": 657,
+      "handicap": 164,
+      "pinsWithHandicap": 24297,
+      "scratchPins": 20229,
       "highHandicapGame": 976,
       "highHandicapSeries": 2723,
       "highScratchGame": 806,
@@ -210,15 +274,15 @@
     },
     {
       "division": "Tastes Great!",
-      "place": 13,
+      "place": 17,
       "number": 6,
       "name": "Gutter Butter",
       "won": 17.5,
-      "lost": 18.5,
-      "average": 573,
-      "handicap": 238,
-      "pinsWithHandicap": 22207,
-      "scratchPins": 15550,
+      "lost": 22.5,
+      "average": 567,
+      "handicap": 244,
+      "pinsWithHandicap": 24485,
+      "scratchPins": 17114,
       "highHandicapGame": 934,
       "highHandicapSeries": 2561,
       "highScratchGame": 667,
@@ -226,27 +290,27 @@
     },
     {
       "division": "Tastes Great!",
-      "place": 14,
-      "number": 8,
-      "name": "Pork Missiles",
-      "won": 17,
-      "lost": 19,
-      "average": 585,
-      "handicap": 228,
-      "pinsWithHandicap": 22024,
-      "scratchPins": 15754,
-      "highHandicapGame": 914,
-      "highHandicapSeries": 2542,
-      "highScratchGame": 682,
-      "highScratchSeries": 1846
+      "place": 18,
+      "number": 4,
+      "name": "Strykettes",
+      "won": 16,
+      "lost": 24,
+      "average": 683,
+      "handicap": 140,
+      "pinsWithHandicap": 24810,
+      "scratchPins": 19776,
+      "highHandicapGame": 957,
+      "highHandicapSeries": 2630,
+      "highScratchGame": 799,
+      "highScratchSeries": 2156
     },
     {
       "division": "Tastes Great!",
-      "place": 15,
+      "place": 19,
       "number": 9,
       "name": "Just Split On It",
       "won": 16,
-      "lost": 20,
+      "lost": 24,
       "average": 677,
       "handicap": 144,
       "pinsWithHandicap": 22651,
@@ -258,95 +322,31 @@
     },
     {
       "division": "Tastes Great!",
-      "place": 16,
-      "number": 12,
-      "name": "Gr8 Balls of Fire",
-      "won": 15,
-      "lost": 21,
-      "average": 681,
-      "handicap": 142,
-      "pinsWithHandicap": 22541,
-      "scratchPins": 17132,
-      "highHandicapGame": 920,
-      "highHandicapSeries": 2636,
-      "highScratchGame": 752,
-      "highScratchSeries": 2063
-    },
-    {
-      "division": "Tastes Great!",
-      "place": 17,
-      "number": 4,
-      "name": "Strykettes",
-      "won": 15,
-      "lost": 21,
-      "average": 685,
-      "handicap": 138,
-      "pinsWithHandicap": 22397,
-      "scratchPins": 17777,
-      "highHandicapGame": 957,
-      "highHandicapSeries": 2630,
-      "highScratchGame": 799,
-      "highScratchSeries": 2156
-    },
-    {
-      "division": "Tastes Great!",
-      "place": 18,
-      "number": 11,
-      "name": "Turkey Club",
-      "won": 15,
-      "lost": 21,
-      "average": 591,
-      "handicap": 222,
-      "pinsWithHandicap": 22089,
-      "scratchPins": 16152,
-      "highHandicapGame": 896,
-      "highHandicapSeries": 2505,
-      "highScratchGame": 671,
-      "highScratchSeries": 1926
-    },
-    {
-      "division": "Tastes Great!",
-      "place": 19,
-      "number": 1,
-      "name": "We're Sizzlen!!",
-      "won": 14,
-      "lost": 22,
-      "average": 704,
-      "handicap": 120,
-      "pinsWithHandicap": 22066,
-      "scratchPins": 18403,
-      "highHandicapGame": 924,
-      "highHandicapSeries": 2566,
-      "highScratchGame": 825,
-      "highScratchSeries": 2197
-    },
-    {
-      "division": "Tastes Great!",
       "place": 20,
       "number": 20,
       "name": "2 Fingers Sometimes 3",
-      "won": 12,
-      "lost": 24,
-      "average": 678,
-      "handicap": 147,
-      "pinsWithHandicap": 20984,
-      "scratchPins": 16629,
+      "won": 15,
+      "lost": 25,
+      "average": 685,
+      "handicap": 142,
+      "pinsWithHandicap": 23607,
+      "scratchPins": 18811,
       "highHandicapGame": 916,
-      "highHandicapSeries": 2536,
+      "highHandicapSeries": 2623,
       "highScratchGame": 749,
-      "highScratchSeries": 2062
+      "highScratchSeries": 2182
     },
     {
       "division": "Less Filling!",
       "place": 1,
       "number": 34,
       "name": "Team 34",
-      "won": 28,
-      "lost": 8,
-      "average": 722,
-      "handicap": 104,
-      "pinsWithHandicap": 22820,
-      "scratchPins": 19895,
+      "won": 30,
+      "lost": 10,
+      "average": 731,
+      "handicap": 97,
+      "pinsWithHandicap": 25396,
+      "scratchPins": 22165,
       "highHandicapGame": 984,
       "highHandicapSeries": 2599,
       "highScratchGame": 875,
@@ -357,44 +357,28 @@
       "place": 2,
       "number": 40,
       "name": "Whiskey Tango Foxtrot",
-      "won": 24,
+      "won": 28,
       "lost": 12,
-      "average": 674,
-      "handicap": 147,
-      "pinsWithHandicap": 22299,
-      "scratchPins": 18252,
-      "highHandicapGame": 915,
-      "highHandicapSeries": 2601,
-      "highScratchGame": 766,
-      "highScratchSeries": 2136
+      "average": 681,
+      "handicap": 141,
+      "pinsWithHandicap": 24964,
+      "scratchPins": 20476,
+      "highHandicapGame": 918,
+      "highHandicapSeries": 2665,
+      "highScratchGame": 771,
+      "highScratchSeries": 2224
     },
     {
       "division": "Less Filling!",
       "place": 3,
-      "number": 31,
-      "name": "Bada Bing!!!!",
-      "won": 23,
-      "lost": 13,
-      "average": 645,
-      "handicap": 174,
-      "pinsWithHandicap": 22603,
-      "scratchPins": 17158,
-      "highHandicapGame": 930,
-      "highHandicapSeries": 2619,
-      "highScratchGame": 740,
-      "highScratchSeries": 2121
-    },
-    {
-      "division": "Less Filling!",
-      "place": 4,
       "number": 37,
       "name": "The Vintage Strikers",
-      "won": 23,
+      "won": 27,
       "lost": 13,
-      "average": 711,
-      "handicap": 114,
-      "pinsWithHandicap": 22226,
-      "scratchPins": 18941,
+      "average": 713,
+      "handicap": 116,
+      "pinsWithHandicap": 24723,
+      "scratchPins": 21096,
       "highHandicapGame": 916,
       "highHandicapSeries": 2618,
       "highScratchGame": 789,
@@ -402,15 +386,31 @@
     },
     {
       "division": "Less Filling!",
+      "place": 4,
+      "number": 31,
+      "name": "Bada Bing!!!!",
+      "won": 25,
+      "lost": 15,
+      "average": 640,
+      "handicap": 179,
+      "pinsWithHandicap": 24975,
+      "scratchPins": 19008,
+      "highHandicapGame": 930,
+      "highHandicapSeries": 2619,
+      "highScratchGame": 740,
+      "highScratchSeries": 2121
+    },
+    {
+      "division": "Less Filling!",
       "place": 5,
       "number": 28,
       "name": "STRIKE JUICE",
-      "won": 22,
-      "lost": 14,
-      "average": 583,
+      "won": 23,
+      "lost": 17,
+      "average": 582,
       "handicap": 230,
-      "pinsWithHandicap": 22015,
-      "scratchPins": 16009,
+      "pinsWithHandicap": 24429,
+      "scratchPins": 17733,
       "highHandicapGame": 909,
       "highHandicapSeries": 2565,
       "highScratchGame": 671,
@@ -419,62 +419,62 @@
     {
       "division": "Less Filling!",
       "place": 6,
-      "number": 35,
-      "name": "Gremory House",
-      "won": 19,
-      "lost": 17,
-      "average": 667,
-      "handicap": 153,
-      "pinsWithHandicap": 21993,
-      "scratchPins": 17913,
-      "highHandicapGame": 966,
-      "highHandicapSeries": 2614,
-      "highScratchGame": 807,
-      "highScratchSeries": 2139
+      "number": 38,
+      "name": "Turkey Goblins",
+      "won": 21,
+      "lost": 19,
+      "average": 705,
+      "handicap": 120,
+      "pinsWithHandicap": 24456,
+      "scratchPins": 21030,
+      "highHandicapGame": 912,
+      "highHandicapSeries": 2612,
+      "highScratchGame": 830,
+      "highScratchSeries": 2273
     },
     {
       "division": "Less Filling!",
       "place": 7,
-      "number": 25,
-      "name": "Pin er Down",
-      "won": 19,
-      "lost": 17,
-      "average": 589,
-      "handicap": 225,
-      "pinsWithHandicap": 21902,
-      "scratchPins": 16052,
-      "highHandicapGame": 917,
-      "highHandicapSeries": 2625,
-      "highScratchGame": 720,
-      "highScratchSeries": 1926
+      "number": 21,
+      "name": "Dammit Fiser",
+      "won": 21,
+      "lost": 19,
+      "average": 596,
+      "handicap": 217,
+      "pinsWithHandicap": 21932,
+      "scratchPins": 16037,
+      "highHandicapGame": 894,
+      "highHandicapSeries": 2491,
+      "highScratchGame": 662,
+      "highScratchSeries": 1813
     },
     {
       "division": "Less Filling!",
       "place": 8,
       "number": 23,
       "name": "Hookers & Bowl",
-      "won": 18.5,
-      "lost": 17.5,
-      "average": 623,
-      "handicap": 194,
-      "pinsWithHandicap": 21721,
-      "scratchPins": 16864,
-      "highHandicapGame": 889,
-      "highHandicapSeries": 2499,
+      "won": 20.5,
+      "lost": 19.5,
+      "average": 628,
+      "handicap": 189,
+      "pinsWithHandicap": 24340,
+      "scratchPins": 18901,
+      "highHandicapGame": 915,
+      "highHandicapSeries": 2619,
       "highScratchGame": 722,
-      "highScratchSeries": 1961
+      "highScratchSeries": 2037
     },
     {
       "division": "Less Filling!",
       "place": 9,
       "number": 27,
       "name": "Irritable Bowl Syndrome",
-      "won": 18,
-      "lost": 18,
-      "average": 541,
-      "handicap": 266,
-      "pinsWithHandicap": 17348,
-      "scratchPins": 11411,
+      "won": 20,
+      "lost": 20,
+      "average": 540,
+      "handicap": 268,
+      "pinsWithHandicap": 19722,
+      "scratchPins": 12987,
       "highHandicapGame": 925,
       "highHandicapSeries": 2559,
       "highScratchGame": 641,
@@ -483,62 +483,62 @@
     {
       "division": "Less Filling!",
       "place": 10,
-      "number": 21,
-      "name": "Dammit Fiser",
-      "won": 17,
-      "lost": 19,
-      "average": 595,
-      "handicap": 219,
-      "pinsWithHandicap": 19462,
-      "scratchPins": 14224,
-      "highHandicapGame": 894,
-      "highHandicapSeries": 2491,
-      "highScratchGame": 662,
-      "highScratchSeries": 1812
+      "number": 25,
+      "name": "Pin er Down",
+      "won": 19,
+      "lost": 21,
+      "average": 589,
+      "handicap": 225,
+      "pinsWithHandicap": 24323,
+      "scratchPins": 17798,
+      "highHandicapGame": 917,
+      "highHandicapSeries": 2625,
+      "highScratchGame": 720,
+      "highScratchSeries": 1926
     },
     {
       "division": "Less Filling!",
       "place": 11,
-      "number": 29,
-      "name": "Cun Th",
-      "won": 17,
-      "lost": 19,
-      "average": 562,
-      "handicap": 249,
-      "pinsWithHandicap": 19442,
-      "scratchPins": 13061,
-      "highHandicapGame": 887,
-      "highHandicapSeries": 2561,
-      "highScratchGame": 618,
-      "highScratchSeries": 1754
+      "number": 35,
+      "name": "Gremory House",
+      "won": 19,
+      "lost": 21,
+      "average": 661,
+      "handicap": 160,
+      "pinsWithHandicap": 24312,
+      "scratchPins": 19773,
+      "highHandicapGame": 966,
+      "highHandicapSeries": 2614,
+      "highScratchGame": 807,
+      "highScratchSeries": 2139
     },
     {
       "division": "Less Filling!",
       "place": 12,
-      "number": 26,
-      "name": "Bowl & a Blintz",
-      "won": 16,
-      "lost": 20,
-      "average": 651,
-      "handicap": 168,
-      "pinsWithHandicap": 19497,
-      "scratchPins": 15282,
-      "highHandicapGame": 928,
-      "highHandicapSeries": 2571,
-      "highScratchGame": 737,
-      "highScratchSeries": 2041
+      "number": 39,
+      "name": "Balls Deep",
+      "won": 19,
+      "lost": 21,
+      "average": 570,
+      "handicap": 241,
+      "pinsWithHandicap": 22356,
+      "scratchPins": 15120,
+      "highHandicapGame": 929,
+      "highHandicapSeries": 2625,
+      "highScratchGame": 663,
+      "highScratchSeries": 1779
     },
     {
       "division": "Less Filling!",
       "place": 13,
       "number": 24,
       "name": "Pin N Juice",
-      "won": 15.5,
-      "lost": 20.5,
-      "average": 591,
-      "handicap": 222,
-      "pinsWithHandicap": 22213,
-      "scratchPins": 16231,
+      "won": 18.5,
+      "lost": 21.5,
+      "average": 587,
+      "handicap": 226,
+      "pinsWithHandicap": 24547,
+      "scratchPins": 17899,
       "highHandicapGame": 924,
       "highHandicapSeries": 2649,
       "highScratchGame": 731,
@@ -547,58 +547,74 @@
     {
       "division": "Less Filling!",
       "place": 14,
-      "number": 39,
-      "name": "Balls Deep",
-      "won": 15,
-      "lost": 21,
-      "average": 567,
-      "handicap": 244,
-      "pinsWithHandicap": 19835,
-      "scratchPins": 13406,
-      "highHandicapGame": 929,
-      "highHandicapSeries": 2625,
-      "highScratchGame": 663,
-      "highScratchSeries": 1779
+      "number": 29,
+      "name": "Cun Th",
+      "won": 18,
+      "lost": 22,
+      "average": 563,
+      "handicap": 248,
+      "pinsWithHandicap": 21912,
+      "scratchPins": 14784,
+      "highHandicapGame": 934,
+      "highHandicapSeries": 2561,
+      "highScratchGame": 685,
+      "highScratchSeries": 1754
     },
     {
       "division": "Less Filling!",
       "place": 15,
       "number": 36,
       "name": "High Rollers",
-      "won": 14,
-      "lost": 22,
-      "average": 521,
-      "handicap": 285,
-      "pinsWithHandicap": 22164,
-      "scratchPins": 13659,
+      "won": 17,
+      "lost": 23,
+      "average": 524,
+      "handicap": 282,
+      "pinsWithHandicap": 24727,
+      "scratchPins": 15358,
       "highHandicapGame": 896,
       "highHandicapSeries": 2608,
-      "highScratchGame": 585,
+      "highScratchGame": 605,
       "highScratchSeries": 1702
     },
     {
       "division": "Less Filling!",
       "place": 16,
-      "number": 38,
-      "name": "Turkey Goblins",
-      "won": 14,
-      "lost": 22,
-      "average": 698,
-      "handicap": 125,
-      "pinsWithHandicap": 19362,
-      "scratchPins": 16680,
-      "highHandicapGame": 912,
-      "highHandicapSeries": 2612,
-      "highScratchGame": 830,
-      "highScratchSeries": 2273
+      "number": 26,
+      "name": "Bowl & a Blintz",
+      "won": 16,
+      "lost": 24,
+      "average": 672,
+      "handicap": 149,
+      "pinsWithHandicap": 21919,
+      "scratchPins": 17272,
+      "highHandicapGame": 928,
+      "highHandicapSeries": 2571,
+      "highScratchGame": 737,
+      "highScratchSeries": 2041
     },
     {
       "division": "Less Filling!",
       "place": 17,
+      "number": 22,
+      "name": "Captive Spare",
+      "won": 13,
+      "lost": 27,
+      "average": 594,
+      "handicap": 219,
+      "pinsWithHandicap": 19499,
+      "scratchPins": 14252,
+      "highHandicapGame": 969,
+      "highHandicapSeries": 2676,
+      "highScratchGame": 738,
+      "highScratchSeries": 2027
+    },
+    {
+      "division": "Less Filling!",
+      "place": 18,
       "number": 33,
       "name": "Brutal Poodle",
       "won": 13,
-      "lost": 23,
+      "lost": 27,
       "average": 476,
       "handicap": 326,
       "pinsWithHandicap": 19228,
@@ -610,11 +626,11 @@
     },
     {
       "division": "Less Filling!",
-      "place": 18,
+      "place": 19,
       "number": 32,
       "name": "Split On My Ball",
       "won": 13,
-      "lost": 23,
+      "lost": 27,
       "average": 573,
       "handicap": 238,
       "pinsWithHandicap": 14569,
@@ -626,11 +642,11 @@
     },
     {
       "division": "Less Filling!",
-      "place": 19,
+      "place": 20,
       "number": 30,
       "name": "Salty Gutter Balls",
       "won": 12,
-      "lost": 24,
+      "lost": 28,
       "average": 594,
       "handicap": 220,
       "pinsWithHandicap": 22254,
@@ -639,22 +655,6 @@
       "highHandicapSeries": 2546,
       "highScratchGame": 674,
       "highScratchSeries": 1874
-    },
-    {
-      "division": "Less Filling!",
-      "place": 20,
-      "number": 22,
-      "name": "Captive Spare",
-      "won": 10,
-      "lost": 26,
-      "average": 595,
-      "handicap": 218,
-      "pinsWithHandicap": 17003,
-      "scratchPins": 12428,
-      "highHandicapGame": 969,
-      "highHandicapSeries": 2676,
-      "highScratchGame": 738,
-      "highScratchSeries": 2027
     }
   ],
   "teams": [
@@ -672,87 +672,87 @@
           "highSeries": 623,
           "highHandicapGame": 269,
           "highHandicapSeries": 710,
-          "weekScoresRaw": [
-            "172",
-            "153",
-            "172"
-          ],
-          "weekScores": [
-            172,
-            153,
-            172
-          ],
-          "weekTotal": 497,
-          "weekHandicapTotal": 566
-        },
-        {
-          "name": "Tim Laws",
-          "average": 158,
-          "handicap": 46,
-          "pins": 4279,
-          "games": 27,
-          "highGame": 213,
-          "highSeries": 518,
-          "highHandicapGame": 258,
-          "highHandicapSeries": 677,
-          "weekScoresRaw": [
-            "144",
-            "117",
-            "145"
-          ],
-          "weekScores": [
-            144,
-            117,
-            145
-          ],
-          "weekTotal": 406,
-          "weekHandicapTotal": 538
-        },
-        {
-          "name": "Dawn Gates",
-          "average": 167,
-          "handicap": 38,
-          "pins": 4016,
-          "games": 24,
-          "highGame": 233,
-          "highSeries": 559,
-          "highHandicapGame": 268,
-          "highHandicapSeries": 659,
           "weekScoresRaw": [],
           "weekScores": [],
           "weekTotal": 0,
           "weekHandicapTotal": 0
         },
         {
+          "name": "Tim Laws",
+          "average": 157,
+          "handicap": 47,
+          "pins": 4726,
+          "games": 30,
+          "highGame": 213,
+          "highSeries": 518,
+          "highHandicapGame": 258,
+          "highHandicapSeries": 677,
+          "weekScoresRaw": [
+            "115",
+            "169",
+            "163"
+          ],
+          "weekScores": [
+            115,
+            169,
+            163
+          ],
+          "weekTotal": 447,
+          "weekHandicapTotal": 585
+        },
+        {
+          "name": "Dawn Gates",
+          "average": 166,
+          "handicap": 39,
+          "pins": 4502,
+          "games": 27,
+          "highGame": 233,
+          "highSeries": 559,
+          "highHandicapGame": 268,
+          "highHandicapSeries": 659,
+          "weekScoresRaw": [
+            "173",
+            "166",
+            "147"
+          ],
+          "weekScores": [
+            173,
+            166,
+            147
+          ],
+          "weekTotal": 486,
+          "weekHandicapTotal": 600
+        },
+        {
           "name": "Dan Schroth",
           "average": 198,
           "handicap": 10,
-          "pins": 4755,
-          "games": 24,
+          "pins": 5357,
+          "games": 27,
           "highGame": 233,
           "highSeries": 635,
           "highHandicapGame": 248,
           "highHandicapSeries": 694,
           "weekScoresRaw": [
-            "a198",
-            "a198",
-            "a198"
+            "192",
+            "223",
+            "187"
           ],
           "weekScores": [
-            198,
-            198,
-            198
+            192,
+            223,
+            187
           ],
-          "weekTotal": 594,
-          "weekHandicapTotal": 624
+          "weekTotal": 602,
+          "weekHandicapTotal": 632
         }
       ],
       "division": "Tastes Great!",
-      "place": 19,
-      "won": 14,
+      "place": 14,
+      "won": 18,
       "lost": 22,
-      "average": 704,
-      "handicap": 120
+      "average": 702,
+      "handicap": 122
     },
     {
       "number": 2,
@@ -760,95 +760,95 @@
       "players": [
         {
           "name": "Maxwell Warner",
-          "average": 187,
-          "handicap": 20,
-          "pins": 4498,
-          "games": 24,
+          "average": 185,
+          "handicap": 22,
+          "pins": 5010,
+          "games": 27,
           "highGame": 257,
           "highSeries": 676,
           "highHandicapGame": 258,
           "highHandicapSeries": 700,
           "weekScoresRaw": [
-            "193",
-            "189",
-            "233"
+            "133",
+            "177",
+            "202"
           ],
           "weekScores": [
-            193,
-            189,
-            233
+            133,
+            177,
+            202
           ],
-          "weekTotal": 615,
-          "weekHandicapTotal": 684
+          "weekTotal": 512,
+          "weekHandicapTotal": 572
         },
         {
           "name": "Marc Garrison",
-          "average": 173,
-          "handicap": 33,
-          "pins": 4162,
-          "games": 24,
+          "average": 171,
+          "handicap": 35,
+          "pins": 4637,
+          "games": 27,
           "highGame": 229,
           "highSeries": 613,
           "highHandicapGame": 274,
           "highHandicapSeries": 748,
           "weekScoresRaw": [
-            "173",
-            "213",
-            "199"
+            "155",
+            "188",
+            "132"
           ],
           "weekScores": [
-            173,
-            213,
-            199
+            155,
+            188,
+            132
           ],
-          "weekTotal": 585,
-          "weekHandicapTotal": 693
+          "weekTotal": 475,
+          "weekHandicapTotal": 574
         },
         {
           "name": "Devon Anderson",
-          "average": 173,
-          "handicap": 33,
-          "pins": 3652,
-          "games": 21,
+          "average": 170,
+          "handicap": 36,
+          "pins": 4095,
+          "games": 24,
           "highGame": 244,
           "highSeries": 625,
           "highHandicapGame": 278,
           "highHandicapSeries": 672,
           "weekScoresRaw": [
-            "136",
-            "161",
-            "244"
+            "150",
+            "167",
+            "126"
           ],
           "weekScores": [
-            136,
-            161,
-            244
+            150,
+            167,
+            126
           ],
-          "weekTotal": 541,
-          "weekHandicapTotal": 643
+          "weekTotal": 443,
+          "weekHandicapTotal": 542
         },
         {
           "name": "Isaiah Warner",
-          "average": 128,
-          "handicap": 73,
-          "pins": 1934,
-          "games": 15,
+          "average": 131,
+          "handicap": 71,
+          "pins": 2372,
+          "games": 18,
           "highGame": 181,
           "highSeries": 458,
-          "highHandicapGame": 248,
+          "highHandicapGame": 250,
           "highHandicapSeries": 668,
           "weekScoresRaw": [
-            "171",
-            "136",
-            "130"
+            "117",
+            "144",
+            "177"
           ],
           "weekScores": [
-            171,
-            136,
-            130
+            117,
+            144,
+            177
           ],
-          "weekTotal": 437,
-          "weekHandicapTotal": 668
+          "weekTotal": 438,
+          "weekHandicapTotal": 657
         },
         {
           "name": "Lucas Verstegen",
@@ -882,11 +882,11 @@
         }
       ],
       "division": "Tastes Great!",
-      "place": 12,
+      "place": 16,
       "won": 18,
-      "lost": 18,
-      "average": 661,
-      "handicap": 159
+      "lost": 22,
+      "average": 657,
+      "handicap": 164
     },
     {
       "number": 3,
@@ -894,95 +894,95 @@
       "players": [
         {
           "name": "JR Lamicq",
-          "average": 167,
-          "handicap": 38,
-          "pins": 3515,
-          "games": 21,
+          "average": 166,
+          "handicap": 39,
+          "pins": 3988,
+          "games": 24,
           "highGame": 235,
           "highSeries": 579,
           "highHandicapGame": 280,
           "highHandicapSeries": 714,
           "weekScoresRaw": [
-            "92",
-            "185",
-            "142"
+            "116",
+            "202",
+            "155"
           ],
           "weekScores": [
-            92,
-            185,
-            142
+            116,
+            202,
+            155
           ],
-          "weekTotal": 419,
-          "weekHandicapTotal": 521
+          "weekTotal": 473,
+          "weekHandicapTotal": 587
         },
         {
           "name": "Steven Kruse",
-          "average": 173,
-          "handicap": 33,
-          "pins": 2077,
-          "games": 12,
+          "average": 174,
+          "handicap": 32,
+          "pins": 2621,
+          "games": 15,
           "highGame": 247,
           "highSeries": 654,
           "highHandicapGame": 284,
           "highHandicapSeries": 765,
           "weekScoresRaw": [
-            "170",
-            "149",
-            "165"
+            "180",
+            "148",
+            "216"
           ],
           "weekScores": [
-            170,
-            149,
-            165
+            180,
+            148,
+            216
           ],
-          "weekTotal": 484,
-          "weekHandicapTotal": 571
+          "weekTotal": 544,
+          "weekHandicapTotal": 643
         },
         {
           "name": "Pete Foster",
-          "average": 174,
-          "handicap": 32,
-          "pins": 2610,
-          "games": 15,
+          "average": 172,
+          "handicap": 34,
+          "pins": 3097,
+          "games": 18,
           "highGame": 210,
           "highSeries": 570,
           "highHandicapGame": 237,
           "highHandicapSeries": 668,
           "weekScoresRaw": [
-            "186",
-            "171",
-            "179"
+            "158",
+            "180",
+            "149"
           ],
           "weekScores": [
-            186,
-            171,
-            179
+            158,
+            180,
+            149
           ],
-          "weekTotal": 536,
-          "weekHandicapTotal": 638
+          "weekTotal": 487,
+          "weekHandicapTotal": 583
         },
         {
           "name": "Mitch Singer",
-          "average": 177,
-          "handicap": 29,
-          "pins": 4249,
-          "games": 24,
+          "average": 181,
+          "handicap": 26,
+          "pins": 4906,
+          "games": 27,
           "highGame": 255,
-          "highSeries": 625,
+          "highSeries": 657,
           "highHandicapGame": 290,
-          "highHandicapSeries": 730,
+          "highHandicapSeries": 744,
           "weekScoresRaw": [
-            "136",
-            "139",
-            "157"
+            "211",
+            "210",
+            "236"
           ],
           "weekScores": [
-            136,
-            139,
-            157
+            211,
+            210,
+            236
           ],
-          "weekTotal": 432,
-          "weekHandicapTotal": 510
+          "weekTotal": 657,
+          "weekHandicapTotal": 744
         },
         {
           "name": "Jordan Arrick",
@@ -1016,11 +1016,11 @@
         }
       ],
       "division": "Tastes Great!",
-      "place": 10,
-      "won": 18,
+      "place": 5,
+      "won": 22,
       "lost": 18,
-      "average": 691,
-      "handicap": 132
+      "average": 693,
+      "handicap": 131
     },
     {
       "number": 4,
@@ -1030,101 +1030,101 @@
           "name": "Jeremy Graul",
           "average": 151,
           "handicap": 53,
-          "pins": 3177,
-          "games": 21,
+          "pins": 3624,
+          "games": 24,
           "highGame": 212,
           "highSeries": 558,
           "highHandicapGame": 270,
           "highHandicapSeries": 732,
           "weekScoresRaw": [
-            "a151",
-            "a151",
-            "a151"
+            "153",
+            "148",
+            "146"
           ],
           "weekScores": [
-            151,
-            151,
-            151
+            153,
+            148,
+            146
           ],
-          "weekTotal": 453,
-          "weekHandicapTotal": 612
+          "weekTotal": 447,
+          "weekHandicapTotal": 606
         },
         {
           "name": "Nicole Luchetta",
-          "average": 165,
-          "handicap": 40,
-          "pins": 2985,
-          "games": 18,
+          "average": 162,
+          "handicap": 43,
+          "pins": 3404,
+          "games": 21,
           "highGame": 208,
           "highSeries": 515,
           "highHandicapGame": 248,
           "highHandicapSeries": 642,
           "weekScoresRaw": [
-            "194",
-            "168",
-            "124"
+            "132",
+            "148",
+            "139"
           ],
           "weekScores": [
-            194,
-            168,
-            124
+            132,
+            148,
+            139
           ],
-          "weekTotal": 486,
-          "weekHandicapTotal": 603
+          "weekTotal": 419,
+          "weekHandicapTotal": 539
         },
         {
           "name": "Augi Fesi",
-          "average": 193,
-          "handicap": 15,
-          "pins": 4057,
-          "games": 21,
+          "average": 192,
+          "handicap": 16,
+          "pins": 4618,
+          "games": 24,
           "highGame": 245,
           "highSeries": 657,
           "highHandicapGame": 260,
           "highHandicapSeries": 702,
           "weekScoresRaw": [
-            "185",
-            "199",
-            "200"
+            "188",
+            "161",
+            "212"
           ],
           "weekScores": [
-            185,
-            199,
-            200
+            188,
+            161,
+            212
           ],
-          "weekTotal": 584,
-          "weekHandicapTotal": 632
+          "weekTotal": 561,
+          "weekHandicapTotal": 606
         },
         {
           "name": "Paul Rochette",
-          "average": 176,
-          "handicap": 30,
-          "pins": 4237,
-          "games": 24,
-          "highGame": 211,
+          "average": 178,
+          "handicap": 28,
+          "pins": 4809,
+          "games": 27,
+          "highGame": 255,
           "highSeries": 580,
-          "highHandicapGame": 247,
+          "highHandicapGame": 285,
           "highHandicapSeries": 688,
           "weekScoresRaw": [
-            "173",
-            "183",
-            "176"
+            "182",
+            "255",
+            "135"
           ],
           "weekScores": [
-            173,
-            183,
-            176
+            182,
+            255,
+            135
           ],
-          "weekTotal": 532,
-          "weekHandicapTotal": 622
+          "weekTotal": 572,
+          "weekHandicapTotal": 662
         }
       ],
       "division": "Tastes Great!",
-      "place": 17,
-      "won": 15,
-      "lost": 21,
-      "average": 685,
-      "handicap": 138
+      "place": 18,
+      "won": 16,
+      "lost": 24,
+      "average": 683,
+      "handicap": 140
     },
     {
       "number": 5,
@@ -1132,95 +1132,95 @@
       "players": [
         {
           "name": "Kathy Novak",
-          "average": 138,
-          "handicap": 64,
-          "pins": 3312,
-          "games": 24,
+          "average": 136,
+          "handicap": 66,
+          "pins": 3693,
+          "games": 27,
           "highGame": 191,
           "highSeries": 460,
           "highHandicapGame": 266,
           "highHandicapSeries": 685,
           "weekScoresRaw": [
             "137",
-            "160",
-            "121"
+            "109",
+            "135"
           ],
           "weekScores": [
             137,
-            160,
-            121
+            109,
+            135
           ],
-          "weekTotal": 418,
-          "weekHandicapTotal": 613
+          "weekTotal": 381,
+          "weekHandicapTotal": 573
         },
         {
           "name": "Ryan Goetz",
-          "average": 139,
-          "handicap": 63,
-          "pins": 2512,
-          "games": 18,
-          "highGame": 189,
-          "highSeries": 515,
-          "highHandicapGame": 259,
+          "average": 144,
+          "handicap": 59,
+          "pins": 3040,
+          "games": 21,
+          "highGame": 232,
+          "highSeries": 528,
+          "highHandicapGame": 295,
           "highHandicapSeries": 740,
           "weekScoresRaw": [
-            "138",
-            "116",
-            "189"
+            "232",
+            "149",
+            "147"
           ],
           "weekScores": [
-            138,
-            116,
-            189
+            232,
+            149,
+            147
           ],
-          "weekTotal": 443,
-          "weekHandicapTotal": 638
+          "weekTotal": 528,
+          "weekHandicapTotal": 717
         },
         {
           "name": "Spencer Ederoff",
           "average": 150,
           "handicap": 54,
-          "pins": 1804,
-          "games": 12,
+          "pins": 2262,
+          "games": 15,
           "highGame": 224,
           "highSeries": 483,
           "highHandicapGame": 281,
           "highHandicapSeries": 654,
           "weekScoresRaw": [
-            "224",
-            "141",
-            "118"
+            "125",
+            "115",
+            "218"
           ],
           "weekScores": [
-            224,
-            141,
-            118
+            125,
+            115,
+            218
           ],
-          "weekTotal": 483,
-          "weekHandicapTotal": 654
+          "weekTotal": 458,
+          "weekHandicapTotal": 620
         },
         {
           "name": "Tanner Novak",
-          "average": 193,
-          "handicap": 15,
-          "pins": 5234,
-          "games": 27,
+          "average": 190,
+          "handicap": 18,
+          "pins": 5701,
+          "games": 30,
           "highGame": 272,
           "highSeries": 677,
           "highHandicapGame": 297,
           "highHandicapSeries": 752,
           "weekScoresRaw": [
-            "174",
-            "212",
-            "211"
+            "150",
+            "148",
+            "169"
           ],
           "weekScores": [
-            174,
-            212,
-            211
+            150,
+            148,
+            169
           ],
-          "weekTotal": 597,
-          "weekHandicapTotal": 642
+          "weekTotal": 467,
+          "weekHandicapTotal": 512
         },
         {
           "name": "Andy Martinez",
@@ -1269,11 +1269,11 @@
         }
       ],
       "division": "Tastes Great!",
-      "place": 8,
-      "won": 18,
-      "lost": 18,
+      "place": 11,
+      "won": 19,
+      "lost": 21,
       "average": 620,
-      "handicap": 196
+      "handicap": 197
     },
     {
       "number": 6,
@@ -1281,49 +1281,49 @@
       "players": [
         {
           "name": "Jack Greenagel",
-          "average": 174,
-          "handicap": 32,
-          "pins": 4707,
-          "games": 27,
+          "average": 173,
+          "handicap": 33,
+          "pins": 5215,
+          "games": 30,
           "highGame": 220,
           "highSeries": 593,
           "highHandicapGame": 262,
           "highHandicapSeries": 737,
           "weekScoresRaw": [
-            "209",
-            "179",
-            "166"
+            "164",
+            "189",
+            "155"
           ],
           "weekScores": [
-            209,
-            179,
-            166
+            164,
+            189,
+            155
           ],
-          "weekTotal": 554,
-          "weekHandicapTotal": 653
+          "weekTotal": 508,
+          "weekHandicapTotal": 604
         },
         {
           "name": "Gavin Flood",
-          "average": 139,
-          "handicap": 63,
-          "pins": 3345,
-          "games": 24,
+          "average": 137,
+          "handicap": 65,
+          "pins": 3701,
+          "games": 27,
           "highGame": 211,
           "highSeries": 493,
           "highHandicapGame": 279,
           "highHandicapSeries": 702,
           "weekScoresRaw": [
-            "145",
-            "138",
-            "153"
+            "132",
+            "123",
+            "101"
           ],
           "weekScores": [
-            145,
-            138,
-            153
+            132,
+            123,
+            101
           ],
-          "weekTotal": 436,
-          "weekHandicapTotal": 628
+          "weekTotal": 356,
+          "weekHandicapTotal": 545
         },
         {
           "name": "Mike Haselhort",
@@ -1336,48 +1336,48 @@
           "highHandicapGame": 231,
           "highHandicapSeries": 622,
           "weekScoresRaw": [
-            "72",
-            "87",
-            "101"
+            "a82",
+            "a82",
+            "a82"
           ],
           "weekScores": [
-            72,
-            87,
-            101
+            82,
+            82,
+            82
           ],
-          "weekTotal": 260,
-          "weekHandicapTotal": 608
+          "weekTotal": 246,
+          "weekHandicapTotal": 591
         },
         {
           "name": "Drew Haas",
-          "average": 178,
-          "handicap": 28,
-          "pins": 3923,
-          "games": 22,
+          "average": 175,
+          "handicap": 31,
+          "pins": 4377,
+          "games": 25,
           "highGame": 242,
           "highSeries": 573,
           "highHandicapGame": 271,
           "highHandicapSeries": 663,
           "weekScoresRaw": [
-            "191",
-            "223",
-            "159"
+            "125",
+            "161",
+            "168"
           ],
           "weekScores": [
-            191,
-            223,
-            159
+            125,
+            161,
+            168
           ],
-          "weekTotal": 573,
-          "weekHandicapTotal": 663
+          "weekTotal": 454,
+          "weekHandicapTotal": 538
         }
       ],
       "division": "Tastes Great!",
-      "place": 13,
+      "place": 17,
       "won": 17.5,
-      "lost": 18.5,
-      "average": 573,
-      "handicap": 238
+      "lost": 22.5,
+      "average": 567,
+      "handicap": 244
     },
     {
       "number": 7,
@@ -1393,18 +1393,10 @@
           "highSeries": 550,
           "highHandicapGame": 310,
           "highHandicapSeries": 805,
-          "weekScoresRaw": [
-            "113",
-            "136",
-            "136"
-          ],
-          "weekScores": [
-            113,
-            136,
-            136
-          ],
-          "weekTotal": 385,
-          "weekHandicapTotal": 616
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Kyle Robinson",
@@ -1431,18 +1423,10 @@
           "highSeries": 684,
           "highHandicapGame": 307,
           "highHandicapSeries": 786,
-          "weekScoresRaw": [
-            "a184",
-            "a184",
-            "a184"
-          ],
-          "weekScores": [
-            184,
-            184,
-            184
-          ],
-          "weekTotal": 552,
-          "weekHandicapTotal": 621
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "David Dirth",
@@ -1454,24 +1438,16 @@
           "highSeries": 678,
           "highHandicapGame": 293,
           "highHandicapSeries": 687,
-          "weekScoresRaw": [
-            "234",
-            "179",
-            "223"
-          ],
-          "weekScores": [
-            234,
-            179,
-            223
-          ],
-          "weekTotal": 636,
-          "weekHandicapTotal": 636
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         }
       ],
       "division": "Tastes Great!",
-      "place": 5,
+      "place": 13,
       "won": 19,
-      "lost": 17,
+      "lost": 21,
       "average": 678,
       "handicap": 144
     },
@@ -1481,95 +1457,95 @@
       "players": [
         {
           "name": "Chris Graham",
-          "average": 170,
+          "average": 169,
           "handicap": 36,
-          "pins": 4610,
-          "games": 27,
+          "pins": 5075,
+          "games": 30,
           "highGame": 234,
           "highSeries": 603,
           "highHandicapGame": 270,
           "highHandicapSeries": 700,
           "weekScoresRaw": [
-            "156",
-            "191",
-            "146"
+            "133",
+            "162",
+            "170"
           ],
           "weekScores": [
-            156,
-            191,
-            146
+            133,
+            162,
+            170
           ],
-          "weekTotal": 493,
-          "weekHandicapTotal": 598
+          "weekTotal": 465,
+          "weekHandicapTotal": 573
         },
         {
           "name": "Brett Foster",
-          "average": 155,
-          "handicap": 49,
-          "pins": 4200,
-          "games": 27,
+          "average": 157,
+          "handicap": 47,
+          "pins": 4730,
+          "games": 30,
           "highGame": 214,
-          "highSeries": 499,
+          "highSeries": 530,
           "highHandicapGame": 264,
-          "highHandicapSeries": 659,
+          "highHandicapSeries": 677,
           "weekScoresRaw": [
-            "148",
-            "190",
-            "132"
+            "211",
+            "141",
+            "178"
           ],
           "weekScores": [
-            148,
-            190,
-            132
+            211,
+            141,
+            178
           ],
-          "weekTotal": 470,
-          "weekHandicapTotal": 617
+          "weekTotal": 530,
+          "weekHandicapTotal": 677
         },
         {
           "name": "Johan Opperman",
           "average": 128,
           "handicap": 73,
-          "pins": 3086,
-          "games": 24,
+          "pins": 3461,
+          "games": 27,
           "highGame": 181,
           "highSeries": 443,
           "highHandicapGame": 264,
           "highHandicapSeries": 689,
           "weekScoresRaw": [
-            "148",
-            "171",
-            "124"
+            "106",
+            "110",
+            "159"
           ],
           "weekScores": [
-            148,
-            171,
-            124
+            106,
+            110,
+            159
           ],
-          "weekTotal": 443,
-          "weekHandicapTotal": 671
+          "weekTotal": 375,
+          "weekHandicapTotal": 594
         },
         {
           "name": "Jerome Cotton",
-          "average": 132,
-          "handicap": 70,
-          "pins": 2785,
-          "games": 21,
+          "average": 129,
+          "handicap": 72,
+          "pins": 3106,
+          "games": 24,
           "highGame": 177,
           "highSeries": 440,
           "highHandicapGame": 249,
           "highHandicapSeries": 656,
           "weekScoresRaw": [
-            "133",
-            "130",
-            "177"
+            "94",
+            "104",
+            "123"
           ],
           "weekScores": [
-            133,
-            130,
-            177
+            94,
+            104,
+            123
           ],
-          "weekTotal": 440,
-          "weekHandicapTotal": 656
+          "weekTotal": 321,
+          "weekHandicapTotal": 531
         },
         {
           "name": "Jonathan Leyva",
@@ -1588,10 +1564,10 @@
         }
       ],
       "division": "Tastes Great!",
-      "place": 14,
-      "won": 17,
-      "lost": 19,
-      "average": 585,
+      "place": 12,
+      "won": 19,
+      "lost": 21,
+      "average": 583,
       "handicap": 228
     },
     {
@@ -1608,18 +1584,10 @@
           "highSeries": 693,
           "highHandicapGame": 260,
           "highHandicapSeries": 744,
-          "weekScoresRaw": [
-            "243",
-            "238",
-            "212"
-          ],
-          "weekScores": [
-            243,
-            238,
-            212
-          ],
-          "weekTotal": 693,
-          "weekHandicapTotal": 744
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Matt Bickel",
@@ -1631,18 +1599,10 @@
           "highSeries": 518,
           "highHandicapGame": 263,
           "highHandicapSeries": 683,
-          "weekScoresRaw": [
-            "124",
-            "124",
-            "139"
-          ],
-          "weekScores": [
-            124,
-            124,
-            139
-          ],
-          "weekTotal": 387,
-          "weekHandicapTotal": 546
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Shaun Jones",
@@ -1654,18 +1614,10 @@
           "highSeries": 699,
           "highHandicapGame": 303,
           "highHandicapSeries": 771,
-          "weekScoresRaw": [
-            "140",
-            "203",
-            "167"
-          ],
-          "weekScores": [
-            140,
-            203,
-            167
-          ],
-          "weekTotal": 510,
-          "weekHandicapTotal": 564
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Erik Fenton",
@@ -1677,18 +1629,10 @@
           "highSeries": 478,
           "highHandicapGame": 272,
           "highHandicapSeries": 658,
-          "weekScoresRaw": [
-            "144",
-            "172",
-            "146"
-          ],
-          "weekScores": [
-            144,
-            172,
-            146
-          ],
-          "weekTotal": 462,
-          "weekHandicapTotal": 639
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Kurtis Fleming",
@@ -1707,9 +1651,9 @@
         }
       ],
       "division": "Tastes Great!",
-      "place": 15,
+      "place": 19,
       "won": 16,
-      "lost": 20,
+      "lost": 24,
       "average": 677,
       "handicap": 144
     },
@@ -1721,47 +1665,47 @@
           "name": "Paul Ford",
           "average": 166,
           "handicap": 39,
-          "pins": 4484,
-          "games": 27,
+          "pins": 4997,
+          "games": 30,
           "highGame": 234,
           "highSeries": 577,
           "highHandicapGame": 274,
           "highHandicapSeries": 697,
           "weekScoresRaw": [
-            "156",
-            "166",
-            "167"
+            "181",
+            "161",
+            "171"
           ],
           "weekScores": [
-            156,
-            166,
-            167
+            181,
+            161,
+            171
           ],
-          "weekTotal": 489,
-          "weekHandicapTotal": 606
+          "weekTotal": 513,
+          "weekHandicapTotal": 630
         },
         {
           "name": "David Wills",
           "average": 159,
           "handicap": 45,
-          "pins": 4302,
-          "games": 27,
+          "pins": 4793,
+          "games": 30,
           "highGame": 195,
           "highSeries": 520,
           "highHandicapGame": 240,
           "highHandicapSeries": 667,
           "weekScoresRaw": [
+            "169",
             "154",
-            "189",
-            "164"
+            "168"
           ],
           "weekScores": [
+            169,
             154,
-            189,
-            164
+            168
           ],
-          "weekTotal": 507,
-          "weekHandicapTotal": 645
+          "weekTotal": 491,
+          "weekHandicapTotal": 626
         },
         {
           "name": "JD Romero",
@@ -1774,17 +1718,17 @@
           "highHandicapGame": 283,
           "highHandicapSeries": 706,
           "weekScoresRaw": [
-            "206",
-            "167",
-            "102"
+            "a129",
+            "a129",
+            "a129"
           ],
           "weekScores": [
-            206,
-            167,
-            102
+            129,
+            129,
+            129
           ],
-          "weekTotal": 475,
-          "weekHandicapTotal": 706
+          "weekTotal": 387,
+          "weekHandicapTotal": 603
         },
         {
           "name": "Stefan Hagfors",
@@ -1797,23 +1741,23 @@
           "highHandicapGame": 305,
           "highHandicapSeries": 749,
           "weekScoresRaw": [
-            "208",
-            "167",
-            "213"
+            "a191",
+            "a191",
+            "a191"
           ],
           "weekScores": [
-            208,
-            167,
-            213
+            191,
+            191,
+            191
           ],
-          "weekTotal": 588,
-          "weekHandicapTotal": 642
+          "weekTotal": 573,
+          "weekHandicapTotal": 624
         }
       ],
       "division": "Tastes Great!",
-      "place": 6,
-      "won": 19,
-      "lost": 17,
+      "place": 4,
+      "won": 22,
+      "lost": 18,
       "average": 645,
       "handicap": 173
     },
@@ -1823,26 +1767,26 @@
       "players": [
         {
           "name": "David Pomerico",
-          "average": 181,
-          "handicap": 26,
-          "pins": 3811,
-          "games": 21,
+          "average": 179,
+          "handicap": 27,
+          "pins": 4299,
+          "games": 24,
           "highGame": 236,
           "highSeries": 612,
           "highHandicapGame": 265,
           "highHandicapSeries": 699,
           "weekScoresRaw": [
-            "a181",
-            "a181",
-            "a181"
+            "160",
+            "158",
+            "170"
           ],
           "weekScores": [
-            181,
-            181,
-            181
+            160,
+            158,
+            170
           ],
-          "weekTotal": 543,
-          "weekHandicapTotal": 621
+          "weekTotal": 488,
+          "weekHandicapTotal": 566
         },
         {
           "name": "Sean Endsley",
@@ -1855,17 +1799,17 @@
           "highHandicapGame": 253,
           "highHandicapSeries": 689,
           "weekScoresRaw": [
-            "99",
-            "117",
-            "127"
+            "a128",
+            "a128",
+            "a128"
           ],
           "weekScores": [
-            99,
-            117,
-            127
+            128,
+            128,
+            128
           ],
-          "weekTotal": 343,
-          "weekHandicapTotal": 556
+          "weekTotal": 384,
+          "weekHandicapTotal": 603
         },
         {
           "name": "Jordan Heffernan",
@@ -1884,57 +1828,57 @@
         },
         {
           "name": "Paul DeChadenedes",
-          "average": 144,
-          "handicap": 59,
-          "pins": 3027,
-          "games": 21,
+          "average": 142,
+          "handicap": 61,
+          "pins": 3428,
+          "games": 24,
           "highGame": 180,
           "highSeries": 498,
           "highHandicapGame": 238,
           "highHandicapSeries": 672,
           "weekScoresRaw": [
-            "134",
-            "114",
-            "114"
+            "133",
+            "105",
+            "163"
           ],
           "weekScores": [
-            134,
-            114,
-            114
+            133,
+            105,
+            163
           ],
-          "weekTotal": 362,
-          "weekHandicapTotal": 527
+          "weekTotal": 401,
+          "weekHandicapTotal": 578
         },
         {
           "name": "Leo Barth",
-          "average": 180,
-          "handicap": 27,
-          "pins": 1083,
-          "games": 6,
-          "highGame": 234,
+          "average": 183,
+          "handicap": 24,
+          "pins": 1651,
+          "games": 9,
+          "highGame": 255,
           "highSeries": 580,
-          "highHandicapGame": 272,
+          "highHandicapGame": 282,
           "highHandicapSeries": 694,
           "weekScoresRaw": [
-            "189",
-            "157",
-            "234"
+            "255",
+            "169",
+            "144"
           ],
           "weekScores": [
-            189,
-            157,
-            234
+            255,
+            169,
+            144
           ],
-          "weekTotal": 580,
-          "weekHandicapTotal": 694
+          "weekTotal": 568,
+          "weekHandicapTotal": 649
         }
       ],
       "division": "Tastes Great!",
-      "place": 18,
-      "won": 15,
-      "lost": 21,
-      "average": 591,
-      "handicap": 222
+      "place": 15,
+      "won": 18,
+      "lost": 22,
+      "average": 587,
+      "handicap": 225
     },
     {
       "number": 12,
@@ -1942,49 +1886,49 @@
       "players": [
         {
           "name": "Kyle Roe",
-          "average": 147,
-          "handicap": 56,
-          "pins": 3540,
-          "games": 24,
-          "highGame": 188,
-          "highSeries": 498,
-          "highHandicapGame": 253,
-          "highHandicapSeries": 693,
+          "average": 152,
+          "handicap": 52,
+          "pins": 4108,
+          "games": 27,
+          "highGame": 199,
+          "highSeries": 568,
+          "highHandicapGame": 255,
+          "highHandicapSeries": 736,
           "weekScoresRaw": [
-            "125",
-            "160",
-            "149"
+            "180",
+            "199",
+            "189"
           ],
           "weekScores": [
-            125,
-            160,
-            149
+            180,
+            199,
+            189
           ],
-          "weekTotal": 434,
-          "weekHandicapTotal": 602
+          "weekTotal": 568,
+          "weekHandicapTotal": 736
         },
         {
           "name": "Matt Khalil",
-          "average": 156,
-          "handicap": 48,
-          "pins": 2808,
-          "games": 18,
-          "highGame": 182,
+          "average": 157,
+          "handicap": 47,
+          "pins": 3303,
+          "games": 21,
+          "highGame": 219,
           "highSeries": 504,
-          "highHandicapGame": 229,
-          "highHandicapSeries": 622,
+          "highHandicapGame": 267,
+          "highHandicapSeries": 639,
           "weekScoresRaw": [
-            "142",
-            "148",
-            "158"
+            "143",
+            "133",
+            "219"
           ],
           "weekScores": [
-            142,
-            148,
-            158
+            143,
+            133,
+            219
           ],
-          "weekTotal": 448,
-          "weekHandicapTotal": 589
+          "weekTotal": 495,
+          "weekHandicapTotal": 639
         },
         {
           "name": "Kyle Block",
@@ -1996,18 +1940,10 @@
           "highSeries": 564,
           "highHandicapGame": 287,
           "highHandicapSeries": 702,
-          "weekScoresRaw": [
-            "a167",
-            "a167",
-            "a167"
-          ],
-          "weekScores": [
-            167,
-            167,
-            167
-          ],
-          "weekTotal": 501,
-          "weekHandicapTotal": 615
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Sean Roe",
@@ -2034,11 +1970,11 @@
         }
       ],
       "division": "Tastes Great!",
-      "place": 16,
-      "won": 15,
+      "place": 10,
+      "won": 19,
       "lost": 21,
-      "average": 681,
-      "handicap": 142
+      "average": 687,
+      "handicap": 137
     },
     {
       "number": 13,
@@ -2046,49 +1982,49 @@
       "players": [
         {
           "name": "Ted Major",
-          "average": 147,
-          "handicap": 56,
-          "pins": 1324,
-          "games": 9,
+          "average": 150,
+          "handicap": 54,
+          "pins": 1802,
+          "games": 12,
           "highGame": 181,
-          "highSeries": 469,
+          "highSeries": 478,
           "highHandicapGame": 238,
           "highHandicapSeries": 652,
           "weekScoresRaw": [
-            "131",
-            "170",
-            "168"
+            "144",
+            "169",
+            "165"
           ],
           "weekScores": [
-            131,
-            170,
-            168
+            144,
+            169,
+            165
           ],
-          "weekTotal": 469,
-          "weekHandicapTotal": 652
+          "weekTotal": 478,
+          "weekHandicapTotal": 646
         },
         {
           "name": "Julie Bonneau",
-          "average": 133,
-          "handicap": 69,
-          "pins": 2006,
-          "games": 15,
+          "average": 134,
+          "handicap": 68,
+          "pins": 2423,
+          "games": 18,
           "highGame": 167,
           "highSeries": 421,
           "highHandicapGame": 237,
           "highHandicapSeries": 631,
           "weekScoresRaw": [
-            "167",
-            "132",
-            "122"
+            "135",
+            "133",
+            "149"
           ],
           "weekScores": [
-            167,
-            132,
-            122
+            135,
+            133,
+            149
           ],
-          "weekTotal": 421,
-          "weekHandicapTotal": 631
+          "weekTotal": 417,
+          "weekHandicapTotal": 624
         },
         {
           "name": "Thomas Just",
@@ -2115,33 +2051,33 @@
           "highSeries": 380,
           "highHandicapGame": 232,
           "highHandicapSeries": 632,
-          "weekScoresRaw": [
-            "134",
-            "121",
-            "117"
-          ],
-          "weekScores": [
-            134,
-            121,
-            117
-          ],
-          "weekTotal": 372,
-          "weekHandicapTotal": 624
-        },
-        {
-          "name": "William Berkowitz",
-          "average": 174,
-          "handicap": 32,
-          "pins": 2616,
-          "games": 15,
-          "highGame": 257,
-          "highSeries": 607,
-          "highHandicapGame": 295,
-          "highHandicapSeries": 721,
           "weekScoresRaw": [],
           "weekScores": [],
           "weekTotal": 0,
           "weekHandicapTotal": 0
+        },
+        {
+          "name": "William Berkowitz",
+          "average": 176,
+          "handicap": 30,
+          "pins": 3182,
+          "games": 18,
+          "highGame": 257,
+          "highSeries": 607,
+          "highHandicapGame": 295,
+          "highHandicapSeries": 721,
+          "weekScoresRaw": [
+            "230",
+            "159",
+            "177"
+          ],
+          "weekScores": [
+            230,
+            159,
+            177
+          ],
+          "weekTotal": 566,
+          "weekHandicapTotal": 662
         },
         {
           "name": "Major Rath",
@@ -2175,11 +2111,11 @@
         }
       ],
       "division": "Tastes Great!",
-      "place": 7,
-      "won": 18.5,
-      "lost": 17.5,
-      "average": 506,
-      "handicap": 298
+      "place": 9,
+      "won": 19.5,
+      "lost": 20.5,
+      "average": 510,
+      "handicap": 295
     },
     {
       "number": 14,
@@ -2195,18 +2131,10 @@
           "highSeries": 511,
           "highHandicapGame": 242,
           "highHandicapSeries": 658,
-          "weekScoresRaw": [
-            "183",
-            "133",
-            "174"
-          ],
-          "weekScores": [
-            183,
-            133,
-            174
-          ],
-          "weekTotal": 490,
-          "weekHandicapTotal": 658
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Ashley Hindes",
@@ -2218,18 +2146,10 @@
           "highSeries": 513,
           "highHandicapGame": 263,
           "highHandicapSeries": 710,
-          "weekScoresRaw": [
-            "158",
-            "142",
-            "111"
-          ],
-          "weekScores": [
-            158,
-            142,
-            111
-          ],
-          "weekTotal": 411,
-          "weekHandicapTotal": 588
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Heather Kuhn",
@@ -2241,18 +2161,10 @@
           "highSeries": 550,
           "highHandicapGame": 259,
           "highHandicapSeries": 676,
-          "weekScoresRaw": [
-            "169",
-            "144",
-            "220"
-          ],
-          "weekScores": [
-            169,
-            144,
-            220
-          ],
-          "weekTotal": 533,
-          "weekHandicapTotal": 650
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Gabe Melendez",
@@ -2264,24 +2176,16 @@
           "highSeries": 692,
           "highHandicapGame": 270,
           "highHandicapSeries": 737,
-          "weekScoresRaw": [
-            "212",
-            "250",
-            "199"
-          ],
-          "weekScores": [
-            212,
-            250,
-            199
-          ],
-          "weekTotal": 661,
-          "weekHandicapTotal": 670
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         }
       ],
       "division": "Tastes Great!",
-      "place": 4,
+      "place": 6,
       "won": 22,
-      "lost": 14,
+      "lost": 18,
       "average": 666,
       "handicap": 154
     },
@@ -2291,41 +2195,49 @@
       "players": [
         {
           "name": "Jim Larsen",
-          "average": 149,
-          "handicap": 54,
-          "pins": 1794,
-          "games": 12,
+          "average": 144,
+          "handicap": 59,
+          "pins": 2168,
+          "games": 15,
           "highGame": 179,
           "highSeries": 489,
           "highHandicapGame": 237,
           "highHandicapSeries": 663,
           "weekScoresRaw": [
-            "a149",
-            "a149",
-            "a149"
+            "130",
+            "135",
+            "109"
           ],
           "weekScores": [
-            149,
-            149,
-            149
+            130,
+            135,
+            109
           ],
-          "weekTotal": 447,
-          "weekHandicapTotal": 609
+          "weekTotal": 374,
+          "weekHandicapTotal": 536
         },
         {
           "name": "Eric Shelay",
-          "average": 155,
-          "handicap": 49,
-          "pins": 2020,
-          "games": 13,
+          "average": 156,
+          "handicap": 48,
+          "pins": 2505,
+          "games": 16,
           "highGame": 223,
           "highSeries": 521,
           "highHandicapGame": 304,
           "highHandicapSeries": 764,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "146",
+            "188",
+            "151"
+          ],
+          "weekScores": [
+            146,
+            188,
+            151
+          ],
+          "weekTotal": 485,
+          "weekHandicapTotal": 632
         },
         {
           "name": "Danielle Farmery",
@@ -2338,48 +2250,48 @@
           "highHandicapGame": 240,
           "highHandicapSeries": 657,
           "weekScoresRaw": [
-            "127",
-            "92",
-            "95"
+            "a118",
+            "a118",
+            "a118"
           ],
           "weekScores": [
-            127,
-            92,
-            95
+            118,
+            118,
+            118
           ],
-          "weekTotal": 314,
-          "weekHandicapTotal": 557
+          "weekTotal": 354,
+          "weekHandicapTotal": 600
         },
         {
           "name": "Nick Reed",
-          "average": 189,
-          "handicap": 18,
-          "pins": 5128,
-          "games": 27,
+          "average": 187,
+          "handicap": 20,
+          "pins": 5635,
+          "games": 30,
           "highGame": 235,
           "highSeries": 620,
           "highHandicapGame": 257,
           "highHandicapSeries": 683,
           "weekScoresRaw": [
-            "204",
-            "227",
-            "171"
+            "154",
+            "179",
+            "174"
           ],
           "weekScores": [
-            204,
-            227,
-            171
+            154,
+            179,
+            174
           ],
-          "weekTotal": 602,
-          "weekHandicapTotal": 659
+          "weekTotal": 507,
+          "weekHandicapTotal": 561
         }
       ],
       "division": "Tastes Great!",
-      "place": 1,
-      "won": 24,
-      "lost": 12,
-      "average": 611,
-      "handicap": 203
+      "place": 2,
+      "won": 25,
+      "lost": 15,
+      "average": 605,
+      "handicap": 209
     },
     {
       "number": 16,
@@ -2387,103 +2299,103 @@
       "players": [
         {
           "name": "Chris VonFeldt",
-          "average": 152,
-          "handicap": 52,
-          "pins": 2741,
-          "games": 18,
+          "average": 149,
+          "handicap": 54,
+          "pins": 3138,
+          "games": 21,
           "highGame": 198,
           "highSeries": 491,
           "highHandicapGame": 261,
           "highHandicapSeries": 656,
           "weekScoresRaw": [
-            "130",
-            "184",
-            "177"
+            "127",
+            "123",
+            "147"
           ],
           "weekScores": [
-            130,
-            184,
-            177
+            127,
+            123,
+            147
           ],
-          "weekTotal": 491,
-          "weekHandicapTotal": 656
+          "weekTotal": 397,
+          "weekHandicapTotal": 553
         },
         {
           "name": "Andy VonFeldt",
-          "average": 152,
-          "handicap": 52,
-          "pins": 4118,
-          "games": 27,
+          "average": 154,
+          "handicap": 50,
+          "pins": 4646,
+          "games": 30,
           "highGame": 216,
           "highSeries": 564,
-          "highHandicapGame": 247,
-          "highHandicapSeries": 657,
+          "highHandicapGame": 251,
+          "highHandicapSeries": 684,
           "weekScoresRaw": [
-            "131",
-            "141",
-            "98"
+            "199",
+            "144",
+            "185"
           ],
           "weekScores": [
-            131,
-            141,
-            98
+            199,
+            144,
+            185
           ],
-          "weekTotal": 370,
-          "weekHandicapTotal": 517
+          "weekTotal": 528,
+          "weekHandicapTotal": 684
         },
         {
           "name": "DJ VonFeldt",
-          "average": 139,
-          "handicap": 63,
-          "pins": 3347,
-          "games": 24,
+          "average": 138,
+          "handicap": 64,
+          "pins": 3742,
+          "games": 27,
           "highGame": 170,
           "highSeries": 470,
           "highHandicapGame": 237,
           "highHandicapSeries": 671,
           "weekScoresRaw": [
-            "170",
-            "168",
+            "146",
+            "117",
             "132"
           ],
           "weekScores": [
-            170,
-            168,
+            146,
+            117,
             132
           ],
-          "weekTotal": 470,
-          "weekHandicapTotal": 671
+          "weekTotal": 395,
+          "weekHandicapTotal": 584
         },
         {
           "name": "Nick VonFeldt",
-          "average": 165,
-          "handicap": 40,
-          "pins": 4479,
-          "games": 27,
+          "average": 164,
+          "handicap": 41,
+          "pins": 4939,
+          "games": 30,
           "highGame": 229,
           "highSeries": 559,
           "highHandicapGame": 271,
           "highHandicapSeries": 700,
           "weekScoresRaw": [
-            "229",
-            "151",
-            "169"
+            "160",
+            "144",
+            "156"
           ],
           "weekScores": [
-            229,
-            151,
-            169
+            160,
+            144,
+            156
           ],
-          "weekTotal": 549,
-          "weekHandicapTotal": 675
+          "weekTotal": 460,
+          "weekHandicapTotal": 580
         }
       ],
       "division": "Tastes Great!",
-      "place": 11,
-      "won": 18,
-      "lost": 18,
-      "average": 608,
-      "handicap": 207
+      "place": 8,
+      "won": 21,
+      "lost": 19,
+      "average": 605,
+      "handicap": 209
     },
     {
       "number": 17,
@@ -2491,95 +2403,103 @@
       "players": [
         {
           "name": "Drew Long",
-          "average": 158,
-          "handicap": 46,
-          "pins": 4281,
-          "games": 27,
+          "average": 157,
+          "handicap": 47,
+          "pins": 4732,
+          "games": 30,
           "highGame": 238,
           "highSeries": 610,
           "highHandicapGame": 292,
           "highHandicapSeries": 772,
           "weekScoresRaw": [
-            "163",
-            "136",
-            "137"
+            "137",
+            "145",
+            "169"
           ],
           "weekScores": [
-            163,
-            136,
-            137
+            137,
+            145,
+            169
           ],
-          "weekTotal": 436,
-          "weekHandicapTotal": 571
+          "weekTotal": 451,
+          "weekHandicapTotal": 589
         },
         {
           "name": "Don Oatman",
-          "average": 136,
-          "handicap": 66,
-          "pins": 1639,
-          "games": 12,
-          "highGame": 164,
+          "average": 139,
+          "handicap": 63,
+          "pins": 2087,
+          "games": 15,
+          "highGame": 171,
           "highSeries": 456,
-          "highHandicapGame": 235,
+          "highHandicapGame": 237,
           "highHandicapSeries": 669,
           "weekScoresRaw": [
-            "133",
-            "159",
-            "164"
+            "162",
+            "171",
+            "115"
           ],
           "weekScores": [
-            133,
-            159,
-            164
+            162,
+            171,
+            115
           ],
-          "weekTotal": 456,
-          "weekHandicapTotal": 669
+          "weekTotal": 448,
+          "weekHandicapTotal": 646
         },
         {
           "name": "Tom Tetrick",
-          "average": 187,
-          "handicap": 20,
-          "pins": 4491,
-          "games": 24,
-          "highGame": 255,
+          "average": 188,
+          "handicap": 19,
+          "pins": 5096,
+          "games": 27,
+          "highGame": 256,
           "highSeries": 643,
           "highHandicapGame": 278,
           "highHandicapSeries": 712,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "191",
+            "158",
+            "256"
+          ],
+          "weekScores": [
+            191,
+            158,
+            256
+          ],
+          "weekTotal": 605,
+          "weekHandicapTotal": 665
         },
         {
           "name": "Jeff Roberts",
-          "average": 211,
+          "average": 214,
           "handicap": 0,
-          "pins": 4445,
-          "games": 21,
+          "pins": 5141,
+          "games": 24,
           "highGame": 265,
           "highSeries": 721,
           "highHandicapGame": 265,
           "highHandicapSeries": 730,
           "weekScoresRaw": [
-            "195",
-            "193",
-            "180"
+            "213",
+            "247",
+            "236"
           ],
           "weekScores": [
-            195,
-            193,
-            180
+            213,
+            247,
+            236
           ],
-          "weekTotal": 568,
-          "weekHandicapTotal": 568
+          "weekTotal": 696,
+          "weekHandicapTotal": 696
         }
       ],
       "division": "Tastes Great!",
-      "place": 2,
-      "won": 24,
-      "lost": 12,
-      "average": 692,
-      "handicap": 132
+      "place": 1,
+      "won": 27,
+      "lost": 13,
+      "average": 698,
+      "handicap": 129
     },
     {
       "number": 18,
@@ -2589,93 +2509,101 @@
           "name": "Nick Earhart",
           "average": 192,
           "handicap": 16,
-          "pins": 4035,
-          "games": 21,
-          "highGame": 234,
+          "pins": 4619,
+          "games": 24,
+          "highGame": 240,
           "highSeries": 625,
-          "highHandicapGame": 250,
+          "highHandicapGame": 256,
           "highHandicapSeries": 690,
           "weekScoresRaw": [
-            "158",
-            "221",
-            "163"
+            "240",
+            "170",
+            "174"
           ],
           "weekScores": [
-            158,
-            221,
-            163
+            240,
+            170,
+            174
           ],
-          "weekTotal": 542,
-          "weekHandicapTotal": 584
+          "weekTotal": 584,
+          "weekHandicapTotal": 632
         },
         {
           "name": "Bindul Bhowmik",
-          "average": 159,
-          "handicap": 45,
-          "pins": 2867,
-          "games": 18,
+          "average": 155,
+          "handicap": 49,
+          "pins": 3272,
+          "games": 21,
           "highGame": 191,
           "highSeries": 510,
           "highHandicapGame": 237,
           "highHandicapSeries": 648,
           "weekScoresRaw": [
-            "a159",
-            "a159",
-            "a159"
+            "127",
+            "127",
+            "151"
           ],
           "weekScores": [
-            159,
-            159,
-            159
+            127,
+            127,
+            151
           ],
-          "weekTotal": 477,
-          "weekHandicapTotal": 612
+          "weekTotal": 405,
+          "weekHandicapTotal": 540
         },
         {
           "name": "Luke Wiegand",
-          "average": 175,
-          "handicap": 31,
-          "pins": 2625,
-          "games": 15,
+          "average": 173,
+          "handicap": 33,
+          "pins": 3114,
+          "games": 18,
           "highGame": 241,
           "highSeries": 614,
           "highHandicapGame": 283,
           "highHandicapSeries": 740,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "128",
+            "215",
+            "146"
+          ],
+          "weekScores": [
+            128,
+            215,
+            146
+          ],
+          "weekTotal": 489,
+          "weekHandicapTotal": 582
         },
         {
           "name": "Brian Grom",
           "average": 199,
           "handicap": 9,
-          "pins": 4195,
-          "games": 21,
+          "pins": 4795,
+          "games": 24,
           "highGame": 246,
           "highSeries": 691,
           "highHandicapGame": 288,
           "highHandicapSeries": 807,
           "weekScoresRaw": [
-            "a199",
-            "199",
-            "208"
+            "166",
+            "209",
+            "225"
           ],
           "weekScores": [
-            199,
-            199,
-            208
+            166,
+            209,
+            225
           ],
-          "weekTotal": null,
-          "weekHandicapTotal": null
+          "weekTotal": 600,
+          "weekHandicapTotal": 627
         }
       ],
       "division": "Tastes Great!",
       "place": 3,
-      "won": 22,
-      "lost": 14,
-      "average": 725,
-      "handicap": 101
+      "won": 24,
+      "lost": 16,
+      "average": 719,
+      "handicap": 107
     },
     {
       "number": 19,
@@ -2683,103 +2611,103 @@
       "players": [
         {
           "name": "Shirlee Jae Illsley",
-          "average": 135,
-          "handicap": 67,
-          "pins": 2854,
-          "games": 21,
+          "average": 136,
+          "handicap": 66,
+          "pins": 3280,
+          "games": 24,
           "highGame": 202,
           "highSeries": 477,
           "highHandicapGame": 257,
           "highHandicapSeries": 687,
           "weekScoresRaw": [
-            "137",
-            "173",
-            "167"
+            "149",
+            "136",
+            "141"
           ],
           "weekScores": [
-            137,
-            173,
-            167
+            149,
+            136,
+            141
           ],
-          "weekTotal": 477,
-          "weekHandicapTotal": 687
+          "weekTotal": 426,
+          "weekHandicapTotal": 627
         },
         {
           "name": "Ty Coder",
-          "average": 130,
-          "handicap": 72,
-          "pins": 1960,
-          "games": 15,
+          "average": 127,
+          "handicap": 74,
+          "pins": 2296,
+          "games": 18,
           "highGame": 156,
           "highSeries": 435,
           "highHandicapGame": 230,
           "highHandicapSeries": 657,
           "weekScoresRaw": [
-            "156",
-            "140",
-            "139"
+            "98",
+            "145",
+            "93"
           ],
           "weekScores": [
-            156,
-            140,
-            139
+            98,
+            145,
+            93
           ],
-          "weekTotal": 435,
-          "weekHandicapTotal": 657
+          "weekTotal": 336,
+          "weekHandicapTotal": 552
         },
         {
-          "name": "Michael Grossman",
-          "average": 164,
-          "handicap": 41,
-          "pins": 2962,
-          "games": 18,
-          "highGame": 199,
-          "highSeries": 524,
-          "highHandicapGame": 236,
-          "highHandicapSeries": 653,
+          "name": "Kim Illsey",
+          "average": 153,
+          "handicap": 51,
+          "pins": 1377,
+          "games": 9,
+          "highGame": 186,
+          "highSeries": 506,
+          "highHandicapGame": 223,
+          "highHandicapSeries": 617,
           "weekScoresRaw": [
-            "a164",
-            "a164",
-            "a164"
+            "162",
+            "129",
+            "144"
           ],
           "weekScores": [
-            164,
-            164,
-            164
+            162,
+            129,
+            144
           ],
-          "weekTotal": 492,
-          "weekHandicapTotal": 615
+          "weekTotal": 435,
+          "weekHandicapTotal": 576
         },
         {
           "name": "Harrison Wilds",
           "average": 190,
           "handicap": 18,
-          "pins": 5132,
-          "games": 27,
+          "pins": 5706,
+          "games": 30,
           "highGame": 258,
           "highSeries": 648,
           "highHandicapGame": 279,
           "highHandicapSeries": 715,
           "weekScoresRaw": [
-            "258",
-            "227",
-            "163"
+            "156",
+            "206",
+            "212"
           ],
           "weekScores": [
-            258,
-            227,
-            163
+            156,
+            206,
+            212
           ],
-          "weekTotal": 648,
-          "weekHandicapTotal": 711
+          "weekTotal": 574,
+          "weekHandicapTotal": 628
         }
       ],
       "division": "Tastes Great!",
-      "place": 9,
-      "won": 18,
-      "lost": 18,
-      "average": 619,
-      "handicap": 198
+      "place": 7,
+      "won": 21,
+      "lost": 19,
+      "average": 606,
+      "handicap": 209
     },
     {
       "number": 20,
@@ -2787,95 +2715,103 @@
       "players": [
         {
           "name": "Mark Rogers",
-          "average": 162,
-          "handicap": 43,
-          "pins": 1944,
-          "games": 12,
+          "average": 165,
+          "handicap": 40,
+          "pins": 2485,
+          "games": 15,
           "highGame": 217,
           "highSeries": 546,
           "highHandicapGame": 242,
-          "highHandicapSeries": 628,
+          "highHandicapSeries": 670,
           "weekScoresRaw": [
-            "143",
-            "166",
-            "105"
+            "169",
+            "180",
+            "192"
           ],
           "weekScores": [
-            143,
-            166,
-            105
+            169,
+            180,
+            192
           ],
-          "weekTotal": 414,
-          "weekHandicapTotal": 522
+          "weekTotal": 541,
+          "weekHandicapTotal": 670
         },
         {
           "name": "Aimee Rogers",
-          "average": 134,
-          "handicap": 68,
-          "pins": 3643,
-          "games": 27,
+          "average": 135,
+          "handicap": 67,
+          "pins": 4077,
+          "games": 30,
           "highGame": 167,
           "highSeries": 448,
           "highHandicapGame": 230,
           "highHandicapSeries": 650,
           "weekScoresRaw": [
-            "150",
-            "142",
-            "130"
+            "140",
+            "151",
+            "143"
           ],
           "weekScores": [
-            150,
-            142,
-            130
+            140,
+            151,
+            143
           ],
-          "weekTotal": 422,
-          "weekHandicapTotal": 626
+          "weekTotal": 434,
+          "weekHandicapTotal": 638
         },
         {
           "name": "Matt Ammon",
-          "average": 170,
-          "handicap": 36,
-          "pins": 2723,
-          "games": 16,
+          "average": 171,
+          "handicap": 35,
+          "pins": 3259,
+          "games": 19,
           "highGame": 213,
           "highSeries": 562,
           "highHandicapGame": 250,
           "highHandicapSeries": 674,
           "weekScoresRaw": [
-            "162",
-            "192",
-            "164"
+            "190",
+            "195",
+            "151"
           ],
           "weekScores": [
-            162,
-            192,
-            164
+            190,
+            195,
+            151
           ],
-          "weekTotal": 518,
-          "weekHandicapTotal": 626
+          "weekTotal": 536,
+          "weekHandicapTotal": 644
         },
         {
           "name": "Bruce Self",
-          "average": 212,
+          "average": 214,
           "handicap": 0,
-          "pins": 2338,
-          "games": 11,
+          "pins": 3009,
+          "games": 14,
           "highGame": 277,
-          "highSeries": 657,
+          "highSeries": 671,
           "highHandicapGame": 277,
-          "highHandicapSeries": 657,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "highHandicapSeries": 671,
+          "weekScoresRaw": [
+            "189",
+            "223",
+            "259"
+          ],
+          "weekScores": [
+            189,
+            223,
+            259
+          ],
+          "weekTotal": 671,
+          "weekHandicapTotal": 671
         }
       ],
       "division": "Tastes Great!",
       "place": 20,
-      "won": 12,
-      "lost": 24,
-      "average": 678,
-      "handicap": 147
+      "won": 15,
+      "lost": 25,
+      "average": 685,
+      "handicap": 142
     },
     {
       "number": 21,
@@ -2883,103 +2819,103 @@
       "players": [
         {
           "name": "Leslie Hollander",
-          "average": 145,
-          "handicap": 58,
-          "pins": 3055,
-          "games": 21,
+          "average": 147,
+          "handicap": 56,
+          "pins": 3542,
+          "games": 24,
           "highGame": 183,
           "highSeries": 504,
           "highHandicapGame": 245,
           "highHandicapSeries": 690,
           "weekScoresRaw": [
-            "183",
-            "156",
-            "165"
+            "162",
+            "170",
+            "155"
           ],
           "weekScores": [
-            183,
-            156,
-            165
+            162,
+            170,
+            155
           ],
-          "weekTotal": 504,
-          "weekHandicapTotal": 690
+          "weekTotal": 487,
+          "weekHandicapTotal": 661
         },
         {
           "name": "Bas Hollander",
           "average": 122,
           "handicap": 79,
-          "pins": 2950,
-          "games": 24,
+          "pins": 3305,
+          "games": 27,
           "highGame": 156,
           "highSeries": 438,
           "highHandicapGame": 218,
           "highHandicapSeries": 615,
           "weekScoresRaw": [
-            "112",
-            "107",
-            "89"
+            "135",
+            "110",
+            "110"
           ],
           "weekScores": [
-            112,
-            107,
-            89
+            135,
+            110,
+            110
           ],
-          "weekTotal": 308,
-          "weekHandicapTotal": 536
+          "weekTotal": 355,
+          "weekHandicapTotal": 592
         },
         {
           "name": "Jake Eskanos",
-          "average": 137,
-          "handicap": 65,
-          "pins": 1931,
-          "games": 14,
+          "average": 138,
+          "handicap": 64,
+          "pins": 2358,
+          "games": 17,
           "highGame": 161,
           "highSeries": 446,
           "highHandicapGame": 232,
           "highHandicapSeries": 659,
           "weekScoresRaw": [
-            "145",
-            "139",
-            "125"
+            "140",
+            "138",
+            "149"
           ],
           "weekScores": [
-            145,
-            139,
-            125
+            140,
+            138,
+            149
           ],
-          "weekTotal": 409,
-          "weekHandicapTotal": 601
+          "weekTotal": 427,
+          "weekHandicapTotal": 622
         },
         {
           "name": "Johno Buist",
-          "average": 191,
-          "handicap": 17,
-          "pins": 3444,
-          "games": 18,
+          "average": 189,
+          "handicap": 18,
+          "pins": 3988,
+          "games": 21,
           "highGame": 236,
           "highSeries": 608,
           "highHandicapGame": 268,
           "highHandicapSeries": 683,
           "weekScoresRaw": [
-            "a191",
-            "a191",
-            "a191"
+            "187",
+            "196",
+            "161"
           ],
           "weekScores": [
-            191,
-            191,
-            191
+            187,
+            196,
+            161
           ],
-          "weekTotal": 573,
-          "weekHandicapTotal": 624
+          "weekTotal": 544,
+          "weekHandicapTotal": 595
         }
       ],
       "division": "Less Filling!",
-      "place": 10,
-      "won": 17,
+      "place": 7,
+      "won": 21,
       "lost": 19,
-      "average": 595,
-      "handicap": 219
+      "average": 596,
+      "handicap": 217
     },
     {
       "number": 22,
@@ -3002,48 +2938,72 @@
         },
         {
           "name": "Ben Palko",
-          "average": 143,
-          "handicap": 60,
-          "pins": 2152,
-          "games": 15,
-          "highGame": 166,
-          "highSeries": 440,
-          "highHandicapGame": 227,
-          "highHandicapSeries": 623,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "average": 146,
+          "handicap": 57,
+          "pins": 2638,
+          "games": 18,
+          "highGame": 192,
+          "highSeries": 486,
+          "highHandicapGame": 252,
+          "highHandicapSeries": 666,
+          "weekScoresRaw": [
+            "107",
+            "187",
+            "192"
+          ],
+          "weekScores": [
+            107,
+            187,
+            192
+          ],
+          "weekTotal": 486,
+          "weekHandicapTotal": 666
         },
         {
           "name": "Bob McCloud",
-          "average": 125,
-          "handicap": 76,
-          "pins": 2625,
-          "games": 21,
+          "average": 124,
+          "handicap": 77,
+          "pins": 2987,
+          "games": 24,
           "highGame": 168,
           "highSeries": 417,
           "highHandicapGame": 247,
           "highHandicapSeries": 654,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "89",
+            "145",
+            "128"
+          ],
+          "weekScores": [
+            89,
+            145,
+            128
+          ],
+          "weekTotal": 362,
+          "weekHandicapTotal": 590
         },
         {
           "name": "Collin Pautsch",
-          "average": 188,
-          "handicap": 19,
-          "pins": 2821,
-          "games": 15,
+          "average": 185,
+          "handicap": 22,
+          "pins": 3336,
+          "games": 18,
           "highGame": 271,
           "highSeries": 740,
           "highHandicapGame": 306,
           "highHandicapSeries": 845,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "134",
+            "171",
+            "210"
+          ],
+          "weekScores": [
+            134,
+            171,
+            210
+          ],
+          "weekTotal": 515,
+          "weekHandicapTotal": 572
         },
         {
           "name": "Dave Lang",
@@ -3062,26 +3022,34 @@
         },
         {
           "name": "Brian Faulkner",
-          "average": 133,
-          "handicap": 69,
-          "pins": 399,
-          "games": 3,
-          "highGame": 153,
-          "highSeries": 399,
-          "highHandicapGame": 222,
-          "highHandicapSeries": 606,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "average": 143,
+          "handicap": 60,
+          "pins": 860,
+          "games": 6,
+          "highGame": 179,
+          "highSeries": 461,
+          "highHandicapGame": 248,
+          "highHandicapSeries": 668,
+          "weekScoresRaw": [
+            "179",
+            "157",
+            "125"
+          ],
+          "weekScores": [
+            179,
+            157,
+            125
+          ],
+          "weekTotal": 461,
+          "weekHandicapTotal": 668
         }
       ],
       "division": "Less Filling!",
-      "place": 20,
-      "won": 10,
-      "lost": 26,
-      "average": 595,
-      "handicap": 218
+      "place": 17,
+      "won": 13,
+      "lost": 27,
+      "average": 594,
+      "handicap": 219
     },
     {
       "number": 23,
@@ -3089,103 +3057,103 @@
       "players": [
         {
           "name": "Patrick Brown",
-          "average": 146,
-          "handicap": 57,
-          "pins": 3514,
-          "games": 24,
+          "average": 148,
+          "handicap": 55,
+          "pins": 4016,
+          "games": 27,
           "highGame": 211,
           "highSeries": 534,
           "highHandicapGame": 256,
-          "highHandicapSeries": 635,
+          "highHandicapSeries": 673,
           "weekScoresRaw": [
-            "145",
-            "100",
-            "145"
+            "189",
+            "185",
+            "128"
           ],
           "weekScores": [
-            145,
-            100,
-            145
+            189,
+            185,
+            128
           ],
-          "weekTotal": 390,
-          "weekHandicapTotal": 552
+          "weekTotal": 502,
+          "weekHandicapTotal": 673
         },
         {
           "name": "Mark Snyder",
-          "average": 140,
-          "handicap": 63,
-          "pins": 2953,
-          "games": 21,
-          "highGame": 174,
+          "average": 141,
+          "handicap": 62,
+          "pins": 3390,
+          "games": 24,
+          "highGame": 181,
           "highSeries": 484,
-          "highHandicapGame": 240,
+          "highHandicapGame": 244,
           "highHandicapSeries": 682,
           "weekScoresRaw": [
-            "149",
-            "118",
-            "123"
+            "128",
+            "181",
+            "128"
           ],
           "weekScores": [
-            149,
-            118,
-            123
+            128,
+            181,
+            128
           ],
-          "weekTotal": 390,
-          "weekHandicapTotal": 573
+          "weekTotal": 437,
+          "weekHandicapTotal": 626
         },
         {
           "name": "Ty Goulding",
-          "average": 157,
-          "handicap": 47,
-          "pins": 4251,
-          "games": 27,
+          "average": 158,
+          "handicap": 46,
+          "pins": 4757,
+          "games": 30,
           "highGame": 202,
           "highSeries": 512,
           "highHandicapGame": 250,
           "highHandicapSeries": 662,
           "weekScoresRaw": [
-            "171",
-            "194",
-            "147"
+            "158",
+            "162",
+            "186"
           ],
           "weekScores": [
-            171,
-            194,
-            147
+            158,
+            162,
+            186
           ],
-          "weekTotal": 512,
-          "weekHandicapTotal": 662
+          "weekTotal": 506,
+          "weekHandicapTotal": 647
         },
         {
           "name": "Greg Zick",
-          "average": 180,
-          "handicap": 27,
-          "pins": 4321,
-          "games": 24,
+          "average": 181,
+          "handicap": 26,
+          "pins": 4913,
+          "games": 27,
           "highGame": 244,
           "highSeries": 597,
           "highHandicapGame": 267,
           "highHandicapSeries": 675,
           "weekScoresRaw": [
-            "212",
-            "215",
-            "170"
+            "235",
+            "193",
+            "164"
           ],
           "weekScores": [
-            212,
-            215,
-            170
+            235,
+            193,
+            164
           ],
-          "weekTotal": 597,
-          "weekHandicapTotal": 675
+          "weekTotal": 592,
+          "weekHandicapTotal": 673
         }
       ],
       "division": "Less Filling!",
       "place": 8,
-      "won": 18.5,
-      "lost": 17.5,
-      "average": 623,
-      "handicap": 194
+      "won": 20.5,
+      "lost": 19.5,
+      "average": 628,
+      "handicap": 189
     },
     {
       "number": 24,
@@ -3193,87 +3161,95 @@
       "players": [
         {
           "name": "Gabriel Gonzalez",
-          "average": 133,
-          "handicap": 69,
-          "pins": 2799,
-          "games": 21,
+          "average": 130,
+          "handicap": 72,
+          "pins": 3121,
+          "games": 24,
           "highGame": 184,
           "highSeries": 498,
           "highHandicapGame": 262,
           "highHandicapSeries": 732,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "44",
+            "135",
+            "143"
+          ],
+          "weekScores": [
+            44,
+            135,
+            143
+          ],
+          "weekTotal": 322,
+          "weekHandicapTotal": 529
         },
         {
           "name": "Otilia Gomez",
-          "average": 131,
-          "handicap": 71,
-          "pins": 3556,
-          "games": 27,
+          "average": 132,
+          "handicap": 70,
+          "pins": 3968,
+          "games": 30,
           "highGame": 179,
           "highSeries": 447,
           "highHandicapGame": 252,
           "highHandicapSeries": 666,
           "weekScoresRaw": [
-            "124",
-            "129",
-            "108"
+            "113",
+            "163",
+            "136"
           ],
           "weekScores": [
-            124,
-            129,
-            108
+            113,
+            163,
+            136
           ],
-          "weekTotal": 361,
-          "weekHandicapTotal": 568
+          "weekTotal": 412,
+          "weekHandicapTotal": 625
         },
         {
           "name": "Courtney Williams",
-          "average": 159,
-          "handicap": 45,
-          "pins": 4303,
-          "games": 27,
+          "average": 158,
+          "handicap": 46,
+          "pins": 4745,
+          "games": 30,
           "highGame": 234,
           "highSeries": 595,
           "highHandicapGame": 284,
           "highHandicapSeries": 745,
           "weekScoresRaw": [
-            "183",
-            "234",
-            "178"
+            "146",
+            "158",
+            "138"
           ],
           "weekScores": [
-            183,
-            234,
-            178
+            146,
+            158,
+            138
           ],
-          "weekTotal": 595,
-          "weekHandicapTotal": 745
+          "weekTotal": 442,
+          "weekHandicapTotal": 577
         },
         {
           "name": "Kyle Martin",
-          "average": 168,
-          "handicap": 37,
-          "pins": 4039,
-          "games": 24,
+          "average": 167,
+          "handicap": 38,
+          "pins": 4531,
+          "games": 27,
           "highGame": 228,
           "highSeries": 542,
           "highHandicapGame": 272,
           "highHandicapSeries": 674,
           "weekScoresRaw": [
-            "160",
-            "201",
-            "170"
+            "179",
+            "158",
+            "155"
           ],
           "weekScores": [
-            160,
-            201,
-            170
+            179,
+            158,
+            155
           ],
-          "weekTotal": 531,
-          "weekHandicapTotal": 645
+          "weekTotal": 492,
+          "weekHandicapTotal": 603
         },
         {
           "name": "Marisa Martin",
@@ -3293,10 +3269,10 @@
       ],
       "division": "Less Filling!",
       "place": 13,
-      "won": 15.5,
-      "lost": 20.5,
-      "average": 591,
-      "handicap": 222
+      "won": 18.5,
+      "lost": 21.5,
+      "average": 587,
+      "handicap": 226
     },
     {
       "number": 25,
@@ -3304,26 +3280,26 @@
       "players": [
         {
           "name": "Zeb Buckey",
-          "average": 145,
-          "handicap": 58,
-          "pins": 2184,
-          "games": 15,
+          "average": 146,
+          "handicap": 57,
+          "pins": 2632,
+          "games": 18,
           "highGame": 199,
           "highSeries": 501,
           "highHandicapGame": 246,
           "highHandicapSeries": 690,
           "weekScoresRaw": [
-            "183",
-            "177",
-            "141"
+            "144",
+            "181",
+            "123"
           ],
           "weekScores": [
-            183,
-            177,
-            141
+            144,
+            181,
+            123
           ],
-          "weekTotal": 501,
-          "weekHandicapTotal": 690
+          "weekTotal": 448,
+          "weekHandicapTotal": 622
         },
         {
           "name": "Christopher Dean",
@@ -3336,40 +3312,40 @@
           "highHandicapGame": 293,
           "highHandicapSeries": 738,
           "weekScoresRaw": [
-            "111",
-            "128",
-            "152"
+            "a133",
+            "a133",
+            "a133"
           ],
           "weekScores": [
-            111,
-            128,
-            152
+            133,
+            133,
+            133
           ],
-          "weekTotal": 391,
-          "weekHandicapTotal": 595
+          "weekTotal": 399,
+          "weekHandicapTotal": 606
         },
         {
           "name": "Jeff Collins",
-          "average": 141,
-          "handicap": 62,
-          "pins": 3392,
-          "games": 24,
+          "average": 140,
+          "handicap": 63,
+          "pins": 3781,
+          "games": 27,
           "highGame": 209,
           "highSeries": 524,
           "highHandicapGame": 275,
           "highHandicapSeries": 722,
           "weekScoresRaw": [
-            "166",
-            "209",
-            "149"
+            "102",
+            "174",
+            "113"
           ],
           "weekScores": [
-            166,
-            209,
-            149
+            102,
+            174,
+            113
           ],
-          "weekTotal": 524,
-          "weekHandicapTotal": 722
+          "weekTotal": 389,
+          "weekHandicapTotal": 575
         },
         {
           "name": "Jake Davenport",
@@ -3411,9 +3387,9 @@
         }
       ],
       "division": "Less Filling!",
-      "place": 7,
+      "place": 10,
       "won": 19,
-      "lost": 17,
+      "lost": 21,
       "average": 589,
       "handicap": 225
     },
@@ -3423,118 +3399,103 @@
       "players": [
         {
           "name": "Zach Fowlds",
-          "average": 184,
-          "handicap": 23,
-          "pins": 3871,
-          "games": 21,
+          "average": 183,
+          "handicap": 24,
+          "pins": 4397,
+          "games": 24,
           "highGame": 216,
           "highSeries": 607,
           "highHandicapGame": 242,
           "highHandicapSeries": 685,
           "weekScoresRaw": [
-            "210",
-            "181",
-            "216"
+            "164",
+            "191",
+            "171"
           ],
           "weekScores": [
-            210,
-            181,
-            216
+            164,
+            191,
+            171
           ],
-          "weekTotal": 607,
-          "weekHandicapTotal": 685
+          "weekTotal": 526,
+          "weekHandicapTotal": 595
         },
         {
           "name": "Tyler Ballinger",
-          "average": 168,
-          "handicap": 37,
-          "pins": 4046,
-          "games": 24,
-          "highGame": 213,
-          "highSeries": 563,
-          "highHandicapGame": 254,
-          "highHandicapSeries": 688,
+          "average": 172,
+          "handicap": 34,
+          "pins": 4648,
+          "games": 27,
+          "highGame": 243,
+          "highSeries": 602,
+          "highHandicapGame": 280,
+          "highHandicapSeries": 713,
           "weekScoresRaw": [
-            "145",
-            "178",
-            "193"
+            "243",
+            "168",
+            "191"
           ],
           "weekScores": [
-            145,
-            178,
-            193
+            243,
+            168,
+            191
           ],
-          "weekTotal": 516,
-          "weekHandicapTotal": 627
+          "weekTotal": 602,
+          "weekHandicapTotal": 713
         },
         {
-          "name": "Sean Harkins",
-          "average": 123,
-          "handicap": 78,
-          "pins": 2214,
-          "games": 18,
-          "highGame": 156,
-          "highSeries": 405,
-          "highHandicapGame": 227,
-          "highHandicapSeries": 622,
+          "name": "Greg Fowlds",
+          "average": 149,
+          "handicap": 54,
+          "pins": 449,
+          "games": 3,
+          "highGame": 151,
+          "highSeries": 449,
+          "highHandicapGame": 205,
+          "highHandicapSeries": 611,
           "weekScoresRaw": [
-            "a123",
-            "a123",
-            "a123"
+            "151",
+            "149",
+            "149"
           ],
           "weekScores": [
-            123,
-            123,
-            123
+            151,
+            149,
+            149
           ],
-          "weekTotal": 369,
-          "weekHandicapTotal": 603
+          "weekTotal": 449,
+          "weekHandicapTotal": 611
         },
         {
           "name": "Chris Lever",
-          "average": 176,
-          "handicap": 30,
-          "pins": 2117,
-          "games": 12,
+          "average": 168,
+          "handicap": 37,
+          "pins": 2530,
+          "games": 15,
           "highGame": 232,
           "highSeries": 570,
           "highHandicapGame": 250,
           "highHandicapSeries": 624,
           "weekScoresRaw": [
-            "a176",
-            "a176",
-            "a176"
+            "138",
+            "145",
+            "130"
           ],
           "weekScores": [
-            176,
-            176,
-            176
+            138,
+            145,
+            130
           ],
-          "weekTotal": 528,
-          "weekHandicapTotal": 618
-        },
-        {
-          "name": "Greg Fowlds",
-          "average": 0,
-          "handicap": 0,
-          "pins": 0,
-          "games": 0,
-          "highGame": 0,
-          "highSeries": 0,
-          "highHandicapGame": 0,
-          "highHandicapSeries": 0,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": null,
-          "weekHandicapTotal": null
+          "weekTotal": 413,
+          "weekHandicapTotal": 503
         }
       ],
       "division": "Less Filling!",
-      "place": 12,
+      "place": 16,
       "won": 16,
-      "lost": 20,
-      "average": 651,
-      "handicap": 168
+      "lost": 24,
+      "average": 672,
+      "handicap": 149
     },
     {
       "number": 27,
@@ -3542,103 +3503,103 @@
       "players": [
         {
           "name": "Tim Hanson",
-          "average": 109,
-          "handicap": 90,
-          "pins": 1978,
-          "games": 18,
+          "average": 107,
+          "handicap": 92,
+          "pins": 2252,
+          "games": 21,
           "highGame": 138,
           "highSeries": 372,
           "highHandicapGame": 227,
           "highHandicapSeries": 639,
           "weekScoresRaw": [
-            "92",
-            "98",
-            "117"
+            "83",
+            "100",
+            "91"
           ],
           "weekScores": [
-            92,
-            98,
-            117
+            83,
+            100,
+            91
           ],
-          "weekTotal": 307,
-          "weekHandicapTotal": 574
+          "weekTotal": 274,
+          "weekHandicapTotal": 544
         },
         {
           "name": "Eric Mosier",
           "average": 135,
           "handicap": 67,
-          "pins": 2852,
-          "games": 21,
+          "pins": 3249,
+          "games": 24,
           "highGame": 169,
           "highSeries": 476,
           "highHandicapGame": 240,
           "highHandicapSeries": 689,
           "weekScoresRaw": [
-            "145",
-            "153",
-            "113"
+            "131",
+            "140",
+            "126"
           ],
           "weekScores": [
-            145,
-            153,
-            113
+            131,
+            140,
+            126
           ],
-          "weekTotal": 411,
-          "weekHandicapTotal": 612
+          "weekTotal": 397,
+          "weekHandicapTotal": 598
         },
         {
           "name": "Hillary Mosier",
           "average": 128,
           "handicap": 73,
-          "pins": 2312,
-          "games": 18,
+          "pins": 2699,
+          "games": 21,
           "highGame": 178,
           "highSeries": 424,
           "highHandicapGame": 257,
           "highHandicapSeries": 661,
           "weekScoresRaw": [
-            "149",
-            "126",
-            "139"
+            "106",
+            "154",
+            "127"
           ],
           "weekScores": [
-            149,
-            126,
-            139
+            106,
+            154,
+            127
           ],
-          "weekTotal": 414,
-          "weekHandicapTotal": 639
+          "weekTotal": 387,
+          "weekHandicapTotal": 606
         },
         {
           "name": "Ethan Mosier",
-          "average": 169,
+          "average": 170,
           "handicap": 36,
-          "pins": 2542,
-          "games": 15,
+          "pins": 3060,
+          "games": 18,
           "highGame": 257,
           "highSeries": 563,
           "highHandicapGame": 302,
           "highHandicapSeries": 698,
           "weekScoresRaw": [
-            "186",
-            "161",
-            "209"
+            "193",
+            "136",
+            "189"
           ],
           "weekScores": [
-            186,
-            161,
-            209
+            193,
+            136,
+            189
           ],
-          "weekTotal": 556,
-          "weekHandicapTotal": 676
+          "weekTotal": 518,
+          "weekHandicapTotal": 626
         }
       ],
       "division": "Less Filling!",
       "place": 9,
-      "won": 18,
-      "lost": 18,
-      "average": 541,
-      "handicap": 266
+      "won": 20,
+      "lost": 20,
+      "average": 540,
+      "handicap": 268
     },
     {
       "number": 28,
@@ -3655,86 +3616,86 @@
           "highHandicapGame": 248,
           "highHandicapSeries": 646,
           "weekScoresRaw": [
-            "129",
-            "145",
-            "149"
+            "a143",
+            "a143",
+            "a143"
           ],
           "weekScores": [
-            129,
-            145,
-            149
+            143,
+            143,
+            143
           ],
-          "weekTotal": 423,
-          "weekHandicapTotal": 603
+          "weekTotal": 429,
+          "weekHandicapTotal": 609
         },
         {
           "name": "Tim Wallington",
-          "average": 171,
-          "handicap": 35,
-          "pins": 4626,
-          "games": 27,
+          "average": 168,
+          "handicap": 37,
+          "pins": 5061,
+          "games": 30,
           "highGame": 248,
           "highSeries": 634,
           "highHandicapGame": 293,
           "highHandicapSeries": 769,
           "weekScoresRaw": [
-            "161",
+            "185",
             "116",
-            "140"
+            "134"
           ],
           "weekScores": [
-            161,
+            185,
             116,
-            140
+            134
           ],
-          "weekTotal": 417,
-          "weekHandicapTotal": 510
+          "weekTotal": 435,
+          "weekHandicapTotal": 540
         },
         {
           "name": "Ben Smith",
           "average": 98,
           "handicap": 100,
-          "pins": 1081,
-          "games": 11,
+          "pins": 1384,
+          "games": 14,
           "highGame": 120,
           "highSeries": 322,
           "highHandicapGame": 224,
           "highHandicapSeries": 646,
           "weekScoresRaw": [
-            "a98",
-            "a98",
-            "a98"
+            "115",
+            "103",
+            "85"
           ],
           "weekScores": [
-            98,
-            98,
-            98
+            115,
+            103,
+            85
           ],
-          "weekTotal": 294,
-          "weekHandicapTotal": 594
+          "weekTotal": 303,
+          "weekHandicapTotal": 603
         },
         {
           "name": "David Brousseau",
-          "average": 171,
-          "handicap": 35,
-          "pins": 3094,
-          "games": 18,
-          "highGame": 211,
+          "average": 173,
+          "handicap": 33,
+          "pins": 3651,
+          "games": 21,
+          "highGame": 234,
           "highSeries": 565,
-          "highHandicapGame": 254,
+          "highHandicapGame": 269,
           "highHandicapSeries": 694,
           "weekScoresRaw": [
-            "a171",
-            "a171",
-            "a171"
+            "126",
+            "197",
+            "234"
           ],
           "weekScores": [
-            171,
-            171,
-            171
+            126,
+            197,
+            234
           ],
-          "weekTotal": 513,
-          "weekHandicapTotal": 618
+          "weekTotal": 557,
+          "weekHandicapTotal": 662
         },
         {
           "name": "Marilyn Wallington",
@@ -3754,9 +3715,9 @@
       ],
       "division": "Less Filling!",
       "place": 5,
-      "won": 22,
-      "lost": 14,
-      "average": 583,
+      "won": 23,
+      "lost": 17,
+      "average": 582,
       "handicap": 230
     },
     {
@@ -3773,63 +3734,95 @@
           "highSeries": 331,
           "highHandicapGame": 242,
           "highHandicapSeries": 679,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "a100",
+            "a100",
+            "a100"
+          ],
+          "weekScores": [
+            100,
+            100,
+            100
+          ],
+          "weekTotal": 300,
+          "weekHandicapTotal": 597
         },
         {
           "name": "Jena DuPont",
-          "average": 120,
-          "handicap": 81,
-          "pins": 2160,
-          "games": 18,
-          "highGame": 147,
-          "highSeries": 396,
-          "highHandicapGame": 226,
-          "highHandicapSeries": 645,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "average": 124,
+          "handicap": 77,
+          "pins": 2611,
+          "games": 21,
+          "highGame": 191,
+          "highSeries": 451,
+          "highHandicapGame": 272,
+          "highHandicapSeries": 694,
+          "weekScoresRaw": [
+            "191",
+            "126",
+            "134"
+          ],
+          "weekScores": [
+            191,
+            126,
+            134
+          ],
+          "weekTotal": 451,
+          "weekHandicapTotal": 694
         },
         {
           "name": "Jon Root",
           "average": 159,
           "handicap": 45,
-          "pins": 3339,
-          "games": 21,
-          "highGame": 188,
+          "pins": 3829,
+          "games": 24,
+          "highGame": 197,
           "highSeries": 527,
-          "highHandicapGame": 240,
+          "highHandicapGame": 242,
           "highHandicapSeries": 668,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "197",
+            "158",
+            "135"
+          ],
+          "weekScores": [
+            197,
+            158,
+            135
+          ],
+          "weekTotal": 490,
+          "weekHandicapTotal": 625
         },
         {
           "name": "Dustin DuPont",
-          "average": 183,
-          "handicap": 24,
-          "pins": 3846,
-          "games": 21,
+          "average": 180,
+          "handicap": 27,
+          "pins": 4328,
+          "games": 24,
           "highGame": 224,
           "highSeries": 617,
           "highHandicapGame": 248,
           "highHandicapSeries": 689,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "197",
+            "133",
+            "152"
+          ],
+          "weekScores": [
+            197,
+            133,
+            152
+          ],
+          "weekTotal": 482,
+          "weekHandicapTotal": 554
         }
       ],
       "division": "Less Filling!",
-      "place": 11,
-      "won": 17,
-      "lost": 19,
-      "average": 562,
-      "handicap": 249
+      "place": 14,
+      "won": 18,
+      "lost": 22,
+      "average": 563,
+      "handicap": 248
     },
     {
       "number": 30,
@@ -3845,18 +3838,10 @@
           "highSeries": 470,
           "highHandicapGame": 248,
           "highHandicapSeries": 657,
-          "weekScoresRaw": [
-            "125",
-            "144",
-            "132"
-          ],
-          "weekScores": [
-            125,
-            144,
-            132
-          ],
-          "weekTotal": 401,
-          "weekHandicapTotal": 614
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Brian Konczak",
@@ -3868,18 +3853,10 @@
           "highSeries": 511,
           "highHandicapGame": 264,
           "highHandicapSeries": 670,
-          "weekScoresRaw": [
-            "126",
-            "186",
-            "103"
-          ],
-          "weekScores": [
-            126,
-            186,
-            103
-          ],
-          "weekTotal": 415,
-          "weekHandicapTotal": 571
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Matt Friesleben",
@@ -3891,18 +3868,10 @@
           "highSeries": 484,
           "highHandicapGame": 254,
           "highHandicapSeries": 682,
-          "weekScoresRaw": [
-            "177",
-            "158",
-            "133"
-          ],
-          "weekScores": [
-            177,
-            158,
-            133
-          ],
-          "weekTotal": 468,
-          "weekHandicapTotal": 633
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Greg Martin",
@@ -3914,24 +3883,16 @@
           "highSeries": 558,
           "highHandicapGame": 254,
           "highHandicapSeries": 735,
-          "weekScoresRaw": [
-            "147",
-            "186",
-            "157"
-          ],
-          "weekScores": [
-            147,
-            186,
-            157
-          ],
-          "weekTotal": 490,
-          "weekHandicapTotal": 616
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         }
       ],
       "division": "Less Filling!",
-      "place": 19,
+      "place": 20,
       "won": 12,
-      "lost": 24,
+      "lost": 28,
       "average": 594,
       "handicap": 220
     },
@@ -3941,95 +3902,103 @@
       "players": [
         {
           "name": "BJ Michaelis",
-          "average": 122,
-          "handicap": 79,
-          "pins": 2199,
-          "games": 18,
+          "average": 120,
+          "handicap": 81,
+          "pins": 2529,
+          "games": 21,
           "highGame": 139,
           "highSeries": 375,
           "highHandicapGame": 220,
           "highHandicapSeries": 615,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "107",
+            "98",
+            "125"
+          ],
+          "weekScores": [
+            107,
+            98,
+            125
+          ],
+          "weekTotal": 330,
+          "weekHandicapTotal": 567
         },
         {
           "name": "Tim Swenson",
-          "average": 154,
-          "handicap": 50,
-          "pins": 3237,
-          "games": 21,
+          "average": 153,
+          "handicap": 51,
+          "pins": 3695,
+          "games": 24,
           "highGame": 213,
           "highSeries": 492,
           "highHandicapGame": 269,
           "highHandicapSeries": 660,
           "weekScoresRaw": [
-            "177",
-            "173",
-            "140"
+            "153",
+            "161",
+            "144"
           ],
           "weekScores": [
-            177,
-            173,
-            140
+            153,
+            161,
+            144
           ],
-          "weekTotal": 490,
-          "weekHandicapTotal": 646
+          "weekTotal": 458,
+          "weekHandicapTotal": 608
         },
         {
           "name": "Greg Miller",
-          "average": 177,
-          "handicap": 29,
-          "pins": 3724,
-          "games": 21,
+          "average": 173,
+          "handicap": 33,
+          "pins": 4167,
+          "games": 24,
           "highGame": 213,
           "highSeries": 563,
           "highHandicapGame": 249,
           "highHandicapSeries": 669,
           "weekScoresRaw": [
-            "176",
-            "173",
-            "213"
+            "169",
+            "152",
+            "122"
           ],
           "weekScores": [
-            176,
-            173,
-            213
+            169,
+            152,
+            122
           ],
-          "weekTotal": 562,
-          "weekHandicapTotal": 655
+          "weekTotal": 443,
+          "weekHandicapTotal": 530
         },
         {
           "name": "Ted Romero",
-          "average": 192,
-          "handicap": 16,
-          "pins": 3463,
-          "games": 18,
+          "average": 194,
+          "handicap": 14,
+          "pins": 4082,
+          "games": 21,
           "highGame": 246,
-          "highSeries": 609,
+          "highSeries": 619,
           "highHandicapGame": 264,
           "highHandicapSeries": 696,
           "weekScoresRaw": [
-            "214",
-            "178",
-            "196"
+            "213",
+            "232",
+            "174"
           ],
           "weekScores": [
-            214,
-            178,
-            196
+            213,
+            232,
+            174
           ],
-          "weekTotal": 588,
-          "weekHandicapTotal": 639
+          "weekTotal": 619,
+          "weekHandicapTotal": 667
         }
       ],
       "division": "Less Filling!",
-      "place": 3,
-      "won": 23,
-      "lost": 13,
-      "average": 645,
-      "handicap": 174
+      "place": 4,
+      "won": 25,
+      "lost": 15,
+      "average": 640,
+      "handicap": 179
     },
     {
       "number": 32,
@@ -4097,9 +4066,9 @@
         }
       ],
       "division": "Less Filling!",
-      "place": 18,
+      "place": 19,
       "won": 13,
-      "lost": 23,
+      "lost": 27,
       "average": 573,
       "handicap": 238
     },
@@ -4117,18 +4086,10 @@
           "highSeries": 453,
           "highHandicapGame": 254,
           "highHandicapSeries": 660,
-          "weekScoresRaw": [
-            "136",
-            "124",
-            "124"
-          ],
-          "weekScores": [
-            136,
-            124,
-            124
-          ],
-          "weekTotal": 384,
-          "weekHandicapTotal": 579
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Stephanie Rickher",
@@ -4140,18 +4101,10 @@
           "highSeries": 417,
           "highHandicapGame": 231,
           "highHandicapSeries": 633,
-          "weekScoresRaw": [
-            "159",
-            "148",
-            "110"
-          ],
-          "weekScores": [
-            159,
-            148,
-            110
-          ],
-          "weekTotal": 417,
-          "weekHandicapTotal": 633
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Lachelle Traverson",
@@ -4163,18 +4116,10 @@
           "highSeries": 372,
           "highHandicapGame": 230,
           "highHandicapSeries": 642,
-          "weekScoresRaw": [
-            "136",
-            "115",
-            "121"
-          ],
-          "weekScores": [
-            136,
-            115,
-            121
-          ],
-          "weekTotal": 372,
-          "weekHandicapTotal": 642
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Reema Gandhi",
@@ -4186,24 +4131,16 @@
           "highSeries": 354,
           "highHandicapGame": 259,
           "highHandicapSeries": 672,
-          "weekScoresRaw": [
-            "101",
-            "78",
-            "108"
-          ],
-          "weekScores": [
-            101,
-            78,
-            108
-          ],
-          "weekTotal": 287,
-          "weekHandicapTotal": 587
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         }
       ],
       "division": "Less Filling!",
-      "place": 17,
+      "place": 18,
       "won": 13,
-      "lost": 23,
+      "lost": 27,
       "average": 476,
       "handicap": 326
     },
@@ -4213,26 +4150,26 @@
       "players": [
         {
           "name": "Wes Keith",
-          "average": 186,
-          "handicap": 21,
-          "pins": 2800,
-          "games": 15,
+          "average": 191,
+          "handicap": 17,
+          "pins": 3439,
+          "games": 18,
           "highGame": 234,
-          "highSeries": 619,
+          "highSeries": 639,
           "highHandicapGame": 276,
           "highHandicapSeries": 778,
           "weekScoresRaw": [
-            "158",
-            "178",
-            "212"
+            "199",
+            "221",
+            "219"
           ],
           "weekScores": [
-            158,
-            178,
-            212
+            199,
+            221,
+            219
           ],
-          "weekTotal": 548,
-          "weekHandicapTotal": 608
+          "weekTotal": 639,
+          "weekHandicapTotal": 702
         },
         {
           "name": "Ryan Gaston",
@@ -4244,64 +4181,64 @@
           "highSeries": 617,
           "highHandicapGame": 284,
           "highHandicapSeries": 701,
-          "weekScoresRaw": [
-            "204",
-            "204",
-            "162"
-          ],
-          "weekScores": [
-            204,
-            204,
-            162
-          ],
-          "weekTotal": 570,
-          "weekHandicapTotal": 630
-        },
-        {
-          "name": "Dmitri Shindyapin",
-          "average": 148,
-          "handicap": 55,
-          "pins": 2226,
-          "games": 15,
-          "highGame": 182,
-          "highSeries": 490,
-          "highHandicapGame": 238,
-          "highHandicapSeries": 658,
           "weekScoresRaw": [],
           "weekScores": [],
           "weekTotal": 0,
           "weekHandicapTotal": 0
         },
         {
+          "name": "Dmitri Shindyapin",
+          "average": 152,
+          "handicap": 52,
+          "pins": 2739,
+          "games": 18,
+          "highGame": 202,
+          "highSeries": 513,
+          "highHandicapGame": 257,
+          "highHandicapSeries": 678,
+          "weekScoresRaw": [
+            "128",
+            "183",
+            "202"
+          ],
+          "weekScores": [
+            128,
+            183,
+            202
+          ],
+          "weekTotal": 513,
+          "weekHandicapTotal": 678
+        },
+        {
           "name": "Charles Garrison",
           "average": 201,
           "handicap": 8,
-          "pins": 5430,
-          "games": 27,
+          "pins": 6030,
+          "games": 30,
           "highGame": 245,
           "highSeries": 668,
           "highHandicapGame": 257,
           "highHandicapSeries": 704,
           "weekScoresRaw": [
-            "232",
-            "199",
-            "202"
+            "191",
+            "223",
+            "186"
           ],
           "weekScores": [
-            232,
-            199,
-            202
+            191,
+            223,
+            186
           ],
-          "weekTotal": 633,
-          "weekHandicapTotal": 660
+          "weekTotal": 600,
+          "weekHandicapTotal": 624
         }
       ],
       "division": "Less Filling!",
       "place": 1,
-      "won": 28,
-      "lost": 8,
-      "average": 722,
-      "handicap": 104
+      "won": 30,
+      "lost": 10,
+      "average": 731,
+      "handicap": 97
     },
     {
       "number": 35,
@@ -4309,103 +4246,103 @@
       "players": [
         {
           "name": "Buddy Mapp",
-          "average": 119,
-          "handicap": 81,
-          "pins": 2144,
-          "games": 18,
+          "average": 118,
+          "handicap": 82,
+          "pins": 2483,
+          "games": 21,
           "highGame": 232,
           "highSeries": 444,
           "highHandicapGame": 319,
           "highHandicapSeries": 705,
           "weekScoresRaw": [
-            "108",
-            "232",
-            "104"
+            "96",
+            "133",
+            "110"
           ],
           "weekScores": [
-            108,
-            232,
-            104
+            96,
+            133,
+            110
           ],
-          "weekTotal": 444,
-          "weekHandicapTotal": 705
+          "weekTotal": 339,
+          "weekHandicapTotal": 582
         },
         {
           "name": "Sid Farquhar",
-          "average": 186,
-          "handicap": 21,
-          "pins": 5029,
-          "games": 27,
+          "average": 180,
+          "handicap": 27,
+          "pins": 5420,
+          "games": 30,
           "highGame": 236,
           "highSeries": 645,
           "highHandicapGame": 242,
           "highHandicapSeries": 645,
           "weekScoresRaw": [
-            "155",
-            "132",
-            "158"
+            "105",
+            "161",
+            "125"
           ],
           "weekScores": [
-            155,
-            132,
-            158
+            105,
+            161,
+            125
           ],
-          "weekTotal": 445,
-          "weekHandicapTotal": 496
+          "weekTotal": 391,
+          "weekHandicapTotal": 454
         },
         {
           "name": "Zaine Davis",
           "average": 163,
           "handicap": 42,
-          "pins": 3920,
-          "games": 24,
+          "pins": 4427,
+          "games": 27,
           "highGame": 210,
           "highSeries": 556,
           "highHandicapGame": 253,
           "highHandicapSeries": 712,
           "weekScoresRaw": [
-            "210",
+            "170",
             "153",
-            "145"
+            "184"
           ],
           "weekScores": [
-            210,
+            170,
             153,
-            145
+            184
           ],
-          "weekTotal": 508,
-          "weekHandicapTotal": 637
+          "weekTotal": 507,
+          "weekHandicapTotal": 633
         },
         {
           "name": "Greg Shea",
-          "average": 199,
+          "average": 200,
           "handicap": 9,
-          "pins": 4795,
-          "games": 24,
+          "pins": 5418,
+          "games": 27,
           "highGame": 300,
           "highSeries": 709,
           "highHandicapGame": 313,
           "highHandicapSeries": 748,
           "weekScoresRaw": [
-            "184",
-            "193",
-            "188"
+            "225",
+            "163",
+            "235"
           ],
           "weekScores": [
-            184,
-            193,
-            188
+            225,
+            163,
+            235
           ],
-          "weekTotal": 565,
-          "weekHandicapTotal": 589
+          "weekTotal": 623,
+          "weekHandicapTotal": 650
         }
       ],
       "division": "Less Filling!",
-      "place": 6,
+      "place": 11,
       "won": 19,
-      "lost": 17,
-      "average": 667,
-      "handicap": 153
+      "lost": 21,
+      "average": 661,
+      "handicap": 160
     },
     {
       "number": 36,
@@ -4415,24 +4352,24 @@
           "name": "Shawn Comegys",
           "average": 126,
           "handicap": 75,
-          "pins": 2272,
-          "games": 18,
+          "pins": 2649,
+          "games": 21,
           "highGame": 171,
           "highSeries": 432,
           "highHandicapGame": 252,
           "highHandicapSeries": 693,
           "weekScoresRaw": [
-            "150",
-            "107",
-            "147"
+            "147",
+            "112",
+            "118"
           ],
           "weekScores": [
-            150,
-            107,
-            147
+            147,
+            112,
+            118
           ],
-          "weekTotal": 404,
-          "weekHandicapTotal": 635
+          "weekTotal": 377,
+          "weekHandicapTotal": 602
         },
         {
           "name": "Ben Purvis",
@@ -4451,49 +4388,49 @@
         },
         {
           "name": "Brian Rubin",
-          "average": 115,
-          "handicap": 85,
-          "pins": 2431,
-          "games": 21,
-          "highGame": 149,
+          "average": 117,
+          "handicap": 83,
+          "pins": 2825,
+          "games": 24,
+          "highGame": 150,
           "highSeries": 413,
-          "highHandicapGame": 231,
+          "highHandicapGame": 235,
           "highHandicapSeries": 665,
           "weekScoresRaw": [
-            "84",
-            "92",
-            "128"
+            "111",
+            "150",
+            "133"
           ],
           "weekScores": [
-            84,
-            92,
-            128
+            111,
+            150,
+            133
           ],
-          "weekTotal": 304,
-          "weekHandicapTotal": 550
+          "weekTotal": 394,
+          "weekHandicapTotal": 649
         },
         {
           "name": "Hugo Hellberg",
-          "average": 153,
-          "handicap": 51,
-          "pins": 3686,
-          "games": 24,
+          "average": 154,
+          "handicap": 50,
+          "pins": 4184,
+          "games": 27,
           "highGame": 214,
           "highSeries": 597,
           "highHandicapGame": 273,
           "highHandicapSeries": 774,
           "weekScoresRaw": [
-            "133",
-            "214",
-            "145"
+            "178",
+            "147",
+            "173"
           ],
           "weekScores": [
-            133,
-            214,
-            145
+            178,
+            147,
+            173
           ],
-          "weekTotal": 492,
-          "weekHandicapTotal": 648
+          "weekTotal": 498,
+          "weekHandicapTotal": 651
         },
         {
           "name": "Andy Tenorio",
@@ -4535,26 +4472,18 @@
           "highSeries": 372,
           "highHandicapGame": 245,
           "highHandicapSeries": 648,
-          "weekScoresRaw": [
-            "123",
-            "141",
-            "108"
-          ],
-          "weekScores": [
-            123,
-            141,
-            108
-          ],
-          "weekTotal": 372,
-          "weekHandicapTotal": 648
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         }
       ],
       "division": "Less Filling!",
       "place": 15,
-      "won": 14,
-      "lost": 22,
-      "average": 521,
-      "handicap": 285
+      "won": 17,
+      "lost": 23,
+      "average": 524,
+      "handicap": 282
     },
     {
       "number": 37,
@@ -4562,26 +4491,26 @@
       "players": [
         {
           "name": "Nick Schar",
-          "average": 138,
-          "handicap": 64,
-          "pins": 2901,
-          "games": 21,
+          "average": 137,
+          "handicap": 65,
+          "pins": 3308,
+          "games": 24,
           "highGame": 204,
           "highSeries": 491,
           "highHandicapGame": 269,
           "highHandicapSeries": 677,
           "weekScoresRaw": [
-            "a138",
-            "a138",
-            "a138"
+            "145",
+            "131",
+            "131"
           ],
           "weekScores": [
-            138,
-            138,
-            138
+            145,
+            131,
+            131
           ],
-          "weekTotal": 414,
-          "weekHandicapTotal": 606
+          "weekTotal": 407,
+          "weekHandicapTotal": 599
         },
         {
           "name": "Brandon Wilson",
@@ -4594,71 +4523,71 @@
           "highHandicapGame": 272,
           "highHandicapSeries": 685,
           "weekScoresRaw": [
-            "134",
-            "190",
-            "234"
+            "a170",
+            "a170",
+            "a170"
           ],
           "weekScores": [
-            134,
-            190,
-            234
+            170,
+            170,
+            170
           ],
-          "weekTotal": 558,
-          "weekHandicapTotal": 672
+          "weekTotal": 510,
+          "weekHandicapTotal": 618
         },
         {
           "name": "John Evenson",
-          "average": 194,
-          "handicap": 14,
-          "pins": 5258,
-          "games": 27,
+          "average": 193,
+          "handicap": 15,
+          "pins": 5792,
+          "games": 30,
           "highGame": 268,
           "highSeries": 645,
           "highHandicapGame": 286,
           "highHandicapSeries": 699,
           "weekScoresRaw": [
-            "245",
-            "170",
-            "158"
+            "168",
+            "193",
+            "173"
           ],
           "weekScores": [
-            245,
-            170,
-            158
+            168,
+            193,
+            173
           ],
-          "weekTotal": 573,
-          "weekHandicapTotal": 612
+          "weekTotal": 534,
+          "weekHandicapTotal": 576
         },
         {
           "name": "Robert Wilson",
-          "average": 209,
+          "average": 213,
           "handicap": 0,
-          "pins": 4408,
-          "games": 21,
-          "highGame": 254,
+          "pins": 5112,
+          "games": 24,
+          "highGame": 289,
           "highSeries": 716,
-          "highHandicapGame": 264,
+          "highHandicapGame": 289,
           "highHandicapSeries": 734,
           "weekScoresRaw": [
-            "184",
-            "237",
-            "193"
+            "236",
+            "289",
+            "179"
           ],
           "weekScores": [
-            184,
-            237,
-            193
+            236,
+            289,
+            179
           ],
-          "weekTotal": 614,
-          "weekHandicapTotal": 614
+          "weekTotal": 704,
+          "weekHandicapTotal": 704
         }
       ],
       "division": "Less Filling!",
-      "place": 4,
-      "won": 23,
+      "place": 3,
+      "won": 27,
       "lost": 13,
-      "average": 711,
-      "handicap": 114
+      "average": 713,
+      "handicap": 116
     },
     {
       "number": 38,
@@ -4666,18 +4595,26 @@
       "players": [
         {
           "name": "Mario Torres",
-          "average": 159,
-          "handicap": 45,
-          "pins": 2391,
-          "games": 15,
+          "average": 163,
+          "handicap": 42,
+          "pins": 3439,
+          "games": 21,
           "highGame": 209,
           "highSeries": 565,
           "highHandicapGame": 259,
           "highHandicapSeries": 715,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "135",
+            "158",
+            "198"
+          ],
+          "weekScores": [
+            135,
+            158,
+            198
+          ],
+          "weekTotal": 491,
+          "weekHandicapTotal": 626
         },
         {
           "name": "Colby Ausen",
@@ -4689,48 +4626,72 @@
           "highSeries": 577,
           "highHandicapGame": 260,
           "highHandicapSeries": 667,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "a177",
+            "a177",
+            "a177"
+          ],
+          "weekScores": [
+            177,
+            177,
+            177
+          ],
+          "weekTotal": 531,
+          "weekHandicapTotal": 618
         },
         {
           "name": "Kyle ONeal",
           "average": 183,
           "handicap": 24,
-          "pins": 3677,
-          "games": 20,
+          "pins": 4763,
+          "games": 26,
           "highGame": 248,
           "highSeries": 608,
           "highHandicapGame": 260,
           "highHandicapSeries": 662,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "weekScoresRaw": [
+            "200",
+            "202",
+            "185"
+          ],
+          "weekScores": [
+            200,
+            202,
+            185
+          ],
+          "weekTotal": 587,
+          "weekHandicapTotal": 659
         },
         {
           "name": "Sean McCarthy",
-          "average": 179,
-          "handicap": 27,
-          "pins": 3771,
-          "games": 21,
+          "average": 182,
+          "handicap": 25,
+          "pins": 4925,
+          "games": 27,
           "highGame": 244,
           "highSeries": 628,
           "highHandicapGame": 260,
-          "highHandicapSeries": 640,
-          "weekScoresRaw": [],
-          "weekScores": [],
-          "weekTotal": 0,
-          "weekHandicapTotal": 0
+          "highHandicapSeries": 671,
+          "weekScoresRaw": [
+            "140",
+            "201",
+            "223"
+          ],
+          "weekScores": [
+            140,
+            201,
+            223
+          ],
+          "weekTotal": 564,
+          "weekHandicapTotal": 645
         }
       ],
       "division": "Less Filling!",
-      "place": 16,
-      "won": 14,
-      "lost": 22,
-      "average": 698,
-      "handicap": 125
+      "place": 6,
+      "won": 21,
+      "lost": 19,
+      "average": 705,
+      "handicap": 120
     },
     {
       "number": 39,
@@ -4747,40 +4708,40 @@
           "highHandicapGame": 305,
           "highHandicapSeries": 730,
           "weekScoresRaw": [
-            "170",
-            "175",
-            "162"
+            "a167",
+            "a167",
+            "a167"
           ],
           "weekScores": [
-            170,
-            175,
-            162
+            167,
+            167,
+            167
           ],
-          "weekTotal": 507,
-          "weekHandicapTotal": 624
+          "weekTotal": 501,
+          "weekHandicapTotal": 615
         },
         {
           "name": "Michelle Deines",
-          "average": 122,
-          "handicap": 79,
-          "pins": 2950,
-          "games": 24,
+          "average": 124,
+          "handicap": 77,
+          "pins": 3357,
+          "games": 27,
           "highGame": 168,
           "highSeries": 445,
           "highHandicapGame": 252,
           "highHandicapSeries": 697,
           "weekScoresRaw": [
-            "145",
-            "146",
-            "97"
+            "144",
+            "134",
+            "129"
           ],
           "weekScores": [
-            145,
-            146,
-            97
+            144,
+            134,
+            129
           ],
-          "weekTotal": 388,
-          "weekHandicapTotal": 625
+          "weekTotal": 407,
+          "weekHandicapTotal": 644
         },
         {
           "name": "Matt Pantaleo",
@@ -4792,41 +4753,33 @@
           "highSeries": 518,
           "highHandicapGame": 292,
           "highHandicapSeries": 749,
-          "weekScoresRaw": [
-            "151",
-            "120",
-            "87"
-          ],
-          "weekScores": [
-            151,
-            120,
-            87
-          ],
-          "weekTotal": 358,
-          "weekHandicapTotal": 544
+          "weekScoresRaw": [],
+          "weekScores": [],
+          "weekTotal": 0,
+          "weekHandicapTotal": 0
         },
         {
           "name": "Mandy Deines",
-          "average": 141,
-          "handicap": 62,
-          "pins": 2545,
-          "games": 18,
+          "average": 142,
+          "handicap": 61,
+          "pins": 2999,
+          "games": 21,
           "highGame": 206,
           "highSeries": 476,
           "highHandicapGame": 270,
           "highHandicapSeries": 686,
           "weekScoresRaw": [
-            "119",
-            "206",
-            "149"
+            "142",
+            "133",
+            "179"
           ],
           "weekScores": [
-            119,
-            206,
-            149
+            142,
+            133,
+            179
           ],
-          "weekTotal": 474,
-          "weekHandicapTotal": 666
+          "weekTotal": 454,
+          "weekHandicapTotal": 640
         },
         {
           "name": "Julie Losh",
@@ -4845,11 +4798,11 @@
         }
       ],
       "division": "Less Filling!",
-      "place": 14,
-      "won": 15,
+      "place": 12,
+      "won": 19,
       "lost": 21,
-      "average": 567,
-      "handicap": 244
+      "average": 570,
+      "handicap": 241
     },
     {
       "number": 40,
@@ -4857,49 +4810,49 @@
       "players": [
         {
           "name": "Taylor Keating",
-          "average": 158,
-          "handicap": 46,
-          "pins": 3813,
-          "games": 24,
+          "average": 160,
+          "handicap": 45,
+          "pins": 4346,
+          "games": 27,
           "highGame": 230,
-          "highSeries": 519,
+          "highSeries": 533,
           "highHandicapGame": 277,
-          "highHandicapSeries": 663,
+          "highHandicapSeries": 671,
           "weekScoresRaw": [
-            "141",
-            "230",
-            "136"
+            "177",
+            "171",
+            "185"
           ],
           "weekScores": [
-            141,
-            230,
-            136
+            177,
+            171,
+            185
           ],
-          "weekTotal": 507,
-          "weekHandicapTotal": 648
+          "weekTotal": 533,
+          "weekHandicapTotal": 671
         },
         {
           "name": "Natalie Lyons",
-          "average": 166,
-          "handicap": 39,
-          "pins": 4501,
-          "games": 27,
+          "average": 168,
+          "handicap": 37,
+          "pins": 5062,
+          "games": 30,
           "highGame": 212,
-          "highSeries": 555,
+          "highSeries": 561,
           "highHandicapGame": 255,
           "highHandicapSeries": 679,
           "weekScoresRaw": [
-            "117",
-            "154",
-            "201"
+            "206",
+            "167",
+            "188"
           ],
           "weekScores": [
-            117,
-            154,
-            201
+            206,
+            167,
+            188
           ],
-          "weekTotal": 472,
-          "weekHandicapTotal": 586
+          "weekTotal": 561,
+          "weekHandicapTotal": 678
         },
         {
           "name": "DC Herrick",
@@ -4912,48 +4865,48 @@
           "highHandicapGame": 265,
           "highHandicapSeries": 662,
           "weekScoresRaw": [
-            "166",
-            "206",
-            "180"
+            "a174",
+            "a174",
+            "a174"
           ],
           "weekScores": [
-            166,
-            206,
-            180
+            174,
+            174,
+            174
           ],
-          "weekTotal": 552,
-          "weekHandicapTotal": 654
+          "weekTotal": 522,
+          "weekHandicapTotal": 618
         },
         {
           "name": "Michael Bates",
-          "average": 176,
-          "handicap": 30,
-          "pins": 4768,
-          "games": 27,
-          "highGame": 223,
-          "highSeries": 590,
-          "highHandicapGame": 251,
-          "highHandicapSeries": 674,
+          "average": 179,
+          "handicap": 27,
+          "pins": 5376,
+          "games": 30,
+          "highGame": 236,
+          "highSeries": 608,
+          "highHandicapGame": 266,
+          "highHandicapSeries": 698,
           "weekScoresRaw": [
-            "179",
-            "176",
-            "189"
+            "148",
+            "236",
+            "224"
           ],
           "weekScores": [
-            179,
-            176,
-            189
+            148,
+            236,
+            224
           ],
-          "weekTotal": 544,
-          "weekHandicapTotal": 634
+          "weekTotal": 608,
+          "weekHandicapTotal": 698
         }
       ],
       "division": "Less Filling!",
       "place": 2,
-      "won": 24,
+      "won": 28,
       "lost": 12,
-      "average": 674,
-      "handicap": 147
+      "average": 681,
+      "handicap": 141
     }
   ],
   "substitutes": [
@@ -4989,18 +4942,26 @@
     },
     {
       "name": "Delancy Bitzer",
-      "average": 110,
-      "handicap": 90,
-      "pins": 996,
-      "games": 9,
+      "average": 112,
+      "handicap": 88,
+      "pins": 1348,
+      "games": 12,
       "highGame": 136,
       "highSeries": 375,
       "highHandicapGame": 228,
       "highHandicapSeries": 651,
-      "weekScoresRaw": [],
-      "weekScores": [],
-      "weekTotal": 0,
-      "weekHandicapTotal": 0
+      "weekScoresRaw": [
+        "130",
+        "101",
+        "121"
+      ],
+      "weekScores": [
+        130,
+        101,
+        121
+      ],
+      "weekTotal": 352,
+      "weekHandicapTotal": 622
     },
     {
       "name": "Mazo Books",
@@ -5046,6 +5007,29 @@
       "weekScores": [],
       "weekTotal": 0,
       "weekHandicapTotal": 0
+    },
+    {
+      "name": "Jason Crum",
+      "average": 107,
+      "handicap": 92,
+      "pins": 321,
+      "games": 3,
+      "highGame": 122,
+      "highSeries": 321,
+      "highHandicapGame": 214,
+      "highHandicapSeries": 597,
+      "weekScoresRaw": [
+        "99",
+        "122",
+        "100"
+      ],
+      "weekScores": [
+        99,
+        122,
+        100
+      ],
+      "weekTotal": 321,
+      "weekHandicapTotal": 597
     },
     {
       "name": "Andy Davis",
@@ -5117,18 +5101,10 @@
       "highSeries": 471,
       "highHandicapGame": 246,
       "highHandicapSeries": 621,
-      "weekScoresRaw": [
-        "144",
-        "126",
-        "163"
-      ],
-      "weekScores": [
-        144,
-        126,
-        163
-      ],
-      "weekTotal": 433,
-      "weekHandicapTotal": 583
+      "weekScoresRaw": [],
+      "weekScores": [],
+      "weekTotal": 0,
+      "weekHandicapTotal": 0
     },
     {
       "name": "Scott Garret",
@@ -5146,19 +5122,57 @@
       "weekHandicapTotal": 0
     },
     {
-      "name": "Joe Harmed",
-      "average": 124,
-      "handicap": 77,
-      "pins": 373,
-      "games": 3,
-      "highGame": 138,
-      "highSeries": 373,
-      "highHandicapGame": 215,
-      "highHandicapSeries": 604,
+      "name": "Michael Grossman",
+      "average": 164,
+      "handicap": 41,
+      "pins": 2962,
+      "games": 18,
+      "highGame": 199,
+      "highSeries": 524,
+      "highHandicapGame": 236,
+      "highHandicapSeries": 653,
       "weekScoresRaw": [],
       "weekScores": [],
       "weekTotal": 0,
       "weekHandicapTotal": 0
+    },
+    {
+      "name": "Sean Harkins",
+      "average": 123,
+      "handicap": 78,
+      "pins": 2214,
+      "games": 18,
+      "highGame": 156,
+      "highSeries": 405,
+      "highHandicapGame": 227,
+      "highHandicapSeries": 622,
+      "weekScoresRaw": [],
+      "weekScores": [],
+      "weekTotal": 0,
+      "weekHandicapTotal": 0
+    },
+    {
+      "name": "Joe Harmed",
+      "average": 133,
+      "handicap": 69,
+      "pins": 803,
+      "games": 6,
+      "highGame": 169,
+      "highSeries": 430,
+      "highHandicapGame": 246,
+      "highHandicapSeries": 661,
+      "weekScoresRaw": [
+        "169",
+        "108",
+        "153"
+      ],
+      "weekScores": [
+        169,
+        108,
+        153
+      ],
+      "weekTotal": 430,
+      "weekHandicapTotal": 661
     },
     {
       "name": "Brian Harwod",
@@ -5244,21 +5258,6 @@
       "weekHandicapTotal": 0
     },
     {
-      "name": "Kim Illsey",
-      "average": 157,
-      "handicap": 47,
-      "pins": 942,
-      "games": 6,
-      "highGame": 186,
-      "highSeries": 506,
-      "highHandicapGame": 223,
-      "highHandicapSeries": 617,
-      "weekScoresRaw": [],
-      "weekScores": [],
-      "weekTotal": 0,
-      "weekHandicapTotal": 0
-    },
-    {
       "name": "Luke Jobman",
       "average": 199,
       "handicap": 9,
@@ -5268,18 +5267,10 @@
       "highSeries": 651,
       "highHandicapGame": 258,
       "highHandicapSeries": 651,
-      "weekScoresRaw": [
-        "202",
-        "200",
-        "213"
-      ],
-      "weekScores": [
-        202,
-        200,
-        213
-      ],
-      "weekTotal": 615,
-      "weekHandicapTotal": 648
+      "weekScoresRaw": [],
+      "weekScores": [],
+      "weekTotal": 0,
+      "weekHandicapTotal": 0
     },
     {
       "name": "Kimberly Konczak",
@@ -5305,16 +5296,12 @@
       "highGame": 89,
       "highSeries": 176,
       "highHandicapGame": 198,
-      "highHandicapSeries": 89,
+      "highHandicapSeries": 0,
       "weekScoresRaw": [
-        "87",
-        "176",
-        "394"
+        "0"
       ],
       "weekScores": [
-        87,
-        176,
-        394
+        0
       ],
       "weekTotal": null,
       "weekHandicapTotal": null
@@ -5329,18 +5316,10 @@
       "highSeries": 816,
       "highHandicapGame": 280,
       "highHandicapSeries": 816,
-      "weekScoresRaw": [
-        "161",
-        "238",
-        "254"
-      ],
-      "weekScores": [
-        161,
-        238,
-        254
-      ],
-      "weekTotal": 653,
-      "weekHandicapTotal": 653
+      "weekScoresRaw": [],
+      "weekScores": [],
+      "weekTotal": 0,
+      "weekHandicapTotal": 0
     },
     {
       "name": "Chris McDowell",
@@ -5367,18 +5346,10 @@
       "highSeries": 481,
       "highHandicapGame": 242,
       "highHandicapSeries": 679,
-      "weekScoresRaw": [
-        "164",
-        "152",
-        "165"
-      ],
-      "weekScores": [
-        164,
-        152,
-        165
-      ],
-      "weekTotal": 481,
-      "weekHandicapTotal": 679
+      "weekScoresRaw": [],
+      "weekScores": [],
+      "weekTotal": 0,
+      "weekHandicapTotal": 0
     },
     {
       "name": "Haley McMahon",
@@ -5456,6 +5427,29 @@
       "weekHandicapTotal": 0
     },
     {
+      "name": "Dave Newsom",
+      "average": 253,
+      "handicap": 0,
+      "pins": 759,
+      "games": 3,
+      "highGame": 269,
+      "highSeries": 759,
+      "highHandicapGame": 269,
+      "highHandicapSeries": 759,
+      "weekScoresRaw": [
+        "223",
+        "269",
+        "267"
+      ],
+      "weekScores": [
+        223,
+        269,
+        267
+      ],
+      "weekTotal": 759,
+      "weekHandicapTotal": 759
+    },
+    {
       "name": "Tina Nguyen",
       "average": 77,
       "handicap": 119,
@@ -5465,18 +5459,10 @@
       "highSeries": 240,
       "highHandicapGame": 219,
       "highHandicapSeries": 591,
-      "weekScoresRaw": [
-        "77",
-        "77",
-        "69"
-      ],
-      "weekScores": [
-        77,
-        77,
-        69
-      ],
-      "weekTotal": 223,
-      "weekHandicapTotal": 574
+      "weekScoresRaw": [],
+      "weekScores": [],
+      "weekTotal": 0,
+      "weekHandicapTotal": 0
     },
     {
       "name": "Trent Novak",
@@ -5570,26 +5556,26 @@
     },
     {
       "name": "James Sattizanhn",
-      "average": 189,
-      "handicap": 18,
-      "pins": 2845,
-      "games": 15,
+      "average": 186,
+      "handicap": 21,
+      "pins": 3363,
+      "games": 18,
       "highGame": 245,
       "highSeries": 628,
       "highHandicapGame": 265,
       "highHandicapSeries": 697,
       "weekScoresRaw": [
-        "211",
-        "215",
-        "202"
+        "163",
+        "192",
+        "163"
       ],
       "weekScores": [
-        211,
-        215,
-        202
+        163,
+        192,
+        163
       ],
-      "weekTotal": 628,
-      "weekHandicapTotal": 697
+      "weekTotal": 518,
+      "weekHandicapTotal": 572
     },
     {
       "name": "Megan Self",
@@ -5646,18 +5632,10 @@
       "highSeries": 678,
       "highHandicapGame": 301,
       "highHandicapSeries": 711,
-      "weekScoresRaw": [
-        "268",
-        "196",
-        "168"
-      ],
-      "weekScores": [
-        268,
-        196,
-        168
-      ],
-      "weekTotal": 632,
-      "weekHandicapTotal": 638
+      "weekScoresRaw": [],
+      "weekScores": [],
+      "weekTotal": 0,
+      "weekHandicapTotal": 0
     },
     {
       "name": "Cayce St Aubin",
@@ -5693,24 +5671,24 @@
       "name": "Jeff Troftgruben",
       "average": 141,
       "handicap": 62,
-      "pins": 2129,
-      "games": 15,
+      "pins": 2548,
+      "games": 18,
       "highGame": 181,
       "highSeries": 505,
       "highHandicapGame": 254,
       "highHandicapSeries": 706,
       "weekScoresRaw": [
-        "151",
-        "181",
-        "173"
+        "168",
+        "120",
+        "131"
       ],
       "weekScores": [
-        151,
-        181,
-        173
+        168,
+        120,
+        131
       ],
-      "weekTotal": 505,
-      "weekHandicapTotal": 706
+      "weekTotal": 419,
+      "weekHandicapTotal": 605
     },
     {
       "name": "Zach Wilhelm",
@@ -5722,18 +5700,10 @@
       "highSeries": 427,
       "highHandicapGame": 246,
       "highHandicapSeries": 676,
-      "weekScoresRaw": [
-        "112",
-        "163",
-        "152"
-      ],
-      "weekScores": [
-        112,
-        163,
-        152
-      ],
-      "weekTotal": 427,
-      "weekHandicapTotal": 676
+      "weekScoresRaw": [],
+      "weekScores": [],
+      "weekTotal": 0,
+      "weekHandicapTotal": 0
     },
     {
       "name": "Jace Williams",
@@ -5760,18 +5730,10 @@
       "highSeries": 357,
       "highHandicapGame": 210,
       "highHandicapSeries": 600,
-      "weekScoresRaw": [
-        "116",
-        "112",
-        "129"
-      ],
-      "weekScores": [
-        116,
-        112,
-        129
-      ],
-      "weekTotal": 357,
-      "weekHandicapTotal": 600
+      "weekScoresRaw": [],
+      "weekScores": [],
+      "weekTotal": 0,
+      "weekHandicapTotal": 0
     },
     {
       "name": "Yanjmaa Zayat",
