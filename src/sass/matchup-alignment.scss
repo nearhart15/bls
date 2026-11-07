@@ -220,3 +220,29 @@
     font-size: clamp(.85rem, 3vw, 1.05rem);
   }
 }
+
+/* Jump target keeps the week heading visible below the sticky navigation. */
+.bls-matchup-week-anchor {
+  scroll-margin-top: 6rem;
+}
+
+.bls-jump-current-week {
+  background: #34485a !important;
+  color: #fff !important;
+  border: 1px solid #637b90 !important;
+  border-radius: .75rem;
+  font-weight: 600;
+}
+
+.bls-jump-current-week:hover,
+.bls-jump-current-week:focus-visible {
+  background: #455e73 !important;
+  color: #fff !important;
+  border-color: #91a9bc !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.bls-jump-current-week) {
+    scroll-behavior: smooth;
+  }
+}
