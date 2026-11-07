@@ -107,6 +107,9 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
 
 interface LeagueTeamMatchupsProps { leagueDetails: LeagueDetails | null; teamDetails: TrackedLeagueTeam; currentBreakpoint: Breakpoint; leagueDetailsLoading: boolean; }
 const LeagueTeamMatchup: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails, leagueDetailsLoading, currentBreakpoint}) => {
+    const today = moment();
+    const scheduled = teamDetails.matchups.filter(matchup => matchup.scheduledDate);
+    const current = scheduled.filter(matchup => !matchup.scheduledDate?.isAfter(today, "day")).at(-1) ?? scheduled[0];
     return <>
         {leagueDetailsLoading && <div className="card-body"><Loader/></div>}
         <CardBody className="px-0 py-1 border border-secondary-subtle">
@@ -114,13 +117,13 @@ const LeagueTeamMatchup: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDeta
                 <CardHeader className="text-white bg-dark text-center fw-bolder py-1">Matchups</CardHeader>
                 <CardBody className="mx-0 px-1 px-sm-2 py-2">
                     <Row className="row-cols-1 row-cols-lg-2 g-2">
-                        {teamDetails.matchups.map(matchup => <MatchupDisplay
+                        {teamDetails.matchups.map(matchup => <div id={matchup === current ? "bls-current-week" : undefined} className="bls-matchup-week-anchor" key={`${leagueDetails?.id}-${teamDetails.id}-${matchup.week}`}><MatchupDisplay
                             key={`${leagueDetails?.id}-${teamDetails.id}-${matchup.week}`}
                             leagueDetails={leagueDetails}
                             matchup={matchup}
                             teamDetails={teamDetails}
                             currentBreakpoint={currentBreakpoint}
-                        />)}
+                        /></div>)}
                     </Row>
                 </CardBody>
             </Card>
