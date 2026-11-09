@@ -1,11 +1,30 @@
 /* Responsive player list presentation.
  * Desktop/tablet use the sortable table; phones use compact stat cards.
  */
-.bls-player-cards {
+.bls-player-cards,
+.bls-player-mobile-sort {
   display: none;
 }
 
 @media (max-width: 575.98px) {
+  .bls-player-mobile-sort {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: .65rem;
+    padding: 1rem;
+  }
+
+  .bls-player-mobile-sort .form-label {
+    color: var(--bls-text-muted);
+    font-size: .78rem;
+    margin-bottom: .3rem;
+  }
+
+  .bls-player-mobile-sort .form-select {
+    min-height: 44px;
+    font-size: .85rem;
+  }
+
   .bls-perf-table-wrap {
     display: none;
   }

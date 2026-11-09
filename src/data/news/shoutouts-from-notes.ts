@@ -40,7 +40,7 @@ export async function shoutOutsFromLastGameNotes(): Promise<MatchNoteShoutOut[]>
         for (const league of season.leagues) {
             if (!league.hasData() || !league.dataLoc || !league.id) continue;
             try {
-                const details = await leagueDetailsFetcher(league.dataLoc);
+                const details = await leagueDetailsFetcher(league.dataLoc, league.id);
                 loaded++;
                 const teamNames = new Map<string, string>();
                 for (const team of [...details.teams, ...details.otherTeams]) {

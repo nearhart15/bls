@@ -4,6 +4,7 @@ import {Accordion,Alert,Badge,Button,ButtonGroup,Card,Col,Form,Row,Spinner,Tab,T
 import {buildFullPlayerList,PLAYER_INDEX_CACHE_CATEGORY,type PlayerListEntry} from "../data/player/player-aggregate";
 import {useCachedFetcher} from "./components/cache/data-loader";
 import {fetchJson} from "../data/utils/fetch-json";
+import {recordApiFreshness} from "../data/utils/source-freshness";
 import {safeArapahoeLink} from "../data/utils/safe-link";
 
 interface BeerStanding{division:string|null;place:number;number:number;name:string;won:number;lost:number;average:number;handicap:number;pinsWithHandicap:number;scratchPins:number;highHandicapGame:number;highHandicapSeries:number;highScratchGame:number;highScratchSeries:number}
@@ -17,6 +18,7 @@ const BEER_LEAGUE_CACHE_CATEGORY = "beer-league-import-v1";
 async function beerLeagueFetcher(): Promise<BeerLeagueData> {
  const data = await fetchJson(`${import.meta.env.BASE_URL}data/beer-league.json`) as unknown as BeerLeagueData;
  if(data.status!=="ready" || !Array.isArray(data.standings) || !Array.isArray(data.teams)) throw new Error("Beer League data is not ready or is malformed.");
+ recordApiFreshness(data);
  return data;
 }
 

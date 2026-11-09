@@ -1,4 +1,6 @@
 import {validateLeague} from "./validate-league";
+import {reconcileLeagueMetadata} from "./league-metadata";
+import {recordFrameFreshness} from "../utils/source-freshness";
 import {fetchJson, dataUrl} from "../utils/fetch-json";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
@@ -35,7 +37,7 @@ export const leagueTeamDetailsFetcher = async(dataLoc: string) =>
     fetchJson(dataUrl(APP_URL_BASE, dataLoc))
         .then((json :object) => createJsonConverter().deserialize<TrackedLeagueTeam>(json, TrackedLeagueTeam));
 
-export const leagueDetailsFetcher = async(dataLoc: string) => {
+export const leagueDetailsFetcher = async(dataLoc: string, expectedLeagueId?: string) => {
     const leagueDetails: LeagueDetails = await fetchJson(dataUrl(APP_URL_BASE, dataLoc))
         .then((json: object) => createJsonConverter().deserialize<LeagueDetails>(json, LeagueDetails));
 
@@ -48,6 +50,7 @@ export const leagueDetailsFetcher = async(dataLoc: string) => {
     ]);
     leagueDetails.teams = teams;
 
+    reconcileLeagueMetadata(leagueDetails, expectedLeagueId);
     validateLeague(leagueDetails);
     // Empty score objects are schedule placeholders, not bowled zero-score series.
     for (const team of leagueDetails.teams) {
@@ -61,5 +64,6 @@ export const leagueDetailsFetcher = async(dataLoc: string) => {
         }
     }
     decorateLeagueDetails(leagueDetails)
+    recordFrameFreshness(leagueDetails);
     return leagueDetails;
 }

@@ -34,6 +34,7 @@ import {type Breakpoint} from "../ui-utils";
 import LeagueTeamRoster from "./league-team-roster";
 import LeagueTeamMatchup from "./league-team-matchup";
 import TeamStatGraph from "./league-team-details-graph";
+import {matchupSchedule} from "./league-matchup-schedule";
 
 export interface TeamPositionScoreData {
     bowlDate: Date;
@@ -92,9 +93,11 @@ interface LeagueTeamProps {
 }
 const LeagueTeamDetailsSummary :FC<LeagueTeamProps> = ({teamDetails, leagueDetails} : LeagueTeamProps)=> {
     const teamPositionScoreData = buildTeamPositionScoreData(teamDetails);
-    const played = teamDetails.matchups.filter(m => (m.scores?.playerScores.length ?? 0) > 0);
-    const lastMatchup = played[played.length - 1] ?? null;
-    const nextMatchup = teamDetails.matchups.find(m => !m.scores?.playerScores.length) ?? null;
+    const {nextMatchup, pendingMatchups, lastMatchup} = matchupSchedule(teamDetails.matchups);
+    const firstPendingDate = pendingMatchups[0]?.scheduledDate?.format("DD MMM YYYY");
+    const lastPendingDate = pendingMatchups[pendingMatchups.length - 1]?.scheduledDate?.format("DD MMM YYYY");
+    const pendingDates = firstPendingDate === lastPendingDate ? firstPendingDate : `${firstPendingDate} – ${lastPendingDate}`;
+    const lastResultsDate = lastMatchup?.bowlDate?.isValid() ? lastMatchup.bowlDate : lastMatchup?.scheduledDate;
 
     const rankComparison = () => {
         let retVal = <></>
@@ -140,12 +143,26 @@ const LeagueTeamDetailsSummary :FC<LeagueTeamProps> = ({teamDetails, leagueDetai
                             <DataColRow defn="High Series" value={teamDetails.teamStats?.highSeries}/>
                             <DataColRow defn="Scratch Pins" value={teamDetails.teamStats?.scratchPins}/>
                         </Row>
+                        {lastResultsDate &&
+                            <Row className="gx-5 gy-1 mb-1">
+                                <DataColRow defn="Latest recorded results" value={lastResultsDate.format("DD MMM YYYY")} doubleWidth/>
+                            </Row>
+                        }
                         {nextMatchup &&
                             <Row className="gx-5 gy-1">
+                                <DataColRow defn="Next Matchup" value={nextMatchup.scheduledDate?.format("ddd, DD MMM YYYY")} style="Success"/>
                                 <DataColRow defn="Next Matchup Lanes" value={formatNextMatchupLanes()} style="Success"/>
                                 <DataColRow defn="Next Opponent" value={formatNextMatchupOpponent()} style="Success"
                                             doubleWidth={true}/>
                             </Row>
+                        }
+                        {!nextMatchup &&
+                            <p className="text-body-secondary mb-1">No upcoming matchups scheduled.</p>
+                        }
+                        {pendingMatchups.length > 0 &&
+                            <p className="text-warning-emphasis mt-2 mb-0" role="status">
+                                Results pending: {pendingMatchups.length} {pendingMatchups.length === 1 ? "matchup" : "matchups"} ({pendingDates}).
+                            </p>
                         }
                     </CardBody>
                     <CardBody className="pb-1 pb-sm-2">

@@ -1,7 +1,13 @@
 import {fetchJson} from "../../../data/utils/fetch-json";
-import {type FC, useMemo, useState} from "react";
+import {type FC, useCallback, useMemo, useState} from "react";
 import {Badge, Card, CardBody, Form, Table} from "react-bootstrap";
-import {useSearchParams} from "react-router";
+import {Link, useSearchParams} from "react-router";
+import {LEAGUE_DETAILS_CACHE_CATEGORY, LEAGUE_LIST_CACHE_CATEGORY, leagueDetailsFetcher, leagueInfoListFetcher} from "../../../data/league/league-api";
+import type {LeagueDetails} from "../../../data/league/league-details";
+import type {AvailableLeagues} from "../../../data/league/league-info";
+import {apiComparisonIssue} from "../../../data/league/league-comparison";
+import {recordApiFreshness} from "../../../data/utils/source-freshness";
+import {useContextCache} from "../cache/context-cache";
 
 import {performanceRatingFromAverage} from "../charts/performance-rating";
 
@@ -87,6 +93,7 @@ const RECORD: Metric[] = [
 async function fetchApiTeams(): Promise<ApiLeagueData> {
     const data = await fetchJson(`${import.meta.env.BASE_URL}data/beer-league.json`) as unknown as ApiLeagueData;
     if (data.status !== "ready" || !Array.isArray(data.standings)) throw new Error("A.B.C. data is not ready or is malformed.");
+    recordApiFreshness(data);
     return data;
 }
 
@@ -172,22 +179,41 @@ const TeamCard: FC<{side: "a" | "b"; team: ApiStanding; teams: ApiStanding[]; ot
 const ApiTeamCompare: FC = () => {
     const [params, setParams] = useSearchParams();
     const {data, isLoading, error} = useCachedFetcher<ApiLeagueData>(fetchApiTeams, API_TEAM_CACHE);
+    const cache = useContextCache();
+    const requestedLeague = params.get("league") ?? "";
+    const contextFetcher = useCallback(async (): Promise<{league?: LeagueDetails}> => {
+        if (!requestedLeague) return {};
+        const index = cache?.get(LEAGUE_LIST_CACHE_CATEGORY) as AvailableLeagues | null ?? await leagueInfoListFetcher();
+        const info = index.findLeague(requestedLeague);
+        if (!info?.dataLoc) throw new Error("The comparison league is unavailable.");
+        const league = cache?.get(LEAGUE_DETAILS_CACHE_CATEGORY, requestedLeague) as LeagueDetails | null
+            ?? await leagueDetailsFetcher(info.dataLoc, info.id);
+        return {league};
+    }, [cache, requestedLeague]);
+    const {data: context, isLoading: contextLoading, error: contextError} = useCachedFetcher(contextFetcher, "api-comparison-context", requestedLeague || "current");
     const [tab, setTab] = useState<TabId>("scoring");
     const teams = useMemo(() => [...(data?.standings ?? [])].sort((a, b) => a.name.localeCompare(b.name)), [data]);
     const requestedA = Number(params.get("a"));
     const requestedB = Number(params.get("b"));
-    const teamA = teams.find(team => team.number === requestedA) ?? teams[0];
-    const teamB = teams.find(team => team.number === requestedB && team.number !== teamA?.number) ?? teams.find(team => team.number !== teamA?.number);
+    const teamA = params.has("a") ? teams.find(team => team.number === requestedA) : teams[0];
+    const teamB = params.has("b") ? teams.find(team => team.number === requestedB && team.number !== teamA?.number) : teams.find(team => team.number !== teamA?.number);
     const activeMetrics = tab === "scoring" ? SCORING : RECORD;
 
     const updateSelection = (key: "a" | "b", value: number) => {
         const next = new URLSearchParams(params);
         next.set(key, String(value));
+        if (data?.league?.date) next.set("sheet", data.league.date);
         setParams(next);
     };
 
-    if (isLoading) return <Loader/>;
+    if (isLoading || contextLoading) return <Loader/>;
     if (error) return <ErrorDisplay message="Error loading A.B.C. team comparison data." error={error}/>;
+    const linkedNumbers = params.has("a") || params.has("b");
+    const comparisonIssue = contextError ? "The league in this comparison link is unavailable."
+        : data && context?.league ? apiComparisonIssue(data, context.league, teamA, teamB)
+        : linkedNumbers && (!data?.league?.date || params.get("sheet") !== data.league.date)
+            ? "This comparison link does not identify the current league sheet. Select teams from the current sheet to avoid reusing historical team numbers."
+            : linkedNumbers && (!teamA || !teamB) ? "The selected teams are unavailable on the current sheet." : null;
 
     return <div className="container-md bls-compare bls-fifa-compare">
         <div className="bls-compare-hero mb-3">
@@ -198,7 +224,7 @@ const ApiTeamCompare: FC = () => {
         <Card className="bls-profile-card mb-3 bls-fifa-panel"><CardBody>
             <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap"><div><strong>{data?.league?.name ?? "Beer League"}</strong>{data?.league ? <div className="text-body-secondary">{[data.league.season, data.league.week != null ? `Week ${data.league.week}` : null, data.league.date ? `Sheet ${data.league.date}` : null].filter(Boolean).join(" · ")}</div> : null}</div><Badge bg="info">A.B.C. Data</Badge></div>
         </CardBody></Card>
-        {teamA && teamB ? <>
+        {comparisonIssue ? <Card className="bls-profile-card"><CardBody><p role="status">{comparisonIssue}</p><Link to="/team/compare?source=api">Choose teams from the current A.B.C. sheet</Link></CardBody></Card> : teamA && teamB ? <>
             <div className="bls-fifa-heads mb-3">
                 <TeamCard side="a" team={teamA} teams={teams} otherNumber={teamB.number} onChange={number => { updateSelection("a", number); }}/>
                 <div className="bls-fifa-vs"><span>VS</span><Badge pill style={{background: "#6e6e73", color: "#fff"}}>A.B.C.</Badge></div>

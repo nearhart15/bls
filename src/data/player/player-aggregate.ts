@@ -180,7 +180,7 @@ async function scanAllRosters(): Promise<RosterScanResult> {
         for (const league of season.leagues) {
             if (!league.hasData() || !league.dataLoc || !league.id) continue;
             try {
-                const details = await leagueDetailsFetcher(league.dataLoc);
+                const details = await leagueDetailsFetcher(league.dataLoc, league.id);
                 loadedLeagues++;
                 for (const team of details.teams) {
                     for (const rosterPlayer of team.roster) {

@@ -1,4 +1,5 @@
 import {fetchJson} from "../utils/fetch-json";
+import {recordApiFreshness} from "../utils/source-freshness";
 import type {PlayerAppearanceSlice, PlayerListEntry, PlayerListSeasonSlice} from "./player-aggregate";
 
 interface ApiPlayer {
@@ -81,5 +82,6 @@ function entry(player: ApiPlayer, team: ApiTeam | null, data: ApiLeagueData, ind
 
 export async function apiPlayerListFetcher(): Promise<PlayerListEntry[]> {
     const data=await fetchJson(`${import.meta.env.BASE_URL}data/beer-league.json`) as unknown as ApiLeagueData; if(data.status!=="ready")throw new Error("API data is not ready yet.");
+    recordApiFreshness(data);
     const rows:ApiPlayerListEntry[]=[]; for(const team of data.teams)team.players.forEach((player,index)=>rows.push(entry(player,team,data,index))); (data.substitutes??[]).forEach((player,index)=>rows.push(entry(player,null,data,index))); return rows;
 }

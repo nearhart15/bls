@@ -2,9 +2,9 @@
  * Player index — sortable performance table with season scope filters © 2026
  */
 
-import {type CSSProperties, type FC, useCallback, useMemo, useState} from "react";
+import {type CSSProperties, type FC, useCallback, useId, useMemo, useState} from "react";
 import {Link} from "react-router";
-import {Badge, Card, CardBody, CardHeader, Table} from "react-bootstrap";
+import {Badge, Card, CardBody, CardHeader, Form, Table} from "react-bootstrap";
 
 import {
     buildFullPlayerList,
@@ -200,8 +200,11 @@ const PlayerList: FC<PlayerListProps> = ({
     const [scope, setScope] = useState<PlayerScope>(defaultScope);
     const [sortKey, setSortKey] = useState<SortKey>("games");
     const [sortDir, setSortDir] = useState<SortDir>("desc");
+    const [explicitSort, setExplicitSort] = useState(false);
+    const sortControlId = useId();
 
     const onSort = (key: SortKey) => {
+        setExplicitSort(true);
         if (key === sortKey) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
         else {
             setSortKey(key);
@@ -214,7 +217,7 @@ const PlayerList: FC<PlayerListProps> = ({
     const lastYearLabel = String(new Date().getFullYear() - 1);
     const sorted = useMemo(() => {
         if (!data) return [];
-        const pinDefaultOrder = sortKey === "games" && sortDir === "desc";
+        const pinDefaultOrder = !explicitSort;
         return toDisplayRows(data, scope)
             .filter((row) => {
                 if (includeFirstNames?.length && !firstNameMatches(row.name, includeFirstNames)) return false;
@@ -222,7 +225,7 @@ const PlayerList: FC<PlayerListProps> = ({
                 return true;
             })
             .sort((a, b) => compareRows(a, b, sortKey, sortDir, pinDefaultOrder));
-    }, [data, scope, sortKey, sortDir, includeFirstNames, excludeFirstNames]);
+    }, [data, scope, sortKey, sortDir, explicitSort, includeFirstNames, excludeFirstNames]);
 
     return (
         <Card className="mb-0 h-100 bls-perf-card">
@@ -254,6 +257,41 @@ const PlayerList: FC<PlayerListProps> = ({
             {error != null && <ErrorDisplay message="Error loading players." error={error} />}
             {data && (
                 <>
+                <div className="bls-player-mobile-sort">
+                    <div>
+                        <Form.Label htmlFor={`${sortControlId}-metric`}>Sort by</Form.Label>
+                        <Form.Select id={`${sortControlId}-metric`} value={explicitSort ? sortKey : "default"} onChange={(event) => {
+                            if (event.target.value === "default") {
+                                setSortKey("games");
+                                setSortDir("desc");
+                                setExplicitSort(false);
+                            } else {
+                                const key = event.target.value as SortKey;
+                                setSortKey(key);
+                                setSortDir(key === "name" ? "asc" : "desc");
+                                setExplicitSort(true);
+                            }
+                        }}>
+                            <option value="default">Team order</option>
+                            <option value="name">Bowler name</option>
+                            <option value="average">Average</option>
+                            <option value="games">Games</option>
+                            <option value="pinfall">Total pins</option>
+                            <option value="highGame">High game</option>
+                            <option value="highSeries">High series</option>
+                            <option value="games200">200+ games</option>
+                            {showRating && <option value="grade">Rating</option>}
+                            {sortKey === "rank" && <option value="rank">Rank</option>}
+                        </Form.Select>
+                    </div>
+                    <div>
+                        <Form.Label htmlFor={`${sortControlId}-direction`}>Order</Form.Label>
+                        <Form.Select id={`${sortControlId}-direction`} disabled={!explicitSort} value={sortDir} onChange={(event) => { setSortDir(event.target.value as SortDir); }}>
+                            <option value="desc">{sortKey === "name" ? "Z to A" : "Highest first"}</option>
+                            <option value="asc">{sortKey === "name" ? "A to Z" : "Lowest first"}</option>
+                        </Form.Select>
+                    </div>
+                </div>
                 <div className="bls-perf-scroll bls-perf-table-wrap">
                     <Table className="bls-perf-table mb-0" size="sm" hover responsive>
                         <thead>

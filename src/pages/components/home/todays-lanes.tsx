@@ -52,7 +52,7 @@ const TodaysLanes: FC = () => {
                     .filter((league) => league.hasData() && (league.ongoing || league.teams.some((team) => isHomeTeam(team.name))));
                 const leagueEntries = await Promise.all(leagues.map(async (leagueInfo) => ({
                     leagueInfo,
-                    details: await leagueDetailsFetcher(leagueInfo.dataLoc!),
+                    details: await leagueDetailsFetcher(leagueInfo.dataLoc!, leagueInfo.id),
                 })));
                 const rows: LaneAssignment[] = [];
                 const seen = new Set<string>();

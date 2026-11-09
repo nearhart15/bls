@@ -8,6 +8,7 @@ import {isNonEmptyString} from "../../../data/utils/utils";
 import type {LeagueDetails} from "../../../data/league/league-details";
 import {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import {opponentDisplay} from "../../../data/league/opponent-display";
+import {matchupComparisonUrl} from "../../../data/league/league-comparison";
 import {type Breakpoint, BS_BP_XS, isBreakpointSmallerThan} from "../ui-utils";
 import Loader from "../loader";
 import {type GameScore, type LeagueMatchup, type MatchupType, SeriesScore, TeamScore} from "../../../data/league/league-matchup";
@@ -60,21 +61,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
     const opponent = opponentDisplay(leagueDetails, matchup.opponent);
     const weekPrefix = leagueDetails?.bowlingDays?.durationUnit ?? "WK";
     const gamesPerMatchup = leagueDetails?.bowlingDays?.gamesPerWeek ?? 3;
-    const trackedOpponent = leagueDetails?.teams.find(team => team.id === matchup.opponent?.teamId);
-    const hasApiPair = teamDetails.number > 0 && (opponent.number ?? 0) > 0;
-    const canOpenCompare = Boolean(leagueDetails?.id && teamDetails.id && (trackedOpponent?.id || hasApiPair));
-    const compareParams = new URLSearchParams();
-    if (trackedOpponent?.id && teamDetails.id && leagueDetails?.id) {
-        compareParams.set("source", "frame");
-        compareParams.set("league", leagueDetails.id);
-        compareParams.set("a", teamDetails.id);
-        compareParams.set("b", trackedOpponent.id);
-    } else if (hasApiPair) {
-        compareParams.set("source", "api");
-        compareParams.set("a", String(teamDetails.number));
-        compareParams.set("b", String(opponent.number));
-    }
-    const compareUrl = `/team/compare?${compareParams.toString()}`;
+    const compareUrl = matchupComparisonUrl(leagueDetails, teamDetails, matchup);
 
     return <Col id={anchorId} className="bls-matchup-week-anchor"><Card border={showMatchupDetails ? "primary" : "dark"} className="bls-matchup-card mx-auto px-0 py-0 w-100">
         <CardHeader className="bls-matchup-week-header fw-semibold px-2 py-1"><Stack direction="horizontal" gap={3}>
@@ -87,7 +74,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
             <div className="bls-matchup-center"><Stack direction="vertical" className="text-center h-100">
                 <div><small className={matchup.matchup.startsWith("POSITION") ? "text-danger" : ""}>{MatchupTypeConversion.get(matchup.matchup)}</small></div>
                 <div className="my-auto align-middle">{showMatchupDetails && <span className="fs-5">{matchup.pointsWonLost[0]} - {matchup.pointsWonLost[1]}</span>}</div>
-                {canOpenCompare && <div className="d-none d-sm-block my-1"><Link className="bls-matchup-desktop-action" to={compareUrl}>Team Compare</Link></div>}
+                {compareUrl && <div className="d-none d-sm-block my-1"><Link className="bls-matchup-desktop-action" to={compareUrl}>Team Compare</Link></div>}
                 <div className="d-none d-sm-block w-auto">{showMatchupDetails && <button type="button" className="bls-details-toggle bls-matchup-desktop-action" onClick={() => { setDetailsExpanded(expanded => !expanded); }}>{detailsExpanded ? <><ArrowsCollapse/><span>Hide Game Details</span></> : <><ArrowsExpand/><span>Game Details</span></>}</button>}</div>
             </Stack></div>
             <div className="bls-matchup-team bls-matchup-team-away"><Stack direction="vertical" className="mx-auto"><div className="text-end align-middle"><TeamNameInfo division={opponent.division} teamNumber={opponent.number} name={opponent.name} enteringPosition={opponent.enteringRank}/><br/>{isOpponentVacantOrAbsent && <><PersonX/>&nbsp;</>}<span className="fs-sm">hdcp: <span className={isOpponentVacantOrAbsent ? "text-decoration-line-through" : ""}>{calculateTeamHdcp(matchup.opponent?.scores?.games, matchup.opponent?.scores?.series, matchup.opponent?.teamHdcp)}</span></span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.opponent?.scores} matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
@@ -97,7 +84,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
             <div>{showMatchupDetails && <GameSummaryAndPoints teamNumber={opponent.number} teamScore={matchup.opponent?.scores} matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent} currentBreakpoint={currentBreakpoint}/>}</div>
             <div className="bls-matchup-mobile-actions">
                 {showMatchupDetails && <button type="button" className="bls-matchup-mobile-action" onClick={() => { setDetailsExpanded(expanded => !expanded); }}>{detailsExpanded ? <><BoxArrowUp/> Hide Details</> : <><BoxArrowDown/> Show Details</>}</button>}
-                {canOpenCompare && <Link className="bls-matchup-mobile-action" to={compareUrl}><ArrowLeftRight/> Team Compare</Link>}
+                {compareUrl && <Link className="bls-matchup-mobile-action" to={compareUrl}><ArrowLeftRight/> Team Compare</Link>}
             </div>
         </Stack>
         </CardBody>

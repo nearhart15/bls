@@ -247,7 +247,8 @@ button.bls-frame.has-attributes:active {
   padding: .32rem .12rem .3rem;
   border: 1.5px solid #56616d;
   border-radius: .42rem;
-  background: #0c0f12;
+  background: var(--bls-surface-2);
+  color: var(--bls-text);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.045);
   overflow: hidden;
   font-variant-numeric: tabular-nums;
@@ -397,12 +398,22 @@ button.bls-frame.has-attributes:active {
   container-type: inline-size;
 }
 
+/* Compute running-total typography once per score row. All ten frames inherit
+   that computed size, including the wider tenth frame and five-column phones. */
+.bls-player-frame-row {
+  container-type: inline-size;
+}
+
+.bls-player-frame-row .hstack:has(> .bls-frame) {
+  font-size: clamp(.68rem, 2.6cqw, 1.3rem);
+}
+
 .bls-player-frame-row .bls-frame-cum {
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
   padding-inline: 0;
-  font-size: clamp(.68rem, 30cqw, 1.3rem);
+  font-size: inherit;
   line-height: 1.2;
   letter-spacing: -.02em;
   text-align: center;
@@ -427,8 +438,8 @@ button.bls-frame.has-attributes:active {
 }
 
 @media (max-width: 767.98px) {
-  .bls-player-frame-row .bls-frame-cum {
-    font-size: clamp(.78rem, 30cqw, 1.3rem);
+  .bls-player-frame-row .hstack:has(> .bls-frame) {
+    font-size: clamp(.78rem, 5cqw, 1.3rem);
   }
   .bls-player-frame-row .bls-frame-balls {
     font-size: clamp(.78rem, 33cqw, 1.3rem);
