@@ -29,6 +29,7 @@ import {useCachedFetcher} from "../cache/data-loader";
 import LeagueSummary from "./league-summary";
 import {useNavigate} from "react-router";
 import Loader from "../loader";
+import {LeagueSourceStatus} from "../data-source-status";
 
 const LeagueTeamDetails = lazy(() => import("./league-team-details"));
 const OtherTeams = lazy(() => import("./league-other-teams"));
@@ -43,7 +44,7 @@ interface LeagueDisplayProps {
     children?: React.ReactNode;
 }
 const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisplayProps) => {
-    const fetcher = useCallback((dataLoc: string) => leagueDetailsFetcher(dataLoc), []);
+    const fetcher = useCallback((dataLoc: string) => leagueDetailsFetcher(dataLoc, leagueInfo.id), [leagueInfo.id]);
     const {data: leagueDetails, isLoading: leagueDetailsLoading, error: leagueDetailsLoadError } = useCachedFetcher<LeagueDetails>(
         fetcher.bind(null, leagueInfo.dataLoc ?? "will-fail.json"), LEAGUE_DETAILS_CACHE_CATEGORY, leagueInfo.id);
 
@@ -62,6 +63,7 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
 
     return (
         <>
+            {leagueDetails && <LeagueSourceStatus leagueDetails={leagueDetails} teamId={currentDisplay === "TEAM" ? displayedTeam : undefined}/>}
             <LeagueSummary leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint} showJumpToCurrentWeek={currentDisplay === "TEAM"}/>
             {/*Team selection Menu*/}
             <Container fluid="true" className="bls-team-nav-wrap px-0 px-sm-2">

@@ -30,6 +30,18 @@ npm run preview -- --host 127.0.0.1 --port 4173
 
 ## Suggested manual checks
 
+The November 2026 review corrections add league-scoped comparison links, validated
+league identity and week-one start dates, separate upcoming/pending matchups,
+source explanations and result dates, phone sorting, and uniform frame totals.
+Historical A.B.C. comparisons show an unavailable explanation when the current
+sheet cannot represent that league; they never substitute current teams with the
+same numbers. These corrections do not create missing bowling results.
+
+Regression suites cover league identity, comparison scope, source freshness,
+upcoming matchups, and shared phone/table sorting. For visual checks, use a
+390-pixel phone and an 820-pixel tablet, including the tenth frame, three-digit
+totals, and both themes.
+
 1. Open Players, compare Career, Current season, Last season and Last calendar year, and confirm the partial-data banner is visible. Last season uses the previous available season across all bowlers; with the current data it is 2025–26.
 2. Open Nick's profile: check the charts, All stats filters, season totals, and team appearances.
 3. Compare two bowlers, switch Scoring/Conversion/Volume and season/league scope, and change either player.

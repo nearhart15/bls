@@ -144,13 +144,13 @@ const BinBinTeamCompare: FC = () => {
     const {data: leagueList, isLoading: listLoading, error: listError} = useCachedFetcher<AvailableLeagues>(leagueInfoListFetcher, LEAGUE_LIST_CACHE_CATEGORY);
     const availableLeagues = useMemo(() => leagueList?.seasons.flatMap(season => season.leagues.filter(league => league.hasData() && league.teams.length > 1)) ?? [], [leagueList]);
     const requestedLeague = params.get("league") ?? "";
-    const leagueInfo = availableLeagues.find(league => league.id === requestedLeague) ?? availableLeagues[0];
-    const fetcher = useCallback((dataLoc: string) => leagueDetailsFetcher(dataLoc), []);
+    const leagueInfo = requestedLeague ? availableLeagues.find(league => league.id === requestedLeague) : availableLeagues[0];
+    const fetcher = useCallback((dataLoc: string) => leagueDetailsFetcher(dataLoc, leagueInfo?.id), [leagueInfo?.id]);
     const {data: leagueDetails, isLoading: detailsLoading, error: detailsError} = useCachedFetcher<LeagueDetails>(fetcher.bind(null, leagueInfo?.dataLoc ?? "will-fail.json"), LEAGUE_DETAILS_CACHE_CATEGORY, leagueInfo?.id ?? "team-compare");
     const [tab, setTab] = useState<TabId>("scoring");
 
     useEffect(() => {
-        if (leagueInfo && requestedLeague !== leagueInfo.id) {
+        if (leagueInfo && !requestedLeague) {
             const next = new URLSearchParams(params);
             next.set("league", leagueInfo.id ?? "");
             setParams(next, {replace: true});
@@ -160,8 +160,8 @@ const BinBinTeamCompare: FC = () => {
     const teams = leagueDetails?.teams.filter(team => team.teamStats != null) ?? [];
     const requestedA = params.get("a") ?? "";
     const requestedB = params.get("b") ?? "";
-    const teamA = teams.find(team => team.id === requestedA) ?? teams[0];
-    const teamB = teams.find(team => team.id === requestedB && team.id !== teamA?.id) ?? teams.find(team => team.id !== teamA?.id);
+    const teamA = requestedA ? teams.find(team => team.id === requestedA) : teams[0];
+    const teamB = requestedB ? teams.find(team => team.id === requestedB && team.id !== teamA?.id) : teams.find(team => team.id !== teamA?.id);
     const activeMetrics = tab === "scoring" ? SCORING : RECORD;
 
     const updateSelection = (changes: {league?: string; a?: string; b?: string}) => {
@@ -173,8 +173,10 @@ const BinBinTeamCompare: FC = () => {
         setParams(next);
     };
 
-    if (listLoading || detailsLoading) return <Loader/>;
+    if (listLoading) return <Loader/>;
     if (listError) return <ErrorDisplay message="Error loading leagues for team comparison." error={listError}/>;
+    if (requestedLeague && !leagueInfo) return <ErrorDisplay message="The league in this comparison link is unavailable. Choose a league from Team League Data."/>;
+    if (detailsLoading) return <Loader/>;
     if (detailsError) return <ErrorDisplay message="Error loading team comparison data." error={detailsError}/>;
 
     return <div className="container-md bls-compare bls-fifa-compare">
@@ -207,7 +209,7 @@ const BinBinTeamCompare: FC = () => {
                 <div className="bls-fifa-col-title">{tab === "scoring" ? "Team scoring" : "League record"}</div>
                 {activeMetrics.map(metric => <CompareBar key={metric.key} metric={metric} teamA={teamA} teamB={teamB}/>) }
             </div></CardBody></Card>}
-        </> : <Card className="bls-profile-card"><CardBody>No two tracked teams with statistics are available for this league.</CardBody></Card>}
+        </> : <Card className="bls-profile-card"><CardBody><p>The selected teams are unavailable for this league.</p><button type="button" className="btn btn-outline-primary btn-sm" onClick={() => { updateSelection({a: "", b: ""}); }}>Choose available teams</button></CardBody></Card>}
     </div>;
 };
 

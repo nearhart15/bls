@@ -13,6 +13,7 @@ import ScrollToTop from "./components/scroll-to-top";
 import ClearCache, {type ClearCacheRef} from "./components/cache/clear-cache";
 import {ThemeToggle} from "./components/theme";
 import {useDataSource} from "./components/data-source";
+import {DataSourceStatus} from "./components/data-source-status";
 import Loader from "./components/loader";
 
 const Layout :FC = () => {
@@ -26,6 +27,7 @@ const Layout :FC = () => {
     // counterpart, so showing the global source switch would only lead to an error.
     const isApiOnlyPlayer = location.pathname.startsWith("/player/api-");
     const isApiLockedTeamCompare = location.pathname === "/team/compare" && new URLSearchParams(location.search).get("source") === "api";
+    const displayedSource = isApiLockedTeamCompare ? "api" : source;
     const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage && !isApiOnlyPlayer;
 
     const refreshApp = () => {
@@ -71,12 +73,15 @@ const Layout :FC = () => {
                 {showDataSourceToggle && (
                     <div className="bls-data-source-bar mb-3" aria-label="Stats data source">
                         <span className="bls-data-source-label">Data source</span>
-                        <ButtonGroup size="sm" className="bls-data-source-toggle">
+                        <ButtonGroup size="sm" className="bls-data-source-toggle" aria-label="Choose statistics data source">
                             {!isApiLockedTeamCompare && <Button variant={source === "frame" ? "primary" : "outline-primary"} onClick={() => { setSource("frame"); }} aria-pressed={source === "frame"} title="Use stats calculated from BLS frame files">BinBin Data</Button>}
-                            <Button variant={source === "api" ? "primary" : "outline-primary"} onClick={() => { setSource("api"); }} aria-pressed={source === "api"} title="Use stats imported from the bowling center website">A.B.C. Data</Button>
+                            <Button variant={displayedSource === "api" ? "primary" : "outline-primary"} onClick={() => { setSource("api"); }} aria-pressed={displayedSource === "api"} title="Use stats imported from the bowling center website">A.B.C. Data</Button>
                         </ButtonGroup>
                     </div>
                 )}
+                {showDataSourceToggle && <DataSourceStatus source={displayedSource}/>}
+                {isApiOnlyPlayer && <DataSourceStatus source="api"/>}
+                {isFrameOnlyStatsPage && <DataSourceStatus source="frame"/>}
 
                 <ScrollToTop />
                 <ClearCache ref={clearCacheRef}/>
