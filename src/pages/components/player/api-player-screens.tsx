@@ -1,3 +1,4 @@
+import {buildRivalryPath} from "../comparison/rivalry-data";
 import {RankingTable} from "./ranking-table";
 import {TeamFilter} from "../filters/team-filter";
 import {SortHeader} from "../sort-header";
@@ -111,6 +112,7 @@ export const ApiPlayerDetail:FC<{playerId:string}>=({playerId})=>{
         <div className="bls-compare-hero mb-3">
             <span className="bls-hero-kicker">A.B.C. Player</span>
             <h1>{p.name}</h1>
+            <Link to={buildRivalryPath("api", p.id)} className="bls-link d-inline-block mb-2">Find a rival for {p.name} →</Link>
             <div className="text-body-secondary">{a?.teamName??"Substitute"} · {a?.leagueName??"Beer League"}</div>
             <div className="small text-body-secondary mt-3">{archiveStatus}</div>
         </div>

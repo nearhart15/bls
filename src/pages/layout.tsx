@@ -4,20 +4,23 @@ import DataQualityNotice from "./components/data-quality-notice";
  */
 
 import {Suspense, type FC} from "react";
-import {Link, Outlet, useLocation} from "react-router";
+import {Link, Outlet, useLocation, useNavigate} from "react-router";
 import {Button, ButtonGroup, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {ArrowClockwise} from "react-bootstrap-icons";
 
 import ImgBowlingLogo from "../assets/bowling-svgrepo-com.svg";
 import ScrollToTop from "./components/scroll-to-top";
 import {ThemeToggle} from "./components/theme";
-import {useDataSource} from "./components/data-source";
+import {type DataSource, useDataSource} from "./components/data-source";
 import {DataSourceStatus} from "./components/data-source-status";
 import Loader from "./components/loader";
 
 const Layout :FC = () => {
     const {source, setSource} = useDataSource();
     const location = useLocation();
+    const navigate = useNavigate();
+    const isPlayerCompare = location.pathname === "/player/compare";
+    const linkedSource = new URLSearchParams(location.search).get("source");
     const isFullLeagueInfo = location.pathname === "/beer-league" || location.pathname.startsWith("/beer-league/");
     const isTeamLeagueData = location.pathname === "/league" || location.pathname.startsWith("/league/");
     const isFrameOnlyStatsPage = location.pathname === "/player/handicap";
@@ -25,7 +28,11 @@ const Layout :FC = () => {
     // counterpart, so showing the global source switch would only lead to an error.
     const isApiOnlyPlayer = location.pathname.startsWith("/player/api-");
     const isApiLockedTeamCompare = location.pathname === "/team/compare" && new URLSearchParams(location.search).get("source") === "api";
-    const displayedSource = isApiLockedTeamCompare ? "api" : source;
+    const displayedSource = isApiLockedTeamCompare ? "api" : isPlayerCompare && (linkedSource === "api" || linkedSource === "frame") ? linkedSource : source;
+    function changeDataSource(next: DataSource) {
+        setSource(next);
+        if (isPlayerCompare && next !== displayedSource) void navigate({pathname: location.pathname, search: "?source=" + next}, {replace: true});
+    }
     const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage && !isApiOnlyPlayer;
 
     const pageTitle = isTeamLeagueData ? "Team League Data" : isFrameOnlyStatsPage ? "Handicap Guide" : location.pathname === "/player" ? "Players" : location.pathname === "/score-utils" ? "Score Utilities" : null;
@@ -73,8 +80,8 @@ const Layout :FC = () => {
                     <div className="bls-data-source-bar mb-3" aria-label="Stats data source">
                         <span className="bls-data-source-label">Data source</span>
                         <ButtonGroup size="sm" className="bls-data-source-toggle" aria-label="Choose statistics data source">
-                            {!isApiLockedTeamCompare && <Button variant={source === "frame" ? "primary" : "outline-primary"} onClick={() => { setSource("frame"); }} aria-pressed={source === "frame"} title="Use stats calculated from BLS frame files">BinBin Data</Button>}
-                            <Button variant={displayedSource === "api" ? "primary" : "outline-primary"} onClick={() => { setSource("api"); }} aria-pressed={displayedSource === "api"} title="Use stats imported from the bowling center website">A.B.C. Data</Button>
+                            {!isApiLockedTeamCompare && <Button variant={displayedSource === "frame" ? "primary" : "outline-primary"} onClick={() => { changeDataSource("frame"); }} aria-pressed={displayedSource === "frame"} title="Use stats calculated from BLS frame files">BinBin Data</Button>}
+                            <Button variant={displayedSource === "api" ? "primary" : "outline-primary"} onClick={() => { changeDataSource("api"); }} aria-pressed={displayedSource === "api"} title="Use stats imported from the bowling center website">A.B.C. Data</Button>
                         </ButtonGroup>
                     </div>
                 )}

@@ -1,6 +1,8 @@
-import {ComparisonBar,ComparisonCard,ComparisonTabs,COLOR_A,COLOR_B} from "../comparison/comparison-ui";
+import RivalryStudio, {useRivalryMatchup} from "../comparison/rivalry-studio";
+import {availableSeasons} from "../../../data/player/season-scope";
+import {ComparisonBar,ComparisonCard,ComparisonTabs} from "../comparison/comparison-ui";
 import {type FC, useMemo, useState} from "react";
-import {Badge, Card, CardBody, Col, Form, Row} from "react-bootstrap";
+import {Badge, Card, CardBody} from "react-bootstrap";
 import type {PlayerListEntry} from "../../../data/player/player-aggregate";
 import {apiStats} from "../../../data/player/api-player-data";
 import ErrorDisplay from "../error-display";
@@ -59,28 +61,18 @@ function display(value: number | null, integer = false): string {
 const CompareBar: FC<{metric: Metric; playerA: PlayerListEntry; playerB: PlayerListEntry}> = ({metric, playerA, playerB}) => {
     return <ComparisonBar label={metric.label} valueA={metric.get(playerA)} valueB={metric.get(playerB)} lowerIsBetter={metric.lowerIsBetter} format={value=>display(value,metric.integer)}/>;
 };
-const PlayerCard: FC<{
-    side: "a" | "b";
-    player: PlayerListEntry;
-    players: PlayerListEntry[];
-    selectedId: string;
-    otherId: string;
-    onChange: (id: string) => void;
-}> = ({side, player, players, selectedId, otherId, onChange}) => {
-    const color = side === "a" ? COLOR_A : COLOR_B;
-    return <ComparisonCard side={side} badge={<>{display(player.average)}</>} name={<>{player.name}</>} metadata={<><span>{teamName(player)}</span><span>{integerFormat.format(player.games)} games</span></>}>
-        <Form.Select size="sm" className="bls-fifa-change" value={selectedId} onChange={event => { onChange(event.target.value); }} style={{borderColor: color}}>
-                    {players.map(candidate => <option key={candidate.id} value={candidate.id} disabled={candidate.id === otherId}>{candidate.name} · {teamName(candidate)}</option>)}
-                </Form.Select>
-    </ComparisonCard>;
-};
+const PlayerCard: FC<{side: "a" | "b"; player: PlayerListEntry}> = ({side, player}) => (
+    <ComparisonCard side={side} badge={<>{display(player.average)}</>} name={player.name}
+        metadata={<><span>{teamName(player)}</span><span>{integerFormat.format(player.games)} games</span></>}>{null}</ComparisonCard>
+);
 
 const ApiPlayerCompare: FC = () => {
     const {data, isLoading, error} = usePlayerIndexData("api");
-    const [idA, setIdA] = useState("");
-    const [idB, setIdB] = useState("");
     const [tab, setTab] = useState<TabId>("scoring");
     const players = useMemo(() => [...(data ?? [])].sort((a, b) => a.name.localeCompare(b.name)), [data]);
+    const rows = useMemo(() => players.map(player => ({id: player.id, name: player.name, average: player.average, games: player.games, teamName: teamName(player)})), [players]);
+    const matchup = useRivalryMatchup(rows, "api");
+    const idA = matchup.a?.id ?? "", idB = matchup.b?.id ?? "";
     const playerA = players.find(player => player.id === idA);
     const playerB = players.find(player => player.id === idB);
     const activeMetrics = tab === "scoring" ? SCORING : tab === "volume" ? VOLUME : LATEST;
@@ -90,38 +82,14 @@ const ApiPlayerCompare: FC = () => {
 
     return (
         <div className="container-md bls-compare bls-fifa-compare">
-            <div className="bls-compare-hero mb-3">
-                <span className="bls-hero-kicker">A.B.C. Data · Head to head</span>
-                <h1>Player Compare</h1>
-                <div className="text-body-secondary">Only statistics published by the Arapahoe league sheet are compared.</div>
-            </div>
-            {!playerA || !playerB ? (
-                <Card className="bls-profile-card mb-3 bls-fifa-panel">
-                    <CardBody>
-                        <Row className="g-3">
-                            <Col xs={12} md={6}>
-                                <Form.Label>Player A</Form.Label>
-                                <Form.Select value={idA} onChange={event => { setIdA(event.target.value); }} style={{borderColor: COLOR_A}}>
-                                    <option value="">Select bowler…</option>
-                                    {players.map(player => <option key={player.id} value={player.id} disabled={player.id === idB}>{player.name} · {teamName(player)}</option>)}
-                                </Form.Select>
-                            </Col>
-                            <Col xs={12} md={6}>
-                                <Form.Label>Player B</Form.Label>
-                                <Form.Select value={idB} onChange={event => { setIdB(event.target.value); }} style={{borderColor: COLOR_B}}>
-                                    <option value="">Select bowler…</option>
-                                    {players.map(player => <option key={player.id} value={player.id} disabled={player.id === idA}>{player.name} · {teamName(player)}</option>)}
-                                </Form.Select>
-                            </Col>
-                        </Row>
-                    </CardBody>
-                </Card>
-            ) : (
+            <RivalryStudio source="api" rows={rows} matchup={matchup} scopeLabel={"Current league sheet · " + (availableSeasons(players)[0] ?? "Season unavailable")}/>
+            <p className="small text-body-secondary">Only statistics published by the Arapahoe league sheet are compared.</p>
+            {playerA && playerB && (
                 <>
                     <div className="bls-fifa-heads mb-3">
-                        <PlayerCard side="a" player={playerA} players={players} selectedId={idA} otherId={idB} onChange={setIdA} />
+                        <PlayerCard side="a" player={playerA}/>
                         <div className="bls-fifa-vs"><span>VS</span><Badge pill style={{background: "#6e6e73", color: "#fff"}}>A.B.C.</Badge></div>
-                        <PlayerCard side="b" player={playerB} players={players} selectedId={idB} otherId={idA} onChange={setIdB} />
+                        <PlayerCard side="b" player={playerB}/>
                     </div>
                     <ComparisonTabs<TabId> active={tab} onChange={setTab} tabs={[["scoring","Scoring"],["volume","Volume"],["latest","Latest Series"]]}/>
                     <Card className="bls-profile-card bls-fifa-panel">
