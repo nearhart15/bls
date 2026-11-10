@@ -14,8 +14,8 @@
 .fs-xs { font-size:.75rem; }
 .bls-score-utils .card-body.border { border:1px solid var(--bls-border)!important; border-radius:var(--bls-radius-sm); background:var(--bls-surface-2)!important; padding:1rem!important; margin:1rem!important; }
 .bls-score-utils .card-title.bg-secondary { color:var(--bls-text)!important; background:var(--bls-surface-3)!important; border-radius:.5rem; padding:.6rem!important; }
-.bls-fifa-tab,.bls-scope-pill,.nav-tabs .nav-link { border-radius:999px; border:1px solid var(--bls-border); background:var(--bls-surface-2); color:var(--bls-text); padding:.55rem .9rem; }
-.bls-fifa-tab.is-active,.bls-scope-pill.is-active,.nav-tabs .nav-link.active { background:var(--bls-accent-soft); color:var(--bls-accent); border-color:var(--bls-accent); box-shadow:none; }
+.nav-tabs .nav-link { border-radius:999px; border:1px solid var(--bls-border); background:var(--bls-surface-2); color:var(--bls-text); padding:.55rem .9rem; }
+.nav-tabs .nav-link.active { background:var(--bls-accent-soft); color:var(--bls-accent); border-color:var(--bls-accent); box-shadow:none; }
 .nav-tabs { gap:.4rem; border-bottom:0; padding-block:4px; }
 .nav-tabs .nav-link { margin-bottom:0; }
 .bls-table-sort { border:0; background:transparent; color:inherit; font:inherit; text-transform:inherit; letter-spacing:inherit; padding:.35rem 0; min-height:32px; cursor:pointer; }
@@ -25,7 +25,7 @@
 .bls-fifa-pcard-b .bls-fifa-pcard-name,.bls-fifa-pcard-b .bls-fifa-pcard-badge { color:var(--bls-compare-b)!important; }
 .bls-fifa-val:first-child { color:var(--bls-compare-a)!important; }
 .bls-fifa-val:last-child { color:var(--bls-compare-b)!important; }
-[data-bs-theme="light"] .bls-kpi-big,[data-bs-theme="light"] .bls-radar-callouts strong,[data-bs-theme="light"] .bls-insight-kicker { color:var(--bls-highlight)!important; }
+[data-bs-theme="light"] .bls-kpi-big,[data-bs-theme="light"] .bls-radar-callouts strong { color:var(--bls-highlight)!important; }
 .bls-app .form-select,.bls-app .form-control { border-radius:.7rem; }
 .bls-app :is(button,a,input,select):focus-visible { outline:2px solid var(--bls-accent); outline-offset:3px; }
 .bls-api-mobile-sort { display:none; }

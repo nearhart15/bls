@@ -10,7 +10,6 @@ import {
     Dash,
     DashCircleDotted,
     ExclamationTriangle,
-    FileExcel,
     Icon0CircleFill,
     Icon1Circle,
     Icon1CircleFill,
@@ -28,10 +27,8 @@ import {
     Icon8CircleFill,
     Icon9Circle,
     Icon9CircleFill,
-    SlashSquare,
     type IconProps as BootstrapIconProps,
 } from "react-bootstrap-icons";
-import type {LeagueDetails} from "../../../data/league/league-details";
 import {Frame, type FrameAttributes, type LeagueMatchup, type ScoreLabel, TeamPlayerGameScore} from "../../../data/league/league-matchup";
 import {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import {type Breakpoint, BS_BP_SM, BS_BP_XS, isBreakpointSmallerThan} from "../ui-utils";
@@ -41,7 +38,6 @@ const iconMap = {
     Dash,
     DashCircleDotted,
     ExclamationTriangle,
-    FileExcel,
     Icon0CircleFill,
     Icon1Circle,
     Icon1CircleFill,
@@ -59,7 +55,6 @@ const iconMap = {
     Icon8CircleFill,
     Icon9Circle,
     Icon9CircleFill,
-    SlashSquare,
 } as const;
 type IconName = keyof typeof iconMap;
 interface IconProps extends BootstrapIconProps { iconName: IconName; }
@@ -81,15 +76,15 @@ const FrameAttributeIcons = new Map<FrameAttributes, FrameAttributeIconInfo>([
 ]);
 const FrameAttributeOrder = new Map(Array.from(FrameAttributeIcons.keys()).map((attribute, index) => [attribute, index]));
 
-interface FrameScoreLabelInfo { label: string; altText: string; iconName: IconName; }
+interface FrameScoreLabelInfo { altText: string; iconName?: IconName; }
 const FrameScoreLabels = new Map<string, FrameScoreLabelInfo>([
-    ["X", {label: "X", altText: "Strike", iconName: "FileExcel"}], ["/", {label: "/", altText: "Spare", iconName: "SlashSquare"}],
-    ["1S", {label: "1S", altText: "1 Split", iconName: "Icon1Circle"}], ["2S", {label: "2S", altText: "2 Split", iconName: "Icon2Circle"}],
-    ["3S", {label: "3S", altText: "3 Split", iconName: "Icon3Circle"}], ["4S", {label: "4S", altText: "4 Split", iconName: "Icon4Circle"}],
-    ["5S", {label: "5S", altText: "5 Split", iconName: "Icon5Circle"}], ["6S", {label: "6S", altText: "6 Split", iconName: "Icon6Circle"}],
-    ["7S", {label: "7S", altText: "7 Split", iconName: "Icon7Circle"}], ["8S", {label: "8S", altText: "8 Split", iconName: "Icon8Circle"}],
-    ["9S", {label: "9S", altText: "9 Split", iconName: "Icon9Circle"}], ["-", {label: "-", altText: "Gutter", iconName: "Dash"}],
-    ["F", {label: "F", altText: "Fault", iconName: "ExclamationTriangle"}], ["A", {label: "A", altText: "Absent", iconName: "DashCircleDotted"}]
+    ["X", {altText: "Strike"}], ["/", {altText: "Spare"}],
+    ["1S", {altText: "1 Split", iconName: "Icon1Circle"}], ["2S", {altText: "2 Split", iconName: "Icon2Circle"}],
+    ["3S", {altText: "3 Split", iconName: "Icon3Circle"}], ["4S", {altText: "4 Split", iconName: "Icon4Circle"}],
+    ["5S", {altText: "5 Split", iconName: "Icon5Circle"}], ["6S", {altText: "6 Split", iconName: "Icon6Circle"}],
+    ["7S", {altText: "7 Split", iconName: "Icon7Circle"}], ["8S", {altText: "8 Split", iconName: "Icon8Circle"}],
+    ["9S", {altText: "9 Split", iconName: "Icon9Circle"}], ["-", {altText: "Gutter", iconName: "Dash"}],
+    ["F", {altText: "Fault", iconName: "ExclamationTriangle"}], ["A", {altText: "Absent", iconName: "DashCircleDotted"}]
 ]);
 
 const findPlayer = (teamDetails: TrackedLeagueTeam, playerId: string | undefined) => teamDetails.roster.find(player => player.id === playerId)?.name ?? playerId ?? "UNKNOWN";
@@ -120,8 +115,8 @@ const FrameAttributeIconLegend: FC = () => {
 };
 
 const EmptyFrames: Frame[] = Array.from({length: 10}, (_, i) => ({number: i + 1, ballScores: [[0, "A"]], cumulativeScore: 0, attributes: []}));
-interface MatchupDetailsDisplayProps { leagueDetails: LeagueDetails | null; matchup: LeagueMatchup; teamDetails: TrackedLeagueTeam; currentBreakpoint?: Breakpoint; }
-interface TeamIndSeriesGameFramesProps extends MatchupDetailsDisplayProps { gameIdx: number; }
+interface MatchupDetailsDisplayProps { matchup: LeagueMatchup; teamDetails: TrackedLeagueTeam; currentBreakpoint?: Breakpoint; }
+interface TeamIndSeriesGameFramesProps { matchup: LeagueMatchup; teamDetails: TrackedLeagueTeam; gameIdx: number; }
 
 const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, teamDetails, gameIdx}) => {
     const {setActive} = use(FrameAttrHintContext);
@@ -131,7 +126,7 @@ const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, t
         const key = b[1] === "S" ? b[0].toString() + "S" : b[1];
         const label = key ? FrameScoreLabels.get(key) : undefined;
         if (key === "X" || key === "/") return <span className="bls-frame-mark" title={label?.altText}>{key}</span>;
-        return label ? <Icon iconName={label.iconName} title={label.altText}/> : <>{b[0]}</>;
+        return label?.iconName ? <Icon iconName={label.iconName} title={label.altText}/> : <>{b[0]}</>;
     };
     const writeScoreLabelRow = (f: Frame) => <>{f.ballScores.slice(0, f.number === 10 ? 3 : 2).map((ball, i) => <div key={`${f.number}-${i}`}>{writeScoreOrLabel(ball)}</div>)}</>;
     const attributeInfo = (frame: Frame) => frame.attributes.map(attribute => FrameAttributeIcons.get(attribute)).filter((info): info is FrameAttributeIconInfo => info !== undefined).sort((a, b) => (FrameAttributeOrder.get(a.attribute) ?? Number.MAX_SAFE_INTEGER) - (FrameAttributeOrder.get(b.attribute) ?? Number.MAX_SAFE_INTEGER));
@@ -170,15 +165,15 @@ const TeamIndSeriesGameScoresSummary: FC<MatchupDetailsDisplayProps> = ({matchup
     </Table>;
 };
 
-const MatchupDetailsDisplay: FC<MatchupDetailsDisplayProps> = ({leagueDetails, matchup, teamDetails, currentBreakpoint}) => {
+const MatchupDetailsDisplay: FC<MatchupDetailsDisplayProps> = ({matchup, teamDetails, currentBreakpoint}) => {
     const hasFrameData = !matchup.scores?.playerScores.some(player =>
         player.games.some(game => !game.blind && !game.vacant && game.frames.length === 0)
     );
     const [activeAttr, setActiveAttr] = useState<FrameAttributeIconInfo[]>([]);
     return <FrameAttrHintContext value={{active: activeAttr, setActive: setActiveAttr}}>
-        <Row className="gy-1 gx-1"><Col><Card className="my-1 mx-0"><CardBody className="p-1"><TeamIndSeriesGameScoresSummary leagueDetails={leagueDetails} matchup={matchup} teamDetails={teamDetails} currentBreakpoint={currentBreakpoint}/></CardBody></Card></Col></Row>
+        <Row className="gy-1 gx-1"><Col><Card className="my-1 mx-0"><CardBody className="p-1"><TeamIndSeriesGameScoresSummary matchup={matchup} teamDetails={teamDetails} currentBreakpoint={currentBreakpoint}/></CardBody></Card></Col></Row>
         {hasFrameData && <Row className="gy-1 gx-1"><Col><Card className="p-0 m-0"><CollapsibleContainer headerTitle="Frame Data" divId={`${matchup.week}-framedata`} currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_SM} alwaysShowToggle>
-            <CardBody className="px-0 py-2 m-0"><Row className="row-cols-1 gy-2 gx-2 m-0 p-0">{matchup.scores?.games.map((_game, g) => <Col key={`frames-${matchup.week}-${g}`}><Card className="my-1 mx-0 h-100"><CardBody className="p-2"><div className={`bls-game-header ${isBreakpointSmallerThan(currentBreakpoint, BS_BP_SM) ? "fs-sm" : "fs-6"}`}>Game {g + 1}</div><TeamIndSeriesGameFramesV2 leagueDetails={leagueDetails} matchup={matchup} teamDetails={teamDetails} currentBreakpoint={currentBreakpoint} gameIdx={g}/></CardBody></Card></Col>)}</Row></CardBody>
+            <CardBody className="px-0 py-2 m-0"><Row className="row-cols-1 gy-2 gx-2 m-0 p-0">{matchup.scores?.games.map((_game, g) => <Col key={`frames-${matchup.week}-${g}`}><Card className="my-1 mx-0 h-100"><CardBody className="p-2"><div className={`bls-game-header ${isBreakpointSmallerThan(currentBreakpoint, BS_BP_SM) ? "fs-sm" : "fs-6"}`}>Game {g + 1}</div><TeamIndSeriesGameFramesV2 matchup={matchup} teamDetails={teamDetails} gameIdx={g}/></CardBody></Card></Col>)}</Row></CardBody>
             <CardFooter className="fs-xs text-center text-body-secondary"><FrameAttributeIconLegend/></CardFooter>
         </CollapsibleContainer></Card></Col></Row>}
         {matchup.notes.length > 0 && <Row><Col><Card className="my-2 mx-0"><CardBody className="p-1"><Card.Subtitle className="p-2 mb-0">Notes</Card.Subtitle><ListGroup variant="flush">{matchup.notes.map((n, i) => <ListGroupItem className="fs-sm py-0 px-2 m-0" key={`notes-${matchup.week}-${i}`}>{n}</ListGroupItem>)}</ListGroup></CardBody></Card></Col></Row>}

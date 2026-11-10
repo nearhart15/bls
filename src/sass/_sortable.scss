@@ -31,40 +31,6 @@
   padding-bottom: 0.85rem;
 }
 
-.bls-scope-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.bls-scope-pill {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.1rem;
-  border: 1px solid var(--bls-border);
-  background: var(--bls-surface-2);
-  color: var(--bls-text);
-  border-radius: 980px;
-  padding: 0.45rem 1rem;
-  cursor: pointer;
-  text-align: left;
-}
-
-.bls-scope-pill:hover,
-.bls-scope-pill.is-active {
-  border-color: var(--bls-accent);
-  background: var(--bls-accent-soft);
-  color: var(--bls-accent);
-}
-
-.bls-scope-pill-label { font-size: 0.8rem; font-weight: 600; }
-.bls-scope-pill-sub {
-  font-size: 0.65rem;
-  color: var(--bls-text-muted);
-}
-.bls-scope-pill.is-active .bls-scope-pill-sub { color: var(--bls-accent); }
-
 .bls-league-list-compact .list-group-item { padding: 0.55rem 0.85rem; }
 
 .bls-shoutouts .bls-news-item {
@@ -148,31 +114,6 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   color: var(--bls-text-muted);
-}
-
-.bls-fifa-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 1rem;
-}
-
-.bls-fifa-tab {
-  border: 1px solid var(--bls-border);
-  background: var(--bls-surface-2);
-  color: var(--bls-text-muted);
-  border-radius: 980px;
-  padding: 0.4rem 0.95rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.bls-fifa-tab.is-active {
-  color: #fff;
-  background: #1c1c1e;
-  border-color: #00d4ff;
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.35);
 }
 
 .bls-fifa-col-title {

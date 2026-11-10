@@ -67,7 +67,7 @@ const Home: FC = () => {
                 <Suspense fallback={<Loader/>}><ApiPlayerList title="Beer League Bowlers" /></Suspense>
             ) : (
                 <div className="row g-3">
-                    <div className="col-lg-5"><LeagueList compact /></div>
+                    <div className="col-lg-5"><LeagueList /></div>
                     <div className="col-lg-7 d-grid gap-3">
                         <PlayerList defaultScope="current" lockScope showTrend={false} showRating={false} includeFirstNames={PINS_GO_BOOM} title="Pins Go Boom" />
                         <PlayerList defaultScope="current" lockScope showTrend={false} showRating={false} includeFirstNames={HOOKERS_AND_BOWL} title="Hookers and Bowl" />

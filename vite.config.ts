@@ -1,3 +1,4 @@
+import {copyRuntimeAssets} from "./scripts/public-assets.ts";
 import {defineConfig} from "vite";
 import react from "@vitejs/plugin-react";
 import {NodePackageImporter} from "sass-embedded";
@@ -5,10 +6,18 @@ import {NodePackageImporter} from "sass-embedded";
 const DEV_CONNECT = "connect-src 'self' https://bls.bindul.name https://*.google-analytics.com https://*.analytics.google.com";
 const DEV_CONNECT_WITH_HMR = DEV_CONNECT + " ws://localhost:* ws://127.0.0.1:*";
 
+const localServerOptions = {
+    host: "127.0.0.1",
+    strictPort: true,
+    cors: false,
+    allowedHosts: ["localhost", "127.0.0.1"],
+};
+
 export default defineConfig(({command}) => ({
   base: "/bls/",
   plugins: [
     react(),
+    {name:"bls-runtime-assets",closeBundle(){if(command === "build")copyRuntimeAssets();}},
     {
       name: "bls-dev-csp",
       transformIndexHtml(html) {
@@ -20,6 +29,7 @@ export default defineConfig(({command}) => ({
     },
   ],
   build: {
+    copyPublicDir: false,
     minify: true,
     sourcemap: false,
     rolldownOptions: {
@@ -36,18 +46,10 @@ export default defineConfig(({command}) => ({
     },
   },
   server: {
-    host: "127.0.0.1",
-    strictPort: true,
-    cors: false,
-    allowedHosts: ["localhost", "127.0.0.1"],
+    ...localServerOptions,
     fs: {strict: true},
   },
-  preview: {
-    host: "127.0.0.1",
-    strictPort: true,
-    cors: false,
-    allowedHosts: ["localhost", "127.0.0.1"],
-  },
+  preview: localServerOptions,
   css: {
     preprocessorOptions: {
       scss: {

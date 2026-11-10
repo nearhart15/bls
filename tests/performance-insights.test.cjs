@@ -1,3 +1,4 @@
+const {createTestDom} = require('./dom-fixture.cjs');
 const test=require('node:test');const assert=require('node:assert/strict');const load=require('./load-source.cjs');
 const {PlayerStats,RatioGroup}=load('src/data/player/player-stats.ts');const {comparePerformance}=load('src/data/player/performance-insights.ts');
 function session(date,average,{games=3,leagueId='a',strike=15,open=6,single=8,singleAttempts=10,incomplete=false}={}){
@@ -25,8 +26,8 @@ test('small samples, missing frame data and unavailable metrics do not generate 
 });
 
 test('Insights controls update periods and league scope without external prompts',async t=>{
- const React=require('react');const {act}=React;const {createRoot}=require('react-dom/client');const {JSDOM}=require('jsdom');const {InsightsPanel}=load('src/pages/components/player/player-insights.tsx');
- const dom=new JSDOM('<div id="root"></div>',{url:'https://example.test'});const prev={window:global.window,document:global.document,act:global.IS_REACT_ACT_ENVIRONMENT};global.window=dom.window;global.document=dom.window.document;global.IS_REACT_ACT_ENVIRONMENT=true;
+ const React=require('react');const {act}=React;const {createRoot}=require('react-dom/client');const {InsightsPanel}=load('src/pages/components/player/player-insights.tsx');
+ const {dom, restoreDom} = createTestDom({url:'https://example.test'});
  const root=createRoot(dom.window.document.getElementById('root'));const doc=dom.window.document;
  const data=Array.from({length:12},(_,i)=>({...session(`${i<6?2025:2026}-10-${String(i+1).padStart(2,'0')}`,170+i,{leagueId:i%2?'a':'b'}),season:i<6?'2025 - 26':'2026 - 27'}));
  const select=async(el,value)=>act(async()=>{el.value=value;el.dispatchEvent(new dom.window.Event('change',{bubbles:true}));});
@@ -37,7 +38,7 @@ test('Insights controls update periods and league scope without external prompts
   await select(doc.querySelector('[aria-label="Insights league"]'),'a');assert.match(doc.body.textContent,/Oct 8, 2026/);assert.equal(doc.querySelectorAll('table:last-child tbody tr').length>0,true);
   assert.doesNotMatch(doc.body.textContent,/Recent session history|last 5 games/i);assert.match(doc.body.textContent,/Your target|Build a useful baseline/);
   await select(doc.querySelector('[aria-label="Comparison window"]'),'season');assert.match(doc.body.textContent,/Latest season \(2026 - 27\)/);assert.match(doc.body.textContent,/Previous season \(2025 - 26\)/);assert.equal(doc.querySelector('[aria-label="Insights league"]').value,'all');
- }finally{await act(async()=>root.unmount());dom.window.close();global.window=prev.window;global.document=prev.document;global.IS_REACT_ACT_ENVIRONMENT=prev.act;}
+ }finally{await act(async()=>root.unmount());restoreDom();}
 });
 
 test('season comparison includes all games and matches league names across changing season IDs',()=>{

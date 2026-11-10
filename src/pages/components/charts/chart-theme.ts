@@ -200,3 +200,27 @@ export function baseChartOptions(theme: ThemeMode, title: string): ApexOptions {
         ],
     };
 }
+
+export function datetimeAxis(theme: ThemeMode): ApexOptions["xaxis"] {
+    const palette = chartPalette(theme);
+    return {
+            type: "datetime",
+            labels: {
+                datetimeUTC: false,
+                format: "dd MMM",
+                style: {
+                    colors: palette.text,
+                    fontSize: "11px",
+                },
+            },
+            axisBorder: {
+                show: false,
+            },
+            axisTicks: {
+                show: false,
+            },
+            tooltip: {
+                enabled: false,
+            },
+        };
+}

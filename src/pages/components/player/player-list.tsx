@@ -1,8 +1,10 @@
+import {aggregateSlices as mergeSlices} from "../../../data/player/slice-stats";
+import {SortHeader} from "../sort-header";
 /*
  * Player index — sortable performance table with season scope filters © 2026
  */
 
-import {type CSSProperties, type FC, useCallback, useId, useMemo, useState} from "react";
+import {type FC, useCallback, useId, useMemo, useState} from "react";
 import {Link} from "react-router";
 import {Badge, Card, CardBody, CardHeader, Form, Table} from "react-bootstrap";
 
@@ -10,7 +12,6 @@ import {
     buildFullPlayerList,
     PLAYER_INDEX_CACHE_CATEGORY,
     type PlayerListEntry,
-    type PlayerListSeasonSlice,
 } from "../../../data/player/player-aggregate";
 import {useCachedFetcher} from "../cache/data-loader";
 import Loader from "../loader";
@@ -74,33 +75,6 @@ function compareRows(a: DisplayRow, b: DisplayRow, key: SortKey, dir: SortDir, p
     return pinDefaultOrder ? comparePinnedThen(a.name, b.name, cmp * mul) : (cmp * mul || a.name.localeCompare(b.name));
 }
 
-function mergeSlices(slices: PlayerListSeasonSlice[]): Omit<DisplayRow, "id" | "name" | "weekAverages" | "weekSeries"> {
-    let games = 0, pinfall = 0, highGame = 0, highSeries = 0, games200 = 0, weighted = 0;
-    let ratingWeighted = 0, ratingGameCount = 0;
-    for (const s of slices) {
-        games += s.games;
-        pinfall += s.pinfall;
-        highGame = Math.max(highGame, s.highGame);
-        highSeries = Math.max(highSeries, s.highSeries);
-        games200 += s.games200;
-        if (s.average != null && s.games > 0) weighted += s.average * s.games;
-        if (s.ratingDelta != null && (s.ratingGameCount ?? 0) > 0) {
-            ratingWeighted += s.ratingDelta * (s.ratingGameCount ?? 0);
-            ratingGameCount += s.ratingGameCount ?? 0;
-        }
-    }
-    return {
-        games,
-        pinfall,
-        highGame,
-        highSeries,
-        games200,
-        average: games > 0 ? weighted / games : null,
-        ratingDelta: ratingGameCount > 0 ? ratingWeighted / ratingGameCount : null,
-        ratingGameCount,
-    };
-}
-
 function resolveCurrentSeason(entries: PlayerListEntry[]): string {
     return availableSeasons(entries)[0] ?? "";
 }
@@ -152,19 +126,6 @@ function firstNameMatches(name: string, candidates: string[]): boolean {
     return candidates.some((candidate) => candidate.trim().toLocaleLowerCase() === firstName);
 }
 
-const SortTh: FC<{
-    label: string; sortKey: SortKey; active: SortKey; dir: SortDir;
-    onSort: (k: SortKey) => void; className?: string; style?: CSSProperties;
-}> = ({label, sortKey, active, dir, onSort, className, style}) => {
-    const isActive = active === sortKey;
-    return (
-        <th className={`bls-sortable-th ${className ?? ""}${isActive ? " is-sorted" : ""}`} style={style} onClick={() => { onSort(sortKey); }} role="button" tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSort(sortKey); } }}
-            aria-sort={isActive ? (dir === "asc" ? "ascending" : "descending") : "none"}>
-            <span className="bls-sortable-label">{label}<span className="bls-sort-indicator" aria-hidden>{isActive ? (dir === "asc" ? " ▲" : " ▼") : ""}</span></span>
-        </th>
-    );
-};
 
 const SCOPE_OPTIONS: {id: PlayerScope; label: string; hint: string}[] = [
     {id: "current", label: "Current season", hint: "Most recent league season"},
@@ -296,16 +257,16 @@ const PlayerList: FC<PlayerListProps> = ({
                     <Table className="bls-perf-table mb-0" size="sm" hover responsive>
                         <thead>
                             <tr>
-                                <SortTh label="#" sortKey="rank" active={sortKey} dir={sortDir} onSort={onSort} className="text-center" style={{width: "2.5rem"}} />
-                                <SortTh label="Bowler" sortKey="name" active={sortKey} dir={sortDir} onSort={onSort} />
-                                <SortTh label="Avg" sortKey="average" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
-                                <SortTh label="Games" sortKey="games" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-sm-table-cell" />
-                                <SortTh label="Pins" sortKey="pinfall" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-md-table-cell" />
-                                <SortTh label="HG" sortKey="highGame" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-md-table-cell" />
-                                <SortTh label="HS" sortKey="highSeries" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-lg-table-cell" />
-                                <SortTh label="200+" sortKey="games200" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-sm-table-cell" />
+                                <SortHeader label="#" sortKey="rank" active={sortKey} dir={sortDir} onSort={onSort} className="text-center" style={{width: "2.5rem"}} />
+                                <SortHeader label="Bowler" sortKey="name" active={sortKey} dir={sortDir} onSort={onSort} />
+                                <SortHeader label="Avg" sortKey="average" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                                <SortHeader label="Games" sortKey="games" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-sm-table-cell" />
+                                <SortHeader label="Pins" sortKey="pinfall" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-md-table-cell" />
+                                <SortHeader label="HG" sortKey="highGame" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-md-table-cell" />
+                                <SortHeader label="HS" sortKey="highSeries" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-lg-table-cell" />
+                                <SortHeader label="200+" sortKey="games200" active={sortKey} dir={sortDir} onSort={onSort} className="text-end d-none d-sm-table-cell" />
                                 {showTrend && <th className="d-none d-xl-table-cell text-center">Trend</th>}
-                                {showRating && <SortTh label="Rating" sortKey="grade" active={sortKey} dir={sortDir} onSort={onSort} className="text-center" />}
+                                {showRating && <SortHeader label="Rating" sortKey="grade" active={sortKey} dir={sortDir} onSort={onSort} className="text-center" />}
                             </tr>
                         </thead>
                         <tbody>

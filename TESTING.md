@@ -1,32 +1,14 @@
 # BLS testing and release notes
 
-Merges to `main` run the checks and deploy to GitHub Pages. Ordinary feature branches run validation without deploying. The dedicated `beer-league-pdf-import-test` branch has its own preview workflow.
+Main and preview builds share validation and one Pages publisher. See README.md for delivery details.
 
-## Start the test app
+## Local setup
 
-Open a terminal in this folder and run:
+Use the installation, development and preview commands in [README.md](README.md). The test-copy mode uses public league data with analytics in test mode.
 
-```powershell
-npm run dev:test
-```
+## Live data
 
-Open the URL printed by Vite, normally `http://127.0.0.1:5173/bls/`. Keep the terminal running; Ctrl+C stops the server. The test mode uses the existing public league data and disables analytics transmission through GA's test mode.
-
-For a fresh checkout, use the Node version in `.nvmrc` and the npm version in `package.json`, then run `npm ci` before starting the app.
-
-For a production-style local preview with analytics still in test mode:
-
-```powershell
-npm run build:test
-npm run preview -- --host 127.0.0.1 --port 4173
-```
-
-## Important live-data differences
-
-- Four of the five current leagues pass validation.
-- `league-2526-winter-beer-team-23.json` contains `["87", "/"]` in frame 7, under matchup index 4, player-score index 1, game index 2 (all indices zero-based). This is invalid bowling input. The test copy excludes that league and shows a visible partial-data warning. Neither `8` nor `7` was guessed as a correction. Fix this in the data source only after verifying the actual score sheet.
-- Consequently, career totals, rankings, and historical comparisons can differ from the original dashboard. The partial-data banner explains this. Partial results are not cached as complete, and an all-failed load reports an error.
-- A 10-pin penalty after three missed matchups is configured in the live data, but the original code did not define whether absences are consecutive or season-total. Both modes are implemented. The default `strict` mode proceeds when both interpretations give the same answer and reports an error if they differ. Once the league rule is confirmed, add `VITE_MISSED_MATCHUP_MODE=consecutive` or `VITE_MISSED_MATCHUP_MODE=total` to `.env.test-copy.local`, then restart. The configured missed-matchup penalty replaces the default penalty once the threshold is reached. Only explicitly recorded all-blind matchups count as absences; missing records are not guessed to be absences.
+Live data changes independently of this repository. The app reports partial-load warnings and rejects invalid source records. See CHANGES.md for dated review observations; verify the actual score sheet before correcting source data.
 
 ## Suggested manual checks
 
@@ -54,7 +36,7 @@ totals, and both themes.
 - `npm ci --ignore-scripts` installs the locked dependencies used by CI.
 - Pages deploys the same committed lockfile verified by CI; update dependencies on a branch and pass the audit and project checks before merging. The Minimatch override keeps lint dependencies on the patched 11.x release while their upstream ranges still select 10.x.
 - `npm run check` runs lint, all `tests/*.test.cjs` suites, the TypeScript/production build, and bundle-size budgets.
-- Lint allows at most 181 warnings, reduced from 228 in the code cleanup. Existing style, defensive-guard, and React migration diagnostics remain visible; correctness/type-safety rules remain enforced.
+- Lint allows at most 9 existing warnings. Existing style, defensive-guard, and React migration diagnostics remain visible; correctness/type-safety rules remain enforced.
 - Tests cover chart injection through the actual ApexCharts library, malformed input, JSON field guards, cache expiry, frame scoring, variable series length, vacancy rules, statistics merging, calendar/team separation, partial failures, storage denial, trusted links, and blind-penalty policy.
 - `node tests/live-data.cjs` is an optional read-only upstream check. It intentionally exits nonzero while the invalid winter-league frame remains.
 - Cleanup regression tests cover player/team/calendar aggregation, ratings, responsive subscriptions, missing frame data, and resetting matchup details when switching teams.

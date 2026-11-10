@@ -155,3 +155,35 @@ test("league progress uses the same rolling rules as player progress", () => {
     assert.deepEqual(handicap.map(row => row.value), [30, 26.5]);
     assert.deepEqual(known200.map(row => row.value), [1.5, 3]);
 });
+
+
+test("sparse shuffled history preserves reported handicaps and observed score highs", () => {
+    const rows = [
+        point({week: 3, date: "2026-09-15", weekGames: 0, weekSeries: null, handicap: NaN, highGame: 240}),
+        point({week: 1, date: "2026-09-01", weekGames: 0, weekSeries: null, handicap: 24, highGame: 230}),
+        point({week: 2, date: "2026-09-08", weekScores: [0, 200, 100], weekSeries: 300, handicap: null, highGame: 250}),
+    ];
+    for (const row of rows) { Object.freeze(row.weekScores); Object.freeze(row); }
+    Object.freeze(rows);
+    const summary = summarizeApiPlayerHistory(rows);
+    assert.equal(summary.games, 3);
+    assert.equal(summary.pinfall, 300);
+    assert.equal(summary.average, 100);
+    assert.equal(summary.seriesCount, 1);
+    assert.equal(summary.averageSeries, 300);
+    assert.equal(summary.handicap, 24);
+    assert.equal(summary.highGame, 240);
+    assert.equal(summary.highHandicapGame, null);
+    assert.equal(summary.known200Games, 1);
+    assert.deepEqual(buildApiPlayerProgress(rows, "handicap").map(row => row.value), [24, null, NaN]);
+});
+
+test("empty history distinguishes unknown metrics from observed zero totals", () => {
+    assert.deepEqual(summarizeApiPlayerHistory([]), {
+        average: null, handicap: null, games: 0, pinfall: 0, seriesCount: 0,
+        averageSeries: null, highGame: null, highSeries: null,
+        highHandicapGame: null, highHandicapSeries: null,
+        known200Games: null, known600Series: 0, known700Series: 0,
+    });
+    assert.deepEqual(buildApiPlayerProgress([], "games"), []);
+});

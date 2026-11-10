@@ -1,3 +1,4 @@
+import {leagueEntries} from "../league/league-entries";
 /*
  * Shout-outs from notes on the last bowled matchups © 2026
  */
@@ -36,11 +37,9 @@ export async function shoutOutsFromLastGameNotes(): Promise<MatchNoteShoutOut[]>
     const failures: string[] = [];
     let loaded = 0;
 
-    for (const season of leagues.seasons) {
-        for (const league of season.leagues) {
-            if (!league.hasData() || !league.dataLoc || !league.id) continue;
+    for (const {league, leagueId, dataLoc} of leagueEntries(leagues)) {
             try {
-                const details = await leagueDetailsFetcher(league.dataLoc, league.id);
+                const details = await leagueDetailsFetcher(dataLoc, leagueId);
                 loaded++;
                 const teamNames = new Map<string, string>();
                 for (const team of [...details.teams, ...details.otherTeams]) {
@@ -57,8 +56,8 @@ export async function shoutOutsFromLastGameNotes(): Promise<MatchNoteShoutOut[]>
                         items.push({
                             date,
                             week: matchup.week,
-                            leagueId: league.id,
-                            leagueName: league.name ?? league.id,
+                            leagueId: leagueId,
+                            leagueName: league.name ?? leagueId,
                             teamId: team.id ?? "",
                             teamName: team.name ?? "Team",
                             opponentName: oppId ? teamNames.get(oppId) : undefined,
@@ -67,9 +66,8 @@ export async function shoutOutsFromLastGameNotes(): Promise<MatchNoteShoutOut[]>
                     }
                 }
             } catch (err) {
-                failures.push(`${league.id}: ${err instanceof Error ? err.message : String(err)}`);
+                failures.push(`${leagueId}: ${err instanceof Error ? err.message : String(err)}`);
             }
-        }
     }
 
     if (failures.length && loaded === 0) throw new Error("Shoutouts could not be loaded: " + failures.join("; "));

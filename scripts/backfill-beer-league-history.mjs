@@ -1,25 +1,18 @@
-import {createHash} from "node:crypto";
-import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
-import {join, resolve} from "node:path";
+import {archiveBeerSnapshot} from "./beer-archive.mjs";
+import {QUALIFYING_TEAM,normalizeName as normalizeTeamName,createRequest} from "./import-utils.mjs";
+export {QUALIFYING_TEAM} from "./import-utils.mjs";
+import {resolve} from "node:path";
 import {pathToFileURL} from "node:url";
 import {parseBlsText} from "./import-beer-league.mjs";
-import {assertTrustedUrl, MiB, pdfBytesToText, readLimitedBytes, readLimitedJson, safeFetch, safeWorkspacePath} from "./security-utils.mjs";
+import {assertTrustedUrl, MiB, pdfBytesToText, readLimitedBytes, readLimitedJson, safeWorkspacePath} from "./security-utils.mjs";
 
 const BINBIN_LEAGUES_URL = process.env.BINBIN_LEAGUES_URL || "https://bls.bindul.name/data/leagues.json";
 const MEDIA_URL = "https://arapahoebowl.com/wp-json/wp/v2/media";
 const HISTORY_DIR = safeWorkspacePath(process.env.BEER_LEAGUE_HISTORY_DIR || "public/data/beer-league-history");
 const USER_AGENT = "BLS Beer League history backfill (+https://github.com/nearhart15/bls)";
 const TRUSTED_HOSTS = ["arapahoebowl.com", "bls.bindul.name"];
-export const QUALIFYING_TEAM = "Pins Go Boom!";
 
-async function request(url, options = {}) {
-    const response = await safeFetch(url, {
-        ...options,
-        headers: {"user-agent": USER_AGENT, accept: "application/json,application/pdf,*/*;q=0.8", ...(options.headers || {})},
-    }, {allowedHosts: TRUSTED_HOSTS});
-    if (!response.ok) throw new Error(`${response.status} ${response.statusText} fetching ${url}`);
-    return response;
-}
+const request=createRequest({allowedHosts:TRUSTED_HOSTS,userAgent:USER_AGENT,accept:"application/json,application/pdf,*/*;q=0.8"});
 
 function collectYears(value, years = new Set(), depth = 0, state = {nodes: 0}) {
     state.nodes += 1;
@@ -82,14 +75,6 @@ function inferSeason(parsed, media, year) {
     return `Beer ${year}`;
 }
 
-function seasonSlug(season) {
-    return season.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-}
-
-function normalizeTeamName(value) {
-    return String(value ?? "").toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "");
-}
-
 export function hasQualifyingTeam(parsed, name = QUALIFYING_TEAM) {
     const target = normalizeTeamName(name);
     const rows = [...(parsed?.standings ?? []), ...(parsed?.teams ?? [])];
@@ -97,34 +82,7 @@ export function hasQualifyingTeam(parsed, name = QUALIFYING_TEAM) {
 }
 
 function archive(parsed, bytes) {
-    const week = parsed.league.week;
-    if (!Number.isInteger(week) || week < 1) return false;
-    const season = parsed.league.season;
-    const slug = seasonSlug(season);
-    const dir = resolve(HISTORY_DIR, slug);
-    mkdirSync(dir, {recursive: true});
-    const prefix = `week-${String(week).padStart(2, "0")}`;
-    const hash = createHash("sha256").update(bytes).digest("hex");
-    let revision = 1;
-    while (existsSync(join(dir, revision === 1 ? `${prefix}.json` : `${prefix}-r${revision}.json`))) {
-        const jsonPath = join(dir, revision === 1 ? `${prefix}.json` : `${prefix}-r${revision}.json`);
-        const existing = JSON.parse(readFileSync(jsonPath, "utf8"));
-        if (existing.archive?.pdfSha256 === hash) return false;
-        revision += 1;
-    }
-    const base = revision === 1 ? prefix : `${prefix}-r${revision}`;
-    const pdfFile = `${base}.pdf`;
-    const snapshot = {...parsed, archive: {week, revision, pdfSha256: hash, pdfFile, archivedAt: new Date().toISOString(), historicalBackfill: true}};
-    writeFileSync(join(dir, `${base}.json`), `${JSON.stringify(snapshot, null, 2)}\n`);
-    writeFileSync(join(dir, pdfFile), bytes);
-    const indexPath = resolve(HISTORY_DIR, "index.json");
-    let index = {snapshots: []};
-    if (existsSync(indexPath)) index = JSON.parse(readFileSync(indexPath, "utf8"));
-    index.snapshots = (index.snapshots ?? []).filter(row => !(row.season === season && row.week === week && row.revision === revision));
-    index.snapshots.push({season, week, revision, date: parsed.league.date, json: `${slug}/${base}.json`, pdf: `${slug}/${pdfFile}`, pdfSha256: hash});
-    index.snapshots.sort((a, b) => String(a.season).localeCompare(String(b.season)) || a.week - b.week || a.revision - b.revision);
-    writeFileSync(indexPath, `${JSON.stringify(index, null, 2)}\n`);
-    return true;
+    return archiveBeerSnapshot(parsed, bytes, HISTORY_DIR, {historicalBackfill:true,skipInvalidWeek:true}).created;
 }
 
 async function parsePdf(url, media, year) {

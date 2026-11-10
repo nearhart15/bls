@@ -1,3 +1,4 @@
+import {ComparisonBar,ComparisonCard,ComparisonTabs,COLOR_A,COLOR_B} from "../comparison/comparison-ui";
 import {type FC, useMemo, useState} from "react";
 import {Badge, Card, CardBody, Col, Form, Row} from "react-bootstrap";
 import type {PlayerListEntry} from "../../../data/player/player-aggregate";
@@ -8,8 +9,6 @@ import {usePlayerIndexData} from "./use-player-index-data";
 
 const numberFormat = Intl.NumberFormat("en-US", {maximumFractionDigits: 1});
 const integerFormat = Intl.NumberFormat("en-US", {maximumFractionDigits: 0});
-const COLOR_A = "#ff2d55";
-const COLOR_B = "#00d4ff";
 
 type TabId = "scoring" | "volume" | "latest";
 
@@ -58,31 +57,8 @@ function display(value: number | null, integer = false): string {
 }
 
 const CompareBar: FC<{metric: Metric; playerA: PlayerListEntry; playerB: PlayerListEntry}> = ({metric, playerA, playerB}) => {
-    const valueA = metric.get(playerA);
-    const valueB = metric.get(playerB);
-    const a = valueA ?? 0;
-    const b = valueB ?? 0;
-    const total = Math.max(0, a) + Math.max(0, b);
-    const comparedValue = metric.lowerIsBetter ? Math.min(a, b) : Math.max(a, b);
-    const fill = total > 0 ? comparedValue / total * 100 : 50;
-    const leader: "a" | "b" | "tie" = valueA == null || valueB == null || a === b
-        ? "tie"
-        : (metric.lowerIsBetter ? a < b : a > b) ? "a" : "b";
-    const color = leader === "a" ? COLOR_A : leader === "b" ? COLOR_B : "#6e6e73";
-    return (
-        <div className="bls-fifa-row">
-            <div className="bls-fifa-row-label">{metric.label}</div>
-            <div className="bls-fifa-row-trackline">
-                <span className={`bls-fifa-val${leader === "a" ? " is-lead" : ""}`} style={{color: COLOR_A}}>{display(valueA, metric.integer)}</span>
-                <div className="bls-fifa-track">
-                    <div className="bls-fifa-fill" style={{width: `${fill}%`, background: color, boxShadow: leader === "tie" ? undefined : `0 0 10px ${color}`, marginLeft: leader === "b" ? "auto" : 0}} />
-                </div>
-                <span className={`bls-fifa-val${leader === "b" ? " is-lead" : ""}`} style={{color: COLOR_B}}>{display(valueB, metric.integer)}</span>
-            </div>
-        </div>
-    );
+    return <ComparisonBar label={metric.label} valueA={metric.get(playerA)} valueB={metric.get(playerB)} lowerIsBetter={metric.lowerIsBetter} format={value=>display(value,metric.integer)}/>;
 };
-
 const PlayerCard: FC<{
     side: "a" | "b";
     player: PlayerListEntry;
@@ -92,18 +68,11 @@ const PlayerCard: FC<{
     onChange: (id: string) => void;
 }> = ({side, player, players, selectedId, otherId, onChange}) => {
     const color = side === "a" ? COLOR_A : COLOR_B;
-    return (
-        <div className={`bls-fifa-pcard bls-fifa-pcard-${side}`} style={{borderColor: color, boxShadow: `0 0 18px ${color}40`}}>
-            <div className="bls-fifa-pcard-badge" style={{borderColor: color, color}}>{display(player.average)}</div>
-            <div className="bls-fifa-pcard-body">
-                <div className="bls-fifa-pcard-name" style={{color}}>{player.name}</div>
-                <div className="bls-fifa-pcard-meta"><span>{teamName(player)}</span><span>{integerFormat.format(player.games)} games</span></div>
-                <Form.Select size="sm" className="bls-fifa-change" value={selectedId} onChange={event => { onChange(event.target.value); }} style={{borderColor: color}}>
+    return <ComparisonCard side={side} badge={<>{display(player.average)}</>} name={<>{player.name}</>} metadata={<><span>{teamName(player)}</span><span>{integerFormat.format(player.games)} games</span></>}>
+        <Form.Select size="sm" className="bls-fifa-change" value={selectedId} onChange={event => { onChange(event.target.value); }} style={{borderColor: color}}>
                     {players.map(candidate => <option key={candidate.id} value={candidate.id} disabled={candidate.id === otherId}>{candidate.name} · {teamName(candidate)}</option>)}
                 </Form.Select>
-            </div>
-        </div>
-    );
+    </ComparisonCard>;
 };
 
 const ApiPlayerCompare: FC = () => {
@@ -154,11 +123,7 @@ const ApiPlayerCompare: FC = () => {
                         <div className="bls-fifa-vs"><span>VS</span><Badge pill style={{background: "#6e6e73", color: "#fff"}}>A.B.C.</Badge></div>
                         <PlayerCard side="b" player={playerB} players={players} selectedId={idB} otherId={idA} onChange={setIdB} />
                     </div>
-                    <div className="bls-fifa-tabs" role="tablist">
-                        {([["scoring", "Scoring"], ["volume", "Volume"], ["latest", "Latest Series"]] as [TabId, string][]).map(([id, label]) => (
-                            <button key={id} type="button" className={`bls-fifa-tab${tab === id ? " is-active" : ""}`} onClick={() => { setTab(id); }}>{label}</button>
-                        ))}
-                    </div>
+                    <ComparisonTabs<TabId> active={tab} onChange={setTab} tabs={[["scoring","Scoring"],["volume","Volume"],["latest","Latest Series"]]}/>
                     <Card className="bls-profile-card bls-fifa-panel">
                         <CardBody>
                             <div className="bls-fifa-col">

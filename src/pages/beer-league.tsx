@@ -1,31 +1,18 @@
+import {RankingTable} from "./components/player/ranking-table";
+import {beerSheetFetcher as beerLeagueFetcher, apiPlayerId, normalizePlayerName as normalizeName, type BeerLeagueData, type BeerPlayer} from "../data/league/beer-sheet";
+import {SortHeader} from "./components/sort-header";
 import {type FC,useCallback,useMemo,useState} from "react";
 import {Link} from "react-router";
 import {Accordion,Alert,Card,Col,Form,Row,Spinner,Tab,Table,Tabs} from "react-bootstrap";
 import {buildFullPlayerList,PLAYER_INDEX_CACHE_CATEGORY,type PlayerListEntry} from "../data/player/player-aggregate";
 import {useCachedFetcher} from "./components/cache/data-loader";
-import {fetchJson} from "../data/utils/fetch-json";
-import {recordApiFreshness} from "../data/utils/source-freshness";
 import {safeArapahoeLink} from "../data/utils/safe-link";
 
-interface BeerStanding{division:string|null;place:number;number:number;name:string;won:number;lost:number;average:number;handicap:number;pinsWithHandicap:number;scratchPins:number;highHandicapGame:number;highHandicapSeries:number;highScratchGame:number;highScratchSeries:number}
-interface BeerPlayer{name:string;average:number;handicap:number;pins:number;games:number;highGame:number;highSeries:number;highHandicapGame?:number;highHandicapSeries?:number;weekScoresRaw:string[];weekScores:(number|null)[];weekTotal:number|null}
-interface BeerTeam{division?:string|null;place?:number;number:number;name:string;won?:number;lost?:number;average?:number;handicap?:number;players:BeerPlayer[]}
-interface BeerLeagueData{status:"pending"|"ready";message?:string;generatedAt:string|null;source?:{directoryUrl:string;leaguePageUrl:string|null;pdfUrl:string|null};league?:{name:string;date:string|null;week:number|null;totalWeeks:number|null;day:string;time:string|null;season:string|null};standings:BeerStanding[];teams:BeerTeam[];substitutes?:BeerPlayer[]}
 type PlayerSortKey="name"|"teamName"|"average"|"handicap"|"games"|"pins"|"highGame"|"highSeries";
 interface LeaguePlayerRow extends BeerPlayer{teamNumber:number|null;teamName:string;division:string|null;isSub:boolean;apiPlayerId:string;framePlayer?:PlayerListEntry}
 
 
 const BEER_LEAGUE_CACHE_CATEGORY = "beer-league-import-v1";
-async function beerLeagueFetcher(): Promise<BeerLeagueData> {
- const data = await fetchJson(`${import.meta.env.BASE_URL}data/beer-league.json`) as unknown as BeerLeagueData;
- if(data.status!=="ready" || !Array.isArray(data.standings) || !Array.isArray(data.teams)) throw new Error("Beer League data is not ready or is malformed.");
- recordApiFreshness(data);
- return data;
-}
-
-function normalizeName(name:string){return name.toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]/g,"");}
-function slug(name:string){return name.toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
-function apiPlayerId(teamNumber:number|null,name:string,index:number){return `api-${teamNumber??"sub"}-${slug(name)}-${index}`;}
 function errorMessage(error:unknown){return error instanceof Error?error.message:typeof error==="string"?error:"Unknown error";}
 
 const BeerLeague:FC=()=>{
@@ -41,10 +28,10 @@ const BeerLeague:FC=()=>{
  const activePlayers=useMemo(()=>allPlayers.filter(p=>p.games>0),[allPlayers]),frameDataPlayers=useMemo(()=>allPlayers.filter(p=>Boolean(p.framePlayer)),[allPlayers]),websitePlayers=useMemo(()=>allPlayers.filter(p=>!p.framePlayer),[allPlayers]);
  const visiblePlayers=useMemo(()=>{const q=normalizeName(playerSearch);return allPlayers.filter(p=>!q||normalizeName(`${p.name} ${p.teamName}`).includes(q)).sort((a,b)=>{const av=a[playerSort.key],bv=b[playerSort.key];const comparison=typeof av==="string"&&typeof bv==="string"?av.localeCompare(bv,undefined,{numeric:true,sensitivity:"base"}):Number(av)-Number(bv);return comparison*(playerSort.direction==="asc"?1:-1)||b.average-a.average||a.name.localeCompare(b.name);});},[allPlayers,playerSearch,playerSort]);
  const leaders=useMemo(()=>{const e=activePlayers.filter(p=>!p.isSub);return{byAverage:[...e].sort((a,b)=>b.average-a.average||b.games-a.games).slice(0,10),byHighGame:[...e].sort((a,b)=>b.highGame-a.highGame||b.average-a.average).slice(0,10),byHighSeries:[...e].sort((a,b)=>b.highSeries-a.highSeries||b.average-a.average).slice(0,10),byPins:[...e].sort((a,b)=>b.pins-a.pins||b.games-a.games).slice(0,10)};},[activePlayers]);
- if(error)return <Alert variant="danger">Could not load the imported Beer League data: {errorMessage(error)}</Alert>;if(isLoading||!data)return <div className="d-flex align-items-center gap-2"><Spinner size="sm"/><span>Loading Beer League data…</span></div>;if(data.status!=="ready")return <Alert variant="info">{data.message??"Beer League import has not run yet."}</Alert>;
- const playerSortHeader=(key:PlayerSortKey,label:string)=><th scope="col" key={key} className={key==="name"||key==="teamName"?undefined:"text-end"} aria-sort={playerSort.key===key?(playerSort.direction==="asc"?"ascending":"descending"):"none"}><button type="button" className="bls-table-sort" onClick={()=>setPlayerSort(current=>({key,direction:current.key===key?(current.direction==="asc"?"desc":"asc"):(key==="name"||key==="teamName"?"asc":"desc")}))}>{label}<span aria-hidden="true">{playerSort.key===key?(playerSort.direction==="asc"?" ↑":" ↓"):" ↕"}</span></button></th>;
+ if(error)return <Alert variant="danger">Could not load the imported Beer League data: {errorMessage(error)}</Alert>;if(isLoading||!data)return <div className="d-flex align-items-center gap-2"><Spinner size="sm"/><span>Loading Beer League data…</span></div>;
+ const playerSortHeader=(key:PlayerSortKey,label:string)=><SortHeader nativeButton key={key} label={label} sortKey={key} active={playerSort.key} dir={playerSort.direction} className={key==="name"||key==="teamName"?undefined:"text-end"} onSort={next=>setPlayerSort(current=>({key:next,direction:current.key===next?(current.direction==="asc"?"desc":"asc"):(next==="name"||next==="teamName"?"asc":"desc")}))}/>;
  const renderPlayerName=(p:LeaguePlayerRow)=><Link to={`/player/${p.framePlayer?.id??p.apiPlayerId}`} className="fw-semibold text-decoration-none">{p.name}</Link>;
- const leaderTable=(players:LeaguePlayerRow[],value:(p:LeaguePlayerRow)=>number,label:string)=><div className="table-responsive"><Table hover size="sm" className="mb-0 align-middle"><thead><tr><th>#</th><th>Bowler</th><th>Team</th><th className="text-end">{label}</th></tr></thead><tbody>{players.map((p,i)=><tr key={`${label}-${p.teamNumber}-${p.name}`}><td>{i+1}</td><td>{renderPlayerName(p)}</td><td className="text-body-secondary">{p.teamName}</td><td className="text-end fw-semibold">{value(p).toLocaleString()}</td></tr>)}</tbody></Table></div>;
+ const leaderTable=(players:LeaguePlayerRow[],value:(p:LeaguePlayerRow)=>number,label:string)=><RankingTable compact rows={players} rowKey={p=>`${label}-${p.teamNumber}-${p.name}`} renderName={renderPlayerName} teamName={p=>p.teamName} value={p=>value(p).toLocaleString()} valueLabel={label}/>;
  return <div>
   <div className="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4"><div><p className="text-uppercase text-body-secondary small fw-semibold mb-1">Arapahoe Bowling Center</p><h1 className="mb-1">{data.league?.name??"Beer League"}</h1><div className="text-body-secondary">{data.league?.season} · {data.league?.day} {data.league?.time}{data.league?.week!=null&&<> · Week {data.league.week}{data.league.totalWeeks?` of ${data.league.totalWeeks}`:""}</>}</div></div><div className="text-end small text-body-secondary"><div>Sheet date: {data.league?.date??"Unknown"}</div>{data.generatedAt&&<div>Imported: {new Date(data.generatedAt).toLocaleString()}</div>}{safeArapahoeLink(data.source?.pdfUrl??undefined)&&<a href={safeArapahoeLink(data.source?.pdfUrl??undefined)} target="_blank" rel="noopener noreferrer">Open source PDF</a>}</div></div>
   <Tabs defaultActiveKey="overview" className="mb-4" mountOnEnter unmountOnExit>

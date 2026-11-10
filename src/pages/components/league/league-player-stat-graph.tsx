@@ -9,7 +9,7 @@ import Chart from "../charts/safe-chart";
 
 import type {PlayerDayData} from "./league-team-roster-data";
 import {useTheme} from "../theme";
-import {baseChartOptions, chartPalette, chartToolbarTools} from "../charts/chart-theme";
+import {baseChartOptions, chartPalette, datetimeAxis} from "../charts/chart-theme";
 
 interface TeamPlayerStatGraphProps {
     playerData: PlayerDayData[];
@@ -68,17 +68,6 @@ const TeamPlayerStatGraph: FC<TeamPlayerStatGraphProps> = ({playerData}) => {
             height: 320,
             type: "line",
             stacked: false,
-            zoom: {
-                enabled: true,
-                type: "x",
-                autoScaleYaxis: true,
-                allowMouseWheelZoom: true,
-            },
-            toolbar: {
-                show: true,
-                autoSelected: "zoom",
-                tools: chartToolbarTools,
-            },
         },
         series,
         colors: [palette.series[0], palette.series[3], palette.series[2]],
@@ -93,26 +82,7 @@ const TeamPlayerStatGraph: FC<TeamPlayerStatGraphProps> = ({playerData}) => {
                 size: 7,
             },
         },
-        xaxis: {
-            type: "datetime",
-            labels: {
-                datetimeUTC: false,
-                format: "dd MMM",
-                style: {
-                    colors: palette.text,
-                    fontSize: "11px",
-                },
-            },
-            axisBorder: {
-                show: false,
-            },
-            axisTicks: {
-                show: false,
-            },
-            tooltip: {
-                enabled: false,
-            },
-        },
+        xaxis: datetimeAxis(theme),
         yaxis: [
             {
                 seriesName: ["Weekly Avg", "Running Avg"],

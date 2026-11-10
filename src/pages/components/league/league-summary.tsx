@@ -35,7 +35,7 @@ const durationWeekLabels: CodeMaps[] = [
     {code: "WK", label: "Weeks"},
     {code: "MT", label: "Months"},
     {code: "TW", label: "Two Times a Week"},
-    {code: "TW", label: "Fortnights"}
+    {code: "FN", label: "Fortnights"}
 ]
 
 interface PropValueLineProps {

@@ -1,10 +1,11 @@
+import {QUALIFYING_TEAM,decodeHtml,normalizeName as normalize,slug} from "./import-utils.mjs";
+export {QUALIFYING_TEAM} from "./import-utils.mjs";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import {boundedEnvInt, MiB, readLimitedJson, readLimitedText, safeFetch, safeWorkspacePath} from "./security-utils.mjs";
 
 export const LEAGUE_ID = 133016;
-export const QUALIFYING_TEAM = "Pins Go Boom!";
 export const BASE_PAGE = "https://www.leaguesecretary.com/bowling-centers/arapahoe-bowling-center/bowling-leagues/beer-fall-2026";
 export const RECAP_SHEETS_URL = `${BASE_PAGE}/league/recaps-png/${LEAGUE_ID}`;
 export const INTERACTIVE_RECAPS_URL = "https://www.leaguesecretary.com/League/InteractiveRecaps_Read";
@@ -14,13 +15,7 @@ const API_CONCURRENCY = boundedEnvInt(process.env.LEAGUESECRETARY_CONCURRENCY, 6
 const TRUSTED_HOSTS = ["leaguesecretary.com"];
 
 function sleep(ms) { return new Promise(resolvePromise => setTimeout(resolvePromise, ms)); }
-function decodeHtml(value) {
-    return String(value ?? "")
-        .replaceAll("&amp;", "&").replaceAll("&quot;", '"').replaceAll("&#x27;", "'")
-        .replaceAll("&#39;", "'").replaceAll("&lt;", "<").replaceAll("&gt;", ">");
-}
 function stripHtml(value) { return decodeHtml(String(value ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()); }
-function normalize(value) { return String(value ?? "").toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, ""); }
 const PLAYER_NAME_ALIASES = new Map([
     ["augustfesi", "augifesi"],
 ]);
@@ -28,7 +23,6 @@ function canonicalPlayerName(value) {
     const normalized = normalize(value);
     return PLAYER_NAME_ALIASES.get(normalized) ?? normalized;
 }
-function slug(value) { return String(value ?? "").toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 function playerHistoryFileName(playerKey) { return playerKey.replace(/[^a-z0-9-]+/g, "--") + ".json"; }
 function round(value, digits = 1) { const scale = 10 ** digits; return Math.round(value * scale) / scale; }
 function numberOrZero(value) { const parsed = Number(value); return Number.isFinite(parsed) ? parsed : 0; }
@@ -262,7 +256,7 @@ async function fetchWeekSnapshot(period) {
     };
 }
 
-export function buildPlayerHistory(snapshots) {
+function prepareHistory(snapshots) {
     const ordered = [...snapshots].sort((a, b) => a.reporting.date.localeCompare(b.reporting.date) || a.reporting.week - b.reporting.week);
     const ambiguousNames = new Set();
 
@@ -278,6 +272,16 @@ export function buildPlayerHistory(snapshots) {
         for (const [name, ids] of idsByName) if (ids.size > 1) ambiguousNames.add(name);
     }
 
+    return {ordered, ambiguousNames};
+}
+
+function historyPlayerKey(row, ambiguousNames) {
+    const name = canonicalPlayerName(row.normalizedName);
+    return ambiguousNames.has(name) ? name + ":" + row.sourcePlayerId : name;
+}
+
+export function buildPlayerHistory(snapshots) {
+    const {ordered, ambiguousNames} = prepareHistory(snapshots);
     const players = new Map();
     const seasonTotals = new Map();
     for (const snapshot of ordered) {
@@ -285,9 +289,7 @@ export function buildPlayerHistory(snapshots) {
         for (const row of snapshot.bowlers) {
             if (!row.sourcePlayerId || !row.normalizedName) continue;
             const canonicalName = canonicalPlayerName(row.normalizedName);
-            const playerKey = ambiguousNames.has(canonicalName)
-                ? canonicalName + ":" + row.sourcePlayerId
-                : canonicalName;
+            const playerKey = historyPlayerKey(row, ambiguousNames);
             const current = players.get(playerKey) ?? {
                 playerKey,
                 sourcePlayerId: row.sourcePlayerId,
@@ -348,21 +350,7 @@ export function buildPlayerHistory(snapshots) {
 }
 
 export function buildLeagueWeekHistory(snapshots) {
-    const ordered = [...snapshots].sort((a, b) => a.reporting.date.localeCompare(b.reporting.date) || a.reporting.week - b.reporting.week);
-    const ambiguousNames = new Set();
-
-    for (const snapshot of ordered) {
-        const idsByName = new Map();
-        for (const row of snapshot.bowlers) {
-            if (!row.sourcePlayerId || !row.normalizedName) continue;
-            const canonicalName = canonicalPlayerName(row.normalizedName);
-            const ids = idsByName.get(canonicalName) ?? new Set();
-            ids.add(row.sourcePlayerId);
-            idsByName.set(canonicalName, ids);
-        }
-        for (const [name, ids] of idsByName) if (ids.size > 1) ambiguousNames.add(name);
-    }
-
+    const {ordered, ambiguousNames} = prepareHistory(snapshots);
     return ordered.map(snapshot => ({
         season: snapshot.reporting.label,
         seasonKey: seasonKey(snapshot.reporting),
@@ -371,9 +359,7 @@ export function buildLeagueWeekHistory(snapshots) {
         bowlers: snapshot.bowlers
             .filter(row => row.sourcePlayerId && row.normalizedName)
             .map(row => ({
-                playerKey: ambiguousNames.has(canonicalPlayerName(row.normalizedName))
-                    ? canonicalPlayerName(row.normalizedName) + ":" + row.sourcePlayerId
-                    : canonicalPlayerName(row.normalizedName),
+                playerKey: historyPlayerKey(row, ambiguousNames),
                 weekGames: row.weekGames,
                 weekPins: row.weekPins,
                 weekSeries: row.weekSeries,
@@ -491,7 +477,6 @@ export async function backfillLeagueSecretaryHistory() {
         weeks: compactLeagueHistory.weeks,
     };
     writeFileSync(resolve(OUTPUT_DIR, "league-week-history.json"), `${JSON.stringify(leagueWeekHistory)}\n`);
-    rmSync(resolve(OUTPUT_DIR, "player-history.json"), {force: true});
     console.log(`Imported ${snapshots.length} of ${periods.length} reporting weeks across ${seasons.length} qualifying seasons for ${players.length} bowlers.`);
     return {index, historyIndex, players, leagueWeekHistory};
 }

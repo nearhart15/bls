@@ -1,6 +1,7 @@
 import {blindPenalty} from "./blind-penalty";
 import {calculatePercentageHandicap} from "./handicap";
-import {validateFrames} from "../utils/bowling-input";
+import {accumulateFrameScores, buildFrames, isCleanGame, analyzeStrikes} from "./frame-scoring";
+export {accumulateFrameScores, buildFrames} from "./frame-scoring";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  *
@@ -27,7 +28,6 @@ import {
     TeamPlayerGameScore, TeamScore
 } from "./league-matchup";
 import {LeagueBowlingDays, LeagueScoringRules, VacantOrAbsentOpponentScoring} from "./league-setup-config";
-import {isNumeric} from "../utils/utils";
 import {LeaguePlayer, LeaguePlayerStats, TeamStats, type TrackedLeagueTeam} from "./league-team-details";
 import {calculatePlayerStats} from "../player/player-stats-calculator";
 
@@ -200,68 +200,6 @@ function selectPointsCalculator(leagueScoringRules: LeagueScoringRules | undefin
 // Loops through leagues
 // ---------------------------------------------------------------------------------------------------------------------
 
-export function accumulateFrameScores (frames: Frame[]) {
-    const getNextNScores = (frames: Frame[], curIdx: number, count: number): number => {
-        let toGet: number = count;
-        let accum = 0;
-        for (let i = curIdx + 1; i < frames.length && toGet > 0; i++) {
-            accum += frames[i].ballScores[0][0];
-            toGet--;
-            if (toGet > 0 && frames[i].ballScores.length > 1) {
-                accum += frames[i].ballScores[1][0];
-                toGet--;
-            }
-        }
-        return accum;
-    }
-
-    let scoreAccum = 0;
-    frames.forEach((currFrame, i) => {
-        currFrame.ballScores.forEach((score) => {
-            scoreAccum += score[0];
-            if (i < 9) {
-                // Not the 10th frame
-                if (score[1] == "X") {
-                    scoreAccum += getNextNScores(frames, i, 2);
-                } else if (score[1] == "/") {
-                    scoreAccum += getNextNScores(frames, i, 1);
-                }
-            }
-        })
-        currFrame.cumulativeScore = scoreAccum;
-    });
-
-    return scoreAccum;
-}
-
-export function buildFrames(inFrames: string[][]) {
-    validateFrames(inFrames);
-    const frames: Frame[] = [];
-    for (let f = 0; f < inFrames.length; f++) {
-        // We assume Frame objects are not set, we set them
-        const frame = new Frame();
-        frame.number = f + 1;
-        const inFrame = inFrames[f];
-
-        for (let b = 0; b < inFrame.length; b++) {
-            const lbl = inFrame[b];
-            if ((b == 0 || f == 9) && (lbl == "X" || (isNumeric(lbl) && Number(lbl) == 10))) {
-                frame.ballScores[b] = [10, "X"];
-            } else if (lbl == "F" || lbl == "-") {
-                frame.ballScores[b] = [0, lbl];
-            } else if (lbl == "/" && b > 0) {
-                frame.ballScores[b] = [10 - frame.ballScores[b - 1][0], lbl];
-            } else if (lbl.endsWith("S") && (b == 0 || (f == 9 && b < 2))) {
-                frame.ballScores[b] = [Number.parseInt(lbl.substring(0, 1)), "S"];
-            } else if (isNumeric(lbl)) {
-                frame.ballScores[b] = [Number.parseInt(lbl)];
-            }
-        }
-        frames.push(frame);
-    }
-    return frames;
-}
-
 function calculateFrameScores(playerGame: TeamPlayerGameScore, player?: LeaguePlayer) {
 
     // Build the Frame Objects
@@ -269,30 +207,12 @@ function calculateFrameScores(playerGame: TeamPlayerGameScore, player?: LeaguePl
 
     // Calculate cumulative scores
     const scoreAccum = accumulateFrameScores(playerGame.frames); // Also sets the cumulative scores
-    let strikesInARow = 0;
-    let potentialCleanGame = true;
+    const strikeAnalysis = analyzeStrikes(playerGame.frames);
     for (const currFrame of playerGame.frames) {
-        currFrame.ballScores.forEach((score) => {
-            if (score[1] == "X") {
-                strikesInARow++;
-            } else {
-                strikesInARow = 0;
-            }
-
-            // Frame Attributes - Do this inside the ball loop, or it misses turkeys across 9th and 10th frame
-            if (strikesInARow == 3) {
-                currFrame.attributes.push("Turkey");
-            } else if (strikesInARow == 12) {
-                currFrame.attributes.push("Perfect-Game");
-            }
-        })
+        if (strikeAnalysis.turkeyFrames.has(currFrame.number)) currFrame.attributes.push("Turkey");
+        if (strikeAnalysis.perfectFrames.has(currFrame.number)) currFrame.attributes.push("Perfect-Game");
 
         // Frame Attributes
-        const lastBallLabel = currFrame.ballScores[currFrame.ballScores.length - 1][1];
-        if (currFrame.number < 10 && (lastBallLabel == undefined || (lastBallLabel !== "X" && lastBallLabel !== "/"))) {
-            // 10th frame is handled below as the last ball may not decide clean game
-            potentialCleanGame = false;
-        }
         if (currFrame.ballScores.length > 1) {
             if (currFrame.ballScores[1][1] === "/") {
                 if (currFrame.ballScores[0][1] === "-") {
@@ -312,8 +232,7 @@ function calculateFrameScores(playerGame: TeamPlayerGameScore, player?: LeaguePl
             }
         }
         if (currFrame.number == 10) {
-            if(potentialCleanGame &&
-                (currFrame.ballScores[0][1] == "X" || (currFrame.ballScores.length > 1 && currFrame.ballScores[1][1] === "/"))) {
+            if (isCleanGame(playerGame.frames)) {
                 // Still a clean game if first ball is strike or second is spare
                 currFrame.attributes.push("Clean-Game");
             }

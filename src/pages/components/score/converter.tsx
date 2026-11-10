@@ -35,7 +35,7 @@ import stringify from "json-stringify-pretty-compact"
 import {isNonEmptyString} from "../../../data/utils/utils";
 import {LeagueTeamPlayerScore, TeamPlayerGameScore} from "../../../data/league/league-matchup";
 import {createJsonConverter} from "../../../data/utils/json-utils";
-import {accumulateFrameScores, buildFrames} from "../../../data/league/league-calculators";
+import {accumulateFrameScores, buildFrames} from "../../../data/league/frame-scoring";
 
 
 

@@ -1,18 +1,17 @@
+const {createTestDom} = require('./dom-fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const React = require('react');
 const {act} = React;
 const {createRoot} = require('react-dom/client');
 const {MemoryRouter} = require('react-router');
-const {JSDOM} = require('jsdom');
+
 const load = require('./load-source.cjs');
 const dataLoader = load('src/pages/components/cache/data-loader.tsx');
 const BeerLeague = load('src/pages/beer-league.tsx').default;
 
 test('league Players headers sort every column in both directions and retain sorting across tabs', async t => {
- const dom = new JSDOM('<div id="root"></div>', {url:'https://example.test',pretendToBeVisual:true});
- const previous={window:global.window,document:global.document,act:global.IS_REACT_ACT_ENVIRONMENT};
- global.window=dom.window;global.document=dom.window.document;global.IS_REACT_ACT_ENVIRONMENT=true;
+ const {dom, restoreDom} = createTestDom({url:'https://example.test',pretendToBeVisual:true});
  const player=(name,average,handicap,games,pins,highGame,highSeries)=>({name,average,handicap,games,pins,highGame,highSeries,weekScoresRaw:[],weekScores:[],weekTotal:null});
  const data={status:'ready',generatedAt:null,standings:[],teams:[
   {number:1,name:'Team 10',players:[player('Zoe',200,5,30,6000,280,700)]},
@@ -44,8 +43,7 @@ test('league Players headers sort every column in both directions and retain sor
   assert.deepEqual(rows(),['Aaron','Mary','Zoe']);
   assert.equal(header('Series').parentElement.getAttribute('aria-sort'),'ascending');
  } finally {
-  await act(async()=>root.unmount());dom.window.close();
-  global.window=previous.window;global.document=previous.document;global.IS_REACT_ACT_ENVIRONMENT=previous.act;
+  await act(async()=>root.unmount());restoreDom();
  }
 });
 

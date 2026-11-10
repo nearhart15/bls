@@ -136,3 +136,6 @@ src/sass/*.css
 # Project Excludes
 /.idea/
 /public/data/*.json
+
+# Combined Pages artifact
+_site/

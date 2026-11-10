@@ -28,3 +28,14 @@ The release also adds **Last season** after Current season in Bowler Performance
 Additional review improvements: lower-is-better comparison metrics; configurable lineup size; explicit missed-matchup penalty policy; latest-played-date shoutouts and team-aware deduplication; responsive breakpoint boundaries; safe LeagueSecretary URLs; JSON-delimited untrusted AI prompt data; job-scoped Pages permissions; action references pinned to verified commit SHAs; and a script CSP with an external theme initialization script.
 
 The original source's public PNG asset is preserved. The test-copy environment reads public upstream data and uses analytics test mode. No external data was rewritten or published. See TESTING.md for the malformed winter-league data and the unresolved league policy choice.
+
+
+## Archived source observations from the November 2026 review
+
+These observations describe that review snapshot and have not been rechecked against the live upstream service. Current data quality is reported in the application.
+
+
+- Four of the five current leagues pass validation.
+- `league-2526-winter-beer-team-23.json` contains `["87", "/"]` in frame 7, under matchup index 4, player-score index 1, game index 2 (all indices zero-based). This is invalid bowling input. The test copy excludes that league and shows a visible partial-data warning. Neither `8` nor `7` was guessed as a correction. Fix this in the data source only after verifying the actual score sheet.
+- Consequently, career totals, rankings, and historical comparisons can differ from the original dashboard. The partial-data banner explains this. Partial results are not cached as complete, and an all-failed load reports an error.
+- A 10-pin penalty after three missed matchups is configured in the live data, but the original code did not define whether absences are consecutive or season-total. Both modes are implemented. The default `strict` mode proceeds when both interpretations give the same answer and reports an error if they differ. Once the league rule is confirmed, add `VITE_MISSED_MATCHUP_MODE=consecutive` or `VITE_MISSED_MATCHUP_MODE=total` to `.env.test-copy.local`, then restart. The configured missed-matchup penalty replaces the default penalty once the threshold is reached. Only explicitly recorded all-blind matchups count as absences; missing records are not guessed to be absences.

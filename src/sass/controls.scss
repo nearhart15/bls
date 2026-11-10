@@ -1,0 +1,52 @@
+/* Shared scope and comparison controls, including their responsive states. */
+
+.bls-scope-pill{appearance:none;font:inherit;line-height:1.15}
+
+.bls-scope-pill-sub{opacity:.75}
+
+.bls-scope-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bls-scope-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.bls-scope-pill:hover, .bls-scope-pill.is-active {
+  border-color: var(--bls-accent);
+  background: var(--bls-accent-soft);
+  color: var(--bls-accent);
+}
+
+.bls-scope-pill-label { font-size: 0.8rem; font-weight: 600; }
+
+.bls-scope-pill-sub {
+  font-size: 0.65rem;
+  color: var(--bls-text-muted);
+}
+
+.bls-scope-pill.is-active .bls-scope-pill-sub { color: var(--bls-accent); }
+
+.bls-fifa-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.bls-fifa-tab {
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bls-fifa-tab, .bls-scope-pill { border-radius:999px; border:1px solid var(--bls-border); background:var(--bls-surface-2); color:var(--bls-text); padding:.55rem .9rem; }
+
+.bls-fifa-tab.is-active, .bls-scope-pill.is-active { background:var(--bls-accent-soft); color:var(--bls-accent); border-color:var(--bls-accent); box-shadow:none; }

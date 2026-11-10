@@ -1,3 +1,4 @@
+const {createTestDom} = require('./dom-fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const React = require('react');
@@ -5,7 +6,7 @@ const {act} = React;
 const {createRoot} = require('react-dom/client');
 const {renderToStaticMarkup} = require('react-dom/server');
 const {MemoryRouter} = require('react-router');
-const {JSDOM} = require('jsdom');
+
 const moment = require('moment');
 const load = require('./load-source.cjs');
 const leagueApi = load('src/data/league/league-api.ts');
@@ -80,19 +81,12 @@ test('aggregation preserves roster-only players, team and calendar boundaries, r
 });
 
 function mount(t) {
-    const dom = new JSDOM('<div id="root"></div>', {pretendToBeVisual: true});
-    const previous = {window: global.window, document: global.document, act: global.IS_REACT_ACT_ENVIRONMENT};
-    global.window = dom.window;
-    global.document = dom.window.document;
-    global.IS_REACT_ACT_ENVIRONMENT = true;
+    const {dom, restoreDom} = createTestDom({pretendToBeVisual: true});
     const container = dom.window.document.getElementById('root');
     const root = createRoot(container);
     t.after(async () => {
         await act(async () => root.unmount());
-        dom.window.close();
-        global.window = previous.window;
-        global.document = previous.document;
-        global.IS_REACT_ACT_ENVIRONMENT = previous.act;
+        restoreDom();
     });
     return {root, container, window: dom.window};
 }

@@ -1,29 +1,80 @@
-name: Validate test copy
-on: [push, pull_request, workflow_dispatch]
-
+name: Validate BLS application
+on:
+  push:
+    branches: [main, beer-league-pdf-import-test]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 permissions:
   contents: read
-
 concurrency:
   group: check-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   check:
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: source
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          path: source
           persist-credentials: false
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version-file: .nvmrc
+          node-version-file: source/.nvmrc
           cache: npm
+          cache-dependency-path: source/package-lock.json
       - run: npm ci --ignore-scripts
       - run: npm audit --audit-level=moderate
       - run: npm run check
+      - name: Checkout companion site for the complete Pages artifact
+        if: runner.os == 'Linux' && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beer-league-pdf-import-test')
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.ref == 'refs/heads/main' && 'beer-league-pdf-import-test' || 'main' }}
+          path: companion
+          persist-credentials: false
+      - name: Validate companion site
+        if: runner.os == 'Linux' && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beer-league-pdf-import-test')
+        working-directory: companion
+        run: |
+          npm ci --ignore-scripts
+          npm audit --audit-level=moderate
+          npm run check
+      - name: Build preview with its published base path
+        if: runner.os == 'Linux' && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beer-league-pdf-import-test')
+        working-directory: ${{ github.ref == 'refs/heads/main' && 'companion' || 'source' }}
+        run: npm run build -- --base /bls/preview/beer-league-pdf-import-test/
+      - name: Assemble production and preview from validated output
+        if: runner.os == 'Linux' && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beer-league-pdf-import-test')
+        env:
+          MAIN_BUILD: ${{ github.ref == 'refs/heads/main' && 'dist' || '../companion/dist' }}
+          PREVIEW_BUILD: ${{ github.ref == 'refs/heads/main' && '../companion/dist' || 'dist' }}
+        run: node scripts/assemble-pages.ts
+      - name: Upload the validated Pages artifact
+        if: runner.os == 'Linux' && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beer-league-pdf-import-test')
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
+        with:
+          path: source/_site
+          include-hidden-files: true
+  # Preserve the legacy audit check name without repeating dependency installation.
+  audit:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Both validation jobs passed the dependency audit."
+  deploy:
+    needs: [check, audit]
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beer-league-pdf-import-test')
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy-pages.yml

@@ -72,10 +72,6 @@ function subtractYears(timestamp: number, years: number): number {
     return date.getTime();
 }
 
-function finiteScores(point: ApiHistoricalPlayerPoint): number[] {
-    return (point.weekScores ?? []).filter(score => Number.isFinite(score) && score >= 0);
-}
-
 /**
  * Time windows are anchored to the newest archived LeagueSecretary week so a
  * stale archive never drifts just because the viewer's clock moves forward.
@@ -101,78 +97,14 @@ export function buildApiPlayerProgress(
     points: ApiHistoricalPlayerPoint[],
     metric: ApiPlayerProgressMetric,
 ): ApiPlayerProgressPoint[] {
-    const ordered = [...points].sort((a, b) => pointDate(a) - pointDate(b) || a.week - b.week);
-    let games = 0;
-    let pinfall = 0;
-    let seriesCount = 0;
-    let seriesPins = 0;
-    let highGame: number | null = null;
-    let highSeries: number | null = null;
-    let highHandicapGame: number | null = null;
-    let highHandicapSeries: number | null = null;
-    let known200Games = 0;
-    let known600Series = 0;
-    let known700Series = 0;
-    let hasIndividualGames = false;
-
-    return ordered.map(point => {
-        const scores = finiteScores(point);
-        if (scores.length > 0) hasIndividualGames = true;
-        const weekGames = point.weekGames ?? scores.length;
-        const weekPins = point.weekPins ?? (scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) : null);
-        if (weekGames > 0 && weekPins != null) {
-            games += weekGames;
-            pinfall += weekPins;
-        }
-        if (point.weekSeries != null && Number.isFinite(point.weekSeries)) {
-            seriesCount += 1;
-            seriesPins += point.weekSeries;
-            highSeries = highSeries == null ? point.weekSeries : Math.max(highSeries, point.weekSeries);
-            if (point.weekSeries >= 600) known600Series += 1;
-            if (point.weekSeries >= 700) known700Series += 1;
-        }
-        for (const score of scores) {
-            highGame = highGame == null ? score : Math.max(highGame, score);
-            if (score >= 200) known200Games += 1;
-            if (point.handicap != null && Number.isFinite(point.handicap)) {
-                const hdcpScore = score + point.handicap;
-                highHandicapGame = highHandicapGame == null ? hdcpScore : Math.max(highHandicapGame, hdcpScore);
-            }
-        }
-        if (scores.length === 0 && point.highGame > 0) {
-            highGame = highGame == null ? point.highGame : Math.max(highGame, point.highGame);
-        }
-        if (point.weekSeries != null && point.handicap != null && Number.isFinite(point.handicap) && weekGames > 0) {
-            const hdcpSeries = point.weekSeries + point.handicap * weekGames;
-            highHandicapSeries = highHandicapSeries == null ? hdcpSeries : Math.max(highHandicapSeries, hdcpSeries);
-        }
-
-        let value: number | null;
-        switch (metric) {
-            case "average": value = games > 0 ? pinfall / games : null; break;
-            case "handicap": value = point.handicap ?? null; break;
-            case "games": value = games; break;
-            case "seriesCount": value = seriesCount; break;
-            case "pinfall": value = pinfall; break;
-            case "averageSeries": value = seriesCount > 0 ? seriesPins / seriesCount : null; break;
-            case "highGame": value = highGame; break;
-            case "highSeries": value = highSeries; break;
-            case "highHandicapGame": value = highHandicapGame; break;
-            case "highHandicapSeries": value = highHandicapSeries; break;
-            case "known200Games": value = hasIndividualGames ? known200Games : null; break;
-            case "known600Series": value = known600Series; break;
-            case "known700Series": value = known700Series; break;
-        }
-
-        return {
-            date: point.date,
-            value,
-            ...(metric === "average" ? {weeklyValue: point.weekAverage} : {}),
-        };
-    });
+    return Array.from(playerSnapshots(points), row => ({
+        date: row.date,
+        value: row.stats[metric],
+        ...(metric === "average" ? {weeklyValue: row.weeklyValue} : {}),
+    }));
 }
 
-interface LeaguePlayerAccumulator {
+interface PlayerAccumulator {
     games: number;
     pinfall: number;
     seriesCount: number;
@@ -188,12 +120,102 @@ interface LeaguePlayerAccumulator {
     hasIndividualGames: boolean;
 }
 
+function createPlayerAccumulator(): PlayerAccumulator {
+    return {
+        games: 0,
+        pinfall: 0,
+        seriesCount: 0,
+        seriesPins: 0,
+        handicap: null,
+        highGame: null,
+        highSeries: null,
+        highHandicapGame: null,
+        highHandicapSeries: null,
+        known200Games: 0,
+        known600Series: 0,
+        known700Series: 0,
+        hasIndividualGames: false,
+    };
+}
+
+type WeeklyPlayerStats = Pick<ApiHistoricalPlayerPoint, "weekScores" | "weekGames" | "weekPins" | "weekSeries" | "handicap">;
+
+function accumulatePlayerWeek(current: PlayerAccumulator, point: WeeklyPlayerStats, fallbackHighGame = 0): void {
+    const scores = (point.weekScores ?? []).filter(score => Number.isFinite(score) && score >= 0);
+    if (scores.length > 0) current.hasIndividualGames = true;
+    const weekGames = point.weekGames ?? scores.length;
+    const weekPins = point.weekPins ?? (scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) : null);
+    if (weekGames > 0 && weekPins != null) {
+        current.games += weekGames;
+        current.pinfall += weekPins;
+    }
+    if (point.weekSeries != null && Number.isFinite(point.weekSeries)) {
+        current.seriesCount += 1;
+        current.seriesPins += point.weekSeries;
+        current.highSeries = current.highSeries == null ? point.weekSeries : Math.max(current.highSeries, point.weekSeries);
+        if (point.weekSeries >= 600) current.known600Series += 1;
+        if (point.weekSeries >= 700) current.known700Series += 1;
+    }
+    if (point.handicap != null && Number.isFinite(point.handicap)) current.handicap = point.handicap;
+    for (const score of scores) {
+        current.highGame = current.highGame == null ? score : Math.max(current.highGame, score);
+        if (score >= 200) current.known200Games += 1;
+        if (point.handicap != null && Number.isFinite(point.handicap)) {
+            const hdcpScore = score + point.handicap;
+            current.highHandicapGame = current.highHandicapGame == null
+                ? hdcpScore
+                : Math.max(current.highHandicapGame, hdcpScore);
+        }
+    }
+    if (point.weekSeries != null && point.handicap != null && Number.isFinite(point.handicap) && weekGames > 0) {
+        const hdcpSeries = point.weekSeries + point.handicap * weekGames;
+        current.highHandicapSeries = current.highHandicapSeries == null
+            ? hdcpSeries
+            : Math.max(current.highHandicapSeries, hdcpSeries);
+    }
+    if (scores.length === 0 && fallbackHighGame > 0) {
+        current.highGame = current.highGame == null ? fallbackHighGame : Math.max(current.highGame, fallbackHighGame);
+    }
+}
+
+function playerSummary(current: PlayerAccumulator): ApiPlayerTimeframeSummary {
+    return {
+        average: current.games > 0 ? current.pinfall / current.games : null,
+        handicap: current.handicap,
+        games: current.games,
+        pinfall: current.pinfall,
+        seriesCount: current.seriesCount,
+        averageSeries: current.seriesCount > 0 ? current.seriesPins / current.seriesCount : null,
+        highGame: current.highGame,
+        highSeries: current.highSeries,
+        highHandicapGame: current.highHandicapGame,
+        highHandicapSeries: current.highHandicapSeries,
+        known200Games: current.hasIndividualGames ? current.known200Games : null,
+        known600Series: current.known600Series,
+        known700Series: current.known700Series,
+    };
+}
+
+function* playerSnapshots(points: ApiHistoricalPlayerPoint[]) {
+    const ordered = [...points].sort((a, b) => pointDate(a) - pointDate(b) || a.week - b.week);
+    const current = createPlayerAccumulator();
+    for (const point of ordered) {
+        accumulatePlayerWeek(current, point, point.highGame);
+        // Player progress shows each week's reported handicap; league progress retains the last known value.
+        yield {
+            date: point.date,
+            weeklyValue: point.weekAverage,
+            stats: {...playerSummary(current), handicap: point.handicap ?? null},
+        };
+    }
+}
+
 function mean(values: number[]): number | null {
     if (values.length === 0) return null;
     return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
-function leagueMetricValue(players: LeaguePlayerAccumulator[], metric: ApiPlayerProgressMetric): number | null {
+function leagueMetricValue(players: PlayerAccumulator[], metric: ApiPlayerProgressMetric): number | null {
     const active = players.filter(player => player.games > 0 || player.handicap != null);
     switch (metric) {
         case "average": {
@@ -240,57 +262,12 @@ export function buildApiLeagueProgress(
     const ordered = [...weeks]
         .filter(week => (!startDate || week.date >= startDate) && (!endDate || week.date <= endDate))
         .sort((a, b) => a.date.localeCompare(b.date) || a.week - b.week);
-    const players = new Map<string, LeaguePlayerAccumulator>();
+    const players = new Map<string, PlayerAccumulator>();
 
     return ordered.map(week => {
         for (const bowler of week.bowlers) {
-            const current = players.get(bowler.playerKey) ?? {
-                games: 0,
-                pinfall: 0,
-                seriesCount: 0,
-                seriesPins: 0,
-                handicap: null,
-                highGame: null,
-                highSeries: null,
-                highHandicapGame: null,
-                highHandicapSeries: null,
-                known200Games: 0,
-                known600Series: 0,
-                known700Series: 0,
-                hasIndividualGames: false,
-            };
-            const scores = (bowler.weekScores ?? []).filter(score => Number.isFinite(score) && score >= 0);
-            if (scores.length > 0) current.hasIndividualGames = true;
-            const weekGames = bowler.weekGames ?? scores.length;
-            const weekPins = bowler.weekPins ?? (scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) : null);
-            if (weekGames > 0 && weekPins != null) {
-                current.games += weekGames;
-                current.pinfall += weekPins;
-            }
-            if (bowler.weekSeries != null && Number.isFinite(bowler.weekSeries)) {
-                current.seriesCount += 1;
-                current.seriesPins += bowler.weekSeries;
-                current.highSeries = current.highSeries == null ? bowler.weekSeries : Math.max(current.highSeries, bowler.weekSeries);
-                if (bowler.weekSeries >= 600) current.known600Series += 1;
-                if (bowler.weekSeries >= 700) current.known700Series += 1;
-            }
-            if (bowler.handicap != null && Number.isFinite(bowler.handicap)) current.handicap = bowler.handicap;
-            for (const score of scores) {
-                current.highGame = current.highGame == null ? score : Math.max(current.highGame, score);
-                if (score >= 200) current.known200Games += 1;
-                if (bowler.handicap != null && Number.isFinite(bowler.handicap)) {
-                    const hdcpScore = score + bowler.handicap;
-                    current.highHandicapGame = current.highHandicapGame == null
-                        ? hdcpScore
-                        : Math.max(current.highHandicapGame, hdcpScore);
-                }
-            }
-            if (bowler.weekSeries != null && bowler.handicap != null && Number.isFinite(bowler.handicap) && weekGames > 0) {
-                const hdcpSeries = bowler.weekSeries + bowler.handicap * weekGames;
-                current.highHandicapSeries = current.highHandicapSeries == null
-                    ? hdcpSeries
-                    : Math.max(current.highHandicapSeries, hdcpSeries);
-            }
+            const current = players.get(bowler.playerKey) ?? createPlayerAccumulator();
+            accumulatePlayerWeek(current, bowler);
             players.set(bowler.playerKey, current);
         }
 
@@ -302,33 +279,12 @@ export function buildApiLeagueProgress(
 }
 
 export function summarizeApiPlayerHistory(points: ApiHistoricalPlayerPoint[]): ApiPlayerTimeframeSummary {
-    const progress = new Map<ApiPlayerProgressMetric, ApiPlayerProgressPoint[]>();
-    const lastValue = (metric: ApiPlayerProgressMetric): number | null => {
-        let rows = progress.get(metric);
-        if (!rows) {
-            rows = buildApiPlayerProgress(points, metric);
-            progress.set(metric, rows);
+    const summary = playerSummary(createPlayerAccumulator());
+    for (const {stats} of playerSnapshots(points)) {
+        for (const metric of Object.keys(stats) as ApiPlayerProgressMetric[]) {
+            const value = stats[metric];
+            if (value != null && Number.isFinite(value)) summary[metric] = value;
         }
-        for (let index = rows.length - 1; index >= 0; index -= 1) {
-            const value = rows[index].value;
-            if (value != null && Number.isFinite(value)) return value;
-        }
-        return null;
-    };
-
-    return {
-        average: lastValue("average"),
-        handicap: lastValue("handicap"),
-        games: lastValue("games") ?? 0,
-        pinfall: lastValue("pinfall") ?? 0,
-        seriesCount: lastValue("seriesCount") ?? 0,
-        averageSeries: lastValue("averageSeries"),
-        highGame: lastValue("highGame"),
-        highSeries: lastValue("highSeries"),
-        highHandicapGame: lastValue("highHandicapGame"),
-        highHandicapSeries: lastValue("highHandicapSeries"),
-        known200Games: lastValue("known200Games"),
-        known600Series: lastValue("known600Series") ?? 0,
-        known700Series: lastValue("known700Series") ?? 0,
-    };
+    }
+    return summary;
 }
