@@ -145,9 +145,11 @@ export const AllStatsPanel: FC<{
     const seasons = [...new Set(seasonSlicesFull.map((s) => s.season).filter(Boolean) as string[])].sort((a, b) => b.localeCompare(a));
     const currentSeason = seasons[0] ?? "";
     const allLeagues = useMemo(() => [...new Map(appearances.map((a) => [a.leagueId, a.leagueName])).entries()], [appearances]);
-    const lastYear = String(new Date().getFullYear() - 1);
+    const currentYear = String(new Date().getFullYear());
+    const lastYear = String(Number(currentYear) - 1);
     const [timeframe, setTimeframe] = useState("career");
     const [leagueId, setLeagueId] = useState("all");
+    const calendarYear = timeframe === "current-year" ? currentYear : timeframe === "last-year" ? lastYear : undefined;
     const viewingCurrentSeason = currentSeason.length > 0 && timeframe === currentSeason;
     const currentSeasonLeagueId = useMemo(() => {
         const mostRecent = appearanceSlicesFull
@@ -157,10 +159,10 @@ export const AllStatsPanel: FC<{
     }, [appearanceSlicesFull, appearances, currentSeason]);
     const applicableLeagueIds = useMemo(() => {
         if (timeframe === "career") return new Set(allLeagues.map(([id]) => id));
-        if (timeframe === "last-year") {
+        if (calendarYear) {
             return new Set(
                 appearanceSlicesFull
-                    .filter((slice) => (slice.calendarStats?.[lastYear]?.gameStats.count ?? 0) > 0)
+                    .filter((slice) => (slice.calendarStats?.[calendarYear]?.gameStats.count ?? 0) > 0)
                     .map((slice) => slice.leagueId)
             );
         }
@@ -169,7 +171,7 @@ export const AllStatsPanel: FC<{
                 .filter((appearance) => appearance.season === timeframe)
                 .map((appearance) => appearance.leagueId)
         );
-    }, [allLeagues, appearanceSlicesFull, appearances, timeframe, lastYear]);
+    }, [allLeagues, appearanceSlicesFull, appearances, timeframe, calendarYear]);
     const leagues = useMemo(
         () => allLeagues.filter(([id]) => applicableLeagueIds.has(id)),
         [allLeagues, applicableLeagueIds]
@@ -182,28 +184,28 @@ export const AllStatsPanel: FC<{
     }, [applicableLeagueIds, leagueId]);
 
     const selected = useMemo(() => {
-        const candidates = timeframe === "last-year" ? appearanceSlicesFull.map(s => ({...s, season: lastYear, stats: s.calendarStats?.[lastYear] ?? new PlayerStats()})) : appearanceSlicesFull;
+        const candidates = calendarYear ? appearanceSlicesFull.map(s => ({...s, season: calendarYear, stats: s.calendarStats?.[calendarYear] ?? new PlayerStats()})) : appearanceSlicesFull;
         const apps = candidates.filter((s) =>
-            seasonMatchesTimeframe(s.season ?? "", timeframe, lastYear)
+            seasonMatchesTimeframe(s.season ?? "", calendarYear ?? timeframe, lastYear)
             && (leagueId === "all" || s.leagueId === leagueId)
         );
         if (timeframe === "career" && leagueId === "all") {
             return {stats: careerStats, extras: undefined as LeaguePlayerStats | undefined, label: "Career"};
         }
-        if (leagueId === "all" && timeframe !== "career" && timeframe !== "last-year") {
+        if (leagueId === "all" && timeframe !== "career" && !calendarYear) {
             const row = seasonSlicesFull.find((s) => s.season === timeframe);
             if (row) return {stats: row.stats, extras: undefined as LeaguePlayerStats | undefined, label: timeframe};
         }
         const stats = apps.length === 0 ? new PlayerStats() : mergeStats(apps.map((a) => a.stats));
         const bookCandidates = appearances
-            .filter((a) => seasonMatchesTimeframe(a.season, timeframe, lastYear) && (leagueId === "all" || a.leagueId === leagueId))
+            .filter((a) => seasonMatchesTimeframe(a.season, calendarYear ?? timeframe, lastYear) && (leagueId === "all" || a.leagueId === leagueId))
             .sort((a, b) => b.season.localeCompare(a.season));
         const extras = bookCandidates.length === 1 ? bookCandidates[0].stats
             : (leagueId !== "all" ? bookCandidates[0]?.stats : undefined);
         const leagueName = leagueId === "all" ? "All leagues" : (leagues.find(([id]) => id === leagueId)?.[1] ?? "League");
-        const timeLabel = timeframe === "career" ? "Career" : timeframe === "last-year" ? lastYear : timeframe;
+        const timeLabel = timeframe === "career" ? "Career" : calendarYear ?? timeframe;
         return {stats, extras, label: `${timeLabel} · ${leagueName}`};
-    }, [careerStats, seasonSlicesFull, appearanceSlicesFull, appearances, timeframe, leagueId, lastYear, leagues]);
+    }, [careerStats, seasonSlicesFull, appearanceSlicesFull, appearances, timeframe, leagueId, lastYear, calendarYear, leagues]);
 
     return (
         <Card className="bls-profile-card mb-3">
@@ -226,6 +228,7 @@ export const AllStatsPanel: FC<{
                         <span>Timeframe</span>
                         <select className="form-select form-select-sm" value={timeframe} onChange={(e) => { setTimeframe(e.target.value); }}>
                             <option value="career">Career</option>
+                            <option value="current-year">This calendar year ({currentYear})</option>
                             <option value="last-year">Last calendar year ({lastYear})</option>
                             {seasons.map((s) => <option key={s} value={s}>{s}</option>)}
                         </select>

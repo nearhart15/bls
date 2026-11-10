@@ -71,6 +71,7 @@ test('aggregation preserves roster-only players, team and calendar boundaries, r
     assert.equal(players[2].average, null);
 
     const detail = await aggregatePlayerData('p');
+    assert.deepEqual(detail.performanceSessions.map(s => [s.date, s.leagueId, s.stats.pinfall]), [['2025-12-31', 'league', 600], ['2026-01-07', 'league', 360]]);
     assert.equal(detail.seasonStats[0].leagues, 1);
     assert.equal(detail.careerStats.gameStats.count, 6);
     assert.equal(detail.appearanceSlicesFull[0].calendarStats['2025'].pinfall, 600);
