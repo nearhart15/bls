@@ -24,6 +24,7 @@ import './sass/controls.scss';
 import './sass/bowler-launchpad.scss';
 import './sass/rivalry-studio.scss';
 import './sass/series-chase.scss';
+import './sass/league-standings.scss';
 
 import {StrictMode, lazy} from 'react'
 import {createRoot} from 'react-dom/client'
