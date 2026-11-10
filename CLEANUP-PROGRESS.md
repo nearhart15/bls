@@ -84,3 +84,5 @@ When merging, synchronize the preview branch's workflow changes so its old stand
 ## Production rollout follow-up
 
 PR #66 adds single-pass HTML entity decoding and removes file existence/write race patterns identified by hosted CodeQL. Archive creation uses exclusive writes. Preview publishing workflows were synchronized in commits 38825bc and 28c6a1a, preserving its application and source data; dependency patches reduced its audit to zero vulnerabilities and all 52 preview tests passed. Production checks now cover 118 tests.
+
+The existing github-pages environment permits deployment from main only. Preview validation therefore requests publication by dispatching the main workflow, preserving environment protections.

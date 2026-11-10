@@ -13,6 +13,12 @@ test('one Pages publisher consumes validated output and keeps preview in the sam
     assert.deepEqual(check.jobs.deploy.needs,['check','audit']);
     assert.equal(check.jobs.deploy.uses,'./.github/workflows/deploy-pages.yml');
     assert.match(check.jobs.deploy.if,/github.event_name != 'pull_request'/);
+    assert.equal(check.jobs.deploy.if, "github.event_name != 'pull_request' && github.ref == 'refs/heads/main'");
+    const request = check.jobs['request-production-publication'];
+    assert.deepEqual(request.needs,['check','audit']);
+    assert.equal(request.permissions.actions,'write');
+    assert.match(request.if,/refs\/heads\/beer-league-pdf-import-test/);
+    assert.equal(request.steps[0].run,'gh workflow run check.yml --ref main');
     assert.ok(check.jobs.check.steps.some(step=>step.run==='node scripts/assemble-pages.ts'));
     const publish = workflow('deploy-pages.yml');
     assert.ok('workflow_call' in publish.on);
