@@ -1,0 +1,45 @@
+/* Shared presentation rules across statistics and utility pages. */
+:root { --bls-compare-a:#c91843; --bls-compare-b:#00788c; --bls-highlight:#806000; }
+[data-bs-theme="dark"] { --bls-compare-a:#ff6488; --bls-compare-b:#00d4ff; --bls-highlight:#ffd60a; }
+.bls-main > .container-md { padding-inline:0; }
+.bls-page-header { margin:1.25rem 0; }
+.bls-page-header h1 { font-size:clamp(1.8rem,4vw,2.5rem); line-height:1.15; margin:0; }
+.bls-app .card-header.text-white { color:var(--bls-text)!important; }
+.bls-app .card-header { padding:.95rem 1.2rem; }
+.bls-surface-card { background:var(--bls-surface); border:1px solid var(--bls-border); border-radius:var(--bls-radius); box-shadow:var(--bls-shadow); margin-bottom:1rem; }
+.bls-hdcp-hero { padding:1.25rem; border-radius:var(--bls-radius-sm); background:var(--bls-surface-2); }
+.bls-hdcp-hero-num { font-size:clamp(3rem,8vw,4.5rem); font-weight:700; line-height:1.1; color:var(--bls-accent); }
+.bls-hdcp-hero-lbl { font-weight:600; margin:.35rem 0; }
+.bls-hdcp-hero-sub,.fs-sm { font-size:.875rem; }
+.fs-xs { font-size:.75rem; }
+.bls-score-utils .card-body.border { border:1px solid var(--bls-border)!important; border-radius:var(--bls-radius-sm); background:var(--bls-surface-2)!important; padding:1rem!important; margin:1rem!important; }
+.bls-score-utils .card-title.bg-secondary { color:var(--bls-text)!important; background:var(--bls-surface-3)!important; border-radius:.5rem; padding:.6rem!important; }
+.bls-fifa-tab,.bls-scope-pill,.nav-tabs .nav-link { border-radius:999px; border:1px solid var(--bls-border); background:var(--bls-surface-2); color:var(--bls-text); padding:.55rem .9rem; }
+.bls-fifa-tab.is-active,.bls-scope-pill.is-active,.nav-tabs .nav-link.active { background:var(--bls-accent-soft); color:var(--bls-accent); border-color:var(--bls-accent); box-shadow:none; }
+.nav-tabs { gap:.4rem; border-bottom:0; }
+.bls-fifa-pcard-a .bls-fifa-pcard-name,.bls-fifa-pcard-a .bls-fifa-pcard-badge { color:var(--bls-compare-a)!important; }
+.bls-fifa-pcard-b .bls-fifa-pcard-name,.bls-fifa-pcard-b .bls-fifa-pcard-badge { color:var(--bls-compare-b)!important; }
+.bls-fifa-val:first-child { color:var(--bls-compare-a)!important; }
+.bls-fifa-val:last-child { color:var(--bls-compare-b)!important; }
+[data-bs-theme="light"] .bls-profile-kpi-value { color:var(--bls-highlight)!important; }
+.bls-app .form-select,.bls-app .form-control { border-radius:.7rem; }
+.bls-app :is(button,a,input,select):focus-visible { outline:2px solid var(--bls-accent); outline-offset:3px; }
+.bls-api-mobile-sort { display:none; }
+@media(max-width:575.98px) {
+ .bls-api-mobile-sort { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; padding:1rem; }
+ .bls-api-mobile-sort select,.bls-app .form-control,.bls-app .form-select { min-height:44px; }
+ .bls-api-player-table thead { display:none; }
+ .bls-api-player-table,.bls-api-player-table tbody { display:block; }
+ .bls-api-player-table tbody tr { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.45rem; padding:1rem; border-top:1px solid var(--bls-border); }
+ .bls-api-player-table tbody td { display:block; padding:.5rem; border:1px solid var(--bls-border); border-radius:.65rem; text-align:left!important; overflow-wrap:anywhere; }
+ .bls-api-player-table tbody td:first-child { display:none; }
+ .bls-api-player-table tbody td:nth-child(2),.bls-api-player-table tbody td:nth-child(3) { grid-column:1/-1; border:0; padding:.15rem; }
+ .bls-api-player-table tbody td:nth-child(n+4)::before { display:block; font-size:.7rem; color:var(--bls-text-muted); }
+ .bls-api-player-table td:nth-child(4)::before {content:"Average";}
+ .bls-api-player-table td:nth-child(5)::before {content:"Handicap";}
+ .bls-api-player-table td:nth-child(6)::before {content:"Games";}
+ .bls-api-player-table td:nth-child(7)::before {content:"Pins";}
+ .bls-api-player-table td:nth-child(8)::before {content:"High game";}
+ .bls-api-player-table td:nth-child(9)::before {content:"High series";}
+ .bls-api-player-table td:nth-child(10)::before {content:"Latest series";}
+}
