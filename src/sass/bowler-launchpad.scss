@@ -87,7 +87,7 @@
     .bls-bowler-identity { margin-top: 1.1rem; }
     .bls-bowler-numbers { grid-template-columns: 1.3fr 1fr 1fr; gap: .65rem; margin: 1.25rem 0; align-items: end; }
     .bls-bowler-numbers .bls-bowler-average { grid-column: auto; }
-    .bls-bowler-average dd { font-size: 2.8rem; }
+    .bls-bowler-average dd { font-size: clamp(1.7rem, 9vw, 2.8rem); }
     .bls-bowler-numbers > div:not(.bls-bowler-average) { border: 0; padding: 0 0 .15rem .6rem; border-left: 1px solid #ffffff24; }
     .bls-bowler-numbers dt { font-size: .57rem; }
     .bls-bowler-numbers dd { margin-top: .3rem; }
