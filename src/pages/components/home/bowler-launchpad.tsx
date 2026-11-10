@@ -87,6 +87,7 @@ function BowlerFinder({source}: {source: DataSource}) {
             </div>
             <nav className="bls-launchpad-shortcuts" aria-label="Explore bowling stats">
                 <Link to="/beer-league"><Trophy aria-hidden="true"/><span>League standings</span><ArrowRight aria-hidden="true"/></Link>
+                <Link to="/score-utils"><Bullseye aria-hidden="true"/><span>Chase a series</span><ArrowRight aria-hidden="true"/></Link>
                 <Link to="/player/compare"><span className="bls-launchpad-vs" aria-hidden="true">VS</span><span>Settle the rivalry</span><ArrowRight aria-hidden="true"/></Link>
             </nav>
         </section>

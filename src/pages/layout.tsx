@@ -21,6 +21,7 @@ const Layout :FC = () => {
     const navigate = useNavigate();
     const isPlayerCompare = location.pathname === "/player/compare";
     const linkedSource = new URLSearchParams(location.search).get("source");
+    const isScoreLab = location.pathname === "/score-utils";
     const isFullLeagueInfo = location.pathname === "/beer-league" || location.pathname.startsWith("/beer-league/");
     const isTeamLeagueData = location.pathname === "/league" || location.pathname.startsWith("/league/");
     const isFrameOnlyStatsPage = location.pathname === "/player/handicap";
@@ -33,9 +34,9 @@ const Layout :FC = () => {
         setSource(next);
         if (isPlayerCompare && next !== displayedSource) void navigate({pathname: location.pathname, search: "?source=" + next}, {replace: true});
     }
-    const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage && !isApiOnlyPlayer;
+    const showDataSourceToggle = !isScoreLab && !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage && !isApiOnlyPlayer;
 
-    const pageTitle = isTeamLeagueData ? "Team League Data" : isFrameOnlyStatsPage ? "Handicap Guide" : location.pathname === "/player" ? "Players" : location.pathname === "/score-utils" ? "Score Utilities" : null;
+    const pageTitle = isTeamLeagueData ? "Team League Data" : isFrameOnlyStatsPage ? "Handicap Guide" : location.pathname === "/player" ? "Players" : null;
 
     const refreshApp = () => {
         window.location.reload();
@@ -68,7 +69,7 @@ const Layout :FC = () => {
                                 <NavDropdown.Item as={Link} to="/player/handicap">Handicap Guide</NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Utilities" id="utilities-nav">
-                                <NavDropdown.Item as={Link} to="/score-utils">Score Utilities</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/score-utils">Series Chase</NavDropdown.Item>
                                 <NavDropdown.Divider />
                                 <ThemeToggle />
                             </NavDropdown>
