@@ -3,7 +3,7 @@
  */
 
 import {lazy, type FC, useCallback} from "react";
-import {Navigate, useParams} from "react-router";
+import {Navigate, useParams, useSearchParams} from "react-router";
 
 import Loader from "./components/loader";
 import ErrorDisplay from "./components/error-display";
@@ -79,18 +79,20 @@ const ApiPlayerDetailBridge: FC<{playerId: string}> = ({playerId}) => {
 const Player: FC = () => {
     const {playerId} = useParams();
     const {source} = useDataSource();
+    const [params] = useSearchParams();
+    const linkedSource = params.get("source");
+    const compareSource = linkedSource === "api" || linkedSource === "frame" ? linkedSource : source;
+    if (playerId === "compare") return compareSource === "api" ? <ApiPlayerCompare key="api"/> : <PlayerCompare key="frame"/>;
 
     if (playerId === "handicap") return <HandicapGuide />;
     if (playerId?.startsWith("api-")) return <ApiPlayerDetail key={playerId} playerId={playerId} />;
 
     if (source === "api") {
-        if (playerId === "compare") return <ApiPlayerCompare />;
         if (playerId === "leaderboard") return <ApiPlayerLeaderboard />;
         if (playerId) return <ApiPlayerDetailBridge key={playerId} playerId={playerId} />;
         return <div className="container-md"><ApiPlayerList /></div>;
     }
 
-    if (playerId === "compare") return <PlayerCompare />;
     if (playerId === "leaderboard") return <PlayerLeaderboard />;
     if (playerId) return <PlayerDetailPage key={playerId} playerId={playerId} />;
     return <div className="container-md"><PlayerList /></div>;

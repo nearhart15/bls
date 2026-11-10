@@ -22,6 +22,7 @@ import './sass/frame-data-responsive.scss';
 import './sass/consistency.scss';
 import './sass/controls.scss';
 import './sass/bowler-launchpad.scss';
+import './sass/rivalry-studio.scss';
 
 import {StrictMode, lazy} from 'react'
 import {createRoot} from 'react-dom/client'

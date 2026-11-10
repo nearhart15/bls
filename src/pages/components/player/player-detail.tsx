@@ -1,3 +1,4 @@
+import {buildRivalryPath} from "../comparison/rivalry-data";
 import {radarOptions} from "../charts/radar-options";
 /*
  * Player profile dashboard
@@ -172,7 +173,7 @@ const PlayerDetail: FC<{data: AggregatedPlayerData}> = ({data}) => {
                     <h1 className="bls-profile-hero-name">{displayName}</h1>
                     <p className="text-body-secondary mb-0">
                         <Link to="/player" className="bls-link">All players</Link>{" | "}
-                        <Link to="/player/compare" className="bls-link">Player Compare</Link>
+                        <Link to={buildRivalryPath("frame", player.id, undefined, {mode: "career"})} className="bls-link">Find a rival for {displayName}</Link>
                     </p>
                     <div className="bls-scope-pills mt-3" role="tablist" aria-label="Player views">
                         <button type="button" role="tab" aria-selected={tab === "overview"} className={`bls-scope-pill${tab === "overview" ? " is-active" : ""}`} onClick={() => { setTab("overview"); }}>

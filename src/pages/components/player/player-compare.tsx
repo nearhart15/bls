@@ -1,3 +1,7 @@
+import {useSearchParams} from "react-router";
+import RivalryStudio, {useRivalryMatchup} from "../comparison/rivalry-studio";
+import {buildRivalryPath} from "../comparison/rivalry-data";
+import {bowlerTeamNames} from "../home/bowler-launchpad-data";
 import {ComparisonBar,ComparisonCard,ComparisonTabs,COLOR_A,COLOR_B} from "../comparison/comparison-ui";
 import {radarOptions} from "../charts/radar-options";
 import {aggregateSlices as bagFromSlices} from "../../../data/player/slice-stats";
@@ -175,19 +179,10 @@ const CareerPair: FC<{idA: string; idB: string; children: (a: StatBag | null, b:
     </PlayerCareerFetch>
 );
 
-const PlayerCard: FC<{
-    side: "a" | "b"; name: string; bag: StatBag; players: PlayerListEntry[];
-    selectedId: string; otherId: string; onChange: (id: string) => void; disabled?: boolean;
-}> = ({side, name, bag, players, selectedId, otherId, onChange, disabled}) => {
-    const color = side === "a" ? COLOR_A : COLOR_B;
-    return <ComparisonCard side={side} badge={<>{bag.average != null ? numberFormat.format(bag.average) : "—"}</>} name={<>{name}</>} metadata={<><span>{bag.games != null ? `${intFormat.format(bag.games)} games` : "—"}</span>
-                    <span>{bag.highGame != null ? `HG ${intFormat.format(bag.highGame)}` : ""}</span></>}>
-        <Form.Select size="sm" className="bls-fifa-change" value={selectedId} disabled={disabled} onChange={(e) => { onChange(e.target.value); }} style={{borderColor: color}}>
-                    <option value="">Change</option>
-                    {players.map((p) => (<option key={p.id} value={p.id} disabled={p.id === otherId}>{p.name}</option>))}
-                </Form.Select>
-    </ComparisonCard>;
-};
+const PlayerCard: FC<{side: "a" | "b"; name: string; bag: StatBag}> = ({side, name, bag}) => (
+    <ComparisonCard side={side} badge={<>{bag.average != null ? numberFormat.format(bag.average) : "—"}</>} name={name}
+        metadata={<><span>{bag.games != null ? intFormat.format(bag.games) + " games" : "—"}</span><span>{bag.highGame != null ? "HG " + intFormat.format(bag.highGame) : ""}</span></>}>{null}</ComparisonCard>
+);
 
 const StatColumn: FC<{title: string; stats: StatDef[]; bagA: StatBag; bagB: StatBag}> = ({title, stats, bagA, bagB}) => (
     <div className="bls-fifa-col">
@@ -201,12 +196,9 @@ const StatColumn: FC<{title: string; stats: StatDef[]; bagA: StatBag; bagB: Stat
 const PlayerCompare: FC = () => {
     const listFetcher = useCallback(() => buildFullPlayerList(), []);
     const {data, isLoading, error} = useCachedFetcher<PlayerListEntry[]>(listFetcher, PLAYER_INDEX_CACHE_CATEGORY);
-    const [mode, setMode] = useState<Mode>("career");
+    const [params, setParams] = useSearchParams();
+    const mode: Mode = params.get("mode") === "career" ? "career" : "season";
     const [tab, setTab] = useState<TabId>("scoring");
-    const [season, setSeason] = useState("");
-    const [leagueId, setLeagueId] = useState("");
-    const [idA, setIdA] = useState("");
-    const [idB, setIdB] = useState("");
 
     const seasons = useMemo(() => {
         if (!data) return [] as string[];
@@ -215,8 +207,11 @@ const PlayerCompare: FC = () => {
             for (const s of p.seasonSlices ?? []) set.add(s.season);
             for (const a of p.appearanceSlices ?? []) if (a.season) set.add(a.season);
         }
-        return [...set].sort((a, b) => b.localeCompare(a));
+        return [...set].sort((a, b) => b.localeCompare(a, undefined, {numeric: true}));
     }, [data]);
+
+    const requestedSeason = params.get("season") ?? "";
+    const season = seasons.includes(requestedSeason) ? requestedSeason : seasons[0] ?? "";
 
     const leagues = useMemo(() => {
         if (!data || !season) return [] as {id: string; name: string}[];
@@ -230,11 +225,25 @@ const PlayerCompare: FC = () => {
         return [...map.entries()].map(([id, name]) => ({id, name})).sort((x, y) => x.name.localeCompare(y.name));
     }, [data, season]);
 
+    const requestedLeague = params.get("leagueId") ?? "";
+    const leagueId = leagues.some(league => league.id === requestedLeague) ? requestedLeague : "";
+
     const eligible = useMemo(() => {
         if (!data) return [] as PlayerListEntry[];
         return data.filter((p) => num(scopeListEntry(p, mode, season, leagueId).games) > 0).sort((x, y) => x.name.localeCompare(y.name));
     }, [data, mode, season, leagueId]);
 
+    const rows = useMemo(() => eligible.map(player => {
+        const stats = scopeListEntry(player, mode, season, leagueId);
+        return {id: player.id, name: player.name, average: stats.average, games: stats.games ?? 0,
+            teamName: bowlerTeamNames(player, mode === "season" ? season : undefined).join(" · ")};
+    }), [eligible, mode, season, leagueId]);
+    const matchup = useRivalryMatchup(rows, "frame", {mode, season, leagueId});
+    const idA = matchup.a?.id ?? "", idB = matchup.b?.id ?? "";
+    function changeScope(nextMode: Mode, nextSeason: string, nextLeague: string) {
+        const path = buildRivalryPath("frame", idA, idB, {mode: nextMode, season: nextSeason, leagueId: nextLeague});
+        setParams(new URLSearchParams(path.split("?")[1]), {replace: true});
+    }
     const aEntry = eligible.find((p) => p.id === idA);
     const bEntry = eligible.find((p) => p.id === idB);
     const listBagA = aEntry ? scopeListEntry(aEntry, mode, season, leagueId) : null;
@@ -251,9 +260,9 @@ const PlayerCompare: FC = () => {
         return (
             <>
                 <div className="bls-fifa-heads mb-3">
-                    <PlayerCard side="a" name={nameA} bag={bagA} players={eligible} selectedId={idA} otherId={idB} onChange={setIdA} disabled={mode === "season" && !season} />
+                    <PlayerCard side="a" name={nameA} bag={bagA}/>
                     <div className="bls-fifa-vs"><span>VS</span><Badge pill style={{background: scoreA >= scoreB ? COLOR_A : COLOR_B, color: "#fff"}}>{scoreA}–{scoreB}</Badge></div>
-                    <PlayerCard side="b" name={nameB} bag={bagB} players={eligible} selectedId={idB} otherId={idA} onChange={setIdB} disabled={mode === "season" && !season} />
+                    <PlayerCard side="b" name={nameB} bag={bagB}/>
                 </div>
                 <ComparisonTabs<TabId> active={tab} onChange={setTab} tabs={[["scoring","Scoring"],["conversion","Conversion"],["volume","Volume"]]}/>
                 <Row className="g-3">
@@ -279,24 +288,21 @@ const PlayerCompare: FC = () => {
 
     return (
         <div className="bls-compare bls-fifa-compare">
-            <div className="bls-compare-hero mb-3">
-                <span className="bls-hero-kicker">Head to head</span>
-                <h1>Player Compare</h1>
-            </div>
+            {data && !isLoading && !error && <RivalryStudio source="frame" rows={rows} matchup={matchup} scopeLabel={mode === "career" ? "All recorded seasons" : season + " · " + (leagues.find(league => league.id === leagueId)?.name ?? "All leagues")}/> }
             {isLoading && <Loader />}
             {error != null && <ErrorDisplay message="Error loading players." error={error} />}
-            {data && (
+            {data && !isLoading && !error && (
                 <>
                     <Card className="bls-profile-card mb-3 bls-fifa-panel">
                         <CardBody>
                             <Row className="g-3">
                                 <Col xs={12}>
                                     <div className="bls-scope-pills">
-                                        <button type="button" className={`bls-scope-pill${mode === "career" ? " is-active" : ""}`} onClick={() => { setMode("career"); setSeason(""); setLeagueId(""); }}>
+                                        <button type="button" className={`bls-scope-pill${mode === "career" ? " is-active" : ""}`} onClick={() => { changeScope("career", "", ""); }}>
                                             <span className="bls-scope-pill-label">Careers</span>
                                             <span className="bls-scope-pill-sub">All seasons</span>
                                         </button>
-                                        <button type="button" className={`bls-scope-pill${mode === "season" ? " is-active" : ""}`} onClick={() => { setMode("season"); }}>
+                                        <button type="button" className={`bls-scope-pill${mode === "season" ? " is-active" : ""}`} onClick={() => { changeScope("season", seasons[0] ?? "", ""); }}>
                                             <span className="bls-scope-pill-label">Season / league</span>
                                             <span className="bls-scope-pill-sub">Year first</span>
                                         </button>
@@ -305,15 +311,15 @@ const PlayerCompare: FC = () => {
                                 {mode === "season" && (
                                     <>
                                         <Col md={6}>
-                                            <Form.Label className="bls-meta-label">Season / year</Form.Label>
-                                            <Form.Select value={season} onChange={(e) => { setSeason(e.target.value); setLeagueId(""); }}>
-                                                <option value="">Select a season…</option>
+                                            <Form.Label htmlFor="rivalry-season" className="bls-meta-label">Season / year</Form.Label>
+                                            <Form.Select id="rivalry-season" value={season} onChange={(e) => { changeScope("season", e.target.value, ""); }}>
+                                                {seasons.length === 0 && <option value="">No seasons available</option>}
                                                 {seasons.map((s) => <option key={s} value={s}>{s}</option>)}
                                             </Form.Select>
                                         </Col>
                                         <Col md={6}>
-                                            <Form.Label className="bls-meta-label">League</Form.Label>
-                                            <Form.Select value={leagueId} onChange={(e) => { setLeagueId(e.target.value); }} disabled={!season}>
+                                            <Form.Label htmlFor="rivalry-league" className="bls-meta-label">League</Form.Label>
+                                            <Form.Select id="rivalry-league" value={leagueId} onChange={(e) => { changeScope(mode, season, e.target.value); }} disabled={!season}>
                                                 <option value="">{season ? "All leagues this season" : "Select a season first"}</option>
                                                 {leagues.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
                                             </Form.Select>
@@ -325,24 +331,6 @@ const PlayerCompare: FC = () => {
                     </Card>
                     {mode === "season" && !season && (
                         <Card className="bls-profile-card"><CardBody className="text-center text-body-secondary py-5">Choose a season before picking a league or bowlers.</CardBody></Card>
-                    )}
-                    {(!aEntry || !bEntry) && !(mode === "season" && !season) && (
-                        <Row className="g-3 mb-3">
-                            <Col md={6}>
-                                <Form.Label className="bls-meta-label" style={{color: COLOR_A}}>Player A</Form.Label>
-                                <Form.Select value={idA} onChange={(e) => { setIdA(e.target.value); }} style={{borderColor: COLOR_A}} disabled={mode === "season" && !season}>
-                                    <option value="">Select bowler…</option>
-                                    {eligible.map((p) => <option key={p.id} value={p.id} disabled={p.id === idB}>{p.name}</option>)}
-                                </Form.Select>
-                            </Col>
-                            <Col md={6}>
-                                <Form.Label className="bls-meta-label" style={{color: COLOR_B}}>Player B</Form.Label>
-                                <Form.Select value={idB} onChange={(e) => { setIdB(e.target.value); }} style={{borderColor: COLOR_B}} disabled={mode === "season" && !season}>
-                                    <option value="">Select bowler…</option>
-                                    {eligible.map((p) => <option key={p.id} value={p.id} disabled={p.id === idA}>{p.name}</option>)}
-                                </Form.Select>
-                            </Col>
-                        </Row>
                     )}
                     {aEntry && bEntry && mode === "career" && (
                         <CareerPair key={`${aEntry.id}-${bEntry.id}`} idA={aEntry.id} idB={bEntry.id}>
