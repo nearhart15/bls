@@ -30,6 +30,8 @@ const Layout :FC = () => {
     const displayedSource = isApiLockedTeamCompare ? "api" : source;
     const showDataSourceToggle = !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage && !isApiOnlyPlayer;
 
+    const pageTitle = isTeamLeagueData ? "Team League Data" : isFrameOnlyStatsPage ? "Handicap Guide" : location.pathname === "/player" ? "Players" : location.pathname === "/score-utils" ? "Score Utilities" : null;
+
     const refreshApp = () => {
         clearCacheRef.current?.clearCache();
         window.location.reload();
@@ -85,7 +87,7 @@ const Layout :FC = () => {
 
                 <ScrollToTop />
                 <ClearCache ref={clearCacheRef}/>
-                <main className="bls-main"><DataQualityNotice/><Suspense fallback={<Loader/>}><Outlet/></Suspense></main>
+                <main className="bls-main">{pageTitle && <header className="bls-page-header"><h1>{pageTitle}</h1></header>}<DataQualityNotice/><Suspense fallback={<Loader/>}><Outlet/></Suspense></main>
                 <footer className="bls-footer">
                     <p className="mb-1">Contains fun data, empowers bragging rights, enables the nerds, and justifies adult money (well) spent at the Pro Shop.</p>
                     <p className="mb-0">Copyright &copy; 2025{" "}<span className="text-primary-emphasis">Pins Go Boom!</span> Bowling Team.</p>

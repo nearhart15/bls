@@ -327,8 +327,8 @@ const PlayerLeaderboard: FC = () => {
                                     <th style={{width: "3rem"}} className="text-center">#</th>
                                     <th>Bowler</th>
                                     <th className="text-end d-none d-md-table-cell">Games</th>
+                                    <th className="d-none d-md-table-cell" style={{width: "40%"}} aria-label="Relative performance"></th>
                                     <th className="text-end">{def.label}</th>
-                                    <th className="d-none d-md-table-cell" style={{width: "40%"}}></th>
                                 </tr>
                             </thead>
                             <tbody>
