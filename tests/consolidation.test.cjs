@@ -105,3 +105,10 @@ test('shared strike analysis preserves complete runs and tenth-frame milestone l
     assert.deepEqual([...tenth.turkeyFrames], [10]);
     assert.equal(isCleanGame(buildFrames(convertScore('9/'.repeat(9)+'X-9'))),true);
 });
+
+
+test('import HTML entities decode once without recursively unescaping nested entities', async () => {
+    const {decodeHtml, readTextIfPresent} = await import('../scripts/import-utils.mjs');
+    assert.equal(decodeHtml('&amp;lt; &lt; &amp;quot; &quot; &#39;'), '&lt; < &quot; " '+"'");
+    assert.equal(readTextIfPresent(path.join(os.tmpdir(), 'bls-missing-'+process.pid, 'absent.txt')),null);
+});

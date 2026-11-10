@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { safeFetch } from "./security-utils.mjs";
 export const QUALIFYING_TEAM = "Pins Go Boom!";
 export function slug(value) {
@@ -14,16 +15,31 @@ export function normalizeName(value) {
     .replace(/[^a-z0-9]+/g, "");
 }
 export function decodeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&amp;", "&")
-    .replaceAll("&quot;", '"')
-    .replaceAll("&#039;", "'")
-    .replaceAll("&#x27;", "'")
-    .replaceAll("&#39;", "'")
-    .replaceAll("&apos;", "'")
-    .replaceAll("&lt;", "<")
-    .replaceAll("&gt;", ">");
+  const entities = {
+    "&amp;": "&",
+    "&quot;": '"',
+    "&#039;": "'",
+    "&#x27;": "'",
+    "&#39;": "'",
+    "&apos;": "'",
+    "&lt;": "<",
+    "&gt;": ">",
+  };
+  return String(value ?? "").replace(
+    /&(?:amp|quot|#039|#x27|#39|apos|lt|gt);/g,
+    (entity) => entities[entity],
+  );
 }
+
+export function readTextIfPresent(path) {
+  try {
+    return readFileSync(path, "utf8");
+  } catch (error) {
+    if (error.code === "ENOENT") return null;
+    throw error;
+  }
+}
+
 export function createRequest({ allowedHosts, userAgent, accept }) {
   return async (url, options = {}) => {
     const response = await safeFetch(

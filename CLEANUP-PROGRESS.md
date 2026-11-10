@@ -2,7 +2,7 @@
 
 Review baseline: `0312d3e27743de26cc8097cb850e1182aa0be5d3`. Work branch: `cleanup/consolidation`.
 
-All 54 review items are addressed in the local implementation. No commits, pushes, deployments or remote settings changes have been made. Both data sources, historical provenance and preview support are retained.
+All 54 review items are addressed in the local implementation. At review completion, no commits, pushes, deployments or remote settings changes had been made. Production rollout was subsequently authorized through PR #66. Both data sources, historical provenance and preview support are retained.
 
 ## Completed items
 
@@ -65,7 +65,7 @@ All 54 review items are addressed in the local implementation. No commits, pushe
 
 ## Validation
 
-- `npm run check`: passed, with 117 tests and zero failures; TypeScript, production build and bundle budgets passed.
+- `npm run check`: passed, with 118 tests and zero failures; TypeScript, production build and bundle budgets passed.
 - ESLint: zero errors; nine pre-existing advisory warnings remain, with the warning ceiling set to nine.
 - Dependency audit: zero reported vulnerabilities.
 - Actionlint 1.7.12: all workflows passed (`-shellcheck= -pyflakes=`); shellcheck and pyflakes were not run.
@@ -80,3 +80,7 @@ All 54 review items are addressed in the local implementation. No commits, pushe
 Browser automation was unavailable in this environment, so responsive styling and chart appearance have not received browser visual verification. Hosted GitHub Actions and Pages deployment have not been executed; local workflow parsing, Actionlint and artifact checks passed.
 
 When merging, synchronize the preview branch's workflow changes so its old standalone publisher is retired. The existing matrix check names and audit gate are retained, but an administrator must verify any workflow-name-specific required checks: the connected integration could not read classic branch protection. These are rollout/verification steps, not remaining local consolidation code changes.
+
+## Production rollout follow-up
+
+PR #66 adds single-pass HTML entity decoding and removes file existence/write race patterns identified by hosted CodeQL. Archive creation uses exclusive writes. Preview publishing workflows were synchronized in commits 38825bc and 28c6a1a, preserving its application and source data; dependency patches reduced its audit to zero vulnerabilities and all 52 preview tests passed. Production checks now cover 118 tests.

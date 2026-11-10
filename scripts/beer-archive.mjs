@@ -1,5 +1,6 @@
+import { readTextIfPresent } from "./import-utils.mjs";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 export function archiveBeerSnapshot(
   parsed,
@@ -21,19 +22,14 @@ export function archiveBeerSnapshot(
   const prefix = `week-${String(week).padStart(2, "0")}`;
   const hash = createHash("sha256").update(bytes).digest("hex");
   let revision = 1;
-  while (
-    existsSync(
-      join(
-        dir,
-        revision === 1 ? `${prefix}.json` : `${prefix}-r${revision}.json`,
-      ),
-    )
-  ) {
+  while (true) {
     const jsonPath = join(
       dir,
       revision === 1 ? `${prefix}.json` : `${prefix}-r${revision}.json`,
     );
-    const existing = JSON.parse(readFileSync(jsonPath, "utf8"));
+    const existingText = readTextIfPresent(jsonPath);
+    if (existingText === null) break;
+    const existing = JSON.parse(existingText);
     if (existing.archive?.pdfSha256 === hash) {
       console.log(`Historical snapshot already archived: ${jsonPath}`);
       return { created: false, path: jsonPath };
@@ -54,12 +50,14 @@ export function archiveBeerSnapshot(
       ...(historicalBackfill ? { historicalBackfill: true } : {}),
     },
   };
-  writeFileSync(jsonPath, `${JSON.stringify(snapshot, null, 2)}\n`);
-  writeFileSync(pdfArchive, bytes);
+  writeFileSync(jsonPath, `${JSON.stringify(snapshot, null, 2)}\n`, {
+    flag: "wx",
+  });
+  writeFileSync(pdfArchive, bytes, { flag: "wx" });
   const indexPath = join(resolve(historyDirectory), "index.json");
   let index = { snapshots: [] };
-  if (existsSync(indexPath))
-    index = JSON.parse(readFileSync(indexPath, "utf8"));
+  const indexText = readTextIfPresent(indexPath);
+  if (indexText !== null) index = JSON.parse(indexText);
   index.snapshots = (index.snapshots ?? []).filter(
     (x) =>
       !(
