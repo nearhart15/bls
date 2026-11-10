@@ -28,12 +28,25 @@ test('Insights controls update periods and league scope without external prompts
  const React=require('react');const {act}=React;const {createRoot}=require('react-dom/client');const {JSDOM}=require('jsdom');const {InsightsPanel}=load('src/pages/components/player/player-insights.tsx');
  const dom=new JSDOM('<div id="root"></div>',{url:'https://example.test'});const prev={window:global.window,document:global.document,act:global.IS_REACT_ACT_ENVIRONMENT};global.window=dom.window;global.document=dom.window.document;global.IS_REACT_ACT_ENVIRONMENT=true;
  const root=createRoot(dom.window.document.getElementById('root'));const doc=dom.window.document;
- const data=Array.from({length:12},(_,i)=>session(`2026-10-${String(i+1).padStart(2,'0')}`,170+i,{leagueId:i%2?'a':'b'}));
+ const data=Array.from({length:12},(_,i)=>({...session(`${i<6?2025:2026}-10-${String(i+1).padStart(2,'0')}`,170+i,{leagueId:i%2?'a':'b'}),season:i<6?'2025 - 26':'2026 - 27'}));
  const select=async(el,value)=>act(async()=>{el.value=value;el.dispatchEvent(new dom.window.Event('change',{bubbles:true}));});
  try{
   await act(async()=>root.render(React.createElement(InsightsPanel,{name:'Nick',sessions:data})));
   assert.match(doc.body.textContent,/Recent: 6 sessions · 18 games/);assert.doesNotMatch(doc.body.textContent,/Grok|career|Expected strike/i);assert.equal(doc.querySelectorAll('a[href]').length,0);
   await select(doc.querySelector('[aria-label="Comparison window"]'),'3');assert.match(doc.body.textContent,/Recent: 3 sessions · 9 games/);
   await select(doc.querySelector('[aria-label="Insights league"]'),'a');assert.match(doc.body.textContent,/Oct 8, 2026/);assert.equal(doc.querySelectorAll('table:last-child tbody tr').length>0,true);
+  assert.doesNotMatch(doc.body.textContent,/Recent session history|last 5 games/i);assert.match(doc.body.textContent,/Your target|Build a useful baseline/);
+  await select(doc.querySelector('[aria-label="Comparison window"]'),'season');assert.match(doc.body.textContent,/Latest season \(2026 - 27\)/);assert.match(doc.body.textContent,/Previous season \(2025 - 26\)/);assert.equal(doc.querySelector('[aria-label="Insights league"]').value,'all');
  }finally{await act(async()=>root.unmount());dom.window.close();global.window=prev.window;global.document=prev.document;global.IS_REACT_ACT_ENVIRONMENT=prev.act;}
+});
+
+test('season comparison includes all games and matches league names across changing season IDs',()=>{
+ const data=[...['01','02'].map(day=>({...session(`2026-10-${day}`,200,{leagueId:'fall-new'}),leagueName:'Fall',season:'2026 - 27'})),...['01','02','03','04'].map(day=>({...session(`2025-10-${day}`,180,{leagueId:'fall-old'}),leagueName:'Fall',season:'2025 - 26'})),...['01','02'].map(day=>({...session(`2026-07-${day}`,240,{leagueId:'summer-old'}),leagueName:'Summer',season:'2025 - 26'}))];
+ const result=comparePerformance(data,'season');assert.equal(result.recentSeason,'2026 - 27');assert.equal(result.previousSeason,'2025 - 26');assert.equal(result.recentStats.gameStats.count,6);assert.equal(result.previousStats.gameStats.count,18);assert.equal(result.previousStats.gameStats.average,200);
+ const league=comparePerformance(data,'season','Fall');assert.equal(league.recentStats.gameStats.average,200);assert.equal(league.previousStats.gameStats.average,180);assert.equal(league.previousStats.gameStats.count,12);assert.equal(league.enoughGames,true);
+ const missing=comparePerformance(data.filter(s=>s.season==='2026 - 27'),'season');assert.equal(missing.previous.length,0);assert.equal(missing.trends.length,0);
+});
+test('practice plans remain actionable when stable, avoid overlapping spare priorities and target personal baselines',()=>{
+ const {buildPracticePlan}=load('src/data/player/performance-insights.ts');const data=['01','02','03','04'].map(day=>session(`2026-10-${day}`,180));let plan=buildPracticePlan(comparePerformance(data));assert.equal(plan.length,2);assert.ok(plan.every(p=>p.drill.length===2&&p.goal.includes('three sessions')));assert.equal(plan.filter(p=>['single','spares','opens'].includes(p.id)).length,1);
+ data[2].stats.singlePinSpares=new RatioGroup(4,10);data[3].stats.singlePinSpares=new RatioGroup(4,10);plan=buildPracticePlan(comparePerformance(data));assert.equal(plan[0].id,'single');assert.equal(plan[0].status,'Rebuild');assert.match(plan[0].goal,/80.0%/);assert.match(plan[0].evidence,/40.0%/);assert.deepEqual(buildPracticePlan(comparePerformance([])),[]);
 });
