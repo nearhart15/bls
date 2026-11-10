@@ -3,7 +3,6 @@
  */
 
 import {Suspense, lazy, type FC} from "react";
-import {BarChartFill, PeopleFill, TrophyFill} from "react-bootstrap-icons";
 
 import NewsHighlights from "./components/news/news";
 import LeagueList from "./components/league/league-list";
@@ -13,6 +12,7 @@ import Loader from "./components/loader";
 const ApiPlayerList = lazy(async () => ({default: (await import("./components/player/api-player-screens")).ApiPlayerList}));
 import {useDataSource} from "./components/data-source";
 import TodaysLanes from "./components/home/todays-lanes";
+import BowlerLaunchpad from "./components/home/bowler-launchpad";
 
 const PINS_GO_BOOM = ["Nick", "Bindul", "Luke", "Brian"];
 const HOOKERS_AND_BOWL = ["Patrick", "Greg", "Ty", "Mark"];
@@ -22,43 +22,7 @@ const Home: FC = () => {
     const {source} = useDataSource();
     return (
         <>
-            <section className="bls-hero">
-                <div className="bls-hero-inner">
-                    <span className="bls-hero-kicker">Pins Go Boom!</span>
-                    <h1>Bowling League Stats</h1>
-                    <p>
-                        Scores, averages, and bragging rights — presented clearly
-                        across every season you track.
-                    </p>
-                    <div className="bls-hero-graphic" aria-hidden="true">
-                        <div className="bls-lane">
-                            <span className="bls-lane-line" />
-                            <span className="bls-lane-line" />
-                            <span className="bls-lane-line" />
-                            <span className="bls-lane-line" />
-                            <span className="bls-ball" />
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section className="bls-features d-none d-md-grid">
-                <div className="bls-feature">
-                    <div className="bls-feature-icon"><TrophyFill /></div>
-                    <h3>League deep dives</h3>
-                    <p>Standings, honor rolls, rules, and full matchup history.</p>
-                </div>
-                <div className="bls-feature">
-                    <div className="bls-feature-icon"><PeopleFill /></div>
-                    <h3>Player careers</h3>
-                    <p>Career averages, season splits, and every team appearance.</p>
-                </div>
-                <div className="bls-feature">
-                    <div className="bls-feature-icon"><BarChartFill /></div>
-                    <h3>Frame-level detail</h3>
-                    <p>Game sheets, charts, and the stats that fuel good-natured trash talk.</p>
-                </div>
-            </section>
+            <BowlerLaunchpad/>
 
             <TodaysLanes />
             <div className="mb-3"><NewsHighlights shoutOuts /></div>
