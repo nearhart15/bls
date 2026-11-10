@@ -72,9 +72,22 @@ jobs:
       - run: echo "Both validation jobs passed the dependency audit."
   deploy:
     needs: [check, audit]
-    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beer-league-pdf-import-test')
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
       pages: write
       id-token: write
     uses: ./.github/workflows/deploy-pages.yml
+  request-production-publication:
+    needs: [check, audit]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/beer-league-pdf-import-test'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Publish validated preview through the protected main environment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh workflow run check.yml --ref main
