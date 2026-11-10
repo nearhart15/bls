@@ -19,7 +19,6 @@ import {useIsNarrow} from "../use-viewport";
 import {
     AppearancesPanel,
     SeasonBreakdownTable,
-    PlayerSwitcher,
 } from "./player-detail-tables";
 import {AllStatsPanel} from "./player-all-stats";
 import {InsightsPanel} from "./player-insights";
@@ -189,7 +188,6 @@ const PlayerDetail: FC<{data: AggregatedPlayerData}> = ({data}) => {
     const [tab, setTab] = useState<"overview" | "all" | "insights">("overview");
     return (
         <div className="bls-player-profile">
-            <PlayerSwitcher currentId={player.id} />
             <div className="bls-player-profile-main">
                 <div className="bls-profile-hero">
                     <span className="bls-hero-kicker">Player profile</span>
@@ -214,7 +212,7 @@ const PlayerDetail: FC<{data: AggregatedPlayerData}> = ({data}) => {
                     </div>
                 </div>
                 {tab === "insights" && (
-                    <InsightsPanel name={displayName} stats={stats} seasons={seasonStats} appearances={appearances} />
+                    <InsightsPanel name={displayName} sessions={data.performanceSessions ?? []} />
                 )}
                 {tab === "all" && (
                     <AllStatsPanel

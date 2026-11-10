@@ -44,7 +44,15 @@ export interface PlayerSliceStats {
     calendarStats?: Record<string, PlayerStats>;
     stats: PlayerStats;
 }
+export interface PlayerPerformanceSession {
+    season?: string;
+    date: string;
+    leagueId: string;
+    leagueName: string;
+    stats: PlayerStats;
+}
 export interface AggregatedPlayerData {
+    performanceSessions?: PlayerPerformanceSession[];
     warnings?: string[];
     player: PlayerInfo;
     appearances: PlayerLeagueAppearance[];
@@ -107,7 +115,7 @@ export interface PlayerListEntry {
     weekSeries?: number[];
     lastBowled?: Moment;
 }
-export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail-v4-frame-pace";
+export const PLAYER_DETAIL_CACHE_CATEGORY = "player-detail-v5-performance-sessions";
 export const PLAYER_INDEX_CACHE_CATEGORY = "player-index-v9-scoped-rating";
 interface RatingSample {
     season: string;
@@ -467,11 +475,16 @@ export async function aggregatePlayerData(playerId: string): Promise<AggregatedP
             seasonSlicesFull.push({season, stats: statsFromSeries(series)});
         seasonSlicesFull.sort((a, b) => (b.season ?? "").localeCompare(a.season ?? ""));
     }
+    const performanceSessions: PlayerPerformanceSession[] = [];
     const appearanceSlicesFull: PlayerSliceStats[] = [],
         byLeague = scan.seriesByPlayerLeague.get(playerId);
     for (const ap of appearances) {
         const key = appearanceKey(ap.season, ap.leagueId, ap.teamId),
             series = byLeague?.get(key) ?? [];
+        for (const games of series) {
+            const date = scan.dates.get(games);
+            if (date && Number.isFinite(Date.parse(date))) performanceSessions.push({season: ap.season, date: date.slice(0, 10), leagueId: ap.leagueId, leagueName: ap.leagueName, stats: statsFromSeries([games])});
+        }
         appearanceSlicesFull.push({
             season: ap.season,
             leagueId: ap.leagueId,
@@ -489,7 +502,8 @@ export async function aggregatePlayerData(playerId: string): Promise<AggregatedP
         careerStats,
         seasonStats,
         seasonSlicesFull,
-        appearanceSlicesFull
+        appearanceSlicesFull,
+        performanceSessions
     };
 }
 function calendarStats(

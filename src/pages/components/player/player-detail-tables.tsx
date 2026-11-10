@@ -1,23 +1,17 @@
 /*
- * Player detail tables & switcher © 2026
+ * Player detail tables © 2026
  */
 
-import {type FC, useCallback, useMemo, useState} from "react";
-import {Link, useNavigate} from "react-router";
+import {type FC, useMemo, useState} from "react";
+import {Link} from "react-router";
 import {Badge, Card, CardBody, Table} from "react-bootstrap";
 
 import type {
     PlayerLeagueAppearance,
-    PlayerListEntry,
     PlayerSeasonStats,
 } from "../../../data/player/player-aggregate";
 import type {PlayerStats, RatioGroup} from "../../../data/player/player-stats";
 import type {LeaguePlayerStats} from "../../../data/league/league-team-details";
-import {
-    buildFullPlayerList,
-    PLAYER_INDEX_CACHE_CATEGORY,
-} from "../../../data/player/player-aggregate";
-import {useCachedFetcher} from "../cache/data-loader";
 
 const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 1});
 
@@ -258,23 +252,6 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
     );
 };
 
-const PlayerSwitcher: FC<{currentId: string}> = ({currentId}) => {
-    const navigate = useNavigate();
-    const fetcher = useCallback(() => buildFullPlayerList(), []);
-    const {data} = useCachedFetcher<PlayerListEntry[]>(fetcher, PLAYER_INDEX_CACHE_CATEGORY);
-    const players = useMemo(() => data ?? [], [data]);
-    if (players.length === 0) return null;
-    return (
-        <aside className="bls-player-rail" aria-label="Switch player">
-            {players.map((p) => (
-                <button key={p.id} type="button" title={p.name} className={`bls-player-rail-btn${p.id === currentId ? " is-active" : ""}`} onClick={() => void navigate(`/player/${p.id}`)}>
-                    <span className="bls-player-rail-name">{p.name}</span>
-                </button>
-            ))}
-        </aside>
-    );
-};
-
 type SeasonSortKey = "season" | "leagues" | "games" | "average" | "pinfall" | "highGame" | "highSeries" | "games200" | "cleanGames" | "hungCount" | "turkeyCount";
 
 const SeasonSortTh: FC<{
@@ -364,4 +341,4 @@ const SeasonBreakdownTable: FC<{seasons: PlayerSeasonStats[]}> = ({seasons}) => 
     );
 };
 
-export {AppearancesPanel, SeasonBreakdownTable, PlayerSwitcher};
+export {AppearancesPanel, SeasonBreakdownTable};
