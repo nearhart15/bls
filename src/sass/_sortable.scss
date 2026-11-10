@@ -134,15 +134,17 @@
 }
 .bls-fifa-row-trackline {
   display: grid;
-  grid-template-columns: 3.4rem 1fr 3.4rem;
+  grid-template-columns: minmax(4.25rem, max-content) minmax(0, 1fr) minmax(4.25rem, max-content);
   gap: 0.55rem;
   align-items: center;
 }
 .bls-fifa-val {
+  white-space: nowrap;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
   font-size: 0.82rem;
 }
+.bls-fifa-val:last-child { text-align: right; }
 .bls-fifa-val.is-lead { font-weight: 800; }
 .bls-fifa-track {
   height: 0.55rem;
@@ -161,5 +163,4 @@
 @media (max-width: 767.98px) {
   .bls-fifa-heads { grid-template-columns: 1fr; }
   .bls-fifa-vs { flex-direction: row; }
-  .bls-fifa-row-trackline { grid-template-columns: 2.6rem 1fr 2.6rem; }
 }
