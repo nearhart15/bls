@@ -21,7 +21,7 @@
 .bls-fifa-pcard-b .bls-fifa-pcard-name,.bls-fifa-pcard-b .bls-fifa-pcard-badge { color:var(--bls-compare-b)!important; }
 .bls-fifa-val:first-child { color:var(--bls-compare-a)!important; }
 .bls-fifa-val:last-child { color:var(--bls-compare-b)!important; }
-[data-bs-theme="light"] .bls-profile-kpi-value { color:var(--bls-highlight)!important; }
+[data-bs-theme="light"] .bls-kpi-big,[data-bs-theme="light"] .bls-radar-callouts strong,[data-bs-theme="light"] .bls-insight-kicker { color:var(--bls-highlight)!important; }
 .bls-app .form-select,.bls-app .form-control { border-radius:.7rem; }
 .bls-app :is(button,a,input,select):focus-visible { outline:2px solid var(--bls-accent); outline-offset:3px; }
 .bls-api-mobile-sort { display:none; }
