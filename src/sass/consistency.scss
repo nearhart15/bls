@@ -43,3 +43,8 @@
  .bls-api-player-table td:nth-child(9)::before {content:"High series";}
  .bls-api-player-table td:nth-child(10)::before {content:"Latest series";}
 }
+
+[data-bs-theme="light"] .bls-radar-wrap svg text { fill:var(--bls-highlight)!important; }
+.bls-app .btn-outline-secondary { color:var(--bls-text); border-color:var(--bls-border); }
+.bls-app .table:not(.bls-score-table) { font-size:.875rem; }
+
