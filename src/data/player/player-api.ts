@@ -21,8 +21,6 @@ import {PlayerInfo, Players} from "./player-info";
 import {createJsonConverter} from "../utils/json-utils";
 import {compareMoments} from "../utils/utils";
 
-export const PLAYER_LIST_CACHE_CATEGORY = "player-list";
-// const APP_URL_BASE = import.meta.env.VITE_DATA_URL_BASE;
 const PLAYER_INDEX_RESOURCE = import.meta.env.VITE_DATA_PLAYERS_INDEX_RESOURCE;
 
 function postProcessLoadedPlayers(players : Players) : Players {

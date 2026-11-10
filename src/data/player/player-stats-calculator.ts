@@ -5,11 +5,10 @@
 import {Frame, TeamPlayerGameScore} from "../league/league-matchup";
 import {PlayerStats, RatioGroup} from "./player-stats";
 import * as ss from "simple-statistics";
-import {accumulateFrameScores} from "../league/league-calculators";
+import {accumulateFrameScores, isCleanGame, analyzeStrikes} from "../league/frame-scoring";
 
 class FrameStatCalculator {
     firstBallAccum = 0;
-    firstBallCount = 0;
     cleanGameCount = 0;
     hungCount = 0;
     turkeyCount = 0;
@@ -24,28 +23,17 @@ class FrameStatCalculator {
     openFramesAccum = 0;
     totalFramesAccum = 0;
     strikesInARow = new Map<number, number>();
-    singlePinsPickedUpGameScores: number[] = [];
+    simulatedScoreSum = 0;
+    simulatedScoreCount = 0;
     tenthMarksSum = 0;
     tenthMarkGames = 0;
     splitFrameCount = 0;
     pinfallByFrameSum = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     pinfallByFrameN = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     framePinfallTotal = 0;
-    framePinfallFrames = 0;
     paceFramesSum = [0, 0, 0, 0];
     paceFramesN = [0, 0, 0, 0];
     paceBallsSum = [0, 0, 0, 0];
-    paceBallsN = [0, 0, 0, 0];
-
-    private saveStrikeCounter (strikes: number) {
-        if (strikes >= 3) {
-            if (this.strikesInARow.has(strikes)) {
-                this.strikesInARow.set(strikes, (this.strikesInARow.get(strikes) ?? 0) + 1);
-            } else {
-                this.strikesInARow.set(strikes, 1);
-            }
-        }
-    }
 
     private computeAllSinglePinsPickedUpGameScore (game: TeamPlayerGameScore) : number {
         if (game.frames.length === 0) return game.scratchScore;
@@ -68,8 +56,6 @@ class FrameStatCalculator {
     }
 
     addGame(game: TeamPlayerGameScore) {
-        let potentialCleanGame = true;
-        let strikeCounter = 0;
         game.frames.forEach(frame => {
             if (frame.attributes.includes("Hung")) this.hungCount++;
             if (frame.attributes.includes("Turkey")) this.turkeyCount++;
@@ -77,16 +63,10 @@ class FrameStatCalculator {
             const ball2Score = frame.ballScores.length > 1 ? frame.ballScores[1][0] : 0;
             const first2BallScores = ball1Score + ball2Score;
             const ball3Score = frame.ballScores.length > 2 ? frame.ballScores[2][0] : 0;
-            const lastBallLabel = frame.ballScores[frame.ballScores.length - 1][1];
             const frameNum = frame.number;
 
             this.firstBallAccum += ball1Score;
-            this.firstBallCount ++;
 
-            if (lastBallLabel == undefined || (lastBallLabel !== "X" && lastBallLabel !== "/")) {
-                if (frameNum < 10) potentialCleanGame = false;
-                else if (potentialCleanGame && first2BallScores < 10) potentialCleanGame = false;
-            }
 
             // A strike closes the tenth frame even when its bonus spare attempt is missed.
             if (first2BallScores < 10) {
@@ -97,15 +77,6 @@ class FrameStatCalculator {
             if (frameNum == 10) {
                 if (frame.ballScores[1]?.[1] === "X") this.strikeCountAccum++;
                 if (frame.ballScores[2]?.[1] === "X") this.strikeCountAccum++;
-            }
-
-            if (ball1Score == 10) strikeCounter++;
-            else { this.saveStrikeCounter(strikeCounter); strikeCounter = 0; }
-            if (frameNum == 10) {
-                if (frame.ballScores[1]?.[1] === "X") strikeCounter++;
-                else { this.saveStrikeCounter(strikeCounter); strikeCounter = 0; }
-                if (frame.ballScores[2]?.[1] === "X") strikeCounter++;
-                else { this.saveStrikeCounter(strikeCounter); strikeCounter = 0; }
             }
 
             if (ball1Score < 10) {
@@ -143,9 +114,12 @@ class FrameStatCalculator {
             }
         });
         this.totalFramesAccum += game.frames.length;
-        this.saveStrikeCounter(strikeCounter);
-        if (potentialCleanGame) this.cleanGameCount++;
-        this.singlePinsPickedUpGameScores.push(this.computeAllSinglePinsPickedUpGameScore(game));
+        for (const [length, count] of analyzeStrikes(game.frames).streaks) {
+            this.strikesInARow.set(length, (this.strikesInARow.get(length) ?? 0) + count);
+        }
+        if (isCleanGame(game.frames)) this.cleanGameCount++;
+        this.simulatedScoreSum += this.computeAllSinglePinsPickedUpGameScore(game);
+        this.simulatedScoreCount++;
         this.addPaceAndFramePinfall(game);
     }
 
@@ -164,7 +138,6 @@ class FrameStatCalculator {
             this.pinfallByFrameSum[idx] += contrib;
             this.pinfallByFrameN[idx] += 1;
             this.framePinfallTotal += contrib;
-            this.framePinfallFrames += 1;
             balls += frame.ballScores?.length ?? 0;
             for (let t = 0; t < thresholds.length; t++) {
                 if (!reached[t] && cum >= thresholds[t]) {
@@ -172,7 +145,6 @@ class FrameStatCalculator {
                     this.paceFramesSum[t] += frame.number;
                     this.paceFramesN[t] += 1;
                     this.paceBallsSum[t] += balls;
-                    this.paceBallsN[t] += 1;
                 }
             }
             prev = cum;
@@ -189,11 +161,11 @@ class FrameStatCalculator {
     }
 
     getFirstBallAverage() {
-        return (this.firstBallCount == 0) ? 0 : this.firstBallAccum / this.firstBallCount;
+        return (this.totalFramesAccum == 0) ? 0 : this.firstBallAccum / this.totalFramesAccum;
     }
 }
 
-export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: PlayerStats, gamesCount = Math.max(0, ...series.map(games => games.length))) {
+export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: PlayerStats, gamesCount = 0) {
     gamesCount = Math.max(gamesCount, ...series.map(games => games.length));
     if (!Number.isSafeInteger(gamesCount) || gamesCount < 0 || gamesCount > 12) throw new Error("Invalid series game count");
     const gameScoresByGame :number[][] = [];
@@ -255,8 +227,8 @@ export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: Pla
     stats.cleanGames = frameStatsCalculator.cleanGameCount;
     stats.hungCount = frameStatsCalculator.hungCount;
     stats.turkeyCount = frameStatsCalculator.turkeyCount;
-    stats.firstBallCount = frameStatsCalculator.firstBallCount;
-    stats.singlePinGameCount = frameStatsCalculator.singlePinsPickedUpGameScores.length;
+    stats.firstBallCount = frameStatsCalculator.totalFramesAccum;
+    stats.singlePinGameCount = frameStatsCalculator.simulatedScoreCount;
     stats.firstBallAverage = frameStatsCalculator.getFirstBallAverage();
     stats.strikes = new RatioGroup(frameStatsCalculator.strikeCountAccum, frameStatsCalculator.strikeOpportunitiesAccum);
     stats.spares = new RatioGroup(frameStatsCalculator.pickedUpSpareAccum, frameStatsCalculator.spareOpportunitiesAccum);
@@ -270,12 +242,12 @@ export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: Pla
     })
     stats.strikesInARow.sort((a, b) => a[0] - b[0]);
 
-    if (frameStatsCalculator.singlePinsPickedUpGameScores.length > 0) {
-        stats.allSinglePinsPickedUpAverage = ss.mean(frameStatsCalculator.singlePinsPickedUpGameScores);
+    if (frameStatsCalculator.simulatedScoreCount > 0) {
+        stats.allSinglePinsPickedUpAverage = frameStatsCalculator.simulatedScoreSum / frameStatsCalculator.simulatedScoreCount;
     }
 
-    stats.avgPinfallPerFrame = frameStatsCalculator.framePinfallFrames > 0
-        ? frameStatsCalculator.framePinfallTotal / frameStatsCalculator.framePinfallFrames
+    stats.avgPinfallPerFrame = frameStatsCalculator.totalFramesAccum > 0
+        ? frameStatsCalculator.framePinfallTotal / frameStatsCalculator.totalFramesAccum
         : 0;
     stats.avgTenthMarks = frameStatsCalculator.tenthMarkGames > 0
         ? frameStatsCalculator.tenthMarksSum / frameStatsCalculator.tenthMarkGames
@@ -292,7 +264,7 @@ export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: Pla
         return n > 0 ? sum / n : 0;
     });
     stats.paceAvgBalls = frameStatsCalculator.paceBallsSum.map((sum, i) => {
-        const n = frameStatsCalculator.paceBallsN[i];
+        const n = frameStatsCalculator.paceFramesN[i];
         return n > 0 ? sum / n : 0;
     });
     stats.paceN = [...frameStatsCalculator.paceFramesN];

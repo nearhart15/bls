@@ -100,7 +100,7 @@ test('team and calendar slices stay separate; failed leagues cannot masquerade a
   assert.equal(p.games,6);assert.deepEqual(p.appearanceSlices.map(s=>s.games),[3,3]);assert.deepEqual(p.appearanceSlices.map(s=>s.pinfall),[600,300]);
   assert.equal(p.calendarSlices.find(s=>s.season==='2025').pinfall,600);assert.equal(p.calendarSlices.find(s=>s.season==='2026').pinfall,300);
   const detail=await agg.aggregatePlayerData('p');assert.equal(detail.appearanceSlicesFull[0].calendarStats['2025'].gameStats.count,3);
-  api.leagueDetailsFetcher=async()=>{throw Error('offline')};await assert.rejects(agg.buildFullPlayerList(),/could not be loaded/);
+  api.leagueDetailsFetcher=async()=>{throw Error('offline')};load('src/data/utils/cache.ts').applicationCache.clear();await assert.rejects(agg.buildFullPlayerList(),/could not be loaded/);
 });
 
 test('storage denial does not throw; dashboard URLs stay trusted', () => {

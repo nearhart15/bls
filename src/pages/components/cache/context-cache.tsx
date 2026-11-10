@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import {createContext, type FC, type ReactNode, use, useMemo} from "react";
+import {createContext, type FC, type ReactNode, use} from "react";
 
-import {Cache} from "./cache";
+import {applicationCache, type Cache} from "../../../data/utils/cache";
 
 const ContextCache = createContext<Cache | undefined>(undefined);
 
@@ -24,7 +24,7 @@ interface ContextCacheProviderParams {
     children?: ReactNode;
 }
 export const ContextCacheProvider: FC<ContextCacheProviderParams> = ({children} :ContextCacheProviderParams) => {
-    const cache = useMemo(() => new Cache(), []);
+    const cache = applicationCache;
     return  (
         <ContextCache value={cache}>
             {children}

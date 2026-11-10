@@ -1,9 +1,10 @@
+const {createTestDom} = require('./dom-fixture.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const React = require('react');
 const {act} = React;
 const {createRoot} = require('react-dom/client');
-const {JSDOM} = require('jsdom');
+
 const fs = require('node:fs');
 const path = require('node:path');
 const load = require('./load-source.cjs');
@@ -11,11 +12,7 @@ const LeagueRosterPerformanceTable = load('src/pages/components/league/league-ro
 const {ThemeProvider} = load('src/pages/components/theme.tsx');
 
 test('bowler row and name clicks keep the selection in sync with the detail panel', async () => {
-    const dom = new JSDOM('<div id="root"></div>', {url: 'https://example.test', pretendToBeVisual: true});
-    const previous = {window: global.window, document: global.document, act: global.IS_REACT_ACT_ENVIRONMENT};
-    global.window = dom.window;
-    global.document = dom.window.document;
-    global.IS_REACT_ACT_ENVIRONMENT = true;
+    const {dom, restoreDom} = createTestDom({url: 'https://example.test', pretendToBeVisual: true});
     dom.window.matchMedia = () => ({
         matches: false,
         addEventListener() {},
@@ -87,10 +84,7 @@ test('bowler row and name clicks keep the selection in sync with the detail pane
         assert.equal(highlighted().length, 0);
     } finally {
         await act(async () => root.unmount());
-        dom.window.close();
-        global.window = previous.window;
-        global.document = previous.document;
-        global.IS_REACT_ACT_ENVIRONMENT = previous.act;
+        restoreDom();
     }
 });
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as React from "react";
 import {lazy, Suspense, type FC, useCallback} from "react";
 
 import {Container, Nav} from "react-bootstrap";
@@ -34,14 +33,12 @@ import {LeagueSourceStatus} from "../data-source-status";
 const LeagueTeamDetails = lazy(() => import("./league-team-details"));
 const OtherTeams = lazy(() => import("./league-other-teams"));
 
-export type CurrentLeagueDetailsDisplay = "TEAM" | "OTHER_TEAMS";
 
 const OTHER_TEAMS = "other-teams";
 
 interface LeagueDisplayProps {
     leagueInfo: LeagueInfo;
     teamId?: string;
-    children?: React.ReactNode;
 }
 const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisplayProps) => {
     const fetcher = useCallback((dataLoc: string) => leagueDetailsFetcher(dataLoc, leagueInfo.id), [leagueInfo.id]);

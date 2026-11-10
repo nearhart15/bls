@@ -57,6 +57,7 @@ function pendingRound(week = 14) {
 }
 
 async function fetchFixture(data) {
+  load('src/data/utils/cache.ts').applicationCache.clear();
   const originalFetch = global.fetch;
   const originalWindow = global.window;
   global.window = {location: {href: 'http://localhost/bls/'}};

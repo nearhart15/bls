@@ -1,26 +1,24 @@
-import {useId} from "react";
+import {FullStatsGrid} from "../player/player-detail-tables";
 /*
  * Copyright (c) 2025. Bindul Bhowmik
  * Dark mode contrast fixes © 2026
  * Dashboard roster table © 2026
  */
 
-import {type FC, type ReactNode, useMemo, useState} from "react";
+import {type FC, useMemo, useState} from "react";
 
-import {Card, CardBody, CardFooter, CardHeader, Col, Container, OverlayTrigger, Row, Table, Tooltip} from "react-bootstrap";
-import {DashSquare, Icon9Square, XCircle} from "react-bootstrap-icons";
+import {Card, CardBody, CardFooter, CardHeader, Col, Container, Row, Table} from "react-bootstrap";
+import {XCircle} from "react-bootstrap-icons";
 
 import Loader from "../loader";
 import {type Breakpoint, BS_BP_SM, BS_BP_XS} from "../ui-utils";
 
-import type {LeagueAccolade} from "../../../data/league/league-details";
 import {
     LeaguePlayer,
     LeaguePlayerCarryOverStats,
     LeaguePlayerStats,
     TrackedLeagueTeam
 } from "../../../data/league/league-team-details";
-import {RatioGroup} from "../../../data/player/player-stats";
 import TeamPlayerStatGraph from "./league-player-stat-graph";
 import LeagueRosterPerformanceTable from "./league-roster-performance-table";
 import {createGameTableData, type PlayerDayData} from "./league-team-roster-data";
@@ -29,130 +27,11 @@ interface PlayerStatsDisplayProps {
     playerStats: LeaguePlayerStats;
     carryOverStats?: LeaguePlayerCarryOverStats;
 }
-function PlayerStatsDisplay ({playerStats, carryOverStats}: PlayerStatsDisplayProps) {
-    const writeAccolade = (accolade?: LeagueAccolade)=> {
-        let retStr = "";
-        if (accolade) {
-            retStr = (accolade.description && accolade.description.length > 0) ? accolade.description : String(accolade.howMuch);
-            retStr += " on ";
-            retStr += accolade.when?.format("DD MMM") ?? "";
-        }
-        return retStr;
-    }
-
-    const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 2});
-    const percentFormat = Intl.NumberFormat("en-US", {style: "percent", maximumFractionDigits: 2});
-    const writeRatioGroup = (rg : RatioGroup) => {
-        let val = "";
-        if (rg.denominator > 0) {
-            val = percentFormat.format(rg.pct) + " (" + String(rg.numerator) + "/" + String(rg.denominator) + ")";
-        }
-        return val;
-    }
-    const displayColLg = 3;
-    const displayColMd = 6;
-
-    return (<>
-        <Container fluid="true">
-            <Row className="gx-2">
-                <Col md={displayColMd} lg={displayColLg}>
-                    <Card className="text-start mx-0 mb-0 h-100" border="secondary">
-                        <CardBody className="py-1 py-sm-2">
-                            <StatRow defn="Games" value={playerStats.gameStats.count}/>
-                            <StatRow defn="Pinfall" value={playerStats.pinfall}/>
-                            <StatRow defn="Games - Avg" value={numberFormat.format(playerStats.gameStats.average)}/>
-                            <StatRow defn="Games - Min" value={playerStats.gameStats.min}/>
-                            <StatRow defn="Games - Max" value={playerStats.gameStats.max}/>
-                            <StatRow defn="Games - SD" value={numberFormat.format(playerStats.gameStats.sd)}/>
-                            <StatRow defn="200 Games" value={playerStats.games200}/>
-                            <StatRow defn="300 Games" value={playerStats.games300}/>
-                            {playerStats.gameAverages.map((ga, idx) =>
-                                <StatRow defn={`Games ${String(idx + 1)} Avg`} value={numberFormat.format(ga)} key={"game-avg-" + idx.toString() + "-" + ga.toString()}/>
-                            )}
-                        </CardBody>
-                    </Card>
-                </Col>
-                <Col md={displayColMd} lg={displayColLg}>
-                    <Card className="text-start mx-0 mb-0 h-100" border="secondary">
-                        <CardBody className="py-1 py-sm-2">
-                            <StatRow defn="Series" value={playerStats.seriesStats.count}/>
-                            <StatRow defn="Series - Avg" value={numberFormat.format(playerStats.seriesStats.average)}/>
-                            <StatRow defn="Series - Min" value={playerStats.seriesStats.min}/>
-                            <StatRow defn="Series - Max" value={playerStats.seriesStats.max}/>
-                            <StatRow defn="Series - SD" value={numberFormat.format(playerStats.seriesStats.sd)}/>
-                            <StatRow defn="600 Series" value={playerStats.series600}/>
-                            <StatRow defn="800 Series" value={playerStats.series800}/>
-                        </CardBody>
-                    </Card>
-                </Col>
-                <Col md={displayColMd} lg={displayColLg}>
-                    <Card className="text-start mx-0 mb-0 h-100" border="secondary">
-                        <CardBody className="py-1 py-sm-2">
-                            {carryOverStats && <>
-                                <StatRow defn="Carry-Over Pinfall" value={carryOverStats.pins}/>
-                                <StatRow defn="Carry-Over Games" value={carryOverStats.games}/>
-                                <StatRow defn="Entering Handicap" value={carryOverStats.enteringHdcp}/>
-                            </>}
-                            <StatRow defn="League Games" value={playerStats.leagueGames} toolTipText={`Includes carry-over games`}/>
-                            <StatRow defn="League Pinfall" value={playerStats.leaguePinfall} toolTipText={`Includes carry-over games`}/>
-                            <StatRow defn="League Average" value={numberFormat.format(playerStats.leagueAverage)} toolTipText={`Includes carry-over games`}/>
-                            <StatRow defn="League Handicap" value={numberFormat.format(playerStats.leagueHandicap)} toolTipText={`Includes carry-over games`}/>
-                            <StatRow defn="Average Booster" value={playerStats.averageBoosterSeries}
-                                     toolTipText={`Bowl a series of at least this number to increase average by 1 pin.`}/>
-                            <StatRow defn="Best Game over Avg" value={writeAccolade(playerStats.bestGameOverAverage)}/>
-                            <StatRow defn="Best Series over Avg" value={writeAccolade(playerStats.bestSeriesOverAverage)}/>
-                        </CardBody>
-                    </Card>
-                </Col>
-                <Col md={displayColMd} lg={displayColLg}>
-                    <Card className="text-start mx-0 mb-0 h-100" border="secondary">
-                        <CardBody className="py-1 py-sm-2">
-                            <StatRow defn="First Ball Average" value={numberFormat.format(playerStats.firstBallAverage)}/>
-                            <StatRow defn="Clean Games" value={playerStats.cleanGames}/>
-                            <StatRow defn="Strikes" value={writeRatioGroup(playerStats.strikes)}/>
-                            <StatRow defn="Spares" value={writeRatioGroup(playerStats.spares)}/>
-                            <StatRow defn="Single Pin Spares" value={writeRatioGroup(playerStats.singlePinSpares)}/>
-                            <StatRow defn="Picked up Splits" value={writeRatioGroup(playerStats.splits)}/>
-                            <StatRow defn="Opens" value={writeRatioGroup(playerStats.opens)}/>
-                            <StatRow defn="Consecutive Strikes" value={<>
-                                {playerStats.strikesInARow.map(s => <StatRow defn={s[0]} value={s[1]} key={"strikes-row-" + s[0].toString() + "-" + s[1].toString()}/>)}
-                            </>}/>
-                            <StatRow defn="Strike Spare Ratio" value={writeRatioGroup(playerStats.strikesToSpares)}/>
-                            <StatRow defn={<><Icon9Square/><DashSquare/> Picked Up Avg</>}
-                                          value={numberFormat.format(playerStats.allSinglePinsPickedUpAverage)}
-                                          toolTipText="Potential Average if all single pin spares were picked up."/>
-                        </CardBody>
-                        {playerStats.incompleteFrameData &&
-                            <CardFooter><small>Some stats may be missing or incomplete as frame data is missing for some games.</small></CardFooter>
-                        }
-                    </Card>
-                </Col>
-            </Row>
-        </Container>
-    </>);
+function PlayerStatsDisplay({playerStats, carryOverStats}: PlayerStatsDisplayProps) {
+    return <FullStatsGrid stats={playerStats} leagueExtras={playerStats} carryOverStats={carryOverStats}/>;
 }
 
-interface StatRowProps {
-    defn: ReactNode;
-    value: ReactNode;
-    toolTipText?: string;
-}
-const StatRow :FC<StatRowProps> = ({defn, value, toolTipText} : StatRowProps)=> {
-    const tooltipId = useId();
-    return (
-        <Row className="border rounded-1 border-secondary-subtle overflow-hidden">
-            <Col className="bg-body-secondary text-body-emphasis px-1">
-                {toolTipText && <OverlayTrigger overlay={
-                    <Tooltip id={tooltipId}>{toolTipText}</Tooltip>}>
-                    <a href="#" onClick={(e) => { e.preventDefault(); }}>{defn}</a>
-                </OverlayTrigger>}
-                {!toolTipText && defn}
-                <span className="float-end">:</span>
-            </Col>
-            <Col className="px-1 text-body">{value}</Col>
-        </Row>
-    );
-}
+
 
 interface PlayerGamesTableProps {
     playerGameData : PlayerDayData[];

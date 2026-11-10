@@ -46,6 +46,7 @@ export function useCachedFetcher<T extends object>(fetcher :() => Promise<T>, ca
         }
         setData(null);
         setLoading(true);
+        const generation = contextCache?.version;
         const request = contextCache != null
             ? contextCache.getOrFetch(category, key, () => fetcherRef.current())
             : fetcherRef.current();
@@ -53,7 +54,7 @@ export function useCachedFetcher<T extends object>(fetcher :() => Promise<T>, ca
                 if (cancelled) return;
                 const warnings = (data as DataQuality).warnings ?? [];
                 reportDataQuality(noticeId, warnings);
-                if (contextCache != null && warnings.length === 0) {
+                if (contextCache != null && contextCache.version === generation && warnings.length === 0) {
                     contextCache.put(category, key, data);
                 }
                 setData(data);

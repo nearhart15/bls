@@ -3,21 +3,19 @@ import DataQualityNotice from "./components/data-quality-notice";
  * Layout - glass nav + OLED shell (c) 2026
  */
 
-import {Suspense, type FC, useRef} from "react";
+import {Suspense, type FC} from "react";
 import {Link, Outlet, useLocation} from "react-router";
 import {Button, ButtonGroup, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {ArrowClockwise} from "react-bootstrap-icons";
 
 import ImgBowlingLogo from "../assets/bowling-svgrepo-com.svg";
 import ScrollToTop from "./components/scroll-to-top";
-import ClearCache, {type ClearCacheRef} from "./components/cache/clear-cache";
 import {ThemeToggle} from "./components/theme";
 import {useDataSource} from "./components/data-source";
 import {DataSourceStatus} from "./components/data-source-status";
 import Loader from "./components/loader";
 
 const Layout :FC = () => {
-    const clearCacheRef = useRef<ClearCacheRef>(null);
     const {source, setSource} = useDataSource();
     const location = useLocation();
     const isFullLeagueInfo = location.pathname === "/beer-league" || location.pathname.startsWith("/beer-league/");
@@ -33,7 +31,6 @@ const Layout :FC = () => {
     const pageTitle = isTeamLeagueData ? "Team League Data" : isFrameOnlyStatsPage ? "Handicap Guide" : location.pathname === "/player" ? "Players" : location.pathname === "/score-utils" ? "Score Utilities" : null;
 
     const refreshApp = () => {
-        clearCacheRef.current?.clearCache();
         window.location.reload();
     };
 
@@ -66,7 +63,7 @@ const Layout :FC = () => {
                             <NavDropdown title="Utilities" id="utilities-nav">
                                 <NavDropdown.Item as={Link} to="/score-utils">Score Utilities</NavDropdown.Item>
                                 <NavDropdown.Divider />
-                                <ThemeToggle inMenu />
+                                <ThemeToggle />
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
@@ -86,7 +83,6 @@ const Layout :FC = () => {
                 {isFrameOnlyStatsPage && <DataSourceStatus source="frame"/>}
 
                 <ScrollToTop />
-                <ClearCache ref={clearCacheRef}/>
                 <main className="bls-main">{pageTitle && <header className="bls-page-header"><h1>{pageTitle}</h1></header>}<DataQualityNotice/><Suspense fallback={<Loader/>}><Outlet/></Suspense></main>
                 <footer className="bls-footer">
                     <p className="mb-1">Contains fun data, empowers bragging rights, enables the nerds, and justifies adult money (well) spent at the Pro Shop.</p>

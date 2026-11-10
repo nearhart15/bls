@@ -19,3 +19,6 @@ for (const ext of ['.ts', '.tsx']) require.extensions[ext] = (mod, filename) => 
   }}).outputText, filename);
 };
 module.exports = p => require(path.join(root, p));
+
+// Each test starts with empty application data; concurrent calls within a test still share work.
+require('node:test').beforeEach(() => module.exports('src/data/utils/cache.ts').applicationCache.clear());

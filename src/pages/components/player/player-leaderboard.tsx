@@ -1,4 +1,4 @@
-import {mergeMetrics} from "../../../data/player/metric-counts";
+import {aggregateSlices} from "../../../data/player/slice-stats";
 /*
  * Player leaderboard — rank by any stat on a per-game basis © 2026
  */
@@ -70,43 +70,9 @@ function resolveCurrentSeason(entries: PlayerListEntry[]): string {
     return best;
 }
 
-type SliceStats = PlayerListSeasonSlice | PlayerAppearanceSlice;
-
-function mergeSlices(slices: SliceStats[]): Omit<Row, "id" | "name"> {
-    let games = 0, pinfall = 0, seriesCount = 0;
-    let games200 = 0, games300 = 0, series600 = 0, series800 = 0;
-    let cleanGames = 0, hungCount = 0, turkeyCount = 0;
-    let weighted = 0;
-    for (const s of slices) {
-        games += s.games;
-        pinfall += s.pinfall;
-        seriesCount += s.seriesCount ?? 0;
-        games200 += s.games200 ?? 0;
-        games300 += s.games300 ?? 0;
-        series600 += s.series600 ?? 0;
-        series800 += s.series800 ?? 0;
-        cleanGames += s.cleanGames ?? 0;
-        hungCount += s.hungCount ?? 0;
-        turkeyCount += s.turkeyCount ?? 0;
-        if (s.average != null && s.games > 0) weighted += s.average * s.games;
-
-    }
-    return {
-        games,
-        seriesCount,
-        values: {
-            ...mergeMetrics(slices),
-            average: games > 0 ? weighted / games : null,
-            games200,
-            games300,
-            series600,
-            series800,
-            cleanGames,
-            hungCount,
-            turkeyCount,
-            pinfall,
-        },
-    };
+function mergeSlices(slices: (PlayerListSeasonSlice | PlayerAppearanceSlice)[]): Omit<Row, "id" | "name"> {
+    const values = aggregateSlices(slices);
+    return {games: values.games, seriesCount: values.seriesCount, values};
 }
 
 function careerRow(e: PlayerListEntry): Omit<Row, "id" | "name"> {

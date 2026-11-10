@@ -1,4 +1,5 @@
-import {fetchJson} from "../../../data/utils/fetch-json";
+import {ComparisonBar,ComparisonCard,ComparisonTabs,COLOR_A,COLOR_B} from "../comparison/comparison-ui";
+import {beerSheetFetcher as fetchApiTeams, type BeerStanding as ApiStanding, type BeerPlayer as ApiRosterPlayer, type BeerLeagueData as ApiLeagueData} from "../../../data/league/beer-sheet";
 import {type FC, useCallback, useMemo, useState} from "react";
 import {Badge, Card, CardBody, Form, Table} from "react-bootstrap";
 import {Link, useSearchParams} from "react-router";
@@ -6,7 +7,6 @@ import {LEAGUE_DETAILS_CACHE_CATEGORY, LEAGUE_LIST_CACHE_CATEGORY, leagueDetails
 import type {LeagueDetails} from "../../../data/league/league-details";
 import type {AvailableLeagues} from "../../../data/league/league-info";
 import {apiComparisonIssue} from "../../../data/league/league-comparison";
-import {recordApiFreshness} from "../../../data/utils/source-freshness";
 import {useContextCache} from "../cache/context-cache";
 
 import {performanceRatingFromAverage} from "../charts/performance-rating";
@@ -15,51 +15,11 @@ import {useCachedFetcher} from "../cache/data-loader";
 import ErrorDisplay from "../error-display";
 import Loader from "../loader";
 
-const COLOR_A = "#ff2d55";
-const COLOR_B = "#00d4ff";
 const numberFormat = Intl.NumberFormat("en-US", {maximumFractionDigits: 1});
 const integerFormat = Intl.NumberFormat("en-US", {maximumFractionDigits: 0});
 const API_TEAM_CACHE = "api-team-compare";
 
 type TabId = "scoring" | "record" | "roster";
-
-interface ApiStanding {
-    division: string;
-    place: number;
-    number: number;
-    name: string;
-    won: number;
-    lost: number;
-    average: number;
-    handicap: number;
-    pinsWithHandicap: number;
-    scratchPins: number;
-    highHandicapGame: number;
-    highHandicapSeries: number;
-    highScratchGame: number;
-    highScratchSeries: number;
-}
-
-interface ApiRosterPlayer {
-    name: string;
-    average: number;
-    handicap: number;
-    games: number;
-    status?: "REGULAR" | "SUBSTITUTE";
-}
-
-interface ApiTeamRoster {
-    number: number;
-    name: string;
-    players: ApiRosterPlayer[];
-}
-
-interface ApiLeagueData {
-    status: "pending" | "ready";
-    league?: {name: string; season: string | null; date?: string | null; week?: number | null; totalWeeks?: number | null};
-    standings: ApiStanding[];
-    teams?: ApiTeamRoster[];
-}
 
 interface Metric {
     key: string;
@@ -90,41 +50,14 @@ const RECORD: Metric[] = [
     {key: "place", label: "Division Place", get: team => team.place, integer: true, lowerIsBetter: true},
 ];
 
-async function fetchApiTeams(): Promise<ApiLeagueData> {
-    const data = await fetchJson(`${import.meta.env.BASE_URL}data/beer-league.json`) as unknown as ApiLeagueData;
-    if (data.status !== "ready" || !Array.isArray(data.standings)) throw new Error("A.B.C. data is not ready or is malformed.");
-    recordApiFreshness(data);
-    return data;
-}
-
 function display(value: number | null, integer = false): string {
     if (value == null) return "—";
     return integer ? integerFormat.format(value) : numberFormat.format(value);
 }
 
 const CompareBar: FC<{metric: Metric; teamA: ApiStanding; teamB: ApiStanding}> = ({metric, teamA, teamB}) => {
-    const valueA = metric.get(teamA);
-    const valueB = metric.get(teamB);
-    const a = valueA ?? 0;
-    const b = valueB ?? 0;
-    const leader: "a" | "b" | "tie" = valueA == null || valueB == null || a === b
-        ? "tie"
-        : (metric.lowerIsBetter ? a < b : a > b) ? "a" : "b";
-    const scaleA = metric.lowerIsBetter ? (a > 0 ? 1 / a : 0) : Math.max(0, a);
-    const scaleB = metric.lowerIsBetter ? (b > 0 ? 1 / b : 0) : Math.max(0, b);
-    const total = scaleA + scaleB;
-    const fill = total > 0 ? Math.max(scaleA, scaleB) / total * 100 : 50;
-    const color = leader === "a" ? COLOR_A : leader === "b" ? COLOR_B : "#6e6e73";
-    return <div className="bls-fifa-row">
-        <div className="bls-fifa-row-label">{metric.label}</div>
-        <div className="bls-fifa-row-trackline">
-            <span className={`bls-fifa-val${leader === "a" ? " is-lead" : ""}`} style={{color: COLOR_A}}>{display(valueA, metric.integer)}</span>
-            <div className="bls-fifa-track"><div className="bls-fifa-fill" style={{width: `${fill}%`, background: color, boxShadow: leader === "tie" ? undefined : `0 0 10px ${color}`, marginLeft: leader === "b" ? "auto" : 0}} /></div>
-            <span className={`bls-fifa-val${leader === "b" ? " is-lead" : ""}`} style={{color: COLOR_B}}>{display(valueB, metric.integer)}</span>
-        </div>
-    </div>;
+    return <ComparisonBar label={metric.label} valueA={metric.get(teamA)} valueB={metric.get(teamB)} lowerIsBetter={metric.lowerIsBetter} format={value=>display(value,metric.integer)}/>;
 };
-
 const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRosterPlayer[]; opponentPlayers?: ApiRosterPlayer[]}> = ({side, team, players, opponentPlayers = []}) => {
     const color = side === "a" ? COLOR_A : COLOR_B;
     // Players with no games are rostered but are not eligible for an active matchup row.
@@ -164,16 +97,11 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRoster
 
 const TeamCard: FC<{side: "a" | "b"; team: ApiStanding; teams: ApiStanding[]; otherNumber: number; onChange: (number: number) => void}> = ({side, team, teams, otherNumber, onChange}) => {
     const color = side === "a" ? COLOR_A : COLOR_B;
-    return <div className={`bls-fifa-pcard bls-fifa-pcard-${side}`} style={{borderColor: color, boxShadow: `0 0 18px ${color}40`}}>
-        <div className="bls-fifa-pcard-badge" style={{borderColor: color, color}}>#{team.number}</div>
-        <div className="bls-fifa-pcard-body">
-            <div className="bls-fifa-pcard-name" style={{color}}>{team.name}</div>
-            <div className="bls-fifa-pcard-meta"><span>{team.division} · #{team.place}</span><span>{integerFormat.format(team.average)} avg</span></div>
-            <Form.Select size="sm" className="bls-fifa-change" value={team.number} onChange={event => { onChange(Number(event.target.value)); }} style={{borderColor: color}}>
+    return <ComparisonCard side={side} badge={<>#{team.number}</>} name={<>{team.name}</>} metadata={<><span>{team.division} · #{team.place}</span><span>{integerFormat.format(team.average)} avg</span></>}>
+        <Form.Select size="sm" className="bls-fifa-change" value={team.number} onChange={event => { onChange(Number(event.target.value)); }} style={{borderColor: color}}>
                 {teams.map(candidate => <option key={candidate.number} value={candidate.number} disabled={candidate.number === otherNumber}>{candidate.name}</option>)}
             </Form.Select>
-        </div>
-    </div>;
+    </ComparisonCard>;
 };
 
 const ApiTeamCompare: FC = () => {
@@ -230,11 +158,7 @@ const ApiTeamCompare: FC = () => {
                 <div className="bls-fifa-vs"><span>VS</span><Badge pill style={{background: "#6e6e73", color: "#fff"}}>A.B.C.</Badge></div>
                 <TeamCard side="b" team={teamB} teams={teams} otherNumber={teamA.number} onChange={number => { updateSelection("b", number); }}/>
             </div>
-            <div className="bls-fifa-tabs" role="tablist">
-                <button type="button" className={`bls-fifa-tab${tab === "scoring" ? " is-active" : ""}`} onClick={() => { setTab("scoring"); }}>Scoring</button>
-                <button type="button" className={`bls-fifa-tab${tab === "record" ? " is-active" : ""}`} onClick={() => { setTab("record"); }}>League Record</button>
-                <button type="button" className={`bls-fifa-tab${tab === "roster" ? " is-active" : ""}`} onClick={() => { setTab("roster"); }}>Rosters</button>
-            </div>
+            <ComparisonTabs<TabId> active={tab} onChange={setTab} tabs={[["scoring","Scoring"],["record","League Record"],["roster","Rosters"]]}/>
             {tab === "roster" ? (() => {
                 const playersA = data?.teams?.find(team => team.number === teamA.number)?.players ?? [];
                 const playersB = data?.teams?.find(team => team.number === teamB.number)?.players ?? [];

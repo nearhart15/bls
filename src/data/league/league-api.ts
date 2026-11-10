@@ -1,3 +1,4 @@
+import {sharedLoad} from "../utils/shared-load";
 import {validateLeague} from "./validate-league";
 import {reconcileLeagueMetadata} from "./league-metadata";
 import {recordFrameFreshness} from "../utils/source-freshness";
@@ -37,7 +38,7 @@ export const leagueTeamDetailsFetcher = async(dataLoc: string) =>
     fetchJson(dataUrl(APP_URL_BASE, dataLoc))
         .then((json :object) => createJsonConverter().deserialize<TrackedLeagueTeam>(json, TrackedLeagueTeam));
 
-export const leagueDetailsFetcher = async(dataLoc: string, expectedLeagueId?: string) => {
+const loadLeagueDetails = async(dataLoc: string, expectedLeagueId?: string) => {
     const leagueDetails: LeagueDetails = await fetchJson(dataUrl(APP_URL_BASE, dataLoc))
         .then((json: object) => createJsonConverter().deserialize<LeagueDetails>(json, LeagueDetails));
 
@@ -67,3 +68,6 @@ export const leagueDetailsFetcher = async(dataLoc: string, expectedLeagueId?: st
     recordFrameFreshness(leagueDetails);
     return leagueDetails;
 }
+
+export const leagueDetailsFetcher = (dataLoc: string, expectedLeagueId?: string): Promise<LeagueDetails> =>
+    sharedLoad("loaded-leagues", JSON.stringify([APP_URL_BASE, dataLoc, expectedLeagueId]), () => loadLeagueDetails(dataLoc, expectedLeagueId));

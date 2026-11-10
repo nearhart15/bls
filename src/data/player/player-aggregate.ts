@@ -1,3 +1,7 @@
+import {inheritDataExpiry} from "../utils/cache";
+import {leagueEntries} from "../league/league-entries";
+import {sharedLoad} from "../utils/shared-load";
+import {statsValues} from "./stat-projection";
 /*
  * Player cross-league aggregation © 2026
  */
@@ -149,8 +153,13 @@ function appearanceKey(season: string, leagueId: string, teamId: string): string
     return JSON.stringify([season, leagueId, teamId]);
 }
 
-async function scanAllRosters(): Promise<RosterScanResult> {
+function scanAllRosters(): Promise<RosterScanResult> {
+    return sharedLoad("roster-scan", "all", loadAllRosters);
+}
+
+async function loadAllRosters(): Promise<RosterScanResult> {
     const [players, leagues] = await Promise.all([playerListFetcher(), leagueInfoListFetcher()]);
+    const dependencies: object[] = [players, leagues];
     const dates = new Map<TeamPlayerGameScore[], string>();
     const failures: string[] = [];
     let loadedLeagues = 0;
@@ -183,12 +192,11 @@ async function scanAllRosters(): Promise<RosterScanResult> {
         const byLeague = getOrCreate(seriesByPlayerLeague, playerId, () => new Map());
         getOrCreate(byLeague, appearanceKey(season, leagueId, teamId), () => []).push(games);
     };
-    for (const season of leagues.seasons) {
+    for (const {season, league, leagueId, dataLoc} of leagueEntries(leagues)) {
         const seasonLabel = season.season ?? "";
-        for (const league of season.leagues) {
-            if (!league.hasData() || !league.dataLoc || !league.id) continue;
             try {
-                const details = await leagueDetailsFetcher(league.dataLoc, league.id);
+                const details = await leagueDetailsFetcher(dataLoc, leagueId);
+                dependencies.push(details);
                 loadedLeagues++;
                 for (const team of details.teams) {
                     for (const rosterPlayer of team.roster) {
@@ -202,8 +210,8 @@ async function scanAllRosters(): Promise<RosterScanResult> {
                         }
                         const appearance: PlayerLeagueAppearance = {
                             season: seasonLabel,
-                            leagueId: league.id,
-                            leagueName: league.name ?? league.id,
+                            leagueId: leagueId,
+                            leagueName: league.name ?? leagueId,
                             teamId: team.id ?? "",
                             teamName: team.name ?? "",
                             teamNumber: team.number,
@@ -222,7 +230,7 @@ async function scanAllRosters(): Promise<RosterScanResult> {
                                 addSeries(
                                     playerId,
                                     seasonLabel,
-                                    league.id,
+                                    leagueId,
                                     teamId,
                                     date.format("YYYY-MM-DD"),
                                     ps.games,
@@ -236,7 +244,7 @@ async function scanAllRosters(): Promise<RosterScanResult> {
                                 const basis = enteringAverage > 0 ? enteringAverage : fallbackAverage;
                                 if (basis > 0) {
                                     const samples = ratingSamplesByPlayer.get(playerId) ?? [];
-                                    const leagueKey = appearanceKey(seasonLabel, league.id, teamId);
+                                    const leagueKey = appearanceKey(seasonLabel, leagueId, teamId);
                                     for (const game of ps.games) {
                                         if (game.blind || game.vacant || !Number.isFinite(game.scratchScore)) continue;
                                         samples.push({
@@ -263,16 +271,15 @@ async function scanAllRosters(): Promise<RosterScanResult> {
                     }
                 }
             } catch (err) {
-                failures.push(`${league.id}: ${err instanceof Error ? err.message : String(err)}`);
+                failures.push(`${leagueId}: ${err instanceof Error ? err.message : String(err)}`);
             }
-        }
     }
     if (failures.length && loadedLeagues === 0)
         throw new Error(
             "Statistics are unavailable because some leagues could not be loaded. Retry after correcting: " +
                 failures.join("; ")
         );
-    return {
+    return inheritDataExpiry({
         warnings: failures,
         dates,
         playerMap,
@@ -283,7 +290,7 @@ async function scanAllRosters(): Promise<RosterScanResult> {
         ratingSamplesByPlayer,
         weekSeriesByPlayer,
         weekAveragesByPlayer
-    };
+    }, dependencies);
 }
 function statsFromSeries(allSeries: TeamPlayerGameScore[][]): PlayerStats {
     const stats = new PlayerStats();
@@ -300,43 +307,12 @@ function ratingSummary(samples: RatingSample[]) {
     }
     return {ratingDelta: count > 0 ? total / count : null, ratingGameCount: count};
 }
-function ratioPct(rg: {pct: number; denominator: number}): number | null {
-    return rg.denominator <= 0 ? null : Math.round(rg.pct * 1000) / 10;
+export function richFromStats(stats: PlayerStats) {
+    return {metrics: metricCounts(stats), ...statsValues(stats)};
 }
-export function richFromStats(s: PlayerStats) {
-    const games = s.gameStats.count;
-    return {
-        metrics: metricCounts(s),
-        average: games > 0 ? s.gameStats.average : null,
-        games,
-        pinfall: s.pinfall,
-        highGame: s.gameStats.max || 0,
-        highSeries: s.seriesStats.max || 0,
-        games200: s.games200,
-        games300: s.games300,
-        series600: s.series600,
-        series800: s.series800,
-        cleanGames: s.cleanGames,
-        hungCount: s.hungCount,
-        turkeyCount: s.turkeyCount,
-        firstBall: s.firstBallCount > 0 ? s.firstBallAverage : null,
-        strikePct: ratioPct(s.strikes),
-        sparePct: ratioPct(s.spares),
-        singlePinPct: ratioPct(s.singlePinSpares),
-        openPct: ratioPct(s.opens),
-        splitPct: ratioPct(s.splits),
-        strikeToSparePct: s.strikesToSpares.denominator > 0 ? Math.round(s.strikesToSpares.pct * 100) / 100 : null,
-        singlePinPickup: s.singlePinGameCount > 0 ? Math.round(s.allSinglePinsPickedUpAverage * 10) / 10 : null,
-        lowGame: s.gameStats.min || null,
-        lowSeries: s.seriesStats.min || null,
-        seriesCount: s.seriesStats.count || 0
-    };
-}
-function buildSeasonStats(seriesBySeason: Map<string, TeamPlayerGameScore[][]> | undefined): PlayerSeasonStats[] {
-    if (!seriesBySeason) return [];
+function buildSeasonStats(seriesBySeason: Map<string, PlayerStats>): PlayerSeasonStats[] {
     const rows: PlayerSeasonStats[] = [];
-    for (const [season, series] of seriesBySeason.entries()) {
-        const stats = statsFromSeries(series);
+    for (const [season, stats] of seriesBySeason.entries()) {
         rows.push({
             season,
             leagues: 0,
@@ -453,7 +429,7 @@ export async function buildFullPlayerList(): Promise<PlayerListEntry[]> {
         if (b.average !== a.average) return b.average - a.average;
         return a.name.localeCompare(b.name);
     });
-    return Object.assign(entries, {warnings: scan.warnings});
+    return inheritDataExpiry(Object.assign(entries, {warnings: scan.warnings}), [scan]);
 }
 export async function aggregatePlayerData(playerId: string): Promise<AggregatedPlayerData> {
     const scan = await scanAllRosters(),
@@ -465,14 +441,15 @@ export async function aggregatePlayerData(playerId: string): Promise<AggregatedP
     player.lastBowled = info.lastBowled;
     const appearances = scan.appearancesByPlayer.get(playerId) ?? [],
         careerStats = statsFromSeries(scan.seriesByPlayer.get(playerId) ?? []),
-        seasonStats = buildSeasonStats(scan.seriesByPlayerSeason.get(playerId));
+        statsBySeason = new Map([...(scan.seriesByPlayerSeason.get(playerId) ?? [])].map(([season, series]) => [season, statsFromSeries(series)])),
+        seasonStats = buildSeasonStats(statsBySeason);
     for (const row of seasonStats)
         row.leagues = new Set(appearances.filter((a) => a.season === row.season).map((a) => a.leagueId)).size;
     const seasonSlicesFull: PlayerSliceStats[] = [],
-        bySeason = scan.seriesByPlayerSeason.get(playerId);
+        bySeason = statsBySeason;
     if (bySeason) {
-        for (const [season, series] of bySeason.entries())
-            seasonSlicesFull.push({season, stats: statsFromSeries(series)});
+        for (const [season, stats] of bySeason.entries())
+            seasonSlicesFull.push({season, stats});
         seasonSlicesFull.sort((a, b) => (b.season ?? "").localeCompare(a.season ?? ""));
     }
     const performanceSessions: PlayerPerformanceSession[] = [];
@@ -495,7 +472,7 @@ export async function aggregatePlayerData(playerId: string): Promise<AggregatedP
             stats: series.length > 0 ? statsFromSeries(series) : (ap.stats ?? new PlayerStats())
         });
     }
-    return {
+    return inheritDataExpiry({
         warnings: scan.warnings,
         player,
         appearances,
@@ -504,7 +481,7 @@ export async function aggregatePlayerData(playerId: string): Promise<AggregatedP
         seasonSlicesFull,
         appearanceSlicesFull,
         performanceSessions
-    };
+    }, [scan]);
 }
 function calendarStats(
     series: TeamPlayerGameScore[][],

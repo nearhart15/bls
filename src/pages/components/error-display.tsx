@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import {type FC, useSyncExternalStore} from "react";
+import {type FC} from "react";
+import {useBreakpoint} from "./use-viewport";
 import {Container, Alert} from "react-bootstrap";
 import {ExclamationOctagonFill} from "react-bootstrap-icons";
-import {BS_BP_XS, BS_BP_SM, BS_BP_MD, BS_BP_LG, BS_BP_XL, BS_BP_XXL, getBreakpoint} from "./ui-utils";
+import {BS_BP_XS, BS_BP_SM, BS_BP_MD, BS_BP_LG, BS_BP_XL, BS_BP_XXL} from "./ui-utils";
 
 const SCREEN_SIZE_MAX_WIDTH = new Map([
     [BS_BP_XS, "20rem"],
@@ -29,12 +30,6 @@ const SCREEN_SIZE_MAX_WIDTH = new Map([
 ]);
 const SAFE_MAX_WIDTH = "20rem";
 
-const subscribeToResize = (callback: () => void) => {
-    window.addEventListener("resize", callback);
-    return () => { window.removeEventListener("resize", callback); };
-};
-const getWindowWidth = () => window.innerWidth;
-const getServerWidth = () => 0;
 
 const truncateMessage = (message: string) => {
     const maxMsgLen = import.meta.env.VITE_ERROR_MAX_DETAILS_TEXT_LEN;
@@ -50,8 +45,8 @@ interface ErrorDisplayProps {
     onClose?: (show: boolean, event: Event) => void;
 }
 const ErrorDisplay: FC<ErrorDisplayProps> = ({message, error, onClose} :ErrorDisplayProps) => {
-    useSyncExternalStore(subscribeToResize, getWindowWidth, getServerWidth);
-    const maxWidth = SCREEN_SIZE_MAX_WIDTH.get(getBreakpoint()) ?? SAFE_MAX_WIDTH;
+    const breakpoint = useBreakpoint();
+    const maxWidth = SCREEN_SIZE_MAX_WIDTH.get(breakpoint) ?? SAFE_MAX_WIDTH;
 
     const em = (import.meta.env.DEV && error) ? (error as Error).name + " " + truncateMessage((error as Error).message) : null;
 

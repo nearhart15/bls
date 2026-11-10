@@ -1,4 +1,7 @@
-import {mergeMetrics, type MetricCounts} from "../../../data/player/metric-counts";
+import {ComparisonBar,ComparisonCard,ComparisonTabs,COLOR_A,COLOR_B} from "../comparison/comparison-ui";
+import {radarOptions} from "../charts/radar-options";
+import {aggregateSlices as bagFromSlices} from "../../../data/player/slice-stats";
+import {statsValues} from "../../../data/player/stat-projection";
 /*
  * Player Compare — FIFA-style dashboard © 2026
  */
@@ -28,8 +31,6 @@ import {chartPalette} from "../charts/chart-theme";
 const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 1});
 const intFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 0});
 
-const COLOR_A = "#ff2d55";
-const COLOR_B = "#00d4ff";
 
 type Mode = "career" | "season";
 type TabId = "scoring" | "conversion" | "volume";
@@ -83,72 +84,7 @@ function num(v: number | null | undefined): number {
     return v == null || Number.isNaN(v) ? 0 : v;
 }
 
-function ratioPct(rg?: {pct: number; denominator: number}): number | null {
-    if (!rg || rg.denominator <= 0) return null;
-    return Math.round(rg.pct * 1000) / 10;
-}
-
 type StatBag = Record<string, number | null>;
-
-interface RichSlice {
-    metrics?: MetricCounts;
-    average: number | null;
-    games: number;
-    pinfall: number;
-    highGame: number;
-    highSeries: number;
-    games200: number;
-    games300?: number;
-    series600?: number;
-    series800?: number;
-    cleanGames?: number;
-    hungCount?: number;
-    turkeyCount?: number;
-    firstBall?: number | null;
-    strikePct?: number | null;
-    sparePct?: number | null;
-    singlePinPct?: number | null;
-    openPct?: number | null;
-    splitPct?: number | null;
-    strikeToSparePct?: number | null;
-    singlePinPickup?: number | null;
-    lowGame?: number | null;
-    lowSeries?: number | null;
-    seriesCount?: number;
-}
-
-function bagFromSlices(slices: RichSlice[]): StatBag {
-    let games = 0, pinfall = 0, highGame = 0, highSeries = 0, games200 = 0;
-    let games300 = 0, series600 = 0, series800 = 0, cleanGames = 0, hungCount = 0, turkeyCount = 0, seriesCount = 0;
-    let weighted = 0;
-    let lowGame: number | null = null;
-    let lowSeries: number | null = null;
-    for (const s of slices) {
-        games += s.games;
-        pinfall += s.pinfall;
-        highGame = Math.max(highGame, s.highGame);
-        highSeries = Math.max(highSeries, s.highSeries);
-        games200 += s.games200;
-        games300 += s.games300 ?? 0;
-        series600 += s.series600 ?? 0;
-        series800 += s.series800 ?? 0;
-        cleanGames += s.cleanGames ?? 0;
-        hungCount += s.hungCount ?? 0;
-        turkeyCount += s.turkeyCount ?? 0;
-        seriesCount += s.seriesCount ?? 0;
-        if (s.average != null && s.games > 0) weighted += s.average * s.games;
-
-        if (s.lowGame != null) lowGame = lowGame == null ? s.lowGame : Math.min(lowGame, s.lowGame);
-        if (s.lowSeries != null) lowSeries = lowSeries == null ? s.lowSeries : Math.min(lowSeries, s.lowSeries);
-    }
-    return {
-        average: games > 0 ? weighted / games : null,
-        games, pinfall, highGame, highSeries, games200,
-        games300, series600, series800, cleanGames, hungCount, turkeyCount, seriesCount,
-        ...mergeMetrics(slices),
-        lowGame, lowSeries,
-    };
-}
 
 function bagFromListEntry(entry: PlayerListEntry): StatBag {
     return bagFromSlices(entry.seasonSlices ?? [{
@@ -158,34 +94,8 @@ function bagFromListEntry(entry: PlayerListEntry): StatBag {
 }
 
 function bagFromCareer(stats: PlayerStats): StatBag {
-    return {
-        average: stats.gameStats.count > 0 ? stats.gameStats.average : null,
-        games: stats.gameStats.count,
-        pinfall: stats.pinfall,
-        highGame: stats.gameStats.max || null,
-        highSeries: stats.seriesStats.max || null,
-        games200: stats.games200,
-        games300: stats.games300,
-        series600: stats.series600,
-        series800: stats.series800,
-        cleanGames: stats.cleanGames,
-        hungCount: stats.hungCount,
-        turkeyCount: stats.turkeyCount,
-        firstBall: stats.firstBallCount > 0 ? stats.firstBallAverage : null,
-        strikePct: ratioPct(stats.strikes),
-        sparePct: ratioPct(stats.spares),
-        singlePinPct: ratioPct(stats.singlePinSpares),
-        openPct: ratioPct(stats.opens),
-        splitPct: ratioPct(stats.splits),
-        strikeToSparePct: stats.strikesToSpares.denominator > 0
-            ? Math.round(stats.strikesToSpares.pct * 100) / 100
-            : null,
-        singlePinPickup: stats.singlePinGameCount > 0
-            ? Math.round(stats.allSinglePinsPickedUpAverage * 10) / 10 : null,
-        lowGame: stats.gameStats.min || null,
-        lowSeries: stats.seriesStats.min || null,
-        seriesCount: stats.seriesStats.count || null,
-    };
+    const values = statsValues(stats);
+    return {...values, highGame: values.highGame || null, highSeries: values.highSeries || null, seriesCount: values.seriesCount || null};
 }
 
 function scopeListEntry(entry: PlayerListEntry, mode: Mode, season: string, leagueId: string): StatBag {
@@ -209,26 +119,8 @@ const FifaBar: FC<{
     lowerIsBetter?: boolean;
     format: (v: number | null | undefined) => string;
 }> = ({label, valueA, valueB, format, lowerIsBetter = false}) => {
-    const a = num(valueA);
-    const b = num(valueB);
-    const total = a + b;
-    const fill = total > 0 ? (Math.max(a, b) / total) * 100 : 50;
-    const leader: "a" | "b" | "tie" = valueA == null || valueB == null || a === b ? "tie" : (lowerIsBetter ? a < b : a > b) ? "a" : "b";
-    const color = leader === "a" ? COLOR_A : leader === "b" ? COLOR_B : "#6e6e73";
-    return (
-        <div className="bls-fifa-row">
-            <div className="bls-fifa-row-label">{label}</div>
-            <div className="bls-fifa-row-trackline">
-                <span className={`bls-fifa-val${leader === "a" ? " is-lead" : ""}`} style={{color: COLOR_A}}>{format(valueA)}</span>
-                <div className="bls-fifa-track">
-                    <div className="bls-fifa-fill" style={{width: `${fill}%`, background: color, boxShadow: leader === "tie" ? undefined : `0 0 10px ${color}`, marginLeft: leader === "b" ? "auto" : 0}} />
-                </div>
-                <span className={`bls-fifa-val${leader === "b" ? " is-lead" : ""}`} style={{color: COLOR_B}}>{format(valueB)}</span>
-            </div>
-        </div>
-    );
+    return <ComparisonBar label={label} valueA={valueA} valueB={valueB} format={format} lowerIsBetter={lowerIsBetter}/>;
 };
-
 const DualRadar: FC<{bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}> = ({bagA, bagB, nameA, nameB}) => {
     const {theme} = useTheme();
     const palette = chartPalette(theme);
@@ -247,7 +139,9 @@ const DualRadar: FC<{bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}
         clampPct(bagB.singlePinPct),
         firstBallPct(bagB.firstBall),
     ];
+    const base = radarOptions(theme, false, cats, []);
     const options: ApexOptions = {
+        ...base,
         chart: {type: "radar", background: "transparent", toolbar: {show: false}, fontFamily: "Inter, sans-serif"},
         theme: {mode: theme},
         colors: [COLOR_A, COLOR_B],
@@ -258,15 +152,7 @@ const DualRadar: FC<{bagA: StatBag; bagB: StatBag; nameA: string; nameB: string}
         yaxis: {show: false, min: 0, max: 100, tickAmount: 4},
         legend: {position: "bottom", labels: {colors: palette.text}},
         tooltip: {theme, y: {formatter: (val: number) => `${Number(val).toFixed(1)}%`}},
-        plotOptions: {
-            radar: {
-                polygons: {
-                    strokeColors: palette.grid,
-                    connectorColors: palette.grid,
-                    fill: {colors: theme === "dark" ? ["#0a0a0a", "#111"] : ["#fff", "#f5f5f7"]},
-                },
-            },
-        },
+        plotOptions: base.plotOptions,
     };
     return (
         <Chart key={`${nameA}-${nameB}-${seriesA.join(",")}-${seriesB.join(",")}`} options={options} series={[{name: nameA, data: seriesA}, {name: nameB, data: seriesB}]} type="radar" height={340} width="100%" />
@@ -294,24 +180,13 @@ const PlayerCard: FC<{
     selectedId: string; otherId: string; onChange: (id: string) => void; disabled?: boolean;
 }> = ({side, name, bag, players, selectedId, otherId, onChange, disabled}) => {
     const color = side === "a" ? COLOR_A : COLOR_B;
-    return (
-        <div className={`bls-fifa-pcard bls-fifa-pcard-${side}`} style={{borderColor: color, boxShadow: `0 0 18px ${color}40`}}>
-            <div className="bls-fifa-pcard-badge" style={{borderColor: color, color}}>
-                {bag.average != null ? numberFormat.format(bag.average) : "—"}
-            </div>
-            <div className="bls-fifa-pcard-body">
-                <div className="bls-fifa-pcard-name" style={{color}}>{name}</div>
-                <div className="bls-fifa-pcard-meta">
-                    <span>{bag.games != null ? `${intFormat.format(bag.games)} games` : "—"}</span>
-                    <span>{bag.highGame != null ? `HG ${intFormat.format(bag.highGame)}` : ""}</span>
-                </div>
-                <Form.Select size="sm" className="bls-fifa-change" value={selectedId} disabled={disabled} onChange={(e) => { onChange(e.target.value); }} style={{borderColor: color}}>
+    return <ComparisonCard side={side} badge={<>{bag.average != null ? numberFormat.format(bag.average) : "—"}</>} name={<>{name}</>} metadata={<><span>{bag.games != null ? `${intFormat.format(bag.games)} games` : "—"}</span>
+                    <span>{bag.highGame != null ? `HG ${intFormat.format(bag.highGame)}` : ""}</span></>}>
+        <Form.Select size="sm" className="bls-fifa-change" value={selectedId} disabled={disabled} onChange={(e) => { onChange(e.target.value); }} style={{borderColor: color}}>
                     <option value="">Change</option>
                     {players.map((p) => (<option key={p.id} value={p.id} disabled={p.id === otherId}>{p.name}</option>))}
                 </Form.Select>
-            </div>
-        </div>
-    );
+    </ComparisonCard>;
 };
 
 const StatColumn: FC<{title: string; stats: StatDef[]; bagA: StatBag; bagB: StatBag}> = ({title, stats, bagA, bagB}) => (
@@ -380,11 +255,7 @@ const PlayerCompare: FC = () => {
                     <div className="bls-fifa-vs"><span>VS</span><Badge pill style={{background: scoreA >= scoreB ? COLOR_A : COLOR_B, color: "#fff"}}>{scoreA}–{scoreB}</Badge></div>
                     <PlayerCard side="b" name={nameB} bag={bagB} players={eligible} selectedId={idB} otherId={idA} onChange={setIdB} disabled={mode === "season" && !season} />
                 </div>
-                <div className="bls-fifa-tabs" role="tablist">
-                    {([["scoring", "Scoring"], ["conversion", "Conversion"], ["volume", "Volume"]] as [TabId, string][]).map(([id, label]) => (
-                        <button key={id} type="button" className={`bls-fifa-tab${tab === id ? " is-active" : ""}`} onClick={() => { setTab(id); }}>{label}</button>
-                    ))}
-                </div>
+                <ComparisonTabs<TabId> active={tab} onChange={setTab} tabs={[["scoring","Scoring"],["conversion","Conversion"],["volume","Volume"]]}/>
                 <Row className="g-3">
                     <Col lg={8}>
                         <Card className="bls-profile-card bls-fifa-panel">

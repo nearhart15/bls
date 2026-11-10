@@ -1,3 +1,4 @@
+import {SortHeader} from "../sort-header";
 /*
  * Player detail tables © 2026
  */
@@ -11,7 +12,7 @@ import type {
     PlayerSeasonStats,
 } from "../../../data/player/player-aggregate";
 import type {PlayerStats, RatioGroup} from "../../../data/player/player-stats";
-import type {LeaguePlayerStats} from "../../../data/league/league-team-details";
+import type {LeaguePlayerCarryOverStats, LeaguePlayerStats} from "../../../data/league/league-team-details";
 
 const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 1});
 
@@ -22,19 +23,6 @@ interface AppearancesProps {
 type AppearSortKey = "idx" | "season" | "league" | "team" | "status" | "games" | "avg" | "hg";
 type SortDir = "asc" | "desc";
 
-const AppearSortTh: FC<{
-    label: string; sortKey: AppearSortKey; active: AppearSortKey; dir: SortDir;
-    onSort: (k: AppearSortKey) => void; className?: string;
-}> = ({label, sortKey, active, dir, onSort, className}) => {
-    const isActive = active === sortKey;
-    return (
-        <th className={`bls-sortable-th ${className ?? ""}${isActive ? " is-sorted" : ""}`} onClick={() => { onSort(sortKey); }} role="button" tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSort(sortKey); } }}
-            aria-sort={isActive ? (dir === "asc" ? "ascending" : "descending") : "none"}>
-            <span className="bls-sortable-label">{label}<span className="bls-sort-indicator" aria-hidden>{isActive ? (dir === "asc" ? " ▲" : " ▼") : ""}</span></span>
-        </th>
-    );
-};
 
 function fmtPct(rg?: RatioGroup | null): string {
     if (!rg || rg.denominator <= 0) return "\u2014";
@@ -80,8 +68,7 @@ function paceItems(stats: PlayerStats): {label: string; value: string}[] {
     return items;
 }
 
-export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerStats; hideGroups?: string[]}> = ({stats, leagueExtras, hideGroups}) => {
-    const hidden = new Set(hideGroups ?? []);
+export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerStats; carryOverStats?: LeaguePlayerCarryOverStats}> = ({stats, leagueExtras, carryOverStats}) => {
     const gameSlotItems = (stats.gameAverages ?? []).map((ga, idx) => ({
         label: `Game ${idx + 1} avg`,
         value: ga ? fmtNum(ga) : "\u2014",
@@ -127,9 +114,8 @@ export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerS
             {label: "Turkeys", value: String(stats.turkeyCount ?? "\u2014")},
         ]},
     ];
-    const visible = rows.filter((g) => !hidden.has(g.group));
-    if (leagueExtras && !hidden.has("League book")) {
-        visible.splice(1, 0, {group: "League book", items: [
+    if (leagueExtras) {
+        rows.splice(1, 0, {group: "League book", items: [
             {label: "League Games", value: String(leagueExtras.leagueGames || "\u2014")},
             {label: "League Pinfall", value: String(leagueExtras.leaguePinfall || "\u2014")},
             {label: "League Average", value: fmtNum(leagueExtras.leagueAverage)},
@@ -139,16 +125,22 @@ export const FullStatsGrid: FC<{stats: PlayerStats; leagueExtras?: LeaguePlayerS
             {label: "Best Series over Avg", value: fmtAccolade(leagueExtras.bestSeriesOverAverage)},
         ]});
     }
+    if (carryOverStats) rows.unshift({group: "Carry-over", items: [
+        {label: "Carry-Over Pinfall", value: String(carryOverStats.pins)},
+        {label: "Carry-Over Games", value: String(carryOverStats.games)},
+        {label: "Entering Handicap", value: String(carryOverStats.enteringHdcp)},
+    ]});
     return (
         <div className="bls-allstats">
-            {visible.map((g) => (
+            {stats.incompleteFrameData && <p className="small text-body-secondary">Some stats may be missing or incomplete as frame data is missing for some games.</p>}
+            {rows.map((g) => (
                 <div key={g.group} className="bls-allstats-group">
                     <div className="bls-allstats-group-head">{g.group}</div>
                     <div className="bls-allstats-grid">
                         {g.items.map((it) => (
                             <div key={it.label} className="bls-allstats-cell">
                                 <div className="bls-allstats-val">{it.value}</div>
-                                <div className="bls-allstats-lbl">{it.label}</div>
+                                <div className="bls-allstats-lbl" title={g.group === "League book" ? (it.label === "Average Booster" ? "Bowl a series of at least this number to increase average by 1 pin." : "Includes carry-over games") : it.label === "Single-pin pickup avg" ? "Potential Average if all single pin spares were picked up." : undefined}>{it.label}</div>
                             </div>
                         ))}
                     </div>
@@ -196,14 +188,14 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
                 <Table className="bls-appear-table mb-0" size="sm" hover>
                     <thead>
                         <tr>
-                            <AppearSortTh label="#" sortKey="idx" active={sortKey} dir={sortDir} onSort={onSort} />
-                            <AppearSortTh label="Season" sortKey="season" active={sortKey} dir={sortDir} onSort={onSort} />
-                            <AppearSortTh label="League" sortKey="league" active={sortKey} dir={sortDir} onSort={onSort} />
-                            <AppearSortTh label="Team" sortKey="team" active={sortKey} dir={sortDir} onSort={onSort} />
-                            <AppearSortTh label="Status" sortKey="status" active={sortKey} dir={sortDir} onSort={onSort} />
-                            <AppearSortTh label="Games" sortKey="games" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
-                            <AppearSortTh label="Avg" sortKey="avg" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
-                            <AppearSortTh label="HG" sortKey="hg" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="#" sortKey="idx" active={sortKey} dir={sortDir} onSort={onSort} />
+                            <SortHeader label="Season" sortKey="season" active={sortKey} dir={sortDir} onSort={onSort} />
+                            <SortHeader label="League" sortKey="league" active={sortKey} dir={sortDir} onSort={onSort} />
+                            <SortHeader label="Team" sortKey="team" active={sortKey} dir={sortDir} onSort={onSort} />
+                            <SortHeader label="Status" sortKey="status" active={sortKey} dir={sortDir} onSort={onSort} />
+                            <SortHeader label="Games" sortKey="games" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="Avg" sortKey="avg" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="HG" sortKey="hg" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
                         </tr>
                     </thead>
                     <tbody>
@@ -254,19 +246,6 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
 
 type SeasonSortKey = "season" | "leagues" | "games" | "average" | "pinfall" | "highGame" | "highSeries" | "games200" | "cleanGames" | "hungCount" | "turkeyCount";
 
-const SeasonSortTh: FC<{
-    label: string; sortKey: SeasonSortKey; active: SeasonSortKey; dir: SortDir;
-    onSort: (k: SeasonSortKey) => void; className?: string;
-}> = ({label, sortKey, active, dir, onSort, className}) => {
-    const isActive = active === sortKey;
-    return (
-        <th className={`bls-sortable-th ${className ?? ""}${isActive ? " is-sorted" : ""}`} onClick={() => { onSort(sortKey); }} role="button" tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSort(sortKey); } }}
-            aria-sort={isActive ? (dir === "asc" ? "ascending" : "descending") : "none"}>
-            <span className="bls-sortable-label">{label}<span className="bls-sort-indicator" aria-hidden>{isActive ? (dir === "asc" ? " ▲" : " ▼") : ""}</span></span>
-        </th>
-    );
-};
 
 const SeasonBreakdownTable: FC<{seasons: PlayerSeasonStats[]}> = ({seasons}) => {
     const [sortKey, setSortKey] = useState<SeasonSortKey>("season");
@@ -305,17 +284,17 @@ const SeasonBreakdownTable: FC<{seasons: PlayerSeasonStats[]}> = ({seasons}) => 
                 <Table className="bls-appear-table mb-0" size="sm" hover>
                     <thead>
                         <tr>
-                            <SeasonSortTh label="Season" sortKey="season" active={sortKey} dir={sortDir} onSort={onSort} />
-                            <SeasonSortTh label="Leagues" sortKey="leagues" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
-                            <SeasonSortTh label="Games" sortKey="games" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
-                            <SeasonSortTh label="Average" sortKey="average" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
-                            <SeasonSortTh label="Pinfall" sortKey="pinfall" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
-                            <SeasonSortTh label="High Gm" sortKey="highGame" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
-                            <SeasonSortTh label="High Ser" sortKey="highSeries" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
-                            <SeasonSortTh label="200s" sortKey="games200" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
-                            <SeasonSortTh label="Clean" sortKey="cleanGames" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
-                            <SeasonSortTh label="Hungs" sortKey="hungCount" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
-                            <SeasonSortTh label="Turkeys" sortKey="turkeyCount" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="Season" sortKey="season" active={sortKey} dir={sortDir} onSort={onSort} />
+                            <SortHeader label="Leagues" sortKey="leagues" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="Games" sortKey="games" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="Average" sortKey="average" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="Pinfall" sortKey="pinfall" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="High Gm" sortKey="highGame" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="High Ser" sortKey="highSeries" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="200s" sortKey="games200" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="Clean" sortKey="cleanGames" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="Hungs" sortKey="hungCount" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
+                            <SortHeader label="Turkeys" sortKey="turkeyCount" active={sortKey} dir={sortDir} onSort={onSort} className="text-end" />
                         </tr>
                     </thead>
                     <tbody>

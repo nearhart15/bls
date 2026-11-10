@@ -9,7 +9,7 @@ import type {ApexOptions} from "apexcharts";
 
 import type {TeamPositionScoreData} from "./league-team-details";
 import {useTheme} from "../theme";
-import {baseChartOptions, chartPalette, chartToolbarTools} from "../charts/chart-theme";
+import {baseChartOptions, chartPalette, datetimeAxis} from "../charts/chart-theme";
 
 interface TeamStatGraphProps {
     teamPosScores: TeamPositionScoreData[];
@@ -49,17 +49,6 @@ const TeamStatGraph: FC<TeamStatGraphProps> = ({teamPosScores}) => {
             type: "line",
             height: 320,
             stacked: false,
-            zoom: {
-                enabled: true,
-                type: "x",
-                autoScaleYaxis: true,
-                allowMouseWheelZoom: true,
-            },
-            toolbar: {
-                show: true,
-                autoSelected: "zoom",
-                tools: chartToolbarTools,
-            },
         },
         series,
         colors: [palette.series[0], palette.series[1]],
@@ -73,26 +62,7 @@ const TeamStatGraph: FC<TeamStatGraphProps> = ({teamPosScores}) => {
                 size: 5,
             },
         },
-        xaxis: {
-            type: "datetime",
-            labels: {
-                datetimeUTC: false,
-                format: "dd MMM",
-                style: {
-                    colors: palette.text,
-                    fontSize: "11px",
-                },
-            },
-            axisBorder: {
-                show: false,
-            },
-            axisTicks: {
-                show: false,
-            },
-            tooltip: {
-                enabled: false,
-            },
-        },
+        xaxis: datetimeAxis(theme),
         yaxis: [
             {
                 seriesName: "Scratch Series",

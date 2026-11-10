@@ -28,8 +28,6 @@ export function mergeStats(list: PlayerStats[]): PlayerStats {
         out.seriesStats.count += s.seriesStats.count || 0;
         out.gameStats.max = Math.max(out.gameStats.max || 0, s.gameStats.max || 0);
         out.seriesStats.max = Math.max(out.seriesStats.max || 0, s.seriesStats.max || 0);
-        if (s.gameStats.min > 0) out.gameStats.min = out.gameStats.min > 0 ? Math.min(out.gameStats.min, s.gameStats.min) : s.gameStats.min;
-        if (s.seriesStats.min > 0) out.seriesStats.min = out.seriesStats.min > 0 ? Math.min(out.seriesStats.min, s.seriesStats.min) : s.seriesStats.min;
         out.strikes.numerator += s.strikes.numerator;
         out.strikes.denominator += s.strikes.denominator;
         out.spares.numerator += s.spares.numerator;

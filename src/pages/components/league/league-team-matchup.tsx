@@ -19,7 +19,7 @@ const MatchupTypeConversion = new Map<MatchupType, string>([
     ["POSITION-INTER-DIVISION", "Position"], ["POSITION-INTRA-DIVISION", "Position"], ["FUN", "Non League"], ["OTHERS", "Non League"]
 ]);
 
-interface TeamNameInfoProps { division?: string; teamNumber?: number; name?: string; enteringPosition?: string; }
+interface TeamNameInfoProps { teamNumber?: number; name?: string; enteringPosition?: string; }
 const TeamNameInfo: FC<TeamNameInfoProps> = ({teamNumber, name, enteringPosition}) => <>
     <span>{teamNumber != null && teamNumber > 0 && <>#{teamNumber} </>}{name}&nbsp;{isNonEmptyString(enteringPosition) && <small> [ {enteringPosition} ]</small>}</span>
 </>;
@@ -70,14 +70,14 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
             <div>Lanes {twoDigitNumberFormat.format(matchup.lanes[0])} - {twoDigitNumberFormat.format(matchup.lanes[1])}</div>
         </Stack></CardHeader>
         <CardBody className="py-0 px-1 mb-auto"><Stack direction="horizontal" gap={2}>
-            <div className="bls-matchup-team bls-matchup-team-home"><Stack direction="vertical" className="mx-auto"><div className="align-middle"><TeamNameInfo division={teamDetails.division} teamNumber={teamDetails.number} name={teamDetails.name} enteringPosition={matchup.enteringRank}/><br/><span className="fs-sm">hdcp: {calculateTeamHdcp(matchup.scores?.games, matchup.scores?.series, teamDetails.teamStats?.handicap)}</span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.scores} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
+            <div className="bls-matchup-team bls-matchup-team-home"><Stack direction="vertical" className="mx-auto"><div className="align-middle"><TeamNameInfo teamNumber={teamDetails.number} name={teamDetails.name} enteringPosition={matchup.enteringRank}/><br/><span className="fs-sm">hdcp: {calculateTeamHdcp(matchup.scores?.games, matchup.scores?.series, teamDetails.teamStats?.handicap)}</span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.scores} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
             <div className="bls-matchup-center"><Stack direction="vertical" className="text-center h-100">
                 <div><small className={matchup.matchup.startsWith("POSITION") ? "text-danger" : ""}>{MatchupTypeConversion.get(matchup.matchup)}</small></div>
                 <div className="my-auto align-middle">{showMatchupDetails && <span className="fs-5">{matchup.pointsWonLost[0]} - {matchup.pointsWonLost[1]}</span>}</div>
                 {compareUrl && <div className="d-none d-sm-block my-1"><Link className="bls-matchup-desktop-action" to={compareUrl}>Team Compare</Link></div>}
                 <div className="d-none d-sm-block w-auto">{showMatchupDetails && <button type="button" className="bls-details-toggle bls-matchup-desktop-action" onClick={() => { setDetailsExpanded(expanded => !expanded); }}>{detailsExpanded ? <><ArrowsCollapse/><span>Hide Game Details</span></> : <><ArrowsExpand/><span>Game Details</span></>}</button>}</div>
             </Stack></div>
-            <div className="bls-matchup-team bls-matchup-team-away"><Stack direction="vertical" className="mx-auto"><div className="text-end align-middle"><TeamNameInfo division={opponent.division} teamNumber={opponent.number} name={opponent.name} enteringPosition={opponent.enteringRank}/><br/>{isOpponentVacantOrAbsent && <><PersonX/>&nbsp;</>}<span className="fs-sm">hdcp: <span className={isOpponentVacantOrAbsent ? "text-decoration-line-through" : ""}>{calculateTeamHdcp(matchup.opponent?.scores?.games, matchup.opponent?.scores?.series, matchup.opponent?.teamHdcp)}</span></span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.opponent?.scores} matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
+            <div className="bls-matchup-team bls-matchup-team-away"><Stack direction="vertical" className="mx-auto"><div className="text-end align-middle"><TeamNameInfo teamNumber={opponent.number} name={opponent.name} enteringPosition={opponent.enteringRank}/><br/>{isOpponentVacantOrAbsent && <><PersonX/>&nbsp;</>}<span className="fs-sm">hdcp: <span className={isOpponentVacantOrAbsent ? "text-decoration-line-through" : ""}>{calculateTeamHdcp(matchup.opponent?.scores?.games, matchup.opponent?.scores?.series, matchup.opponent?.teamHdcp)}</span></span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.opponent?.scores} matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
         </Stack>
         <Stack direction="horizontal" gap={0} className="d-block d-sm-none my-1">
             <div>{showMatchupDetails && <GameSummaryAndPoints teamNumber={teamDetails.number} teamScore={matchup.scores} currentBreakpoint={currentBreakpoint}/>}</div>
@@ -88,7 +88,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
             </div>
         </Stack>
         </CardBody>
-        <CardBody className={`p-0 mx-1 my-1 ${detailsExpanded ? "d-block" : "d-none"}`}>{showMatchupDetails && <MatchupDetailsDisplay leagueDetails={leagueDetails} teamDetails={teamDetails} matchup={matchup} currentBreakpoint={currentBreakpoint}/>}</CardBody><div className="my-auto"/>
+        <CardBody className={`p-0 mx-1 my-1 ${detailsExpanded ? "d-block" : "d-none"}`}>{showMatchupDetails && <MatchupDetailsDisplay teamDetails={teamDetails} matchup={matchup} currentBreakpoint={currentBreakpoint}/>}</CardBody><div className="my-auto"/>
     </Card></Col>;
 };
 
