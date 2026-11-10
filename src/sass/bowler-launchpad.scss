@@ -61,7 +61,7 @@
 .bls-bowler-pass-empty h2 { font-size: 2rem; letter-spacing: -.04em; }
 .bls-bowler-pass-empty p { color: #afc8e8; font-size: .85rem; }
 .bls-bowler-pass-empty a { color: #a6d0ff; font-size: .8rem; }
-.bls-launchpad-shortcuts { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; margin-inline: -2rem; border-top: 1px solid var(--bls-border); background: var(--bls-surface-2); }
+.bls-launchpad-shortcuts { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-inline: -2rem; border-top: 1px solid var(--bls-border); background: var(--bls-surface-2); }
 .bls-launchpad-shortcuts a { display: flex; align-items: center; gap: .75rem; min-width: 0; padding: 1.1rem 2rem; color: var(--bls-text); text-decoration: none; font-size: .8rem; font-weight: 600; }
 .bls-launchpad-shortcuts a + a { border-left: 1px solid var(--bls-border); }
 .bls-launchpad-shortcuts a:hover { background: var(--bls-accent-soft); }
@@ -95,3 +95,5 @@
     .bls-launchpad-shortcuts a { padding: 1rem .9rem; font-size: .7rem; gap: .5rem; }
 }
 @media (prefers-reduced-motion: reduce) { .bls-bowler-choice { transition: none; } }
+
+@media (max-width: 767.98px) { .bls-launchpad-shortcuts { grid-template-columns: 1fr; } .bls-launchpad-shortcuts a + a { border-left: 0; border-top: 1px solid var(--bls-border); } }
