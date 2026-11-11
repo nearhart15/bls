@@ -5,7 +5,7 @@ import {radarOptions} from "../charts/radar-options";
  */
 
 import {type FC, useState} from "react";
-import {Link} from "react-router";
+import PlayerScorecard from "./player-scorecard";
 import Chart from "../charts/safe-chart";
 import type {ApexOptions} from "apexcharts";
 import {Card, CardBody} from "react-bootstrap";
@@ -165,16 +165,37 @@ const PlayerDetail: FC<{data: AggregatedPlayerData}> = ({data}) => {
     const displayName = player.name ?? player.id;
     const hasGames = stats.gameStats.count > 0;
     const [tab, setTab] = useState<"overview" | "all" | "insights">("overview");
+    const latestSession = [...(data.performanceSessions ?? [])]
+        .filter(session => session.stats.gameStats.count > 0 && Number.isFinite(Date.parse(session.date)))
+        .sort((a, b) => b.date.localeCompare(a.date) || a.leagueName.localeCompare(b.leagueName))[0];
+    const latestDate = latestSession ? new Date(latestSession.date + "T12:00:00").toLocaleDateString("en-US", {month: "short", day: "numeric", year: "numeric"}) : "";
     return (
         <div className="bls-player-profile">
             <div className="bls-player-profile-main">
+                <PlayerScorecard
+                    name={displayName}
+                    source="BinBin Data"
+                    context="Your game, across every recorded league and season."
+                    rivalryPath={buildRivalryPath("frame", player.id, undefined, {mode: "career"})}
+                    recordsLabel="Career records"
+                    records={[
+                        {label: "Scratch average", value: hasGames ? numberFormat.format(stats.gameStats.average) : "—"},
+                        {label: "Games bowled", value: intFormat.format(stats.gameStats.count)},
+                        {label: "High game", value: hasGames ? intFormat.format(stats.gameStats.max) : "—"},
+                        {label: "High series", value: stats.seriesStats.count > 0 ? intFormat.format(stats.seriesStats.max) : "—"},
+                    ]}
+                    latest={latestSession ? {
+                        label: "Latest recorded outing",
+                        context: latestDate + " · " + latestSession.leagueName,
+                        games: latestSession.stats.gameAverages.map((score, i) => ({
+                            label: "Game " + (i + 1),
+                            score: (latestSession.stats.gameAverageN[i] ?? 0) > 0 ? score : null,
+                        })),
+                        total: latestSession.stats.pinfall,
+                        average: latestSession.stats.gameStats.average,
+                    } : null}
+                />
                 <div className="bls-profile-hero">
-                    <span className="bls-hero-kicker">Player profile</span>
-                    <h1 className="bls-profile-hero-name">{displayName}</h1>
-                    <p className="text-body-secondary mb-0">
-                        <Link to="/player" className="bls-link">All players</Link>{" | "}
-                        <Link to={buildRivalryPath("frame", player.id, undefined, {mode: "career"})} className="bls-link">Find a rival for {displayName}</Link>
-                    </p>
                     <div className="bls-scope-pills mt-3" role="tablist" aria-label="Player views">
                         <button type="button" role="tab" aria-selected={tab === "overview"} className={`bls-scope-pill${tab === "overview" ? " is-active" : ""}`} onClick={() => { setTab("overview"); }}>
                             <span className="bls-scope-pill-label">Overview</span>
