@@ -18,6 +18,8 @@ for (const ext of ['.ts', '.tsx']) require.extensions[ext] = (mod, filename) => 
     experimentalDecorators: true, emitDecoratorMetadata: true, esModuleInterop: true,
   }}).outputText, filename);
 };
+// Styles are rendered by Vite in browser checks, not executed in Node component tests.
+require.extensions['.scss'] = () => {};
 module.exports = p => require(path.join(root, p));
 
 // Each test starts with empty application data; concurrent calls within a test still share work.

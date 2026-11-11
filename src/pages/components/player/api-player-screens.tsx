@@ -1,3 +1,4 @@
+import PlayerScorecard from "./player-scorecard";
 import {buildRivalryPath} from "../comparison/rivalry-data";
 import {RankingTable} from "./ranking-table";
 import {TeamFilter} from "../filters/team-filter";
@@ -109,26 +110,28 @@ export const ApiPlayerDetail:FC<{playerId:string}>=({playerId})=>{
 
     return <div className="container-md">
         {Boolean(indexError||historyError)&&<Alert variant="danger" className="py-2"><strong>Historical data error:</strong> Some archived player history could not be loaded. Current-season stats are still available.</Alert>}
-        <div className="bls-compare-hero mb-3">
-            <span className="bls-hero-kicker">A.B.C. Player</span>
-            <h1>{p.name}</h1>
-            <Link to={buildRivalryPath("api", p.id)} className="bls-link d-inline-block mb-2">Find a rival for {p.name} →</Link>
-            <div className="text-body-secondary">{a?.teamName??"Substitute"} · {a?.leagueName??"Beer League"}</div>
-            <div className="small text-body-secondary mt-3">{archiveStatus}</div>
-        </div>
-        {d&&d.latestGames.length>0&&<Card className="bls-profile-card mb-3">
-            <CardBody>
-                <h5>Latest Series <span className="text-body-secondary fw-normal small">(Current Sheet)</span></h5>
-                <Row className="g-2">{d.latestGames.map((score,i)=><Col xs={4} key={i}><div className="bls-stat-tile"><div className="bls-stat-label">Game {i+1}</div><div className="bls-stat-value">{score}</div></div></Col>)}</Row>
-                <div className="mt-3 d-flex flex-wrap gap-4">
-                    <span><strong>Scratch:</strong> {d.latestSeries??"—"}</span>
-                    <span><strong>Average:</strong> {d.latestAverage!=null?numberFormat.format(d.latestAverage):"—"}</span>
-                    <span><strong>Low:</strong> {d.latestLowGame??"—"}</span>
-                    <span><strong>High:</strong> {d.latestHighGame??"—"}</span>
-                    <span><strong>Hdcp Series:</strong> {d.latestHandicapSeries??"—"}</span>
-                </div>
-            </CardBody>
-        </Card>}
+        <PlayerScorecard
+            name={p.name}
+            source="A.B.C. Data"
+            context={(a?.teamName ?? "Substitute") + " · " + (a?.leagueName ?? "Beer League")}
+            rivalryPath={buildRivalryPath("api", p.id)}
+            recordsLabel="Season records · current sheet"
+            records={[
+                {label: "Scratch average", value: p.average != null ? numberFormat.format(p.average) : "—"},
+                {label: "Games bowled", value: p.games.toLocaleString()},
+                {label: "High game", value: p.highGame > 0 ? p.highGame.toLocaleString() : "—"},
+                {label: "High series", value: p.highSeries > 0 ? p.highSeries.toLocaleString() : "—"},
+            ]}
+            latest={d && d.latestGames.length > 0 ? {
+                label: "Latest on the sheet",
+                context: "Current published league sheet",
+                games: d.latestGames.map((score, i) => ({label: "Score " + (i + 1), score})),
+                total: d.latestSeries,
+                average: d.latestAverage,
+                handicapTotal: d.latestHandicapSeries,
+            } : null}
+        />
+        <p className="small text-body-secondary mb-3">{archiveStatus}</p>
         {historical&&<Suspense fallback={<Loader/>}><ApiPlayerHistoryCharts
             historical={historical}
             importedWeeks={indexData?.importedWeeks??0}
