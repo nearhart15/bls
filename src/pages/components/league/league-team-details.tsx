@@ -19,14 +19,11 @@ import type {FC, ReactNode} from "react";
 
 import moment from "moment";
 
-import {Card, CardBody, CardHeader, Col, Container, Row} from "react-bootstrap";
-import {
-    CaretDownFill, CaretLeft, CaretRight, CaretUpFill
-} from "react-bootstrap-icons";
+import {Card} from "react-bootstrap";
+import TeamMatchNight from "./team-match-night";
 
 import {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import type {LeagueDetails} from "../../../data/league/league-details";
-import {opponentDisplay} from "../../../data/league/opponent-display";
 import {isNumeric} from "../../../data/utils/utils";
 
 import Loader from "../loader";
@@ -34,7 +31,6 @@ import {type Breakpoint} from "../ui-utils";
 import LeagueTeamRoster from "./league-team-roster";
 import LeagueTeamMatchup from "./league-team-matchup";
 import TeamStatGraph from "./league-team-details-graph";
-import {matchupSchedule} from "./league-matchup-schedule";
 
 export interface TeamPositionScoreData {
     bowlDate: Date;
@@ -63,117 +59,6 @@ function buildTeamPositionScoreData (teamDetails: TrackedLeagueTeam): TeamPositi
         });
 }
 
-type DataColRowStyle = "Default" | "Success";
-interface DataColRowProps {
-    defn: ReactNode;
-    value: ReactNode;
-    doubleWidth?: boolean;
-    style?: DataColRowStyle;
-}
-const DataColRow :FC<DataColRowProps> = ({defn, value, doubleWidth = false, style = "Default"} : DataColRowProps)=> {
-    // Theme-aware backgrounds so labels stay readable in both light and dark mode
-    const rowBorder = style === "Success" ? "border-success-subtle" : "border-secondary-subtle";
-    const colDefnClass = style === "Success"
-        ? "bg-success-subtle text-success-emphasis"
-        : "bg-body-secondary text-body-emphasis";
-    const mdColCount = doubleWidth ? 6 : 3;
-    return (
-        <Col xs={12} md={mdColCount}>
-            <Row className={`border rounded-1 ${rowBorder} overflow-hidden`}>
-                <Col className={`${colDefnClass} px-1 ${doubleWidth ? 'col-auto' : ''}`}>{defn}<span className="float-end">:</span></Col>
-                <Col className={`px-1 text-body ${doubleWidth ? 'col-auto' : ''}`}>{value}</Col>
-            </Row>
-        </Col>
-    );
-}
-
-interface LeagueTeamProps {
-    teamDetails: TrackedLeagueTeam;
-    leagueDetails: LeagueDetails | null;
-}
-const LeagueTeamDetailsSummary :FC<LeagueTeamProps> = ({teamDetails, leagueDetails} : LeagueTeamProps)=> {
-    const teamPositionScoreData = buildTeamPositionScoreData(teamDetails);
-    const {nextMatchup, pendingMatchups, lastMatchup} = matchupSchedule(teamDetails.matchups);
-    const firstPendingDate = pendingMatchups[0]?.scheduledDate?.format("DD MMM YYYY");
-    const lastPendingDate = pendingMatchups[pendingMatchups.length - 1]?.scheduledDate?.format("DD MMM YYYY");
-    const pendingDates = firstPendingDate === lastPendingDate ? firstPendingDate : `${firstPendingDate} – ${lastPendingDate}`;
-    const lastResultsDate = lastMatchup?.bowlDate?.isValid() ? lastMatchup.bowlDate : lastMatchup?.scheduledDate;
-
-    const rankComparison = () => {
-        let retVal = <></>
-        if (teamDetails && isNumeric(teamDetails.currentRank) && isNumeric(lastMatchup?.enteringRank)) {
-            const lastMatchupRank = parseInt(lastMatchup?.enteringRank ?? "");
-            const currentRank = parseInt(teamDetails.currentRank);
-            if (lastMatchupRank > currentRank) {
-                retVal = <span className="text-success"><CaretUpFill/></span>
-            } else if (lastMatchupRank < currentRank) {
-                retVal = <span className="text-danger"><CaretDownFill/></span>
-            } else {
-                retVal = <span><CaretLeft/><CaretRight/></span>; // No Change
-            }
-        }
-        return retVal;
-    }
-
-    const formatNextMatchupLanes = () => {
-        return String(nextMatchup?.lanes[0] ?? "") + " - " + String(nextMatchup?.lanes[1] ?? "");
-    }
-    const formatNextMatchupOpponent = () => {
-        const opponent = opponentDisplay(leagueDetails, nextMatchup?.opponent);
-        const number = opponent.number != null ? `#${opponent.number} ` : "";
-        const rank = opponent.enteringRank ? ` [${opponent.enteringRank}]` : "";
-        return `${number}${opponent.name}${rank}`;
-    }
-
-    return (
-        <>
-            <Container fluid="true">
-                <Card className="text-start mx-0 mb-0 h-100" border="secondary">
-                    <CardBody className="pt-1 pt-sm-2">
-                        <Row className="gx-5 gy-1 mb-1">
-                            <DataColRow defn="Division" value={teamDetails.division}/>
-                            <DataColRow defn="Current Rank" value={<>{teamDetails.currentRank} {rankComparison()}</>}/>
-                            <DataColRow defn="Points"
-                                        value={`${String(teamDetails.pointsWonLost[0])} - ${String(teamDetails.pointsWonLost[1])}`}/>
-                            <DataColRow defn="Starting Average" value={teamDetails.teamStats?.average}/>
-                            <DataColRow defn="Starting Handicap" value={teamDetails.teamStats?.handicap}/>
-                            <DataColRow defn="Low Game" value={teamDetails.teamStats?.lowGame}/>
-                            <DataColRow defn="High Game" value={teamDetails.teamStats?.highGame}/>
-                            <DataColRow defn="Low Series" value={teamDetails.teamStats?.lowSeries}/>
-                            <DataColRow defn="High Series" value={teamDetails.teamStats?.highSeries}/>
-                            <DataColRow defn="Scratch Pins" value={teamDetails.teamStats?.scratchPins}/>
-                        </Row>
-                        {lastResultsDate &&
-                            <Row className="gx-5 gy-1 mb-1">
-                                <DataColRow defn="Latest recorded results" value={lastResultsDate.format("DD MMM YYYY")} doubleWidth/>
-                            </Row>
-                        }
-                        {nextMatchup &&
-                            <Row className="gx-5 gy-1">
-                                <DataColRow defn="Next Matchup" value={nextMatchup.scheduledDate?.format("ddd, DD MMM YYYY")} style="Success"/>
-                                <DataColRow defn="Next Matchup Lanes" value={formatNextMatchupLanes()} style="Success"/>
-                                <DataColRow defn="Next Opponent" value={formatNextMatchupOpponent()} style="Success"
-                                            doubleWidth={true}/>
-                            </Row>
-                        }
-                        {!nextMatchup &&
-                            <p className="text-body-secondary mb-1">No upcoming matchups scheduled.</p>
-                        }
-                        {pendingMatchups.length > 0 &&
-                            <p className="text-warning-emphasis mt-2 mb-0" role="status">
-                                Results pending: {pendingMatchups.length} {pendingMatchups.length === 1 ? "matchup" : "matchups"} ({pendingDates}).
-                            </p>
-                        }
-                    </CardBody>
-                    <CardBody className="pb-1 pb-sm-2">
-                        <TeamStatGraph teamPosScores={teamPositionScoreData}/>
-                    </CardBody>
-                </Card>
-            </Container>
-        </>
-    );
-}
-
 interface LeagueTeamDetailsProps {
     leagueDetails: LeagueDetails | null;
     leagueDetailsLoading: boolean;
@@ -184,24 +69,18 @@ interface LeagueTeamDetailsProps {
 const LeagueTeamDetails : FC<LeagueTeamDetailsProps> = ({leagueDetails, leagueDetailsLoading, currentBreakpoint, teamId}: LeagueTeamDetailsProps) => {
     const teamDetails = leagueDetails?.teams.find(team => team.id === teamId) ?? null;
 
-    return (<>
-        <Card border="primary" className="mt-2 mb-2 mx-0 px-0">
-            {/*Still Loading*/}
-            {leagueDetailsLoading && <div className="card-body"><Loader/></div>}
-            {teamDetails &&
-                <>
-                    <CardHeader className="px-2 py-1 bg-primary text-white">
-                        <div className="text-center fw-bolder">#{teamDetails.number} {teamDetails.name}</div>
-                    </CardHeader>
-                    <CardBody className="px-2 py-1">
-                        <LeagueTeamDetailsSummary teamDetails={teamDetails} leagueDetails={leagueDetails}/>
-                    </CardBody>
-                    <LeagueTeamRoster teamDetails={teamDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
-                    <LeagueTeamMatchup leagueDetails={leagueDetails} teamDetails={teamDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
-                </>
-            }
-        </Card>
-    </>);
+    return <>
+        {leagueDetailsLoading && <Loader/>}
+        {teamDetails && <>
+            <TeamMatchNight key={teamDetails.id} team={teamDetails} league={leagueDetails}>
+                <TeamStatGraph teamPosScores={buildTeamPositionScoreData(teamDetails)}/>
+            </TeamMatchNight>
+            <Card className="mt-2 mb-2 mx-0 px-0">
+                <LeagueTeamRoster teamDetails={teamDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
+                <LeagueTeamMatchup leagueDetails={leagueDetails} teamDetails={teamDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
+            </Card>
+        </>}
+    </>;
 }
 
 export default LeagueTeamDetails;
