@@ -1,10 +1,10 @@
 {
   "status": "ready",
-  "generatedAt": "2026-11-07T17:49:27.866Z",
+  "generatedAt": "2026-11-12T20:17:44.965Z",
   "source": {
     "directoryUrl": "https://arapahoebowl.com/league-options/",
     "leaguePageUrl": "https://arapahoebowl.com/2026/08/22/beer-fall-winter-2026/",
-    "pdfUrl": "https://arapahoebowl.com/wp-content/uploads/2026/08/Beer-Fall-2026-Standings-Wk-10.pdf?abc_pdf_v=1794019817"
+    "pdfUrl": "https://arapahoebowl.com/wp-content/uploads/2026/08/Beer-Fall-2026-Standings-Wk-10-REV2.pdf?abc_pdf_v=1794508349"
   },
   "league": {
     "name": "Beer Fall 2026",
@@ -467,6 +467,22 @@
     {
       "division": "Less Filling!",
       "place": 9,
+      "number": 29,
+      "name": "Cun Th",
+      "won": 20,
+      "lost": 20,
+      "average": 559,
+      "handicap": 251,
+      "pinsWithHandicap": 24284,
+      "scratchPins": 16412,
+      "highHandicapGame": 934,
+      "highHandicapSeries": 2561,
+      "highScratchGame": 685,
+      "highScratchSeries": 1754
+    },
+    {
+      "division": "Less Filling!",
+      "place": 10,
       "number": 27,
       "name": "Irritable Bowl Syndrome",
       "won": 20,
@@ -482,7 +498,7 @@
     },
     {
       "division": "Less Filling!",
-      "place": 10,
+      "place": 11,
       "number": 25,
       "name": "Pin er Down",
       "won": 19,
@@ -498,7 +514,7 @@
     },
     {
       "division": "Less Filling!",
-      "place": 11,
+      "place": 12,
       "number": 35,
       "name": "Gremory House",
       "won": 19,
@@ -514,7 +530,7 @@
     },
     {
       "division": "Less Filling!",
-      "place": 12,
+      "place": 13,
       "number": 39,
       "name": "Balls Deep",
       "won": 19,
@@ -530,7 +546,7 @@
     },
     {
       "division": "Less Filling!",
-      "place": 13,
+      "place": 14,
       "number": 24,
       "name": "Pin N Juice",
       "won": 18.5,
@@ -543,22 +559,6 @@
       "highHandicapSeries": 2649,
       "highScratchGame": 731,
       "highScratchSeries": 2070
-    },
-    {
-      "division": "Less Filling!",
-      "place": 14,
-      "number": 29,
-      "name": "Cun Th",
-      "won": 18,
-      "lost": 22,
-      "average": 563,
-      "handicap": 248,
-      "pinsWithHandicap": 21912,
-      "scratchPins": 14784,
-      "highHandicapGame": 934,
-      "highHandicapSeries": 2561,
-      "highScratchGame": 685,
-      "highScratchSeries": 1754
     },
     {
       "division": "Less Filling!",
@@ -611,30 +611,14 @@
     {
       "division": "Less Filling!",
       "place": 18,
-      "number": 33,
-      "name": "Brutal Poodle",
-      "won": 13,
-      "lost": 27,
-      "average": 476,
-      "handicap": 326,
-      "pinsWithHandicap": 19228,
-      "scratchPins": 11314,
-      "highHandicapGame": 859,
-      "highHandicapSeries": 2441,
-      "highScratchGame": 532,
-      "highScratchSeries": 1460
-    },
-    {
-      "division": "Less Filling!",
-      "place": 19,
       "number": 32,
       "name": "Split On My Ball",
       "won": 13,
       "lost": 27,
       "average": 573,
-      "handicap": 238,
-      "pinsWithHandicap": 14569,
-      "scratchPins": 9838,
+      "handicap": 239,
+      "pinsWithHandicap": 17002,
+      "scratchPins": 11557,
       "highHandicapGame": 896,
       "highHandicapSeries": 2589,
       "highScratchGame": 641,
@@ -642,7 +626,7 @@
     },
     {
       "division": "Less Filling!",
-      "place": 20,
+      "place": 19,
       "number": 30,
       "name": "Salty Gutter Balls",
       "won": 12,
@@ -655,6 +639,22 @@
       "highHandicapSeries": 2546,
       "highScratchGame": 674,
       "highScratchSeries": 1874
+    },
+    {
+      "division": "Less Filling!",
+      "place": 20,
+      "number": 33,
+      "name": "Brutal Poodle",
+      "won": 11,
+      "lost": 29,
+      "average": 476,
+      "handicap": 326,
+      "pinsWithHandicap": 19228,
+      "scratchPins": 11314,
+      "highHandicapGame": 859,
+      "highHandicapSeries": 2441,
+      "highScratchGame": 532,
+      "highScratchSeries": 1460
     }
   ],
   "teams": [
@@ -3268,7 +3268,7 @@
         }
       ],
       "division": "Less Filling!",
-      "place": 13,
+      "place": 14,
       "won": 18.5,
       "lost": 21.5,
       "average": 587,
@@ -3387,7 +3387,7 @@
         }
       ],
       "division": "Less Filling!",
-      "place": 10,
+      "place": 11,
       "won": 19,
       "lost": 21,
       "average": 589,
@@ -3595,7 +3595,7 @@
         }
       ],
       "division": "Less Filling!",
-      "place": 9,
+      "place": 10,
       "won": 20,
       "lost": 20,
       "average": 540,
@@ -3726,10 +3726,10 @@
       "players": [
         {
           "name": "Rachael Root",
-          "average": 100,
-          "handicap": 99,
-          "pins": 1203,
-          "games": 12,
+          "average": 96,
+          "handicap": 102,
+          "pins": 1449,
+          "games": 15,
           "highGame": 139,
           "highSeries": 331,
           "highHandicapGame": 242,
@@ -3749,10 +3749,10 @@
         },
         {
           "name": "Jena DuPont",
-          "average": 124,
-          "handicap": 77,
-          "pins": 2611,
-          "games": 21,
+          "average": 125,
+          "handicap": 76,
+          "pins": 3013,
+          "games": 24,
           "highGame": 191,
           "highSeries": 451,
           "highHandicapGame": 272,
@@ -3772,10 +3772,10 @@
         },
         {
           "name": "Jon Root",
-          "average": 159,
-          "handicap": 45,
-          "pins": 3829,
-          "games": 24,
+          "average": 158,
+          "handicap": 46,
+          "pins": 4269,
+          "games": 27,
           "highGame": 197,
           "highSeries": 527,
           "highHandicapGame": 242,
@@ -3818,11 +3818,11 @@
         }
       ],
       "division": "Less Filling!",
-      "place": 14,
-      "won": 18,
-      "lost": 22,
-      "average": 563,
-      "handicap": 248
+      "place": 9,
+      "won": 20,
+      "lost": 20,
+      "average": 559,
+      "handicap": 251
     },
     {
       "number": 30,
@@ -3890,7 +3890,7 @@
         }
       ],
       "division": "Less Filling!",
-      "place": 20,
+      "place": 19,
       "won": 12,
       "lost": 28,
       "average": 594,
@@ -4006,13 +4006,13 @@
       "players": [
         {
           "name": "Devin Rice",
-          "average": 199,
-          "handicap": 9,
-          "pins": 2392,
-          "games": 12,
-          "highGame": 246,
-          "highSeries": 634,
-          "highHandicapGame": 262,
+          "average": 202,
+          "handicap": 7,
+          "pins": 3042,
+          "games": 15,
+          "highGame": 255,
+          "highSeries": 650,
+          "highHandicapGame": 264,
           "highHandicapSeries": 694,
           "weekScoresRaw": [],
           "weekScores": [],
@@ -4021,10 +4021,10 @@
         },
         {
           "name": "Laura Rice",
-          "average": 104,
-          "handicap": 95,
-          "pins": 1041,
-          "games": 10,
+          "average": 103,
+          "handicap": 96,
+          "pins": 1349,
+          "games": 13,
           "highGame": 121,
           "highSeries": 321,
           "highHandicapGame": 218,
@@ -4036,10 +4036,10 @@
         },
         {
           "name": "Melody Talbot",
-          "average": 107,
-          "handicap": 92,
-          "pins": 1934,
-          "games": 18,
+          "average": 108,
+          "handicap": 91,
+          "pins": 2272,
+          "games": 21,
           "highGame": 143,
           "highSeries": 356,
           "highHandicapGame": 240,
@@ -4051,10 +4051,10 @@
         },
         {
           "name": "Shea Talbot",
-          "average": 163,
-          "handicap": 42,
-          "pins": 2949,
-          "games": 18,
+          "average": 160,
+          "handicap": 45,
+          "pins": 3372,
+          "games": 21,
           "highGame": 225,
           "highSeries": 550,
           "highHandicapGame": 249,
@@ -4066,11 +4066,11 @@
         }
       ],
       "division": "Less Filling!",
-      "place": 19,
+      "place": 18,
       "won": 13,
       "lost": 27,
       "average": 573,
-      "handicap": 238
+      "handicap": 239
     },
     {
       "number": 33,
@@ -4138,9 +4138,9 @@
         }
       ],
       "division": "Less Filling!",
-      "place": 18,
-      "won": 13,
-      "lost": 27,
+      "place": 20,
+      "won": 11,
+      "lost": 29,
       "average": 476,
       "handicap": 326
     },
@@ -4338,7 +4338,7 @@
         }
       ],
       "division": "Less Filling!",
-      "place": 11,
+      "place": 12,
       "won": 19,
       "lost": 21,
       "average": 661,
@@ -4798,7 +4798,7 @@
         }
       ],
       "division": "Less Filling!",
-      "place": 12,
+      "place": 13,
       "won": 19,
       "lost": 21,
       "average": 570,
