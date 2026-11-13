@@ -121,7 +121,7 @@ interface TeamIndSeriesGameFramesProps { matchup: LeagueMatchup; teamDetails: Tr
 const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, teamDetails, gameIdx}) => {
     const {setActive} = use(FrameAttrHintContext);
     const playerNames = useMemo(() => matchup.scores?.playerScores.map(ps => findPlayer(teamDetails, ps.player)), [matchup, teamDetails]);
-    const frames = useMemo(() => matchup.scores?.playerScores.map(ps => ps.games[gameIdx].frames), [matchup, gameIdx]);
+    const games = useMemo(() => matchup.scores?.playerScores.map(ps => ps.games[gameIdx]), [matchup, gameIdx]);
     const writeScoreOrLabel = (b: [number, ScoreLabel?]) => {
         const key = b[1] === "S" ? b[0].toString() + "S" : b[1];
         const label = key ? FrameScoreLabels.get(key) : undefined;
@@ -137,10 +137,10 @@ const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, t
         return {"--bls-frame-outline": outline} as CSSProperties;
     };
     const keyPrefix = `fd-wk-${matchup.week}-${gameIdx}-`;
-    return <>{playerNames && frames && playerNames.map((pn, pi) => <div key={keyPrefix + pi} className="bls-player-frame-row mb-2">
+    return <>{playerNames && games && playerNames.map((pn, pi) => <div key={keyPrefix + pi} className="bls-player-frame-row mb-2">
         <div className="bls-player-name bls-frame-player-heading">{pn}</div>
-        <Row className="g-1 align-items-center">
-            <Col xs={12}><Stack direction="horizontal" gap={1}>{(frames[pi].length > 0 ? frames[pi] : EmptyFrames).map(frame => {
+        {games[pi]?.frames.length || games[pi]?.blind || games[pi]?.vacant ? <Row className="g-1 align-items-center">
+            <Col xs={12}><Stack direction="horizontal" gap={1}>{(games[pi].frames.length > 0 ? games[pi].frames : EmptyFrames).map(frame => {
                 const attributes = attributeInfo(frame);
                 const contents = <><div className="bls-frame-balls">{writeScoreLabelRow(frame)}</div><div className="bls-frame-cum">{frame.cumulativeScore}</div></>;
                 const className = `bls-frame${attributes.length > 0 ? " has-attributes" : ""}`;
@@ -148,7 +148,7 @@ const TeamIndSeriesGameFramesV2: FC<TeamIndSeriesGameFramesProps> = ({matchup, t
                 const key = `${keyPrefix}${pi}-f-${frame.number}`;
                 return attributes.length > 0 ? <button type="button" className={className} style={style} aria-label={`Frame ${frame.number}: ${attributes.map(info => info.description).join(", ")}`} onClick={() => { setActive(attributes); }} key={key}>{contents}</button> : <div className={className} style={style} key={key}>{contents}</div>;
             })}</Stack></Col>
-        </Row>
+        </Row> : <p className="small text-body-secondary mb-0">Frame scores not recorded.</p>}
     </div>)}</>;
 };
 
@@ -166,8 +166,8 @@ const TeamIndSeriesGameScoresSummary: FC<MatchupDetailsDisplayProps> = ({matchup
 };
 
 const MatchupDetailsDisplay: FC<MatchupDetailsDisplayProps> = ({matchup, teamDetails, currentBreakpoint}) => {
-    const hasFrameData = !matchup.scores?.playerScores.some(player =>
-        player.games.some(game => !game.blind && !game.vacant && game.frames.length === 0)
+    const hasFrameData = matchup.scores?.playerScores.some(player =>
+        player.games.some(game => game.frames.length > 0)
     );
     const [activeAttr, setActiveAttr] = useState<FrameAttributeIconInfo[]>([]);
     return <FrameAttrHintContext value={{active: activeAttr, setActive: setActiveAttr}}>

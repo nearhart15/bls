@@ -131,7 +131,14 @@ test('frame details immediately reflect missing frame data and blind games', () 
         React.createElement(MatchupDetailsDisplay, props)));
     assert.doesNotMatch(render(), /bls-player-frame-row/);
     team.matchups[0].scores.playerScores[0].games[0].blind = true;
-    assert.match(render(), /bls-player-frame-row/);
+    assert.doesNotMatch(render(), /bls-player-frame-row/);
+    const player = team.matchups[0].scores.playerScores[0];
+    const recorded = {...player.games[0], blind: false, frames: [{number: 1, ballScores: [[10, 'X']], cumulativeScore: 30, attributes: []}]};
+    player.games[0].blind = false;
+    team.matchups[0].scores.playerScores.push({...player, player: 'recorded', games: [recorded]});
+    const html = render();
+    assert.match(html, /Frame scores not recorded/);
+    assert.match(html, /bls-frame-cum[^>]*>30</);
 });
 
 test('matchup details reset when switching teams with the same week number', async t => {
