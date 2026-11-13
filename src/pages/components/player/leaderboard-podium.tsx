@@ -1,4 +1,4 @@
-import {type ReactNode, useId} from "react";
+import {type CSSProperties, type ReactNode, useId} from "react";
 import {Link} from "react-router";
 import "../../../sass/leaderboard-podium.scss";
 
@@ -29,6 +29,11 @@ function rankEntries(entries: LeaderboardEntry[]) {
     return ranked;
 }
 
+function PodiumValue({value}: {value: string}) {
+    const style = {"--podium-value-width": Math.max(1, value.length * 0.72)} as CSSProperties;
+    return <strong className="bls-podium-value" style={style}>{value}</strong>;
+}
+
 export function LeaderboardPodium({entries, metric, scope, formatValue, filters, lowerIsBetter}: Props) {
     const resultsId = useId();
     const ranked = rankEntries(entries);
@@ -53,7 +58,7 @@ export function LeaderboardPodium({entries, metric, scope, formatValue, filters,
                 {ranked.slice(0, 3).map(entry => <li key={entry.id} data-place={entry.rank}>
                     <Link to={"/player/" + entry.id}>
                         <span className="bls-podium-place">Rank {entry.rank}</span>
-                        <strong className="bls-podium-value">{formatValue(entry.value)}</strong>
+                        <PodiumValue value={formatValue(entry.value)} />
                         <span className="bls-podium-name">{entry.name}<span aria-hidden="true"> ↗</span></span>
                         <span className="bls-podium-games">{entry.games.toLocaleString()} {entry.games === 1 ? "game" : "games"}</span>
                     </Link>
