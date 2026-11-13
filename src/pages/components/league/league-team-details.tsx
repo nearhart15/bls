@@ -19,7 +19,7 @@ import type {FC, ReactNode} from "react";
 
 import moment from "moment";
 
-import {Card} from "react-bootstrap";
+
 import TeamMatchNight from "./team-match-night";
 import LeagueSummary from "./league-summary";
 
@@ -80,10 +80,10 @@ const LeagueTeamDetails : FC<LeagueTeamDetailsProps> = ({leagueDetails, leagueDe
                 <summary>League summary: rules, honor roll &amp; center info</summary>
                 <div><LeagueSummary leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/></div>
             </details>
-            <Card className="mt-2 mb-2 mx-0 px-0">
+            <div className="bls-team-panels">
                 <LeagueTeamRoster teamDetails={teamDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
                 <LeagueTeamMatchup leagueDetails={leagueDetails} teamDetails={teamDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
-            </Card>
+            </div>
         </>}
     </>;
 }
