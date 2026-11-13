@@ -21,6 +21,7 @@ import moment from "moment";
 
 import {Card} from "react-bootstrap";
 import TeamMatchNight from "./team-match-night";
+import LeagueSummary from "./league-summary";
 
 import {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import type {LeagueDetails} from "../../../data/league/league-details";
@@ -75,6 +76,10 @@ const LeagueTeamDetails : FC<LeagueTeamDetailsProps> = ({leagueDetails, leagueDe
             <TeamMatchNight key={teamDetails.id} team={teamDetails} league={leagueDetails}>
                 <TeamStatGraph teamPosScores={buildTeamPositionScoreData(teamDetails)}/>
             </TeamMatchNight>
+            <details className="bls-league-reference" key={leagueDetails?.id}>
+                <summary>League summary: rules, honor roll &amp; center info</summary>
+                <div><LeagueSummary leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/></div>
+            </details>
             <Card className="mt-2 mb-2 mx-0 px-0">
                 <LeagueTeamRoster teamDetails={teamDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
                 <LeagueTeamMatchup leagueDetails={leagueDetails} teamDetails={teamDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
