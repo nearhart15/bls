@@ -141,8 +141,7 @@ html:has(.bls-scoreboard) {
   scrollbar-gutter: stable;
 }
 
-/* Anchor scrolling to the season picker while its result panel is replaced. */
-.bls-scoreboard-weeks + div {
+html:has(.bls-scoreboard) {
   overflow-anchor: none;
 }
 
