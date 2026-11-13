@@ -130,10 +130,6 @@
     dd { font-size: 1.6rem; font-weight: 750; letter-spacing: -.04em; margin: .3rem 0 0; overflow-wrap: anywhere; }
   }
 
-  .bls-match-night-details {
-    border: 1px solid var(--bls-border); border-radius: 12px; background: var(--bls-surface);
-    summary { padding: 1rem; cursor: pointer; font-size: .8rem; font-weight: 650; }
-  }
   .bls-match-night-details-body { padding: 0 1rem 1rem; }
   .bls-match-night-season-stats {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: 1rem; margin: .5rem 0 1rem;
@@ -142,11 +138,18 @@
   }
 }
 
+.bls-match-night-details,
+.bls-league-reference {
+  border: 1px solid var(--bls-border);
+  border-radius: 12px;
+  background: var(--bls-surface);
+  > summary { padding: 1rem; cursor: pointer; font-size: .8rem; font-weight: 650; }
+  > summary:focus-visible { outline: 3px solid var(--bls-accent, #2997ff); outline-offset: 4px; }
+}
+
 .bls-league-reference {
   margin: 0 0 1rem;
-  > summary { padding: .65rem 0; color: var(--bls-text-muted); font-size: .75rem; cursor: pointer; }
-  > summary:focus-visible { outline: 3px solid var(--bls-accent, #2997ff); outline-offset: 3px; }
-  > div { padding: 0 1rem .5rem; }
+  > div { padding: 0 1rem 1rem; }
 }
 
 @media (max-width: 767.98px) {
