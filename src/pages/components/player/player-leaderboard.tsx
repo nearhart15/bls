@@ -4,8 +4,8 @@ import {aggregateSlices} from "../../../data/player/slice-stats";
  */
 
 import {type FC, useCallback, useMemo, useState} from "react";
-import {Link} from "react-router";
-import {Badge, Card, CardBody, Form, Table} from "react-bootstrap";
+import {Form} from "react-bootstrap";
+import {LeaderboardPodium} from "./leaderboard-podium";
 
 import {
     buildFullPlayerList,
@@ -205,143 +205,67 @@ const PlayerLeaderboard: FC = () => {
         return [...set].sort((a, b) => a.localeCompare(b));
     }, [data, scope, currentSeason, lastYear, leagueId]);
 
-    const ranked = useMemo(() => {
-        if (!data) return [] as {row: Row; value: number | null}[];
-        const lower = LOWER_IS_BETTER.has(def.id);
-        return toRows(data, scope, leagueId, teamName)
-            .filter((r) => r.games >= minGames)
-            .map((row) => ({row, value: statValue(row, def)}))
-            .filter((r) => r.value != null)
-            .sort((a, b) => {
-                const av = a.value ?? 0;
-                const bv = b.value ?? 0;
-                const cmp = lower ? av - bv : bv - av;
-                if (cmp !== 0) return cmp;
-                return a.row.name.localeCompare(b.row.name);
-            });
-    }, [data, scope, def, minGames, leagueId, teamName]);
+    const lowerIsBetter = LOWER_IS_BETTER.has(def.id);
+    const entries = useMemo(() => toRows(data ?? [], scope, leagueId, teamName)
+        .filter(row => row.games >= minGames)
+        .flatMap(row => {
+            const value = statValue(row, def);
+            return value != null && Number.isFinite(value) ? [{id: row.id, name: row.name, games: row.games, value}] : [];
+        })
+        .sort((a, b) => (lowerIsBetter ? a.value - b.value : b.value - a.value) || a.name.localeCompare(b.name)),
+    [data, scope, leagueId, teamName, minGames, def, lowerIsBetter]);
 
-    const max = ranked[0]?.value ?? 0;
-    const min = ranked[ranked.length - 1]?.value ?? 0;
-    const span = Math.max(0.0001, Math.abs(max - min));
+    if (isLoading) return <Loader />;
+    if (error != null) return <ErrorDisplay message="Error loading players." error={error} />;
 
-    return (
-        <div className="bls-compare">
-            <div className="bls-compare-hero mb-3">
-                <span className="bls-hero-kicker">Players</span>
-                <h1>Leaderboard</h1>
-            </div>
-            <Card className="bls-profile-card mb-3">
-                <CardBody>
-                    <div className="bls-scope-pills mb-3">
-                        {([
-                            ["career", "Career", "All seasons"],
-                            ["current", "Current season", currentSeason || "Latest"],
-                            ["last-year", "Last calendar year", String(new Date().getFullYear() - 1)],
-                        ] as [Scope, string, string][]).map(([id, label, sub]) => (
-                            <button key={id} type="button" className={`bls-scope-pill${scope === id ? " is-active" : ""}`} onClick={() => { setScope(id); setTeamName(""); }}>
-                                <span className="bls-scope-pill-label">{label}</span>
-                                <span className="bls-scope-pill-sub">{sub}</span>
-                            </button>
-                        ))}
-                    </div>
-                    <div className="row g-3">
-                        <div className="col-md-6">
-                            <Form.Label className="bls-meta-label">Stat</Form.Label>
-                            <Form.Select value={statId} onChange={(e) => { setStatId(e.target.value); }}>
-                                {STATS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
-                            </Form.Select>
-                        </div>
-                        <div className="col-md-6">
-                            <Form.Label className="bls-meta-label">Min games</Form.Label>
-                            <Form.Select value={minGames} onChange={(e) => { setMinGames(Number(e.target.value)); }}>
-                                {[1, 6, 9, 12, 21, 36].map((n) => <option key={n} value={n}>{n}+</option>)}
-                            </Form.Select>
-                        </div>
-                        <div className="col-md-6">
-                            <Form.Label className="bls-meta-label">League</Form.Label>
-                            <Form.Select value={leagueId} onChange={(e) => { setLeagueId(e.target.value); setTeamName(""); }}>
-                                <option value="">All leagues</option>
-                                {leagues.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
-                            </Form.Select>
-                        </div>
-                        <div className="col-md-6">
-                            <Form.Label className="bls-meta-label">Team</Form.Label>
-                            <Form.Select value={teamName} onChange={(e) => { setTeamName(e.target.value); }}>
-                                <option value="">All teams</option>
-                                {teams.map((t) => <option key={t} value={t}>{t}</option>)}
-                            </Form.Select>
-                        </div>
-                    </div>
-                    <div className="text-body-secondary small mt-2">
-                        Count stats are shown per game (or per series). Rates stay as percentages.
-                    </div>
-                </CardBody>
-            </Card>
-            {isLoading && <Loader />}
-            {error != null && <ErrorDisplay message="Error loading players." error={error} />}
-            {data && (
-                <Card className="bls-profile-card">
-                    <CardBody className="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                        <strong>{def.label}</strong>
-                        <Badge bg="secondary" pill>{ranked.length} bowlers</Badge>
-                    </CardBody>
-                    <div className="bls-perf-scroll bls-perf-table-wrap d-none d-sm-block">
-                        <Table className="bls-perf-table mb-0" size="sm" hover>
-                            <thead>
-                                <tr>
-                                    <th style={{width: "3rem"}} className="text-center">#</th>
-                                    <th>Bowler</th>
-                                    <th className="text-end d-none d-md-table-cell">Games</th>
-                                    <th className="d-none d-md-table-cell" style={{width: "40%"}} aria-label="Relative performance"></th>
-                                    <th className="text-end">{def.label}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {ranked.length === 0 && (
-                                    <tr><td colSpan={5} className="text-center text-body-secondary py-4">No bowlers meet the filter.</td></tr>
-                                )}
-                                {ranked.map((r, idx) => {
-                                    const fill = r.value == null ? 0 : (LOWER_IS_BETTER.has(def.id)
-                                        ? ((max - r.value) / span) * 100
-                                        : ((r.value - min) / span) * 100);
-                                    return (
-                                                                                <tr key={r.row.id}>
-                                            <td className="text-center fw-semibold">{idx + 1}</td>
-                                            <td><Link to={`/player/${r.row.id}`} className="bls-link fw-semibold">{r.row.name}</Link></td>
-                                            <td className="text-end d-none d-md-table-cell tabular-nums">{r.row.games}</td>
-                                            <td className="d-none d-md-table-cell">
-                                                <div className="bls-fifa-track" style={{height: "8px"}}>
-                                                    <div className="bls-fifa-fill" style={{width: `${Math.max(4, fill)}%`, background: idx === 0 ? "#ffd60a" : idx === 1 ? "#c7c7cc" : idx === 2 ? "#c47b3a" : "var(--bls-accent, #00d4ff)"}} />
-                                                </div>
-                                            </td>
-                                            <td className="text-end tabular-nums fw-semibold">{formatValue(r.value, def)}</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </Table>
-                    </div>
-                    <div className="bls-player-cards bls-lb-list">
-                        {ranked.map((r, idx) => (
-                            <Link to={`/player/${r.row.id}`} className="bls-lb-row" key={`lb-${r.row.id}`}>
-                                <span className="bls-lb-rank">{idx + 1}</span>
-                                <span className="bls-lb-name">{r.row.name}</span>
-                                <span className="bls-lb-val tabular-nums">{formatValue(r.value, def)}</span>
-                            </Link>
-                        ))}
-                    </div>
-                </Card>
-            )}
+    const scopeLabel = scope === "career" ? "Career" : scope === "current" ? currentSeason || "Current season" : lastYear;
+    const filters = <>
+        <div className="bls-scope-pills mb-3" role="group" aria-label="Ranking period">
+            {([
+                ["career", "Career", "All seasons"],
+                ["current", "Current season", currentSeason || "Latest"],
+                ["last-year", "Last calendar year", lastYear],
+            ] as const).map(([id, label, sub]) => (
+                <button key={id} type="button" aria-pressed={scope === id}
+                    className={"bls-scope-pill" + (scope === id ? " is-active" : "")}
+                    onClick={() => { setScope(id); setLeagueId(""); setTeamName(""); }}>
+                    <span className="bls-scope-pill-label">{label}</span>
+                    <span className="bls-scope-pill-sub">{sub}</span>
+                </button>
+            ))}
         </div>
-    );
+        <div className="bls-podium-filter-grid">
+            <Form.Group controlId="frame-leaderboard-stat">
+                <Form.Label>Stat</Form.Label>
+                <Form.Select value={statId} onChange={event => { setStatId(event.target.value); }}>
+                    {STATS.map(stat => <option key={stat.id} value={stat.id}>{stat.label}</option>)}
+                </Form.Select>
+            </Form.Group>
+            <Form.Group controlId="frame-leaderboard-games">
+                <Form.Label>Minimum games</Form.Label>
+                <Form.Select value={minGames} onChange={event => { setMinGames(Number(event.target.value)); }}>
+                    {[1, 6, 9, 12, 21, 36].map(n => <option key={n} value={n}>{n}+</option>)}
+                </Form.Select>
+            </Form.Group>
+            <Form.Group controlId="frame-leaderboard-league">
+                <Form.Label>League</Form.Label>
+                <Form.Select value={leagueId} onChange={event => { setLeagueId(event.target.value); setTeamName(""); }}>
+                    <option value="">All leagues</option>
+                    {leagues.map(league => <option key={league.id} value={league.id}>{league.name}</option>)}
+                </Form.Select>
+            </Form.Group>
+            <Form.Group controlId="frame-leaderboard-team">
+                <Form.Label>Team</Form.Label>
+                <Form.Select value={teamName} onChange={event => { setTeamName(event.target.value); }}>
+                    <option value="">All teams</option>
+                    {teams.map(team => <option key={team} value={team}>{team}</option>)}
+                </Form.Select>
+            </Form.Group>
+        </div>
+    </>;
+
+    return <LeaderboardPodium entries={entries} metric={def.label} scope={"BinBin Data · " + scopeLabel}
+        filters={filters} lowerIsBetter={lowerIsBetter} formatValue={value => formatValue(value, def)} />;
 };
 
 export default PlayerLeaderboard;
-
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 import PlayerScorecard from "./player-scorecard";
 import {buildRivalryPath} from "../comparison/rivalry-data";
-import {RankingTable} from "./ranking-table";
+import {LeaderboardPodium} from "./leaderboard-podium";
 import {TeamFilter} from "../filters/team-filter";
 import {SortHeader} from "../sort-header";
 import {Suspense, lazy, type FC, useCallback, useMemo, useState} from "react";
@@ -155,4 +155,70 @@ export const ApiPlayerDetail:FC<{playerId:string}>=({playerId})=>{
     </div>;
 };
 
-export const ApiPlayerLeaderboard:FC=()=>{const{data,isLoading,error}=usePlayerIndexData("api");const[stat,setStat]=useState<ApiSort>("average");const[minGames,setMinGames]=useState(1);const[selectedTeams,setSelectedTeams]=useState<string[]>([]);const teams=useMemo(()=>Array.from(new Set((data??[]).map(teamName))).sort((a,b)=>a.localeCompare(b)),[data]);const ranked=useMemo(()=>(data??[]).filter(p=>p.games>=minGames).filter(p=>selectedTeams.length===0||selectedTeams.includes(teamName(p))).sort((a,b)=>value(b,stat)-value(a,stat)||a.name.localeCompare(b.name)),[data,stat,minGames,selectedTeams]);if(isLoading)return <Loader/>;if(error!=null)return <ErrorDisplay message="Error loading API leaderboard." error={error}/>;const options:[ApiSort,string][]=[["average","Average"],["handicap","Handicap"],["games","Games"],["pinfall","Total pinfall"],["seriesCount","Series bowled"],["averageSeries","Average series"],["highGame","High game"],["highSeries","High series"],["highHandicapGame","High handicap game"],["highHandicapSeries","High handicap series"],["latestAverage","Latest series average"],["latestSeries","Latest series"],["known200Games","Known 200+ games"],["known600Series","Known 600+ series"],["known700Series","Known 700+ series"]];return <div className="container-md"><div className="bls-compare-hero mb-3"><span className="bls-hero-kicker">A.B.C. Data</span><h1>Leaderboard</h1></div><Card className="bls-profile-card bls-dropdown-card mb-3"><CardBody><Row className="g-3"><Col md={4}><Form.Label>Stat</Form.Label><Form.Select value={stat} onChange={e=>{setStat(e.target.value as ApiSort);}}>{options.map(([k,l])=><option key={k} value={k}>{l}</option>)}</Form.Select></Col><Col md={4}><Form.Label>Minimum games</Form.Label><Form.Select value={minGames} onChange={e=>{setMinGames(Number(e.target.value));}}>{[1,3,6,9,12].map(g=><option key={g} value={g}>{g}+</option>)}</Form.Select></Col><Col md={4}><Form.Label>Teams</Form.Label><TeamFilter teams={teams} selected={selectedTeams} onChange={setSelectedTeams} idPrefix="api-leaderboard-team" fullWidth/></Col></Row></CardBody></Card><Card className="bls-profile-card"><RankingTable rows={ranked} rowKey={p=>p.id} renderName={p=><Link className="bls-link fw-semibold" to={`/player/${p.id}`}>{p.name}</Link>} teamName={teamName} valueLabel="Value" emptyMessage="No bowlers match the selected teams and minimum games." value={p=>["average","averageSeries","latestAverage"].includes(stat)?numberFormat.format(value(p,stat)):value(p,stat).toLocaleString()}/></Card></div>;};
+const apiLeaderboardMetrics: {id: ApiSort; label: string}[] = [
+    {id: "average", label: "Average"},
+    {id: "handicap", label: "Handicap"},
+    {id: "games", label: "Games"},
+    {id: "pinfall", label: "Total pinfall"},
+    {id: "seriesCount", label: "Series bowled"},
+    {id: "averageSeries", label: "Average series"},
+    {id: "highGame", label: "High game"},
+    {id: "highSeries", label: "High series"},
+    {id: "highHandicapGame", label: "High handicap game"},
+    {id: "highHandicapSeries", label: "High handicap series"},
+    {id: "latestAverage", label: "Latest series average"},
+    {id: "latestSeries", label: "Latest series"},
+    {id: "known200Games", label: "Known 200+ games"},
+    {id: "known600Series", label: "Known 600+ series"},
+    {id: "known700Series", label: "Known 700+ series"},
+];
+
+function apiLeaderboardValue(player: PlayerListEntry, stat: ApiSort): number | null {
+    switch (stat) {
+        case "average": case "games": case "pinfall": return player[stat];
+        case "highGame": case "highSeries": return player[stat] || null;
+        case "highHandicapGame": case "highHandicapSeries": return apiStats(player)?.[stat] || null;
+        default: return apiStats(player)?.[stat] ?? null;
+    }
+}
+
+export const ApiPlayerLeaderboard: FC = () => {
+    const {data, isLoading, error} = usePlayerIndexData("api");
+    const [stat, setStat] = useState<ApiSort>("average");
+    const [minGames, setMinGames] = useState(1);
+    const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
+    const teams = useMemo(() => [...new Set((data ?? []).map(teamName))].sort((a, b) => a.localeCompare(b)), [data]);
+    const entries = useMemo(() => (data ?? [])
+        .filter(player => player.games >= minGames && (selectedTeams.length === 0 || selectedTeams.includes(teamName(player))))
+        .flatMap(player => {
+            const value = apiLeaderboardValue(player, stat);
+            return value != null && Number.isFinite(value) ? [{id: player.id, name: player.name, games: player.games, team: teamName(player), value}] : [];
+        })
+        .sort((a, b) => b.value - a.value || a.name.localeCompare(b.name)), [data, minGames, selectedTeams, stat]);
+
+    if (isLoading) return <Loader />;
+    if (error != null) return <ErrorDisplay message="Error loading A.B.C. leaderboard." error={error} />;
+
+    const filters = <div className="bls-podium-filter-grid">
+        <Form.Group controlId="api-leaderboard-stat">
+            <Form.Label>Stat</Form.Label>
+            <Form.Select value={stat} onChange={event => { setStat(event.target.value as ApiSort); }}>
+                {apiLeaderboardMetrics.map(metric => <option key={metric.id} value={metric.id}>{metric.label}</option>)}
+            </Form.Select>
+        </Form.Group>
+        <Form.Group controlId="api-leaderboard-games">
+            <Form.Label>Minimum games</Form.Label>
+            <Form.Select value={minGames} onChange={event => { setMinGames(Number(event.target.value)); }}>
+                {[1, 3, 6, 9, 12].map(n => <option key={n} value={n}>{n}+</option>)}
+            </Form.Select>
+        </Form.Group>
+        <div role="group" aria-label="Teams">
+            <span className="bls-podium-filter-label">Teams</span>
+            <TeamFilter teams={teams} selected={selectedTeams} onChange={setSelectedTeams} idPrefix="api-leaderboard-team" fullWidth />
+        </div>
+    </div>;
+
+    const metric = apiLeaderboardMetrics.find(metric => metric.id === stat)?.label ?? "Average";
+    return <LeaderboardPodium entries={entries} metric={metric} scope="A.B.C. Data · Current sheet"
+        filters={filters} formatValue={value => numberFormat.format(value)} />;
+};
