@@ -156,3 +156,40 @@ test('matchup details reset when switching teams with the same week number', asy
     assert.match(container.textContent, /second/);
     assert.doesNotMatch(container.textContent, /first/);
 });
+
+test('game details stay open across weeks and show the selected week’s scores', async t => {
+    const {root, container, window} = mount(t);
+    window.scrollTo = () => {};
+    const team = makeTeam('team', '2020-01-01', [180]);
+    const secondWeek = makeTeam('team', '2020-01-08', [220]).matchups[0];
+    secondWeek.week = 2;
+    const unscoredWeek = Object.assign(new model.LeagueMatchup(), {
+        week: 3, scheduledDate: moment('2020-01-15'), lanes: [1, 2],
+    });
+    team.matchups.push(secondWeek, unscoredWeek);
+    await act(async () => root.render(React.createElement(MemoryRouter, null, React.createElement(LeagueTeamMatchup, {
+        leagueDetails: null, teamDetails: team, currentBreakpoint: BS_BP_XS, leagueDetailsLoading: false,
+    }))));
+
+    const click = async element => act(async () => element.click());
+    const selectWeek = number => click(container.querySelectorAll('.bls-scoreboard-weeks button')[number - 1]);
+    const visibleGameScore = () => container.querySelector('.bls-matchup-card > .card-body.d-block .bls-score-table tbody tr:first-child td:nth-child(3)')?.textContent;
+    const mobileToggle = () => container.querySelector('.bls-matchup-mobile-actions button');
+
+    await selectWeek(1);
+    assert.equal(visibleGameScore(), undefined);
+    await click(mobileToggle());
+    assert.equal(visibleGameScore(), '180');
+
+    await selectWeek(2);
+    assert.equal(visibleGameScore(), '220');
+    await selectWeek(3);
+    assert.equal(visibleGameScore(), undefined);
+    assert.equal(mobileToggle(), null);
+    await selectWeek(1);
+    assert.equal(visibleGameScore(), '180');
+
+    await click(mobileToggle());
+    await selectWeek(2);
+    assert.equal(visibleGameScore(), undefined);
+});
