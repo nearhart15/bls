@@ -81,6 +81,23 @@ test('current API comparisons require both matching schedule and matching team i
   assert.match(apiComparisonIssue({...sheet, league: {date: 'invalid'}}, league, ...sheet.standings), /not covered/);
 });
 
+test('a scheduled matchup can compare both teams when the A.B.C. sheet stylizes the opponent name', () => {
+  const league = leagueFixture();
+  const opponent = {id: '2627-fall-beer-5', number: 5, name: 'Shit A Brick'};
+  league.otherTeams.push(opponent);
+  const matchup = {opponent: {teamId: opponent.id}};
+  const url = new URL(matchupComparisonUrl(league, league.teams[0], matchup), 'https://example.test');
+  const sheet = {
+    league: {date: '11/05/2026'},
+    standings: [{number: 18, name: 'Pins Go Boom!'}, {number: 5, name: '$h!t A Brick'}],
+  };
+  const [teamA, teamB] = ['a', 'b'].map(key => sheet.standings.find(team => team.number === Number(url.searchParams.get(key))));
+  assert.equal(url.searchParams.get('source'), 'api');
+  assert.equal(url.searchParams.get('league'), league.id);
+  assert.equal(apiComparisonIssue(sheet, league, teamA, teamB), null);
+  assert.match(apiComparisonIssue(sheet, league, teamA, {...teamB, name: 'HT A Brick'}), /do not match/);
+});
+
 test('league fetcher applies index identity before returning loaded schedules', async () => {
   const originalFetch = global.fetch;
   const originalWindow = global.window;

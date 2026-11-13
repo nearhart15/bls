@@ -73,6 +73,6 @@ test('team briefing distinguishes missing schedules, overdue results, and unassi
         assert.match(dom.window.document.querySelector('.bls-match-night-fixture').textContent, /Up next/);
         assert.match(dom.window.document.querySelector('.bls-match-night-lanes').textContent, /To be assigned/);
         assert.match(dom.window.document.body.textContent, /Opponent to be determined/);
-        assert.equal(dom.window.document.querySelector('.bls-match-night-opponent a'), null);
+        assert.equal(dom.window.document.querySelector('.bls-match-night-fixture a'), null);
     } finally { dom.window.close(); }
 });
