@@ -1,4 +1,4 @@
-import {type FC, useId, useState} from "react";
+import {type FC, useId, useLayoutEffect, useRef, useState} from "react";
 import moment from "moment";
 import {Badge, Card, CardBody, CardHeader, Stack, Table} from "react-bootstrap";
 import {ArrowLeftRight, ArrowsCollapse, ArrowsExpand, BoxArrowDown, BoxArrowUp, PersonX} from "react-bootstrap-icons";
@@ -101,6 +101,12 @@ const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails
     const scheduled = teamDetails.matchups.filter(matchup => matchup.scheduledDate);
     const current = scheduled.filter(matchup => !matchup.scheduledDate?.isAfter(today, "day")).slice(-1)[0] ?? scheduled[0];
     const [selectedWeek, setSelectedWeek] = useState<number>();
+    const scrollPosition = useRef<number | undefined>(undefined);
+    useLayoutEffect(() => {
+        if (scrollPosition.current == null) return;
+        window.scrollTo({top: scrollPosition.current, behavior: "instant"});
+        scrollPosition.current = undefined;
+    }, [selectedWeek]);
     const titleId = useId();
     const matchupId = useId();
     const selected = teamDetails.matchups.find(matchup => matchup.week === selectedWeek) ?? current ?? teamDetails.matchups[0];
@@ -116,7 +122,11 @@ const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails
                     const isLater = matchup.scheduledDate?.isAfter(today, "day");
                     const status = matchup.resultsUnavailable ? "Unavailable" : isLater ? "Scheduled" : "Pending";
                     return <button key={matchup.week} type="button" aria-pressed={matchup === selected} aria-controls={matchupId}
-                        onClick={() => { setSelectedWeek(matchup.week); }}>
+                        onClick={() => {
+                            if (matchup === selected) return;
+                            scrollPosition.current = window.scrollY;
+                            setSelectedWeek(matchup.week);
+                        }}>
                         <span>{leagueDetails?.bowlingDays?.durationUnit ?? "WK"} {twoDigitNumberFormat.format(matchup.week)}</span>
                         <time dateTime={matchup.scheduledDate?.format("YYYY-MM-DD")}>{matchup.scheduledDate?.format("MMM D") ?? "Date TBD"}</time>
                         <strong>{hasScores ? matchup.pointsWonLost.join("–") : status}</strong>
