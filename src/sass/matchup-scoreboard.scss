@@ -140,3 +140,14 @@
 html:has(.bls-scoreboard) {
   scrollbar-gutter: stable;
 }
+
+html:has(.bls-scoreboard) {
+  overflow-anchor: none;
+}
+
+@media (max-width: 767.98px) {
+  /* A short or pending result near the page footer must not pull the picker up. */
+  .bls-scoreboard {
+    min-height: 100svh;
+  }
+}
