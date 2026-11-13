@@ -158,10 +158,10 @@ const TeamRoster: FC<LeagueTeamRosterProps> = ({teamDetails, currentBreakpoint, 
 
     return (<>
         {leagueDetailsLoading && <div className="card-body"><Loader/></div>}
-        <CardBody className="px-0 py-1">
-            <Card className="mx-2 bls-perf-card">
+        <div className="bls-team-roster">
+            <Card className="bls-perf-card bls-team-panel">
                 <CardHeader className="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                    <span>Bowler Performance</span>
+                    <h2 className="bls-team-panel-title">Bowler Performance</h2>
                     <span className="fs-xs text-body-secondary">Tap a row for full stats</span>
                 </CardHeader>
                 <LeagueRosterPerformanceTable
@@ -175,7 +175,7 @@ const TeamRoster: FC<LeagueTeamRosterProps> = ({teamDetails, currentBreakpoint, 
                 <PlayerDetails playerDetailsDisplay={playerDetailsDisplay} teamDetails={teamDetails}
                                    closePlayerDetails={closePlayerDetails} currentBreakpoint={currentBreakpoint}/>
             }
-        </CardBody>
+        </div>
     </>);
 }
 

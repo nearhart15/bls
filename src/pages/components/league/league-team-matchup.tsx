@@ -64,7 +64,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
     const gamesPerMatchup = leagueDetails?.bowlingDays?.gamesPerWeek ?? 3;
     const compareUrl = matchupComparisonUrl(leagueDetails, teamDetails, matchup);
 
-    return <Card border={showMatchupDetails ? "primary" : "dark"} className="bls-matchup-card mx-auto px-0 py-0 w-100">
+    return <Card className="bls-matchup-card mx-auto px-0 py-0 w-100">
         <CardHeader className="bls-matchup-week-header fw-semibold px-2 py-1"><Stack direction="horizontal" gap={3}>
             <div>{weekPrefix} {twoDigitNumberFormat.format(matchup.week)}</div><div>{matchup.scheduledDate?.format("DD MMM")}</div>
             <div className="me-auto">{matchup.bowlDate && !matchup.bowlDate.isSame(matchup.scheduledDate, "day") && <>&nbsp;<small><Badge bg="light">{matchup.bowlDate.isBefore(matchup.scheduledDate, "day") ? "Pre-Bowl" : "Post-Bowl"}</Badge></small></>}</div>
@@ -105,10 +105,10 @@ const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails
     const matchupId = useId();
     const selected = teamDetails.matchups.find(matchup => matchup.week === selectedWeek) ?? current ?? teamDetails.matchups[0];
 
-    return <section id="bls-current-week" className="bls-matchup-week-anchor bls-scoreboard" aria-labelledby={titleId}
+    return <section id="bls-current-week" className="bls-matchup-week-anchor bls-scoreboard bls-team-panel" aria-labelledby={titleId}
         onFocus={event => { if (event.target === event.currentTarget) setSelectedWeek(undefined); }} tabIndex={-1}>
         {leagueDetailsLoading && <div className="card-body"><Loader/></div>}
-        <h2 id={titleId}>Matchup scoreboard</h2>
+        <header className="bls-team-panel-header"><h2 id={titleId} className="bls-team-panel-title">Matchup Scoreboard</h2></header>
         {selected ? <>
             <div className="bls-scoreboard-weeks" role="group" aria-label="Season matchups">
                 {teamDetails.matchups.map(matchup => {
