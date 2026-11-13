@@ -1,6 +1,6 @@
 import {type FC, useId, useState} from "react";
 import moment from "moment";
-import {Badge, Card, CardBody, CardHeader, Col, Row, Stack, Table} from "react-bootstrap";
+import {Badge, Card, CardBody, CardHeader, Stack, Table} from "react-bootstrap";
 import {ArrowLeftRight, ArrowsCollapse, ArrowsExpand, BoxArrowDown, BoxArrowUp, PersonX} from "react-bootstrap-icons";
 import {Link} from "react-router";
 
@@ -12,6 +12,7 @@ import {matchupComparisonUrl} from "../../../data/league/league-comparison";
 import {type Breakpoint, BS_BP_XS, isBreakpointSmallerThan} from "../ui-utils";
 import Loader from "../loader";
 import {type GameScore, type LeagueMatchup, type MatchupType, SeriesScore, TeamScore} from "../../../data/league/league-matchup";
+import "../../../sass/matchup-scoreboard.scss";
 import MatchupDetailsDisplay from "./league-team-matchup-details";
 
 const MatchupTypeConversion = new Map<MatchupType, string>([
@@ -53,8 +54,8 @@ const calculateTeamHdcp = (gameScores?: GameScore[], seriesScore?: SeriesScore, 
 };
 const twoDigitNumberFormat = Intl.NumberFormat("en-US", {style: "decimal", minimumIntegerDigits: 2});
 
-interface MatchupDisplayProps { anchorId?: string; leagueDetails: LeagueDetails | null; matchup: LeagueMatchup; teamDetails: TrackedLeagueTeam; currentBreakpoint?: Breakpoint; }
-const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDetails, currentBreakpoint, anchorId}) => {
+interface MatchupDisplayProps { leagueDetails: LeagueDetails | null; matchup: LeagueMatchup; teamDetails: TrackedLeagueTeam; currentBreakpoint?: Breakpoint; }
+const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDetails, currentBreakpoint}) => {
     const [detailsExpanded, setDetailsExpanded] = useState(false);
     const showMatchupDetails = Boolean(matchup.bowlDate && !matchup.bowlDate.isAfter(moment()) && matchup.scores?.games.length);
     const isOpponentVacantOrAbsent = Boolean(matchup.opponent?.absent || matchup.opponent?.vacant);
@@ -63,7 +64,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
     const gamesPerMatchup = leagueDetails?.bowlingDays?.gamesPerWeek ?? 3;
     const compareUrl = matchupComparisonUrl(leagueDetails, teamDetails, matchup);
 
-    return <Col id={anchorId} className="bls-matchup-week-anchor"><Card border={showMatchupDetails ? "primary" : "dark"} className="bls-matchup-card mx-auto px-0 py-0 w-100">
+    return <Card border={showMatchupDetails ? "primary" : "dark"} className="bls-matchup-card mx-auto px-0 py-0 w-100">
         <CardHeader className="bls-matchup-week-header fw-semibold px-2 py-1"><Stack direction="horizontal" gap={3}>
             <div>{weekPrefix} {twoDigitNumberFormat.format(matchup.week)}</div><div>{matchup.scheduledDate?.format("DD MMM")}</div>
             <div className="me-auto">{matchup.bowlDate && !matchup.bowlDate.isSame(matchup.scheduledDate, "day") && <>&nbsp;<small><Badge bg="light">{matchup.bowlDate.isBefore(matchup.scheduledDate, "day") ? "Pre-Bowl" : "Post-Bowl"}</Badge></small></>}</div>
@@ -75,7 +76,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
             <div className="bls-matchup-team bls-matchup-team-home"><Stack direction="vertical" className="mx-auto"><div className="align-middle"><TeamNameInfo teamNumber={teamDetails.number} name={teamDetails.name} enteringPosition={matchup.enteringRank}/><br/><span className="fs-sm">hdcp: {calculateTeamHdcp(matchup.scores?.games, matchup.scores?.series, teamDetails.teamStats?.handicap)}</span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.scores} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
             <div className="bls-matchup-center"><Stack direction="vertical" className="text-center h-100">
                 <div><small className={matchup.matchup.startsWith("POSITION") ? "text-danger" : ""}>{MatchupTypeConversion.get(matchup.matchup)}</small></div>
-                <div className="my-auto align-middle">{showMatchupDetails && <span className="fs-5">{matchup.pointsWonLost[0]} - {matchup.pointsWonLost[1]}</span>}</div>
+                <div className="my-auto align-middle">{showMatchupDetails && <span className="bls-scoreboard-points">{matchup.pointsWonLost[0]}–{matchup.pointsWonLost[1]}<small>Points</small></span>}</div>
                 {compareUrl && <div className="d-none d-sm-block my-1"><Link className="bls-matchup-desktop-action" to={compareUrl}>Team Compare</Link></div>}
                 <div className="d-none d-sm-block w-auto">{showMatchupDetails && <button type="button" className="bls-details-toggle bls-matchup-desktop-action" onClick={() => { setDetailsExpanded(expanded => !expanded); }}>{detailsExpanded ? <><ArrowsCollapse/><span>Hide Game Details</span></> : <><ArrowsExpand/><span>Game Details</span></>}</button>}</div>
             </Stack></div>
@@ -91,34 +92,45 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
         </Stack>
         </CardBody>
         <CardBody className={`p-0 mx-1 my-1 ${detailsExpanded ? "d-block" : "d-none"}`}>{showMatchupDetails && <MatchupDetailsDisplay teamDetails={teamDetails} matchup={matchup} currentBreakpoint={currentBreakpoint}/>}</CardBody><div className="my-auto"/>
-    </Card></Col>;
+    </Card>;
 };
 
 interface LeagueTeamMatchupsProps { leagueDetails: LeagueDetails | null; teamDetails: TrackedLeagueTeam; currentBreakpoint: Breakpoint; leagueDetailsLoading: boolean; }
-const LeagueTeamMatchup: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails, leagueDetailsLoading, currentBreakpoint}) => {
+const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails, leagueDetailsLoading, currentBreakpoint}) => {
     const today = moment();
     const scheduled = teamDetails.matchups.filter(matchup => matchup.scheduledDate);
     const current = scheduled.filter(matchup => !matchup.scheduledDate?.isAfter(today, "day")).slice(-1)[0] ?? scheduled[0];
-    return <>
+    const [selectedWeek, setSelectedWeek] = useState<number>();
+    const titleId = useId();
+    const matchupId = useId();
+    const selected = teamDetails.matchups.find(matchup => matchup.week === selectedWeek) ?? current ?? teamDetails.matchups[0];
+
+    return <section id="bls-current-week" className="bls-matchup-week-anchor bls-scoreboard" aria-labelledby={titleId}
+        onFocus={event => { if (event.target === event.currentTarget) setSelectedWeek(undefined); }} tabIndex={-1}>
         {leagueDetailsLoading && <div className="card-body"><Loader/></div>}
-        <CardBody className="px-0 py-1 border border-secondary-subtle">
-            <Card className="mx-1">
-                <CardHeader className="text-white bg-dark text-center fw-bolder py-1">Matchups</CardHeader>
-                <CardBody className="mx-0 px-1 px-sm-2 py-2">
-                    <Row className="row-cols-1 row-cols-lg-2 g-2">
-                        {teamDetails.matchups.map(matchup => <MatchupDisplay
-                            anchorId={matchup === current ? "bls-current-week" : undefined}
-                            key={`${leagueDetails?.id}-${teamDetails.id}-${matchup.week}`}
-                            leagueDetails={leagueDetails}
-                            matchup={matchup}
-                            teamDetails={teamDetails}
-                            currentBreakpoint={currentBreakpoint}
-                        />)}
-                    </Row>
-                </CardBody>
-            </Card>
-        </CardBody>
-    </>;
+        <h2 id={titleId}>Matchup scoreboard</h2>
+        {selected ? <>
+            <div className="bls-scoreboard-weeks" role="group" aria-label="Season matchups">
+                {teamDetails.matchups.map(matchup => {
+                    const hasScores = Boolean(matchup.scores?.games.length);
+                    const isLater = matchup.scheduledDate?.isAfter(today, "day");
+                    const status = matchup.resultsUnavailable ? "Unavailable" : isLater ? "Scheduled" : "Pending";
+                    return <button key={matchup.week} type="button" aria-pressed={matchup === selected} aria-controls={matchupId}
+                        onClick={() => { setSelectedWeek(matchup.week); }}>
+                        <span>{leagueDetails?.bowlingDays?.durationUnit ?? "WK"} {twoDigitNumberFormat.format(matchup.week)}</span>
+                        <time dateTime={matchup.scheduledDate?.format("YYYY-MM-DD")}>{matchup.scheduledDate?.format("MMM D") ?? "Date TBD"}</time>
+                        <strong>{hasScores ? matchup.pointsWonLost.join("–") : status}</strong>
+                    </button>;
+                })}
+            </div>
+            <div id={matchupId}>
+                <MatchupDisplay key={selected.week} leagueDetails={leagueDetails} matchup={selected}
+                    teamDetails={teamDetails} currentBreakpoint={currentBreakpoint}/>
+            </div>
+        </> : <p>No matchups available.</p>}
+    </section>;
 };
+
+const LeagueTeamMatchup: FC<LeagueTeamMatchupsProps> = props => <TeamScoreboard key={props.teamDetails.id} {...props}/>;
 
 export default LeagueTeamMatchup;
