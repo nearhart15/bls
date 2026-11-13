@@ -116,7 +116,7 @@ const LeagueTeamMatchup: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDeta
                     const isLater = matchup.scheduledDate?.isAfter(today, "day");
                     const status = matchup.resultsUnavailable ? "Unavailable" : isLater ? "Scheduled" : "Pending";
                     return <button key={matchup.week} type="button" aria-pressed={matchup === selected} aria-controls={matchupId}
-                        onClick={() => setSelectedWeek(matchup.week)}>
+                        onClick={() => { setSelectedWeek(matchup.week); }}>
                         <span>{leagueDetails?.bowlingDays?.durationUnit ?? "WK"} {twoDigitNumberFormat.format(matchup.week)}</span>
                         <time dateTime={matchup.scheduledDate?.format("YYYY-MM-DD")}>{matchup.scheduledDate?.format("MMM D") ?? "Date TBD"}</time>
                         <strong>{hasScores ? matchup.pointsWonLost.join("–") : status}</strong>
