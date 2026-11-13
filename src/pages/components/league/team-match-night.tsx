@@ -49,7 +49,11 @@ const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, children}) => {
                 <h2 id={titleId}>{team.name ?? "Your team"}</h2>
                 <p className="bls-match-night-context">{[league?.season, league?.name, league?.center].filter(Boolean).join(" · ")}</p>
             </div>
-            {hasSchedule && <button type="button" className="bls-match-night-jump" onClick={() => document.getElementById("bls-current-week")?.scrollIntoView({behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"})}>
+            {hasSchedule && <button type="button" className="bls-match-night-jump" onClick={() => {
+                const scoreboard = document.getElementById("bls-current-week");
+                scoreboard?.focus({preventScroll: true});
+                scoreboard?.scrollIntoView({behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
+            }}>
                 Jump to current week <span aria-hidden="true">↓</span>
             </button>}
         </header>

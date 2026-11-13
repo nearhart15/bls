@@ -1,0 +1,88 @@
+.bls-scoreboard {
+  min-width: 0;
+  padding: clamp(.65rem, 2vw, 1.5rem);
+  color: #edf6fc;
+  background: radial-gradient(ellipse at top left, #15384a, transparent 70%), #0b151f;
+
+  h2 {
+    margin: 0 0 .85rem;
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    letter-spacing: -.035em;
+    font-weight: 800;
+  }
+
+  .bls-matchup-card {
+    background: #0b1723;
+    color: inherit;
+    border: 1px solid #386279 !important;
+    overflow: hidden;
+  }
+
+  .bls-matchup-week-header {
+    background: #173347;
+    color: #e3f5ff;
+
+    .hstack { flex-wrap: wrap; }
+  }
+
+  .bls-matchup-team .align-middle > span:first-child {
+    font-weight: 750;
+    font-size: clamp(.85rem, 2.2vw, 1.35rem);
+  }
+}
+
+.bls-scoreboard-weeks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+  gap: .35rem;
+  margin-bottom: .85rem;
+
+  button {
+    display: grid;
+    justify-items: start;
+    min-width: 0;
+    padding: .44rem .55rem;
+    border: 1px solid #335467;
+    border-radius: .4rem;
+    background: #102333;
+    color: #d9eaf4;
+    font-size: .74rem;
+    text-align: left;
+    font-variant-numeric: tabular-nums;
+
+    &:hover { background: #21465e; }
+
+    &:focus-visible {
+      outline: 2px solid #fbe2a4;
+      outline-offset: 1px;
+    }
+
+    &[aria-pressed="true"] {
+      background: #a5e9f4;
+      color: #0a2637;
+      border-color: #a5e9f4;
+    }
+
+    time { opacity: .85; }
+    strong { font-size: .8rem; }
+  }
+}
+
+.bls-scoreboard-points {
+  display: grid;
+  justify-content: center;
+  color: #a5e9f4;
+  font-size: clamp(1.45rem, 5vw, 3.5rem);
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.05;
+  white-space: nowrap;
+
+  small {
+    color: #c6dce9;
+    font-size: .65rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+}

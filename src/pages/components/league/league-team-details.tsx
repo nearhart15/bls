@@ -82,7 +82,7 @@ const LeagueTeamDetails : FC<LeagueTeamDetailsProps> = ({leagueDetails, leagueDe
             </details>
             <Card className="mt-2 mb-2 mx-0 px-0">
                 <LeagueTeamRoster teamDetails={teamDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
-                <LeagueTeamMatchup leagueDetails={leagueDetails} teamDetails={teamDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
+                <LeagueTeamMatchup key={teamDetails.id} leagueDetails={leagueDetails} teamDetails={teamDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>
             </Card>
         </>}
     </>;
