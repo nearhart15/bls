@@ -83,6 +83,7 @@
   a {
     display: flex;
     flex-direction: column;
+    container-type: inline-size;
     width: 100%;
     min-width: 0;
     min-height: 13.25rem;
@@ -103,7 +104,8 @@
 .bls-podium-value {
   margin: auto 0 .35rem;
   padding-top: .8rem;
-  font-size: clamp(2.2rem, 5vw, 4rem);
+  --podium-value-size: clamp(2.2rem, 5vw, 4rem);
+  font-size: min(var(--podium-value-size), calc(100cqi / var(--podium-value-width)));
   font-weight: 850;
   line-height: 1.05;
   letter-spacing: -.055em;
@@ -129,6 +131,7 @@
   tbody th { font-size: .9rem; overflow-wrap: anywhere; }
   tbody a { color: var(--bls-accent); text-underline-offset: .2rem; }
   table :is(th,td):nth-child(n+3) { text-align: right; }
+  tbody td { white-space: nowrap; }
   tbody td:last-child { font-weight: 750; }
 }
 
@@ -147,7 +150,7 @@
     a { min-height: 8.5rem; padding: .75rem .8rem; }
   }
 
-  .bls-podium-value { font-size: clamp(1.4rem, 7.5vw, 2.5rem); }
+  .bls-podium-value { --podium-value-size: clamp(1.4rem, 7.5vw, 2.5rem); }
   .bls-podium-results table { font-size: .8rem; }
   .bls-podium-results thead th:nth-child(3) { width: 4rem; }
 }
