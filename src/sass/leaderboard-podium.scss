@@ -120,7 +120,7 @@
 
   table { width: 100%; table-layout: fixed; font-variant-numeric: tabular-nums; }
   thead th:first-child { width: 3.9rem; }
-  thead th:nth-child(3) { width: 4rem; }
+  thead th:nth-child(3) { width: 5rem; white-space: nowrap; }
   thead th:last-child { width: 28%; }
   table th, table td { padding: .65rem clamp(.45rem, 2vw, 1.1rem); vertical-align: middle; overflow-wrap: anywhere; }
   thead th { background: var(--bls-surface-2); color: var(--bls-text-muted); font-size: .7rem; font-weight: 650; }
@@ -149,4 +149,5 @@
 
   .bls-podium-value { font-size: clamp(1.4rem, 7.5vw, 2.5rem); }
   .bls-podium-results table { font-size: .8rem; }
+  .bls-podium-results thead th:nth-child(3) { width: 4rem; }
 }
