@@ -54,9 +54,16 @@ const calculateTeamHdcp = (gameScores?: GameScore[], seriesScore?: SeriesScore, 
 };
 const twoDigitNumberFormat = Intl.NumberFormat("en-US", {style: "decimal", minimumIntegerDigits: 2});
 
-interface MatchupDisplayProps { leagueDetails: LeagueDetails | null; matchup: LeagueMatchup; teamDetails: TrackedLeagueTeam; currentBreakpoint?: Breakpoint; }
-const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDetails, currentBreakpoint}) => {
-    const [detailsExpanded, setDetailsExpanded] = useState(false);
+interface MatchupDisplayProps {
+    leagueDetails: LeagueDetails | null;
+    matchup: LeagueMatchup;
+    teamDetails: TrackedLeagueTeam;
+    currentBreakpoint?: Breakpoint;
+    detailsExpanded: boolean;
+    onToggleDetails: () => void;
+}
+const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDetails, currentBreakpoint, detailsExpanded, onToggleDetails}) => {
+    const detailsId = useId();
     const showMatchupDetails = Boolean(matchup.bowlDate && !matchup.bowlDate.isAfter(moment()) && matchup.scores?.games.length);
     const isOpponentVacantOrAbsent = Boolean(matchup.opponent?.absent || matchup.opponent?.vacant);
     const opponent = opponentDisplay(leagueDetails, matchup.opponent);
@@ -78,7 +85,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
                 <div><small className={matchup.matchup.startsWith("POSITION") ? "text-danger" : ""}>{MatchupTypeConversion.get(matchup.matchup)}</small></div>
                 <div className="my-auto align-middle">{showMatchupDetails && <span className="bls-scoreboard-points">{matchup.pointsWonLost[0]}–{matchup.pointsWonLost[1]}<small>Points</small></span>}</div>
                 {compareUrl && <div className="d-none d-sm-block my-1"><Link className="bls-matchup-desktop-action" to={compareUrl}>Team Compare</Link></div>}
-                <div className="d-none d-sm-block w-auto">{showMatchupDetails && <button type="button" className="bls-details-toggle bls-matchup-desktop-action" onClick={() => { setDetailsExpanded(expanded => !expanded); }}>{detailsExpanded ? <><ArrowsCollapse/><span>Hide Game Details</span></> : <><ArrowsExpand/><span>Game Details</span></>}</button>}</div>
+                <div className="d-none d-sm-block w-auto">{showMatchupDetails && <button type="button" className="bls-details-toggle bls-matchup-desktop-action" aria-expanded={detailsExpanded} aria-controls={detailsId} onClick={onToggleDetails}>{detailsExpanded ? <><ArrowsCollapse/><span>Hide Game Details</span></> : <><ArrowsExpand/><span>Game Details</span></>}</button>}</div>
             </Stack></div>
             <div className="bls-matchup-team bls-matchup-team-away"><Stack direction="vertical" className="mx-auto"><div className="text-end align-middle"><TeamNameInfo teamNumber={opponent.number} name={opponent.name} enteringPosition={opponent.enteringRank}/><br/>{isOpponentVacantOrAbsent && <><PersonX/>&nbsp;</>}<span className="fs-sm">hdcp: <span className={isOpponentVacantOrAbsent ? "text-decoration-line-through" : ""}>{calculateTeamHdcp(matchup.opponent?.scores?.games, matchup.opponent?.scores?.series, matchup.opponent?.teamHdcp)}</span></span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.opponent?.scores} matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
         </Stack>
@@ -86,12 +93,15 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
             <div>{showMatchupDetails && <GameSummaryAndPoints teamNumber={teamDetails.number} teamScore={matchup.scores} currentBreakpoint={currentBreakpoint}/>}</div>
             <div>{showMatchupDetails && <GameSummaryAndPoints teamNumber={opponent.number} teamScore={matchup.opponent?.scores} matchupGames={gamesPerMatchup} isBlindOrAbsent={isOpponentVacantOrAbsent} currentBreakpoint={currentBreakpoint}/>}</div>
             <div className="bls-matchup-mobile-actions">
-                {showMatchupDetails && <button type="button" className="bls-matchup-mobile-action" onClick={() => { setDetailsExpanded(expanded => !expanded); }}>{detailsExpanded ? <><BoxArrowUp/> Hide Details</> : <><BoxArrowDown/> Show Details</>}</button>}
+                {showMatchupDetails && <button type="button" className="bls-matchup-mobile-action" aria-expanded={detailsExpanded} aria-controls={detailsId} onClick={onToggleDetails}>{detailsExpanded ? <><BoxArrowUp/> Hide Details</> : <><BoxArrowDown/> Show Details</>}</button>}
                 {compareUrl && <Link className="bls-matchup-mobile-action" to={compareUrl}><ArrowLeftRight/> Team Compare</Link>}
             </div>
         </Stack>
         </CardBody>
-        <CardBody className={`p-0 mx-1 my-1 ${detailsExpanded ? "d-block" : "d-none"}`}>{showMatchupDetails && <MatchupDetailsDisplay teamDetails={teamDetails} matchup={matchup} currentBreakpoint={currentBreakpoint}/>}</CardBody><div className="my-auto"/>
+        {showMatchupDetails && <CardBody id={detailsId} className={`p-0 mx-1 my-1 ${detailsExpanded ? "d-block" : "d-none"}`}>
+            <MatchupDetailsDisplay teamDetails={teamDetails} matchup={matchup} currentBreakpoint={currentBreakpoint}/>
+        </CardBody>}
+        <div className="my-auto"/>
     </Card>;
 };
 
@@ -101,6 +111,7 @@ const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails
     const scheduled = teamDetails.matchups.filter(matchup => matchup.scheduledDate);
     const current = scheduled.filter(matchup => !matchup.scheduledDate?.isAfter(today, "day")).slice(-1)[0] ?? scheduled[0];
     const [selectedWeek, setSelectedWeek] = useState<number>();
+    const [detailsExpanded, setDetailsExpanded] = useState(false);
     const scrollPosition = useRef<number | undefined>(undefined);
     useLayoutEffect(() => {
         if (scrollPosition.current == null) return;
@@ -135,7 +146,8 @@ const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails
             </div>
             <div id={matchupId}>
                 <MatchupDisplay key={selected.week} leagueDetails={leagueDetails} matchup={selected}
-                    teamDetails={teamDetails} currentBreakpoint={currentBreakpoint}/>
+                    teamDetails={teamDetails} currentBreakpoint={currentBreakpoint} detailsExpanded={detailsExpanded}
+                    onToggleDetails={() => { setDetailsExpanded(expanded => !expanded); }}/>
             </div>
         </> : <p>No matchups available.</p>}
     </section>;
