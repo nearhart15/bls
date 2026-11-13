@@ -25,7 +25,6 @@ import {LEAGUE_DETAILS_CACHE_CATEGORY, leagueDetailsFetcher} from "../../../data
 import type {LeagueDetails} from "../../../data/league/league-details";
 import type {LeagueInfo} from "../../../data/league/league-info";
 import {useCachedFetcher} from "../cache/data-loader";
-import LeagueSummary from "./league-summary";
 import {useNavigate} from "react-router";
 import Loader from "../loader";
 import {LeagueSourceStatus} from "../data-source-status";
@@ -61,10 +60,6 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
     return (
         <>
             {leagueDetails && <LeagueSourceStatus leagueDetails={leagueDetails} teamId={currentDisplay === "TEAM" ? displayedTeam : undefined}/>}
-            {currentDisplay === "TEAM" ? <details className="bls-league-reference" key={leagueDetails?.id}>
-                <summary>League rules, honor roll &amp; center info</summary>
-                <div><LeagueSummary leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/></div>
-            </details> : <LeagueSummary leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>}
             {/*Team selection Menu*/}
             <Container fluid="true" className="bls-team-nav-wrap px-0 px-sm-2">
             {leagueDetails && <Nav variant="pills" className="bls-team-nav py-0 my-0 flex-nowrap">
