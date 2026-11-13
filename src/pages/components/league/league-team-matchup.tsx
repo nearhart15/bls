@@ -96,7 +96,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
 };
 
 interface LeagueTeamMatchupsProps { leagueDetails: LeagueDetails | null; teamDetails: TrackedLeagueTeam; currentBreakpoint: Breakpoint; leagueDetailsLoading: boolean; }
-const LeagueTeamMatchup: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails, leagueDetailsLoading, currentBreakpoint}) => {
+const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails, leagueDetailsLoading, currentBreakpoint}) => {
     const today = moment();
     const scheduled = teamDetails.matchups.filter(matchup => matchup.scheduledDate);
     const current = scheduled.filter(matchup => !matchup.scheduledDate?.isAfter(today, "day")).slice(-1)[0] ?? scheduled[0];
@@ -130,5 +130,7 @@ const LeagueTeamMatchup: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDeta
         </> : <p>No matchups available.</p>}
     </section>;
 };
+
+const LeagueTeamMatchup: FC<LeagueTeamMatchupsProps> = props => <TeamScoreboard key={props.teamDetails.id} {...props}/>;
 
 export default LeagueTeamMatchup;
