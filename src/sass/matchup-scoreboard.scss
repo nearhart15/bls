@@ -115,11 +115,12 @@
 }
 
 /* The center controls must not determine either score table's width. */
-.bls-scoreboard .bls-matchup-card .card-body.mb-auto > .hstack.gap-2 {
+.bls-scoreboard .bls-matchup-card .card-body.py-0.px-1.mb-auto > .hstack.gap-2 {
   grid-template-columns: minmax(0, 1fr) clamp(8rem, 23cqw, 11rem) minmax(0, 1fr);
 }
 
 .bls-scoreboard .bls-matchup-card .bls-matchup-center {
+  width: 100%;
   min-width: 0;
 }
 
@@ -131,7 +132,7 @@
 }
 
 @media (max-width: 575.98px) {
-  .bls-scoreboard .bls-matchup-card .card-body.mb-auto > .hstack.gap-2 {
+  .bls-scoreboard .bls-matchup-card .card-body.py-0.px-1.mb-auto > .hstack.gap-2 {
     grid-template-columns: minmax(0, 1fr) 4rem minmax(0, 1fr);
   }
 }
