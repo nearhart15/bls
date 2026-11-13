@@ -49,7 +49,7 @@ export function dataUrl(base: string, location: string): string {
     return url.href;
 }
 
-export function validateJson(value: unknown, key = "", depth = 0): void {
+export function validateJson(value: unknown, key = "", depth = 0, checkFrames = true): void {
     if (depth > 30) throw new Error("Data nesting limit exceeded");
     if (typeof value === "number" && !Number.isFinite(value)) throw new Error("Invalid number: " + key);
     if (typeof value === "string" && (value.length > 20000 || (["id","player","name"].includes(key) && (value.length > 200 || /[\r\n\x00-\x1f]/.test(value))))) {
@@ -69,25 +69,25 @@ export function validateJson(value: unknown, key = "", depth = 0): void {
     }
     if (Array.isArray(value)) {
         if (value.length > 10000) throw new Error("Too many records: " + key);
-        if (key === "frames" && value.length) validateFrames(value);
+        if (checkFrames && key === "frames" && value.length) validateFrames(value);
         const ids = new Set<string>();
         for (const item of value as unknown[]) {
             if (item && typeof item === "object" && "id" in item && typeof item.id === "string") {
                 if (ids.has(item.id)) throw new Error("Duplicate ID: " + item.id);
                 ids.add(item.id);
             }
-            validateJson(item, "", depth + 1);
+            validateJson(item, "", depth + 1, checkFrames);
         }
     } else if (value && typeof value === "object") {
         if (Object.keys(value).length > 200) throw new Error("Too many object fields");
         for (const [field,item] of Object.entries(value)) {
             if (["__proto__","constructor","prototype"].includes(field)) throw new Error("Forbidden object field");
-            validateJson(item, field, depth + 1);
+            validateJson(item, field, depth + 1, checkFrames);
         }
     }
 }
 
-export async function fetchJson(url: string): Promise<object> {
+export async function fetchJson(url: string, options?: {validateFrameScores?: boolean}): Promise<object> {
     const requested = trustedDataUrl(url);
     const controller = new AbortController();
     const timer = setTimeout(() => { controller.abort(); }, REQUEST_TIMEOUT_MS);
@@ -128,7 +128,7 @@ export async function fetchJson(url: string): Promise<object> {
         for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
         const result: unknown = JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(bytes));
         if (!result || typeof result !== "object" || Array.isArray(result)) throw new Error("Expected a JSON document");
-        validateJson(result);
+        validateJson(result, "", 0, options?.validateFrameScores ?? true);
         return result;
     } finally {
         clearTimeout(timer);

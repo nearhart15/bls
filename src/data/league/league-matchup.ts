@@ -183,5 +183,6 @@ export class LeagueMatchup {
     @JsonProperty("opponent", OpponentTeam)
     opponent: OpponentTeam | undefined = undefined;
 
+    resultsUnavailable = false;
     pointsWonLost: [number, number] = [0, 0];
 }
