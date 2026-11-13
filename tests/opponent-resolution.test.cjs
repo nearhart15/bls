@@ -170,7 +170,6 @@ test('allowing pending opponents preserves player and score validation', async (
     ['duplicate player', data => {data.team.matchups[0].scores['player-scores'].push(structuredClone(data.team.matchups[0].scores['player-scores'][0]));}, /Unknown or duplicate player/],
     ['incomplete series', data => {data.team.matchups[0].scores['player-scores'][0].games.pop();}, /Incomplete matchup/],
     ['out-of-range game', data => {data.team.matchups[0].scores['player-scores'][0].games[0]['scratch-score'] = 301;}, /scratch score/],
-    ['invalid frames', data => {data.team.matchups[0].scores['player-scores'][0].games[0].frames = [['87', '/']];}, /frame|ball/i],
   ];
   for (const [name, mutate, pattern] of cases) {
     const data = fixture();
@@ -225,4 +224,16 @@ test('opponent names remain plain text that React safely escapes', async () => {
   assert.equal(display.name, name);
   const html = renderToStaticMarkup(React.createElement('span', null, display.name));
   assert.equal(html, '<span>&lt;img src=x onerror=alert(1)&gt; &amp; Bowl</span>');
+});
+
+
+test("an incomplete frame isolates only its matchup", async () => {
+  const data = fixture();
+  data.team.matchups.push(pendingRound());
+  data.team.matchups[0].scores["player-scores"][0].games[0].frames = [["87", "/"]];
+  const league = await fetchFixture(data);
+  assert.equal(league.teams[0].matchups.length, 2);
+  assert.equal(league.teams[0].matchups[0].resultsUnavailable, true);
+  assert.equal(league.teams[0].matchups[0].scores, undefined);
+  assert.equal(league.teams[0].matchups[1].resultsUnavailable, false);
 });

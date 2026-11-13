@@ -1,3 +1,4 @@
+import {validateFrames} from "../utils/bowling-input";
 import {sharedLoad} from "../utils/shared-load";
 import {validateLeague} from "./validate-league";
 import {reconcileLeagueMetadata} from "./league-metadata";
@@ -34,9 +35,11 @@ export const leagueInfoListFetcher = async() =>
     fetchJson(LEAGUE_INDEX_RESOURCE)
         .then((json :object) => createJsonConverter().deserialize<AvailableLeagues>(json, AvailableLeagues));
 
-export const leagueTeamDetailsFetcher = async(dataLoc: string) =>
-    fetchJson(dataUrl(APP_URL_BASE, dataLoc))
-        .then((json :object) => createJsonConverter().deserialize<TrackedLeagueTeam>(json, TrackedLeagueTeam));
+export const leagueTeamDetailsFetcher = async(dataLoc: string) => {
+    const json = await fetchJson(dataUrl(APP_URL_BASE, dataLoc), {validateFrameScores: false});
+    const team = createJsonConverter().deserialize<TrackedLeagueTeam>(json, TrackedLeagueTeam);
+    return team;
+};
 
 const loadLeagueDetails = async(dataLoc: string, expectedLeagueId?: string) => {
     const leagueDetails: LeagueDetails = await fetchJson(dataUrl(APP_URL_BASE, dataLoc))
@@ -53,6 +56,20 @@ const loadLeagueDetails = async(dataLoc: string, expectedLeagueId?: string) => {
 
     reconcileLeagueMetadata(leagueDetails, expectedLeagueId);
     validateLeague(leagueDetails);
+    for (const team of teams) {
+        for (const matchup of team.matchups) {
+            try {
+                for (const player of matchup.scores?.playerScores ?? []) {
+                    for (const game of player.games) {
+                        if (game.inFrames.length > 0) validateFrames(game.inFrames);
+                    }
+                }
+            } catch {
+                matchup.resultsUnavailable = true;
+                matchup.scores = undefined;
+            }
+        }
+    }
     // Empty score objects are schedule placeholders, not bowled zero-score series.
     for (const team of leagueDetails.teams) {
         for (const matchup of team.matchups) {

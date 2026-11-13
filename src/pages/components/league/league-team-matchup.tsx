@@ -69,7 +69,9 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
             <div className="me-auto">{matchup.bowlDate && !matchup.bowlDate.isSame(matchup.scheduledDate, "day") && <>&nbsp;<small><Badge bg="light">{matchup.bowlDate.isBefore(matchup.scheduledDate, "day") ? "Pre-Bowl" : "Post-Bowl"}</Badge></small></>}</div>
             <div>Lanes {twoDigitNumberFormat.format(matchup.lanes[0])} - {twoDigitNumberFormat.format(matchup.lanes[1])}</div>
         </Stack></CardHeader>
-        <CardBody className="py-0 px-1 mb-auto"><Stack direction="horizontal" gap={2}>
+        <CardBody className="py-0 px-1 mb-auto">
+            {matchup.resultsUnavailable && <p className="alert alert-warning py-2 my-2 small">Results unavailable. The source scorecard has an invalid or incomplete frame.</p>}
+            <Stack direction="horizontal" gap={2}>
             <div className="bls-matchup-team bls-matchup-team-home"><Stack direction="vertical" className="mx-auto"><div className="align-middle"><TeamNameInfo teamNumber={teamDetails.number} name={teamDetails.name} enteringPosition={matchup.enteringRank}/><br/><span className="fs-sm">hdcp: {calculateTeamHdcp(matchup.scores?.games, matchup.scores?.series, teamDetails.teamStats?.handicap)}</span></div><div className="d-none d-sm-block">{showMatchupDetails && <GameSummaryAndPoints teamScore={matchup.scores} currentBreakpoint={currentBreakpoint}/>}</div></Stack></div>
             <div className="bls-matchup-center"><Stack direction="vertical" className="text-center h-100">
                 <div><small className={matchup.matchup.startsWith("POSITION") ? "text-danger" : ""}>{MatchupTypeConversion.get(matchup.matchup)}</small></div>
