@@ -29,6 +29,10 @@ const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, children}) => {
     const lanes = featured?.lanes.filter(lane => Number.isInteger(lane) && lane > 0) ?? [];
     const comparison = featured && !featured.opponent?.absent && !featured.opponent?.vacant
         ? matchupComparisonUrl(league, team, featured) : null;
+    const practiceStart = league?.bowlingDays?.startTime;
+    const fixtureNote = nextMatchup
+        ? practiceStart?.isValid() && `Practice starts ${practiceStart.format("h:mm a")}`
+        : "No upcoming matchups scheduled.";
     const hasLastScores = (lastMatchup?.scores?.games.length ?? 0) > 0;
     const hasLastPoints = hasLastScores && Boolean(lastMatchup?.opponent?.scores?.games.length || lastMatchup?.opponent?.absent || lastMatchup?.opponent?.vacant);
     const hasSchedule = team.matchups.some(matchup => matchup.scheduledDate?.isValid());
@@ -69,15 +73,16 @@ const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, children}) => {
                         <div className="bls-match-night-opponent">
                             <span>Against {opponent.number != null ? "#" + opponent.number : ""}</span>
                             <strong>{opponent.name}</strong>
-                            {comparison && <Link to={comparison}>Compare teams <span aria-hidden="true">↗</span></Link>}
                         </div>
                         <div className="bls-match-night-lanes">
                             <span>{lanes.length === 1 ? "Lane" : "Lanes"}</span>
                             {lanes.length > 0 ? <strong>{lanes.join(" / ")}</strong> : <p>To be assigned</p>}
                         </div>
                     </div>
-                    {nextMatchup && league?.bowlingDays?.startTime?.isValid() && <p className="bls-match-night-note">Practice starts {league.bowlingDays.startTime.format("h:mm a")}</p>}
-                    {!nextMatchup && <p className="bls-match-night-note">No upcoming matchups scheduled.</p>}
+                    {(comparison || fixtureNote) && <footer className="bls-match-night-fixture-footer">
+                        {comparison && <Link to={comparison}>Compare teams <span aria-hidden="true">→</span></Link>}
+                        {fixtureNote && <p className="bls-match-night-note">{fixtureNote}</p>}
+                    </footer>}
                 </> : <p className="bls-match-night-no-data">{pendingMatchups.length > 0 ? "No upcoming matchups scheduled. Earlier matchups are awaiting results." : "No matchups are posted yet. The team’s schedule will appear here when available."}</p>}
             </article>
             <article className="bls-match-night-result">
@@ -93,7 +98,7 @@ const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, children}) => {
                             <div><dt>Credited scratch</dt><dd>{statValue(lastMatchup.scores?.series.effectiveScratchScore)}</dd></div>
                             <div><dt>With handicap</dt><dd>{statValue(lastMatchup.scores?.series.hdcpScore)}</dd></div>
                         </dl>
-                    </> : <p>Team totals are not available.</p>}
+                    </> : <p className="bls-match-night-no-data">Team totals are not available.</p>}
                 </> : <p className="bls-match-night-no-data">No results recorded yet.</p>}
             </article>
         </div>

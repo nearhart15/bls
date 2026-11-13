@@ -24,7 +24,12 @@ export function matchupComparisonUrl(league: LeagueDetails | null, team: Tracked
 
 interface ComparisonTeam {number: number; name?: string}
 interface ComparisonSheet {league?: {date?: string | null}; standings: ComparisonTeam[]}
-const normalizedName = (value?: string) => (value ?? "").toLocaleLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]/g, "");
+
+const normalizedName = (value?: string) => (value ?? "").trim().toLocaleLowerCase()
+    // The A.B.C. sheet stylizes this name with symbols that would otherwise be dropped.
+    .replace(/^\$h!t\s+a\s+brick$/, "shit a brick")
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]/g, "");
 
 /** Team numbers are reusable; a linked comparison must match the league schedule and names. */
 export function apiComparisonIssue(sheet: ComparisonSheet, league: LeagueDetails, teamA?: ComparisonTeam, teamB?: ComparisonTeam): string | null {
