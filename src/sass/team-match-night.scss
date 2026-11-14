@@ -1,5 +1,9 @@
 .bls-match-night {
   --night-accent: #9dcbff;
+  --night-text: #edf7ff;
+  --night-muted: #afc8e8;
+  --night-border: #345472;
+  --night-background: linear-gradient(125deg, #163a58, #0b1b2c 85%);
   margin: .8rem 0 1.5rem;
   color: var(--bls-text);
   font-variant-numeric: tabular-nums;
@@ -37,12 +41,18 @@
 
   .bls-match-night-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 1rem; }
 
-  .bls-match-night-fixture {
+  .bls-match-night-fixture,
+  .bls-match-night-result,
+  .bls-match-night-standing {
+    color: var(--night-text);
+    background: var(--night-background);
+    border: 1px solid var(--night-border);
+  }
+
+  .bls-match-night-fixture,
+  .bls-match-night-result {
     min-width: 0;
     padding: clamp(1.2rem, 3vw, 2rem);
-    color: #edf7ff;
-    background: linear-gradient(125deg, #163a58, #0b1b2c 85%);
-    border: 1px solid #345472;
     border-radius: 22px;
   }
 
@@ -98,27 +108,22 @@
   .bls-match-night-note { color: #afc8e8; font-size: .7rem; margin: 0; }
 
   .bls-match-night-result {
-    padding: clamp(1.2rem, 3vw, 2rem);
-    min-width: 0;
-    border: 1px solid var(--bls-border);
-    background: var(--bls-surface);
-    border-radius: 22px;
-    h3 { margin: 0 0 .65rem; font-size: .7rem; font-weight: 750; text-transform: uppercase; letter-spacing: .1em; color: var(--bls-text-muted); }
+    h3 { margin: 0 0 .65rem; font-size: .7rem; font-weight: 750; text-transform: uppercase; letter-spacing: .1em; color: var(--night-accent); }
   }
 
-  .bls-match-night-result-date { font-size: .7rem; color: var(--bls-text-muted); margin: 0 0 .3rem; }
+  .bls-match-night-result-date { font-size: .7rem; color: var(--night-muted); margin: 0 0 .3rem; }
   .bls-match-night-result-opponent { font-size: .85rem; margin: 0; overflow-wrap: anywhere; }
   .bls-match-night-points {
     margin: .45rem 0 .65rem;
     strong { display: block; font-size: clamp(2.3rem, 5vw, 4rem); line-height: 1.15; font-weight: 800; letter-spacing: -.05em; }
-    strong span { color: var(--bls-text-muted); font-weight: 400; }
-    > span { display: block; color: var(--bls-text-muted); font-size: .65rem; }
+    strong span { color: var(--night-muted); font-weight: 400; }
+    > span { display: block; color: var(--night-muted); font-size: .65rem; }
     p { margin: 0; }
   }
 
   .bls-match-night-result-scores {
-    display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 0; padding-top: .6rem; border-top: 1px solid var(--bls-border);
-    dt { font-size: .65rem; font-weight: 500; color: var(--bls-text-muted); }
+    display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 0; padding-top: .6rem; border-top: 1px solid var(--night-border);
+    dt { font-size: .65rem; font-weight: 500; color: var(--night-muted); }
     dd { font-size: 1.25rem; font-weight: 750; margin: .3rem 0 0; }
   }
 
@@ -133,19 +138,25 @@
 
   .bls-match-night-standing {
     display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin: 1.2rem 0; padding: 1.2rem 0;
-    border-block: 1px solid var(--bls-border);
-    > div { min-width: 0; padding-inline: 1rem; border-inline-start: 1px solid var(--bls-border); }
+    border-radius: 12px;
+    > div { min-width: 0; padding-inline: 1rem; border-inline-start: 1px solid var(--night-border); }
     > div:first-child { border: 0; }
-    dt { color: var(--bls-text-muted); font-size: .65rem; font-weight: 500; }
+    dt { color: var(--night-muted); font-size: .65rem; font-weight: 500; }
     dd { font-size: 1.6rem; font-weight: 750; letter-spacing: -.04em; margin: .3rem 0 0; overflow-wrap: anywhere; }
   }
 
-  .bls-match-night-details-body { padding: 0 1rem 1rem; }
+  .bls-match-night-details-body { padding: .75rem 1rem 1rem; }
   .bls-match-night-season-stats {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: 1rem; margin: .5rem 0 1rem;
     dt { font-size: .7rem; font-weight: 500; color: var(--bls-text-muted); }
     dd { font-weight: 700; margin: .3rem 0 0; }
   }
+}
+
+.bls-team-panels,
+.bls-match-night-details,
+.bls-league-reference {
+  --bls-team-header-bg: color-mix(in srgb, var(--bls-surface-3) 88%, var(--bls-accent));
 }
 
 .bls-match-night-details,
@@ -154,13 +165,24 @@
   border: 1px solid var(--bls-border);
   border-radius: 12px;
   background: var(--bls-surface);
-  > summary { padding: 1rem; cursor: pointer; font-size: .8rem; font-weight: 650; }
+  > summary {
+    padding: 1rem;
+    cursor: pointer;
+    font-size: .8rem;
+    font-weight: 650;
+    background: var(--bls-team-header-bg);
+    border-radius: 11px;
+  }
+  &[open] > summary {
+    border-radius: 11px 11px 0 0;
+    border-bottom: 1px solid var(--bls-border);
+  }
   > summary:focus-visible { outline: 3px solid var(--bls-accent, #2997ff); outline-offset: 4px; }
 }
 
 .bls-league-reference {
   margin: 0 0 1rem;
-  > div { padding: 0 1rem 1rem; }
+  > div { padding: .75rem 1rem 1rem; }
 }
 
 @media (max-width: 767.98px) {
