@@ -76,8 +76,9 @@
 }
 
 .bls-header-section {
-  justify-self: start;
   grid-column: 1 / -1;
+  justify-self: stretch;
+  border-radius: 0 0 var(--bls-radius-sm) var(--bls-radius-sm);
   padding: .45rem 1.5rem .45rem .85rem;
   font-size: .8rem;
   font-weight: 700;
