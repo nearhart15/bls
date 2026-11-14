@@ -61,19 +61,20 @@ function buildTeamPositionScoreData (teamDetails: TrackedLeagueTeam): TeamPositi
 }
 
 interface LeagueTeamDetailsProps {
+    leagueOngoing: boolean;
     leagueDetails: LeagueDetails | null;
     leagueDetailsLoading: boolean;
     currentBreakpoint: Breakpoint;
     teamId?: string;
     children?: ReactNode;
 }
-const LeagueTeamDetails : FC<LeagueTeamDetailsProps> = ({leagueDetails, leagueDetailsLoading, currentBreakpoint, teamId}: LeagueTeamDetailsProps) => {
+const LeagueTeamDetails : FC<LeagueTeamDetailsProps> = ({leagueOngoing, leagueDetails, leagueDetailsLoading, currentBreakpoint, teamId}: LeagueTeamDetailsProps) => {
     const teamDetails = leagueDetails?.teams.find(team => team.id === teamId) ?? null;
 
     return <>
         {leagueDetailsLoading && <Loader/>}
         {teamDetails && <>
-            <TeamMatchNight key={teamDetails.id} team={teamDetails} league={leagueDetails}>
+            <TeamMatchNight key={teamDetails.id} team={teamDetails} league={leagueDetails} leagueOngoing={leagueOngoing}>
                 <TeamStatGraph teamPosScores={buildTeamPositionScoreData(teamDetails)}/>
             </TeamMatchNight>
             <details className="bls-league-reference" key={leagueDetails?.id}>

@@ -16,7 +16,7 @@ function fixture(matchups) {
     Object.assign(team, {id: 'team-a', number: 18, name: 'Pins Go Boom!', matchups});
     const league = new LeagueDetails();
     Object.assign(league, {id: 'fall-2026', name: 'Fall League', teams: [team]});
-    return {team, league};
+    return {team, league, leagueOngoing: true};
 }
 
 function render(props) {
@@ -92,6 +92,7 @@ test('pending frame rank uses the dated division standing for the same team and 
     match.scheduledDate = moment('2026-11-05');
     const props = fixture([match]);
     props.team.currentRank = 'PENDING';
+    props.league.completed = true;
 
     function displayedRank() {
         const dom = render(props);
@@ -109,7 +110,7 @@ test('pending frame rank uses the dated division standing for the same team and 
     match.scheduledDate = moment('2025-11-06');
     assert.equal(displayedRank(), '—');
     match.scheduledDate = moment('2026-11-05');
-    props.league.completed = true;
+    props.leagueOngoing = false;
     assert.equal(displayedRank(), '—');
     props.team.currentRank = '2';
     assert.equal(displayedRank(), '2');

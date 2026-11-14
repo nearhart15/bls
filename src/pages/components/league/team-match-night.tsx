@@ -17,6 +17,7 @@ const statValue = (value: number | undefined) =>
 interface TeamMatchNightProps {
     team: TrackedLeagueTeam;
     league: LeagueDetails | null;
+    leagueOngoing: boolean;
     children?: ReactNode;
 }
 
@@ -33,7 +34,7 @@ function PublishedTeamRank({team}: {team: TrackedLeagueTeam}) {
     </small></>;
 }
 
-const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, children}) => {
+const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, leagueOngoing, children}) => {
     const titleId = useId();
     const [detailsOpen, setDetailsOpen] = useState(false);
     const {nextMatchup, lastMatchup, pendingMatchups} = matchupSchedule(team.matchups);
@@ -128,7 +129,7 @@ const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, children}) => {
             <div><dt>Division</dt><dd>{team.division || "—"}</dd></div>
             <div><dt>Current rank</dt><dd>{/^[1-9]\d*$/.test(currentRank)
                 ? currentRank
-                : league && !league.completed ? <PublishedTeamRank team={team}/> : "—"}</dd></div>
+                : leagueOngoing ? <PublishedTeamRank team={team}/> : "—"}</dd></div>
             <div><dt>Season points won</dt><dd>{statValue(team.pointsWonLost[0])}</dd></div>
             <div><dt>Season points lost</dt><dd>{statValue(team.pointsWonLost[1])}</dd></div>
         </dl>
