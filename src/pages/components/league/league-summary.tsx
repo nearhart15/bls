@@ -278,6 +278,7 @@ const LeagueSummary: FC<LeagueSummaryParams> = ({leagueDetails, leagueDetailsLoa
                     {showJumpToCurrentWeek && leagueDetails && <button type="button" className="btn btn-sm bls-jump-current-week ms-2" style={{float: "right"}} onClick={() => {
                         const scoreboard = document.getElementById("bls-current-week");
                         if (scoreboard instanceof HTMLDetailsElement) scoreboard.open = true;
+                        scoreboard?.focus({preventScroll: true});
                         scoreboard?.scrollIntoView({behavior: "smooth", block: "start"});
                     }}>↓ Jump to Current Week</button>}
                     {leagueDetails && !leagueDetails.completed && <Badge bg="success" className="align-middle float-end"><PlayCircleFill/> Ongoing</Badge>}
