@@ -1,4 +1,5 @@
 .bls-team-panels {
+  --bls-team-header-bg: color-mix(in srgb, var(--bls-surface-3) 88%, var(--bls-accent));
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
@@ -12,7 +13,7 @@
 }
 
 .bls-team-panels .bls-team-panel > summary {
-  background: color-mix(in srgb, var(--bls-surface-3) 88%, var(--bls-accent));
+  background: var(--bls-team-header-bg);
   border-radius: 11px;
 }
 
@@ -38,7 +39,7 @@
   }
 
   .card .card-header.bls-matchup-week-header {
-    background: var(--bls-surface-2) !important;
+    background: var(--bls-team-header-bg) !important;
     color: var(--bls-text) !important;
     border-bottom-color: var(--bls-border) !important;
 
