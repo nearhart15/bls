@@ -1,3 +1,57 @@
+.bls-beer-league {
+    --league-header-tint: color-mix(in srgb, var(--bls-accent) 16%, var(--bls-surface-2));
+    --league-header-divider: color-mix(in srgb, var(--bls-accent) 30%, var(--bls-surface-2));
+
+    :is(.bls-beer-league-header, .bls-standings-header) {
+        padding: clamp(.9rem, 2.5vw, 1.35rem);
+        border: 1px solid var(--bls-header-border);
+        border-radius: var(--bls-radius-sm);
+    }
+
+    :is(.bls-beer-league-header, .bls-standings-header, .nav-tabs .nav-link.active, .accordion-button:not(.collapsed)) {
+        background: var(--bls-header-gradient);
+        color: var(--bls-header-text);
+    }
+
+    .bls-beer-league-header h1 { font-size: clamp(1.7rem, 4vw, 2.5rem); }
+
+    .bls-beer-league-meta,
+    .bls-beer-league-meta a { color: #d4e8fa; }
+
+    .nav-tabs .nav-link { background: var(--league-header-tint); }
+    .nav-tabs .nav-link.active { border-color: var(--bls-header-border); }
+
+    .card-header {
+        background: var(--bls-header-gradient) !important;
+        border-bottom-color: var(--bls-header-border) !important;
+        color: var(--bls-header-text);
+    }
+
+    :is(.accordion-button.collapsed, .bls-standing-chart-title, .bls-standing-full > summary) {
+        background: var(--league-header-tint);
+        color: var(--bls-text);
+    }
+
+    .accordion-button:not(.collapsed) {
+        &::after { filter: brightness(0) invert(1); }
+        .text-body-secondary { color: #d4e8fa !important; }
+    }
+
+    .accordion-button > span { min-width: 0; overflow-wrap: anywhere; }
+    .accordion-button::after { margin-inline-start: auto; }
+
+    .table thead th {
+        background-color: var(--league-header-tint);
+        border-bottom-color: var(--league-header-divider);
+        color: var(--bls-text);
+    }
+
+    :is(.nav-tabs .nav-link.active, .accordion-button:not(.collapsed)):focus-visible,
+    :is(.bls-beer-league-header, .bls-standings-header) :focus-visible {
+        outline-color: #a5dfff;
+    }
+}
+
 .bls-standings-header {
     display: flex;
     align-items: end;
@@ -38,14 +92,10 @@
     gap: 1rem;
 }
 
-.bls-standing-team,
-.bls-standing-chart {
+.bls-standing-team {
     padding: clamp(1rem, 2.5vw, 1.65rem);
     border: 1px solid var(--bls-border);
     border-radius: var(--bls-radius-lg);
-}
-
-.bls-standing-team {
     color: #edf7ff;
     background: radial-gradient(ellipse at top right, #163a58, transparent 75%), #0b1b2c;
     border-color: #345472;
@@ -124,10 +174,13 @@
 
 .bls-standing-roster summary,
 .bls-standing-full summary {
-    padding: .7rem .15rem;
+    padding: .7rem .85rem;
+    border-radius: .65rem;
     cursor: pointer;
     font-weight: 600;
 }
+
+.bls-standing-roster summary { background: #153751; }
 
 .bls-standing-roster ul,
 .bls-standing-chart ol {
@@ -150,6 +203,9 @@
 
 .bls-standing-chart {
     background: var(--bls-surface);
+    border: 1px solid var(--bls-border);
+    border-radius: var(--bls-radius-lg);
+    overflow: hidden;
 }
 
 .bls-standing-chart-title {
@@ -157,11 +213,13 @@
     justify-content: space-between;
     gap: .75rem;
     align-items: baseline;
-    margin-bottom: .65rem;
+    padding: .9rem clamp(1rem, 2.5vw, 1.65rem);
+    border-bottom: 1px solid var(--league-header-divider);
 }
 
 .bls-standing-chart-title h3 { margin: 0; font-size: 1rem; }
 .bls-standing-chart-title > span { color: var(--bls-text-muted); font-size: .73rem; }
+.bls-standing-chart ol { padding: .65rem clamp(.65rem, 2vw, 1.3rem) 1rem; }
 .bls-standing-chart li + li { margin-top: .35rem; }
 .bls-standing-chart .bls-standing-outside-leaders { margin-top: .85rem; }
 
@@ -192,7 +250,7 @@
 .bls-standing-track > span { display: block; height: 100%; border-radius: inherit; background: var(--bls-accent); }
 
 .bls-standing-full { margin-top: 1rem; }
-.bls-standing-full summary { color: var(--bls-text); }
+.bls-standing-full > summary { border: 1px solid var(--league-header-divider); }
 .bls-standing-full th[scope="row"] { min-width: 8rem; }
 
 .bls-standings :is(button, select, a, summary, [tabindex]):focus-visible {

@@ -32,8 +32,20 @@ const BeerLeague:FC=()=>{
  const playerSortHeader=(key:PlayerSortKey,label:string)=><SortHeader nativeButton key={key} label={label} sortKey={key} active={playerSort.key} dir={playerSort.direction} className={key==="name"||key==="teamName"?undefined:"text-end"} onSort={next=>setPlayerSort(current=>({key:next,direction:current.key===next?(current.direction==="asc"?"desc":"asc"):(next==="name"||next==="teamName"?"asc":"desc")}))}/>;
  const renderPlayerName=(p:LeaguePlayerRow)=><Link to={`/player/${p.framePlayer?.id??p.apiPlayerId}`} className="fw-semibold text-decoration-none">{p.name}</Link>;
  const leaderTable=(players:LeaguePlayerRow[],value:(p:LeaguePlayerRow)=>number,label:string)=><RankingTable compact rows={players} rowKey={p=>`${label}-${p.teamNumber}-${p.name}`} renderName={renderPlayerName} teamName={p=>p.teamName} value={p=>value(p).toLocaleString()} valueLabel={label}/>;
- return <div>
-  <div className="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4"><div><p className="text-uppercase text-body-secondary small fw-semibold mb-1">Arapahoe Bowling Center</p><h1 className="mb-1">{data.league?.name??"Beer League"}</h1><div className="text-body-secondary">{data.league?.season} · {data.league?.day} {data.league?.time}{data.league?.week!=null&&<> · Week {data.league.week}{data.league.totalWeeks?` of ${data.league.totalWeeks}`:""}</>}</div></div><div className="text-end small text-body-secondary"><div>Sheet date: {data.league?.date??"Unknown"}</div>{data.generatedAt&&<div>Imported: {new Date(data.generatedAt).toLocaleString()}</div>}{safeArapahoeLink(data.source?.pdfUrl??undefined)&&<a href={safeArapahoeLink(data.source?.pdfUrl??undefined)} target="_blank" rel="noopener noreferrer">Open source PDF</a>}</div></div>
+ const sourcePdf = safeArapahoeLink(data.source?.pdfUrl ?? undefined);
+ return <div className="bls-beer-league">
+  <header className="bls-beer-league-header d-flex flex-wrap align-items-start justify-content-between gap-3 mb-3">
+   <div>
+    <p className="bls-beer-league-meta text-uppercase small fw-semibold mb-1">Arapahoe Bowling Center</p>
+    <h1 className="mb-1">{data.league?.name ?? "Beer League"}</h1>
+    <div className="bls-beer-league-meta">{data.league?.season} · {data.league?.day} {data.league?.time}{data.league?.week != null && <> · Week {data.league.week}{data.league.totalWeeks ? ` of ${data.league.totalWeeks}` : ""}</>}</div>
+   </div>
+   <div className="bls-beer-league-meta text-md-end small">
+    <div>Sheet date: {data.league?.date ?? "Unknown"}</div>
+    {data.generatedAt && <div>Imported: {new Date(data.generatedAt).toLocaleString()}</div>}
+    {sourcePdf && <a href={sourcePdf} target="_blank" rel="noopener noreferrer">Open source PDF</a>}
+   </div>
+  </header>
   <Tabs defaultActiveKey="overview" className="mb-4" mountOnEnter unmountOnExit>
    <Tab eventKey="overview" title="Overview" unmountOnExit={false}>
     <LeagueStandings standings={data.standings} teams={data.teams} sheetDate={data.league?.date}

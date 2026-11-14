@@ -5,7 +5,7 @@ import DataQualityNotice from "./components/data-quality-notice";
 
 import {Suspense, useState, type FC} from "react";
 import {Link, Outlet, useLocation, useNavigate} from "react-router";
-import {Button, ButtonGroup, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {Button, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {ArrowClockwise} from "react-bootstrap-icons";
 
 import "../sass/masthead.scss";
@@ -86,17 +86,20 @@ const Layout :FC = () => {
                         </Nav>
                     </Navbar.Collapse>
                     {currentSection && <div className="bls-header-section d-lg-none">{currentSection}</div>}
+                    {showDataSourceToggle && (
+                        <div className="bls-header-sources" role="group" aria-label="Stats data source">
+                            {!isApiLockedTeamCompare && (
+                                <button type="button" onClick={() => { changeDataSource("frame"); }} aria-pressed={displayedSource === "frame"} title="Use stats calculated from BLS frame files">
+                                    BinBin Data
+                                </button>
+                            )}
+                            <button type="button" onClick={() => { changeDataSource("api"); }} aria-pressed={displayedSource === "api"} title="Use stats imported from the bowling center website">
+                                A.B.C. Data
+                            </button>
+                        </div>
+                    )}
                 </Navbar>
 
-                {showDataSourceToggle && (
-                    <div className="bls-data-source-bar mb-3" aria-label="Stats data source">
-                        <span className="bls-data-source-label">Data source</span>
-                        <ButtonGroup size="sm" className="bls-data-source-toggle" aria-label="Choose statistics data source">
-                            {!isApiLockedTeamCompare && <Button variant={displayedSource === "frame" ? "primary" : "outline-primary"} onClick={() => { changeDataSource("frame"); }} aria-pressed={displayedSource === "frame"} title="Use stats calculated from BLS frame files">BinBin Data</Button>}
-                            <Button variant={displayedSource === "api" ? "primary" : "outline-primary"} onClick={() => { changeDataSource("api"); }} aria-pressed={displayedSource === "api"} title="Use stats imported from the bowling center website">A.B.C. Data</Button>
-                        </ButtonGroup>
-                    </div>
-                )}
                 {showDataSourceToggle && <DataSourceStatus source={displayedSource}/>}
                 {isApiOnlyPlayer && <DataSourceStatus source="api"/>}
                 {isFrameOnlyStatsPage && <DataSourceStatus source="frame"/>}

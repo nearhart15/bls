@@ -1,5 +1,12 @@
 /* Shared presentation rules across statistics and utility pages. */
-:root { --bls-compare-a:#c91843; --bls-compare-b:#00788c; --bls-highlight:#806000; }
+:root {
+ --bls-compare-a:#c91843;
+ --bls-compare-b:#00788c;
+ --bls-highlight:#806000;
+ --bls-header-gradient:linear-gradient(115deg, #164267, #0b578f);
+ --bls-header-text:#f1f7ff;
+ --bls-header-border:#347097;
+}
 [data-bs-theme="dark"] { --bls-compare-a:#ff6488; --bls-compare-b:#00d4ff; --bls-highlight:#ffd60a; }
 .bls-main > .container-md { padding-inline:0; }
 .bls-page-header { margin:1.25rem 0; }
