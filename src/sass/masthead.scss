@@ -55,7 +55,7 @@
   align-items: center;
   min-height: clamp(6rem, 15vw, 10.5rem);
   padding: 1rem clamp(.8rem, 3vw, 2.25rem);
-  border-radius: inherit;
+  border-radius: var(--bls-radius-sm) var(--bls-radius-sm) 0 0;
   border-bottom: 1px solid var(--masthead-border);
   background: linear-gradient(90deg, #061423 0%, #06142388 33%, transparent 65%),
     url("../assets/bowling-strike.webp") right center / cover no-repeat #061423;
