@@ -232,7 +232,7 @@ const LeagueSummaryData :FC<LeagueSummaryDataProps> = ({leagueDetails, currentBr
             <Row className="g-2 g-lg-3">
                 <Col xs={12} lg={4} className="mb-2 mb-lg-0">
                     <Card className="text-start mx-0 mb-0 h-100" border="secondary">
-                        <CollapsibleContainer divId="league-honor-roll" headerTitle="Honor Roll" currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_XS}>
+                        <CollapsibleContainer divId="league-honor-roll" headerTitle="Honor Roll" currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_XS} alwaysShowToggle>
                             <CardBody className="py-1 py-sm-2">
                                 <LeagueHonorRoll leagueDetails={leagueDetails}/>
                             </CardBody>
@@ -241,7 +241,7 @@ const LeagueSummaryData :FC<LeagueSummaryDataProps> = ({leagueDetails, currentBr
                 </Col>
                 <Col xs={12} lg={4} className="mb-2 mb-lg-0">
                     <Card className="text-start mx-0 mb-0 h-100" border="secondary">
-                        <CollapsibleContainer divId="league-rules" headerTitle="League Rules" currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_XS}>
+                        <CollapsibleContainer divId="league-rules" headerTitle="League Rules" currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_XS} alwaysShowToggle>
                             <CardBody className="py-1 py-sm-2">
                                 <LeagueRules leagueDetails={leagueDetails}/>
                             </CardBody>
@@ -250,7 +250,7 @@ const LeagueSummaryData :FC<LeagueSummaryDataProps> = ({leagueDetails, currentBr
                 </Col>
                 <Col xs={12} lg={4}>
                     <Card className="text-start mx-0 mb-0 h-100" border="secondary">
-                        <CollapsibleContainer divId="league-info" headerTitle="League Info" currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_XS}>
+                        <CollapsibleContainer divId="league-info" headerTitle="League Info" currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_XS} alwaysShowToggle>
                             <CardBody className="py-1 py-sm-2">
                                 <LeagueSummaryInfo leagueDetails={leagueDetails} />
                             </CardBody>
