@@ -167,7 +167,7 @@ function formatValue(v: number | null, def: StatDef): string {
 const PlayerLeaderboard: FC = () => {
     const fetcher = useCallback(() => buildFullPlayerList(), []);
     const {data, isLoading, error} = useCachedFetcher<PlayerListEntry[]>(fetcher, PLAYER_INDEX_CACHE_CATEGORY);
-    const [scope, setScope] = useState<Scope>("career");
+    const [scope, setScope] = useState<Scope>("current");
     const [statId, setStatId] = useState("average");
     const [minGames, setMinGames] = useState(9);
     const [leagueId, setLeagueId] = useState("");
@@ -222,9 +222,9 @@ const PlayerLeaderboard: FC = () => {
     const filters = <>
         <div className="bls-scope-pills mb-3" role="group" aria-label="Ranking period">
             {([
-                ["career", "Career", "All seasons"],
                 ["current", "Current season", currentSeason || "Latest"],
                 ["last-year", "Last calendar year", lastYear],
+                ["career", "Career", "All seasons"],
             ] as const).map(([id, label, sub]) => (
                 <button key={id} type="button" aria-pressed={scope === id}
                     className={"bls-scope-pill" + (scope === id ? " is-active" : "")}
