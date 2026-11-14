@@ -99,7 +99,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
         </Stack>
         </CardBody>
         {showMatchupDetails && <CardBody id={detailsId} className={`p-0 mx-1 my-1 ${detailsExpanded ? "d-block" : "d-none"}`}>
-            <MatchupDetailsDisplay teamDetails={teamDetails} matchup={matchup} currentBreakpoint={currentBreakpoint}/>
+            {detailsExpanded && <MatchupDetailsDisplay teamDetails={teamDetails} matchup={matchup} currentBreakpoint={currentBreakpoint}/>}
         </CardBody>}
         <div className="my-auto"/>
     </Card>;
@@ -111,23 +111,37 @@ const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails
     const scheduled = teamDetails.matchups.filter(matchup => matchup.scheduledDate);
     const current = scheduled.filter(matchup => !matchup.scheduledDate?.isAfter(today, "day")).slice(-1)[0] ?? scheduled[0];
     const [selectedWeek, setSelectedWeek] = useState<number>();
+    const [showAllWeeks, setShowAllWeeks] = useState(false);
     const [detailsExpanded, setDetailsExpanded] = useState(false);
+    const [expandedWeeks, setExpandedWeeks] = useState<ReadonlySet<number>>(() => new Set());
     const scrollPosition = useRef<number | undefined>(undefined);
     useLayoutEffect(() => {
         if (scrollPosition.current == null) return;
         window.scrollTo({top: scrollPosition.current, behavior: "instant"});
         scrollPosition.current = undefined;
-    }, [selectedWeek]);
+    }, [selectedWeek, showAllWeeks]);
     const titleId = useId();
     const matchupId = useId();
     const selected = teamDetails.matchups.find(matchup => matchup.week === selectedWeek) ?? current ?? teamDetails.matchups[0];
 
     return <details open id="bls-current-week" className="bls-matchup-week-anchor bls-scoreboard bls-team-panel" aria-labelledby={titleId}
-        onFocus={event => { if (event.target === event.currentTarget) setSelectedWeek(undefined); }} tabIndex={-1}>
+        onFocus={event => {
+            if (event.target === event.currentTarget) {
+                setSelectedWeek(undefined);
+                setShowAllWeeks(false);
+            }
+        }} tabIndex={-1}>
         <summary id={titleId}>Matchup Scoreboard</summary>
         {leagueDetailsLoading && <div className="card-body"><Loader/></div>}
         {selected ? <>
-            <div className="bls-scoreboard-weeks" role="group" aria-label="Season matchups">
+            {teamDetails.matchups.length > 1 && <div className="bls-scoreboard-actions">
+                <button type="button" className="btn btn-sm btn-outline-primary" aria-controls={matchupId}
+                    onClick={() => {
+                        scrollPosition.current = window.scrollY;
+                        setShowAllWeeks(showAll => !showAll);
+                    }}>{showAllWeeks ? "Show one week" : "Show all weeks"}</button>
+            </div>}
+            {!showAllWeeks && <div className="bls-scoreboard-weeks" role="group" aria-label="Season matchups">
                 {teamDetails.matchups.map(matchup => {
                     const hasScores = Boolean(matchup.scores?.games.length);
                     const isLater = matchup.scheduledDate?.isAfter(today, "day");
@@ -143,11 +157,23 @@ const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails
                         <strong>{hasScores ? matchup.pointsWonLost.join("–") : status}</strong>
                     </button>;
                 })}
-            </div>
-            <div id={matchupId}>
-                <MatchupDisplay key={selected.week} leagueDetails={leagueDetails} matchup={selected}
-                    teamDetails={teamDetails} currentBreakpoint={currentBreakpoint} detailsExpanded={detailsExpanded}
-                    onToggleDetails={() => { setDetailsExpanded(expanded => !expanded); }}/>
+            </div>}
+            <div id={matchupId} className="bls-scoreboard-matchups">
+                {(showAllWeeks ? teamDetails.matchups : [selected]).map(matchup => <MatchupDisplay
+                    key={matchup.week} leagueDetails={leagueDetails} matchup={matchup}
+                    teamDetails={teamDetails} currentBreakpoint={currentBreakpoint} detailsExpanded={showAllWeeks ? expandedWeeks.has(matchup.week) : detailsExpanded}
+                    onToggleDetails={() => {
+                        if (!showAllWeeks) {
+                            setDetailsExpanded(expanded => !expanded);
+                            return;
+                        }
+                        setExpandedWeeks(previous => {
+                            const next = new Set(previous);
+                            if (next.has(matchup.week)) next.delete(matchup.week);
+                            else next.add(matchup.week);
+                            return next;
+                        });
+                    }}/>)}
             </div>
         </> : <p>No matchups available.</p>}
     </details>;

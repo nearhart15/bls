@@ -115,3 +115,33 @@ test('pending frame rank uses the dated division standing for the same team and 
     assert.equal(displayedRank(), '2');
     assert.equal(fetcher.mock.callCount(), 3);
 });
+
+test('scoreboard shows every week on demand and returns to the selected week', async () => {
+    const {createTestDom} = require('./dom-fixture.cjs');
+    const {createRoot} = require('react-dom/client');
+    const Scoreboard = load('src/pages/components/league/league-team-matchup.tsx').default;
+    const {dom, restoreDom} = createTestDom();
+    dom.window.scrollTo = () => {};
+    const container = dom.window.document.getElementById('root');
+    const root = createRoot(container);
+    const {team, league} = fixture([1, 2, 3].map(week => Object.assign(new LeagueMatchup(), {
+        week, scheduledDate: moment().startOf('day').add(week - 2, 'days'),
+    })));
+    const cards = () => [...container.querySelectorAll('.bls-matchup-week-header')]
+        .map(header => header.firstElementChild.firstElementChild.textContent);
+    const click = async button => React.act(async () => button.click());
+    try {
+        await React.act(async () => root.render(React.createElement(MemoryRouter, null,
+            React.createElement(Scoreboard, {teamDetails: team, leagueDetails: league}))));
+        assert.deepEqual(cards(), ['WK 02']);
+        await click(container.querySelector('.bls-scoreboard-weeks button'));
+        assert.deepEqual(cards(), ['WK 01']);
+        await click(container.querySelector('.bls-scoreboard-actions button'));
+        assert.deepEqual(cards(), ['WK 01', 'WK 02', 'WK 03']);
+        await click(container.querySelector('.bls-scoreboard-actions button'));
+        assert.deepEqual(cards(), ['WK 01']);
+    } finally {
+        await React.act(async () => root.unmount());
+        restoreDom();
+    }
+});
