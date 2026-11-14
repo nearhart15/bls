@@ -3,7 +3,7 @@ import DataQualityNotice from "./components/data-quality-notice";
  * Layout - glass nav + OLED shell (c) 2026
  */
 
-import {Suspense, type FC} from "react";
+import {Suspense, useState, type FC} from "react";
 import {Link, Outlet, useLocation, useNavigate} from "react-router";
 import {Button, ButtonGroup, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {ArrowClockwise} from "react-bootstrap-icons";
@@ -18,6 +18,7 @@ import PageErrorBoundary from "./components/page-error-boundary";
 
 const Layout :FC = () => {
     const {source, setSource} = useDataSource();
+    const [navigationExpanded, setNavigationExpanded] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
     const isPlayerCompare = location.pathname === "/player/compare";
@@ -50,7 +51,7 @@ const Layout :FC = () => {
     return (
         <div className="bls-app">
             <div className="bls-shell">
-                <Navbar expand="lg" collapseOnSelect className="bls-nav" aria-label="Main navigation">
+                <Navbar expand="lg" expanded={navigationExpanded} onToggle={setNavigationExpanded} collapseOnSelect className="bls-nav" aria-label="Main navigation">
                     <div className="bls-masthead">
                         <Navbar.Brand as={Link} to="/">
                             <svg viewBox="0 0 28 36" width="28" height="36" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -64,7 +65,7 @@ const Layout :FC = () => {
                             <ArrowClockwise size={14} />
                             <span className="d-none d-md-inline">Refresh</span>
                         </Button>
-                        <Navbar.Toggle aria-controls="bls-nav" aria-label="Toggle navigation" />
+                        <Navbar.Toggle aria-controls="bls-nav" aria-expanded={navigationExpanded} aria-label="Toggle navigation" />
                     </div>
                     <Navbar.Collapse id="bls-nav">
                         <Nav className="bls-header-links">
