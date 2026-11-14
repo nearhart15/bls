@@ -86,7 +86,7 @@ const LeagueDisplay : FC<LeagueDisplayProps> = ({leagueInfo, teamId}: LeagueDisp
                                                      error={new Error("Entered Team Id: " + String(teamId))}
                                                      onClose={() => { void navigate(`/league/${String(leagueInfo.id)}`); }}/>}
             {currentDisplay == "TEAM" && <Suspense fallback={<Loader/>}>
-                <LeagueTeamDetails leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint} teamId={displayedTeam} />
+                <LeagueTeamDetails leagueOngoing={leagueInfo.ongoing} leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint} teamId={displayedTeam} />
             </Suspense>}
             {currentDisplay == "OTHER_TEAMS" && <Suspense fallback={<Loader/>}>
                 <OtherTeams leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading}/>
