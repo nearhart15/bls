@@ -1,7 +1,4 @@
 .bls-podium {
-  --podium-ink: #f7efff;
-  --podium-deep: #241739;
-  --podium-muted: #c9b9dc;
   margin-bottom: 2rem;
 }
 
@@ -50,16 +47,16 @@
   padding: clamp(.85rem, 2.5vw, 1.5rem);
   margin-bottom: 1.25rem;
   border-radius: 22px;
-  color: var(--podium-ink);
-  background: radial-gradient(ellipse at 10% 0%, #50346e 0%, var(--podium-deep) 68%);
-  border: 1px solid #6c5487;
+  color: var(--bls-text);
+  background: radial-gradient(ellipse at 10% 0%, color-mix(in srgb, var(--bls-surface) 78%, var(--bls-accent)) 0%, var(--bls-surface) 68%);
+  border: 1px solid var(--bls-border);
 }
 
 .bls-podium-stage-label {
   margin: .15rem .2rem 1rem;
 
   h2 { color: inherit; font-size: 1.15rem; font-weight: 750; margin: 0; }
-  > span { color: var(--podium-muted); font-size: .75rem; }
+  > span { color: var(--bls-text-muted); font-size: .75rem; }
 }
 
 .bls-podium-places {
@@ -71,14 +68,14 @@
   list-style: none;
 
   li {
-    --place-accent: #e0d0ff;
-    --place-bg: #35274d;
+    --place-blue: 20%;
+    --place-border: var(--bls-border);
     min-width: 0;
     display: flex;
   }
 
-  li[data-place="1"] { --place-accent: #292036; --place-bg: #ffd275; }
-  li[data-place="3"] { --place-accent: #ffd0bc; --place-bg: #4a2e41; }
+  li[data-place="1"] { --place-blue: 42%; --place-border: var(--bls-accent); }
+  li[data-place="3"] { --place-blue: 10%; }
 
   a {
     display: flex;
@@ -88,13 +85,14 @@
     min-width: 0;
     min-height: 13.25rem;
     padding: 1rem 1.1rem;
-    border: 1px solid #ffffff35;
+    border: 1px solid var(--place-border);
     border-radius: 13px;
-    color: var(--place-accent);
-    background: repeating-linear-gradient(122deg, transparent 0 12px, #ffffff12 12px 13px) right top / 34% 100% no-repeat, var(--place-bg);
+    color: var(--bls-text);
+    background: repeating-linear-gradient(122deg, transparent 0 12px, var(--bls-border) 12px 13px) right top / 34% 100% no-repeat,
+      color-mix(in srgb, var(--bls-accent) var(--place-blue), var(--bls-surface-2));
     text-decoration: none;
     font-variant-numeric: tabular-nums;
-    &:focus-visible { outline: 3px solid white; outline-offset: 2px; }
+    &:focus-visible { outline: 3px solid var(--bls-accent); outline-offset: 2px; }
   }
 }
 
