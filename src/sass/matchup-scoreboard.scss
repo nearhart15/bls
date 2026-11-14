@@ -1,5 +1,4 @@
 .bls-team-panels {
-  --bls-team-header-bg: color-mix(in srgb, var(--bls-surface-3) 88%, var(--bls-accent));
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
@@ -10,16 +9,6 @@
   min-width: 0;
   color: var(--bls-text);
   box-shadow: none;
-}
-
-.bls-team-panels .bls-team-panel > summary {
-  background: var(--bls-team-header-bg);
-  border-radius: 11px;
-}
-
-.bls-team-panels .bls-team-panel[open] > summary {
-  border-radius: 11px 11px 0 0;
-  border-bottom: 1px solid var(--bls-border);
 }
 
 .bls-team-roster-card {
