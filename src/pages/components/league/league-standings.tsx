@@ -119,7 +119,7 @@ export default function LeagueStandings({standings, teams, sheetDate, renderPlay
                 <Card.Header as="h3" className="fs-6 fw-semibold">{divisionName(name)} standings</Card.Header>
                 <Card.Body className="p-0">
                     <div className="table-responsive" tabIndex={0} role="region" aria-label={divisionName(name) + " standings table"}>
-                        <Table hover className="mb-0 align-middle">
+                        <Table className="mb-0 align-middle">
                             <thead><tr>
                                 <th scope="col">Place</th><th scope="col">Team</th>
                                 <th scope="col" className="text-end">W</th><th scope="col" className="text-end">L</th>

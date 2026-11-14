@@ -51,6 +51,16 @@ export default defineConfig(({command}) => ({
   },
   preview: localServerOptions,
   css: {
+    postcss: {
+      plugins: [{
+        postcssPlugin: "remove-hover-styles",
+        Rule(rule) {
+          const selectors = rule.selectors.filter(selector => !/:hover\b/.test(selector));
+          if (!selectors.length) rule.remove();
+          else if (selectors.length !== rule.selectors.length) rule.selectors = selectors;
+        },
+      }],
+    },
     preprocessorOptions: {
       scss: {
         importers: [new NodePackageImporter()],

@@ -17,9 +17,12 @@ export default function SafeChart(props: SafeChartProps) {
     const source = props.options ?? {};
     const options: ApexOptions = {...source,
         ...(source.labels ? {labels: source.labels.map(escapeChartText)} : {}),
-        ...(source.xaxis ? {xaxis: {...source.xaxis, ...(source.xaxis.categories ? {categories: source.xaxis.categories.map((v: unknown) => typeof v === "string" ? escapeChartText(v) : typeof v === "number" ? v : "")} : {})}} : {}),
         legend: {...source.legend, show: false},
-        tooltip: {...source.tooltip, custom: ({series: values, seriesIndex, dataPointIndex}: {series: number[][]; seriesIndex: number; dataPointIndex: number}) => {
+        markers: {...source.markers, hover: {sizeOffset: 0}},
+        states: {...source.states, hover: {filter: {type: "none"}}},
+        xaxis: {...source.xaxis, crosshairs: {...source.xaxis?.crosshairs, show: false}, tooltip: {...source.xaxis?.tooltip, enabled: false},
+            ...(source.xaxis?.categories ? {categories: source.xaxis.categories.map((v: unknown) => typeof v === "string" ? escapeChartText(v) : typeof v === "number" ? v : "")} : {})},
+        tooltip: {...source.tooltip, enabled: false, custom: ({series: values, seriesIndex, dataPointIndex}: {series: number[][]; seriesIndex: number; dataPointIndex: number}) => {
             const node = document.createElement("div");
             node.style.padding = "8px";
             const item = original[seriesIndex];

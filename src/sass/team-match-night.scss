@@ -31,7 +31,6 @@
     background: var(--bls-surface);
     font-size: .75rem;
     font-weight: 650;
-    &:hover { background: var(--bls-surface-2); }
   }
 
   button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid var(--bls-accent, #2997ff); outline-offset: 4px; }

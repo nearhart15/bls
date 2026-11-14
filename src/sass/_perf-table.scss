@@ -122,7 +122,6 @@
 }
 
 
-.bls-details-toggle:hover,
 .bls-details-toggle:focus-visible {
   background: #2c2c2e;
   color: #ffffff;
@@ -240,8 +239,7 @@
   white-space: nowrap;
 }
 
-/* Only the open detail panel determines the blue selection, including on touch
-   devices where :hover may otherwise remain stuck on a previously tapped row. */
+/* The open detail panel determines the selected row. */
 .bls-perf-table tbody tr.bls-perf-row {
   cursor: pointer;
 }
@@ -252,12 +250,6 @@
 
 .bls-perf-table tbody tr.bls-perf-selected > td:first-child {
   border-inline-start: 3px solid var(--bls-accent);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .bls-perf-table tbody tr.bls-perf-row:not(.bls-perf-selected):hover > td {
-    --bs-table-bg-state: var(--bls-surface-2);
-  }
 }
 
 .bls-bowler-select {

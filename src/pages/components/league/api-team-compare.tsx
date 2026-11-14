@@ -73,7 +73,7 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRoster
                 <Badge pill style={{background: color, color: "#fff"}}>Roster</Badge>
             </div>
             {sortedPlayers.length > 0 ? <div className="table-responsive">
-                <Table hover size="sm" className="mb-0 align-middle">
+                <Table size="sm" className="mb-0 align-middle">
                     <thead><tr><th>Row</th><th>Bowler</th><th className="text-end">Rating</th><th className="text-end">Games</th></tr></thead>
                     <tbody>{sortedPlayers.map((player, index) => {
                         const opponentPlayer = opponentPlayers.filter(opponent => opponent.games > 0)[index];

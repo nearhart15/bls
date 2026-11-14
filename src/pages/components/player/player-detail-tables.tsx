@@ -185,7 +185,7 @@ const AppearancesPanel: FC<AppearancesProps> = ({appearances}) => {
         <Card className="bls-profile-card h-100">
             <div className="bls-profile-card-head">League Appearances</div>
             <div className="bls-appear-scroll">
-                <Table className="bls-appear-table mb-0" size="sm" hover>
+                <Table className="bls-appear-table mb-0" size="sm">
                     <thead>
                         <tr>
                             <SortHeader label="#" sortKey="idx" active={sortKey} dir={sortDir} onSort={onSort} />
@@ -281,7 +281,7 @@ const SeasonBreakdownTable: FC<{seasons: PlayerSeasonStats[]}> = ({seasons}) => 
         <Card className="bls-profile-card mb-3">
             <div className="bls-profile-card-head">Season breakdown</div>
             <div className="table-responsive">
-                <Table className="bls-appear-table mb-0" size="sm" hover>
+                <Table className="bls-appear-table mb-0" size="sm">
                     <thead>
                         <tr>
                             <SortHeader label="Season" sortKey="season" active={sortKey} dir={sortDir} onSort={onSort} />

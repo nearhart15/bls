@@ -78,8 +78,6 @@
     text-align: left;
     font-variant-numeric: tabular-nums;
 
-    &:hover { background: var(--bls-surface-3); }
-
     &:focus-visible {
       outline: 2px solid var(--bls-accent);
       outline-offset: 2px;
