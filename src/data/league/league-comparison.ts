@@ -25,7 +25,7 @@ export function matchupComparisonUrl(league: LeagueDetails | null, team: Tracked
 interface ComparisonTeam {number: number; name?: string}
 interface ComparisonSheet {league?: {date?: string | null}; standings: ComparisonTeam[]}
 
-const normalizedName = (value?: string) => (value ?? "").trim().toLocaleLowerCase()
+export const normalizedTeamName = (value?: string) => (value ?? "").trim().toLocaleLowerCase()
     // The A.B.C. sheet stylizes this name with symbols that would otherwise be dropped.
     .replace(/^\$h!t\s+a\s+brick$/, "shit a brick")
     .replace(/&/g, "and")
@@ -40,7 +40,7 @@ export function apiComparisonIssue(sheet: ComparisonSheet, league: LeagueDetails
     const leagueTeams = [...league.teams, ...league.otherTeams];
     for (const selected of [teamA, teamB]) {
         const expected = leagueTeams.find(team => team.number === selected?.number);
-        if (!selected || !expected?.name || normalizedName(expected.name) !== normalizedName(selected.name)) {
+        if (!selected || !expected?.name || normalizedTeamName(expected.name) !== normalizedTeamName(selected.name)) {
             return "The selected teams do not match this league's teams on the current A.B.C. sheet.";
         }
     }

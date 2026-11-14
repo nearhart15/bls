@@ -1,9 +1,12 @@
 import {type FC, type ReactNode, useId, useState} from "react";
 import {Link} from "react-router";
+import moment from "moment";
+import {beerSheetFetcher} from "../../../data/league/beer-sheet";
+import {useCachedFetcher} from "../cache/data-loader";
 import type {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import type {LeagueDetails} from "../../../data/league/league-details";
 import {opponentDisplay} from "../../../data/league/opponent-display";
-import {matchupComparisonUrl} from "../../../data/league/league-comparison";
+import {matchupComparisonUrl, normalizedTeamName} from "../../../data/league/league-comparison";
 import {matchupSchedule} from "./league-matchup-schedule";
 import "../../../sass/team-match-night.scss";
 
@@ -15,6 +18,19 @@ interface TeamMatchNightProps {
     team: TrackedLeagueTeam;
     league: LeagueDetails | null;
     children?: ReactNode;
+}
+
+function PublishedTeamRank({team}: {team: TrackedLeagueTeam}) {
+    const {data} = useCachedFetcher(beerSheetFetcher, "beer-sheet");
+    const date = moment(data?.league?.date ?? "", ["MM/DD/YYYY", "YYYY-MM-DD"], true);
+    const teamName = normalizedTeamName(team.name);
+    const standing = date.isValid() && teamName && team.matchups.some(matchup => matchup.scheduledDate?.isSame(date, "day"))
+        ? data?.standings.find(row => row.number === team.number && normalizedTeamName(row.name) === teamName)
+        : undefined;
+    if (!standing || !Number.isSafeInteger(standing.place) || standing.place < 1) return <>—</>;
+    return <>{standing.place} <small className="d-block text-body-secondary">
+        {standing.division ? "Division · " : ""}{date.format("MMM D")} standings
+    </small></>;
 }
 
 const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, children}) => {
@@ -36,6 +52,7 @@ const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, children}) => {
     const hasLastScores = (lastMatchup?.scores?.games.length ?? 0) > 0;
     const hasLastPoints = hasLastScores && Boolean(lastMatchup?.opponent?.scores?.games.length || lastMatchup?.opponent?.absent || lastMatchup?.opponent?.vacant);
     const hasSchedule = team.matchups.some(matchup => matchup.scheduledDate?.isValid());
+    const currentRank = team.currentRank.trim();
     const seasonStats = [
         ["Starting average", team.teamStats?.average],
         ["Starting handicap", team.teamStats?.handicap],
@@ -109,7 +126,9 @@ const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, children}) => {
         </p>}
         <dl className="bls-match-night-standing">
             <div><dt>Division</dt><dd>{team.division || "—"}</dd></div>
-            <div><dt>Current rank</dt><dd>{team.currentRank && team.currentRank !== "PENDING" ? team.currentRank : "—"}</dd></div>
+            <div><dt>Current rank</dt><dd>{/^[1-9]\d*$/.test(currentRank)
+                ? currentRank
+                : league && !league.completed ? <PublishedTeamRank team={team}/> : "—"}</dd></div>
             <div><dt>Season points won</dt><dd>{statValue(team.pointsWonLost[0])}</dd></div>
             <div><dt>Season points lost</dt><dd>{statValue(team.pointsWonLost[1])}</dd></div>
         </dl>

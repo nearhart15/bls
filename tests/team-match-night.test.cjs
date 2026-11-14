@@ -76,3 +76,42 @@ test('team briefing distinguishes missing schedules, overdue results, and unassi
         assert.equal(dom.window.document.querySelector('.bls-match-night-fixture a'), null);
     } finally { dom.window.close(); }
 });
+
+test('pending frame rank uses the dated division standing for the same team and season', t => {
+    const cache = load('src/pages/components/cache/data-loader.tsx');
+    const {beerSheetFetcher} = load('src/data/league/beer-sheet.ts');
+    const sheet = {
+        league: {date: '11/05/2026'},
+        standings: [{number: 18, name: 'Pins Go Boom!', place: 3, division: 'Tastes Great!'}],
+    };
+    const fetcher = t.mock.method(cache, 'useCachedFetcher', fetch => {
+        assert.equal(fetch, beerSheetFetcher);
+        return {data: sheet};
+    });
+    const match = new LeagueMatchup();
+    match.scheduledDate = moment('2026-11-05');
+    const props = fixture([match]);
+    props.team.currentRank = 'PENDING';
+
+    function displayedRank() {
+        const dom = render(props);
+        try {
+            return dom.window.document.querySelector('.bls-match-night-standing > div:nth-child(2) dd').textContent.trim();
+        } finally {
+            dom.window.close();
+        }
+    }
+
+    assert.match(displayedRank(), /^3\s+Division · Nov 5 standings$/);
+    sheet.standings[0].name = 'Another team';
+    assert.equal(displayedRank(), '—');
+    sheet.standings[0].name = 'Pins Go Boom!';
+    match.scheduledDate = moment('2025-11-06');
+    assert.equal(displayedRank(), '—');
+    match.scheduledDate = moment('2026-11-05');
+    props.league.completed = true;
+    assert.equal(displayedRank(), '—');
+    props.team.currentRank = '2';
+    assert.equal(displayedRank(), '2');
+    assert.equal(fetcher.mock.callCount(), 3);
+});
