@@ -156,14 +156,11 @@ const TeamRoster: FC<LeagueTeamRosterProps> = ({teamDetails, currentBreakpoint, 
         setPlayerDetailsDisplay(undefined);
     }
 
-    return (<>
-        {leagueDetailsLoading && <div className="card-body"><Loader/></div>}
-        <div className="bls-team-roster">
-            <Card className="bls-perf-card bls-team-panel">
-                <CardHeader className="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                    <h2 className="bls-team-panel-title">Bowler Performance</h2>
-                    <span className="fs-xs text-body-secondary">Tap a row for full stats</span>
-                </CardHeader>
+    return (
+        <details className="bls-team-roster bls-team-panel" open>
+            <summary>Bowler Performance</summary>
+            {leagueDetailsLoading && <div className="card-body"><Loader/></div>}
+            <Card className="bls-perf-card bls-team-roster-card">
                 <LeagueRosterPerformanceTable
                     teamDetails={teamDetails}
                     selectedPlayerId={playerDetailsDisplay}
@@ -173,10 +170,10 @@ const TeamRoster: FC<LeagueTeamRosterProps> = ({teamDetails, currentBreakpoint, 
             </Card>
             {playerDetailsDisplay &&
                 <PlayerDetails playerDetailsDisplay={playerDetailsDisplay} teamDetails={teamDetails}
-                                   closePlayerDetails={closePlayerDetails} currentBreakpoint={currentBreakpoint}/>
+                               closePlayerDetails={closePlayerDetails} currentBreakpoint={currentBreakpoint}/>
             }
-        </div>
-    </>);
+        </details>
+    );
 }
 
 const LeagueTeamRoster: FC<LeagueTeamRosterProps> = props => (

@@ -7,32 +7,22 @@
 
 .bls-team-panels .bls-team-panel {
   min-width: 0;
-  background: var(--bls-surface);
   color: var(--bls-text);
-  border: 1px solid var(--bls-border);
-  border-radius: 12px;
   box-shadow: none;
 }
 
-.bls-team-panels .bls-team-panel-title {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 650;
-  line-height: 1.4;
-}
-
-.bls-team-panels .bls-team-panel-header,
-.bls-team-panels .bls-perf-card > .card-header {
-  padding: .85rem 1rem;
-  background: var(--bls-surface);
+.bls-team-panel[open] > summary {
   border-bottom: 1px solid var(--bls-border);
 }
 
-.bls-scoreboard {
-  .bls-team-panel-header { border-radius: 12px 12px 0 0; }
+.bls-team-roster-card {
+  border: 0;
+  border-radius: 0 0 12px 12px;
+}
 
-  > :not(.bls-team-panel-header) { margin-inline: clamp(.55rem, 2vw, 1rem); }
-  > :last-child { margin-bottom: clamp(.55rem, 2vw, 1rem); }
+.bls-scoreboard {
+  > :not(summary) { margin-inline: clamp(.55rem, 2vw, 1rem); }
+  > :last-child:not(summary) { margin-bottom: clamp(.55rem, 2vw, 1rem); }
 
   .bls-matchup-card {
     background: var(--bls-surface);
