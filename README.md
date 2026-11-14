@@ -1,6 +1,6 @@
-# Bowling League Stats
+# The Boom Board
 
-Bowling League Stats shows team, player, matchup and historical statistics for Pins Go Boom! and its leagues. The original application was created by Bindul Bhowmik; this fork adds full-league imports and historical views. See LICENSE for the Apache 2.0 terms.
+The Boom Board shows team, player, matchup and historical statistics for Pins Go Boom! and its leagues. The original application was created by Bindul Bhowmik; this fork adds full-league imports and historical views. See LICENSE for the Apache 2.0 terms.
 
 ## Local development
 
