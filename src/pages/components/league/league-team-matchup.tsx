@@ -122,10 +122,10 @@ const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails
     const matchupId = useId();
     const selected = teamDetails.matchups.find(matchup => matchup.week === selectedWeek) ?? current ?? teamDetails.matchups[0];
 
-    return <section id="bls-current-week" className="bls-matchup-week-anchor bls-scoreboard bls-team-panel" aria-labelledby={titleId}
+    return <details open id="bls-current-week" className="bls-matchup-week-anchor bls-scoreboard bls-team-panel" aria-labelledby={titleId}
         onFocus={event => { if (event.target === event.currentTarget) setSelectedWeek(undefined); }} tabIndex={-1}>
+        <summary id={titleId}>Matchup Scoreboard</summary>
         {leagueDetailsLoading && <div className="card-body"><Loader/></div>}
-        <header className="bls-team-panel-header"><h2 id={titleId} className="bls-team-panel-title">Matchup Scoreboard</h2></header>
         {selected ? <>
             <div className="bls-scoreboard-weeks" role="group" aria-label="Season matchups">
                 {teamDetails.matchups.map(matchup => {
@@ -150,7 +150,7 @@ const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails
                     onToggleDetails={() => { setDetailsExpanded(expanded => !expanded); }}/>
             </div>
         </> : <p>No matchups available.</p>}
-    </section>;
+    </details>;
 };
 
 const LeagueTeamMatchup: FC<LeagueTeamMatchupsProps> = props => <TeamScoreboard key={props.teamDetails.id} {...props}/>;

@@ -275,7 +275,11 @@ const LeagueSummary: FC<LeagueSummaryParams> = ({leagueDetails, leagueDetailsLoa
             <Card border="primary" className="mb-2 mx-0 px-0">
                 <CardHeader className="px-2">
                     <span>League Summary</span>
-                    {showJumpToCurrentWeek && leagueDetails && <button type="button" className="btn btn-sm bls-jump-current-week ms-2" style={{float: "right"}} onClick={() => document.getElementById("bls-current-week")?.scrollIntoView({behavior: "smooth", block: "start"})}>↓ Jump to Current Week</button>}
+                    {showJumpToCurrentWeek && leagueDetails && <button type="button" className="btn btn-sm bls-jump-current-week ms-2" style={{float: "right"}} onClick={() => {
+                        const scoreboard = document.getElementById("bls-current-week");
+                        if (scoreboard instanceof HTMLDetailsElement) scoreboard.open = true;
+                        scoreboard?.scrollIntoView({behavior: "smooth", block: "start"});
+                    }}>↓ Jump to Current Week</button>}
                     {leagueDetails && !leagueDetails.completed && <Badge bg="success" className="align-middle float-end"><PlayCircleFill/> Ongoing</Badge>}
                 </CardHeader>
                 {/*Still Loading*/}

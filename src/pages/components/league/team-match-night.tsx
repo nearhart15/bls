@@ -55,6 +55,7 @@ const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, children}) => {
             </div>
             {hasSchedule && <button type="button" className="bls-match-night-jump" onClick={() => {
                 const scoreboard = document.getElementById("bls-current-week");
+                if (scoreboard instanceof HTMLDetailsElement) scoreboard.open = true;
                 scoreboard?.focus({preventScroll: true});
                 scoreboard?.scrollIntoView({behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
             }}>
