@@ -94,8 +94,6 @@
     background: repeating-linear-gradient(122deg, transparent 0 12px, #ffffff12 12px 13px) right top / 34% 100% no-repeat, var(--place-bg);
     text-decoration: none;
     font-variant-numeric: tabular-nums;
-
-    &:hover .bls-podium-name { text-decoration: underline; text-underline-offset: .25rem; }
     &:focus-visible { outline: 3px solid white; outline-offset: 2px; }
   }
 }

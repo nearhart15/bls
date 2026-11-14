@@ -108,12 +108,8 @@
       padding: .8rem 1rem;
       background: var(--scorecard-ink);
       color: var(--scorecard-paper);
-
-      &:hover { background: #224974; }
       span { color: var(--scorecard-accent); font-size: 1.1rem; }
     }
-
-    .bls-player-scorecard-back:hover { text-decoration: underline; }
   }
 
   .bls-player-scorecard-board {

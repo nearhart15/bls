@@ -254,7 +254,7 @@ const PlayerList: FC<PlayerListProps> = ({
                     </div>
                 </div>
                 <div className="bls-perf-scroll bls-perf-table-wrap">
-                    <Table className="bls-perf-table mb-0" size="sm" hover responsive>
+                    <Table className="bls-perf-table mb-0" size="sm" responsive>
                         <thead>
                             <tr>
                                 <SortHeader label="#" sortKey="rank" active={sortKey} dir={sortDir} onSort={onSort} className="text-center" style={{width: "2.5rem"}} />

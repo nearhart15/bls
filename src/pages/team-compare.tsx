@@ -69,7 +69,7 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: TrackedLeagueTeam; opponent?: T
                 <Badge pill style={{background: color, color: "#fff"}}>Roster</Badge>
             </div>
             {players.length > 0 ? <div className="table-responsive">
-                <Table hover size="sm" className="mb-0 align-middle">
+                <Table size="sm" className="mb-0 align-middle">
                     <thead><tr><th>Row</th><th>Bowler</th><th className="text-end">Player Rating</th><th className="text-end">Games</th></tr></thead>
                     <tbody>{players.map((player, index) => {
                         const average = player.playerStats?.leagueAverage ?? player.playerStats?.gameStats.average ?? null;

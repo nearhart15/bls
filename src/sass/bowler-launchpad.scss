@@ -27,7 +27,7 @@
 .bls-bowler-results-label { color: var(--bls-text-muted); font-size: .68rem; margin: 0 0 .4rem; }
 .bls-bowler-choices { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
 .bls-bowler-choice { display: flex; align-items: center; gap: .55rem; width: 100%; min-width: 0; text-align: left; color: var(--bls-text); background: transparent; border: 1px solid var(--bls-border); border-radius: .75rem; padding: .65rem .6rem; min-height: 3.6rem; transition: background .15s, border-color .15s; }
-.bls-bowler-choice:hover,.bls-bowler-choice[aria-pressed="true"] { background: var(--bls-accent-soft); border-color: var(--bls-accent); }
+.bls-bowler-choice[aria-pressed="true"] { background: var(--bls-accent-soft); border-color: var(--bls-accent); }
 .bls-launchpad a:focus-visible,.bls-launchpad button:focus-visible { outline: 3px solid var(--bls-accent); outline-offset: 4px; }
 .bls-bowler-initial { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; flex-shrink: 0; background: var(--bls-surface-3); font-size: .75rem; font-weight: 700; }
 .bls-bowler-choice-text { min-width: 0; flex: 1; }
@@ -52,7 +52,6 @@
 .bls-bowler-numbers dd { margin: .15rem 0 0; font-size: 1.8rem; font-weight: 650; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .bls-bowler-average dd { font-size: clamp(3.5rem, 6.5vw, 5rem); letter-spacing: -.065em; color: #9dcbff; }
 .bls-bowler-profile { display: flex; align-items: center; justify-content: space-between; gap: .75rem; color: #07182e; background: #a6d0ff; border: 1px solid transparent; border-radius: .65rem; padding: .85rem 1rem; text-decoration: none; font-size: .85rem; font-weight: 700; margin-top: auto; min-height: 3rem; }
-.bls-bowler-profile:hover { background: #c4e0ff; color: #07182e; }
 .bls-bowler-profile svg { flex-shrink: 0; }
 .bls-bowler-pass-note { margin: .65rem 0 0; font-size: .6rem; color: #afc8e8; text-align: center; }
 .bls-bowler-no-games { color: #afc8e8; font-size: .75rem; }
@@ -64,7 +63,6 @@
 .bls-launchpad-shortcuts { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-inline: -2rem; border-top: 1px solid var(--bls-border); background: var(--bls-surface-2); }
 .bls-launchpad-shortcuts a { display: flex; align-items: center; gap: .75rem; min-width: 0; padding: 1.1rem 2rem; color: var(--bls-text); text-decoration: none; font-size: .8rem; font-weight: 600; }
 .bls-launchpad-shortcuts a + a { border-left: 1px solid var(--bls-border); }
-.bls-launchpad-shortcuts a:hover { background: var(--bls-accent-soft); }
 .bls-launchpad-shortcuts a > svg:first-child,.bls-launchpad-vs { color: var(--bls-accent); }
 .bls-launchpad-shortcuts a > svg:last-child { margin-left: auto; flex-shrink: 0; color: var(--bls-text-muted); }
 .bls-launchpad-vs { font-size: .65rem; font-weight: 800; }

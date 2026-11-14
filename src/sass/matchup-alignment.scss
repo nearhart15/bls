@@ -113,9 +113,7 @@
   cursor: pointer;
 }
 
-.bls-matchup-desktop-action:hover,
 .bls-matchup-desktop-action:focus-visible,
-.bls-matchup-mobile-action:hover,
 .bls-matchup-mobile-action:focus-visible {
   background: #455e73 !important;
   border-color: #91a9bc !important;
@@ -203,7 +201,6 @@
   font-weight: 600;
 }
 
-.bls-jump-current-week:hover,
 .bls-jump-current-week:focus-visible {
   background: #455e73 !important;
   color: #fff !important;

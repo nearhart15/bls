@@ -88,9 +88,8 @@ test('bowler row and name clicks keep the selection in sync with the detail pane
     }
 });
 
-test('touch-screen hover does not paint an unselected bowler as selected', () => {
+test('only selected rows receive the bowler selection shading', () => {
     const styles = fs.readFileSync(path.resolve(__dirname, '../src/sass/_perf-table.scss'), 'utf8');
     assert.match(styles, /tr\.bls-perf-selected > td\s*\{[^}]*--bs-table-bg-state:\s*var\(--bls-accent-soft\)/);
-    assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
-    assert.doesNotMatch(styles, /tbody tr:hover td\s*\{/);
+    assert.doesNotMatch(styles, /:hover\b/);
 });
