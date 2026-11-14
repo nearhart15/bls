@@ -14,6 +14,7 @@ import {ThemeToggle} from "./components/theme";
 import {type DataSource, useDataSource} from "./components/data-source";
 import {DataSourceStatus} from "./components/data-source-status";
 import Loader from "./components/loader";
+import PageErrorBoundary from "./components/page-error-boundary";
 
 const Layout :FC = () => {
     const {source, setSource} = useDataSource();
@@ -91,7 +92,13 @@ const Layout :FC = () => {
                 {isFrameOnlyStatsPage && <DataSourceStatus source="frame"/>}
 
                 <ScrollToTop />
-                <main className="bls-main">{pageTitle && <header className="bls-page-header"><h1>{pageTitle}</h1></header>}<DataQualityNotice/><Suspense fallback={<Loader/>}><Outlet/></Suspense></main>
+                <main className="bls-main">
+                    {pageTitle && <header className="bls-page-header"><h1>{pageTitle}</h1></header>}
+                    <PageErrorBoundary page={location.key + displayedSource}>
+                        <DataQualityNotice/>
+                        <Suspense fallback={<Loader/>}><Outlet/></Suspense>
+                    </PageErrorBoundary>
+                </main>
                 <footer className="bls-footer">
                     <p className="mb-1">Contains fun data, empowers bragging rights, enables the nerds, and justifies adult money (well) spent at the Pro Shop.</p>
                     <p className="mb-0">Copyright &copy; 2025{" "}<span className="text-primary-emphasis">Pins Go Boom!</span> Bowling Team.</p>
