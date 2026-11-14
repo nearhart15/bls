@@ -94,16 +94,19 @@ test('pending frame rank uses the dated division standing for the same team and 
     props.team.currentRank = 'PENDING';
     props.league.completed = true;
 
-    function displayedRank() {
+    function displayedRank(rankNote) {
         const dom = render(props);
         try {
-            return dom.window.document.querySelector('.bls-match-night-standing > div:nth-child(2) dd').textContent.trim();
+            const value = dom.window.document.querySelector('.bls-match-night-standing > div:nth-child(2) dd');
+            assert.equal(value.querySelector('.visually-hidden')?.textContent, rankNote);
+            value.querySelector('.visually-hidden')?.remove();
+            return value.textContent.trim();
         } finally {
             dom.window.close();
         }
     }
 
-    assert.match(displayedRank(), /^3\s+Division · Nov 5 standings$/);
+    assert.equal(displayedRank(' in Tastes Great! division as of Nov 5, 2026'), '3');
     sheet.standings[0].name = 'Another team';
     assert.equal(displayedRank(), '—');
     sheet.standings[0].name = 'Pins Go Boom!';

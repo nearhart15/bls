@@ -29,9 +29,10 @@ function PublishedTeamRank({team}: {team: TrackedLeagueTeam}) {
         ? data?.standings.find(row => row.number === team.number && normalizedTeamName(row.name) === teamName)
         : undefined;
     if (!standing || !Number.isSafeInteger(standing.place) || standing.place < 1) return <>—</>;
-    return <>{standing.place} <small className="d-block text-body-secondary">
-        {standing.division ? "Division · " : ""}{date.format("MMM D")} standings
-    </small></>;
+    return <span>
+        {standing.place}
+        <span className="visually-hidden">{standing.division ? ` in ${standing.division} division` : ""} as of {date.format("MMM D, YYYY")}</span>
+    </span>;
 }
 
 const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, leagueOngoing, children}) => {
