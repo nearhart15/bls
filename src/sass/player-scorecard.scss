@@ -1,11 +1,11 @@
 .bls-player-scorecard {
-  --scorecard-ink: #17232b;
-  --scorecard-paper: #f4ecd9;
-  --scorecard-orange: #e44f22;
+  --scorecard-ink: #0b1b2c;
+  --scorecard-paper: #edf7ff;
+  --scorecard-accent: #9dcbff;
   margin-bottom: 1.5rem;
-  background: var(--scorecard-paper);
-  color: var(--scorecard-ink);
-  border: 1px solid #ded4be;
+  background: linear-gradient(125deg, #163a58, #0b1b2c 85%);
+  color: var(--scorecard-paper);
+  border: 1px solid #345472;
   border-radius: 24px;
   box-shadow: 0 18px 50px #0002;
   overflow: hidden;
@@ -17,7 +17,7 @@
     gap: .5rem 1rem;
     justify-content: space-between;
     padding: 1rem clamp(1.2rem, 3vw, 2rem);
-    border-bottom: 1px solid #17232b30;
+    border-bottom: 1px solid #ffffff25;
     font-size: .65rem;
     font-weight: 800;
     letter-spacing: .16em;
@@ -33,7 +33,7 @@
       width: .5rem;
       height: .5rem;
       border-radius: 50%;
-      background: var(--scorecard-orange);
+      background: var(--scorecard-accent);
     }
   }
 
@@ -54,7 +54,7 @@
 
     h1 {
       margin: .75rem 0 1rem;
-      color: var(--scorecard-ink);
+      color: var(--scorecard-paper);
       font-size: clamp(2.5rem, 5.5vw, 5rem);
       font-weight: 900;
       letter-spacing: -.065em;
@@ -65,7 +65,7 @@
 
     > p {
       margin: 0;
-      color: #48535a;
+      color: #d9e5f5;
       font-size: .85rem;
       line-height: 1.6;
       overflow-wrap: anywhere;
@@ -77,7 +77,7 @@
     font-weight: 800;
     letter-spacing: .12em;
     text-transform: uppercase;
-    color: #91330f;
+    color: var(--scorecard-accent);
   }
 
   .bls-player-scorecard-actions {
@@ -94,12 +94,12 @@
       min-height: 44px;
       font-size: .8rem;
       font-weight: 750;
-      color: var(--scorecard-ink);
+      color: var(--scorecard-paper);
       text-decoration: none;
       border-radius: 8px;
 
       &:focus-visible {
-        outline: 3px solid #17232b;
+        outline: 3px solid var(--scorecard-accent);
         outline-offset: 4px;
       }
     }
@@ -109,8 +109,8 @@
       background: var(--scorecard-ink);
       color: var(--scorecard-paper);
 
-      &:hover { background: #344854; }
-      span { color: #ffb083; font-size: 1.1rem; }
+      &:hover { background: #224974; }
+      span { color: var(--scorecard-accent); font-size: 1.1rem; }
     }
 
     .bls-player-scorecard-back:hover { text-decoration: underline; }
@@ -120,11 +120,11 @@
     position: relative;
     min-width: 0;
     padding: clamp(1rem, 2.5vw, 1.5rem);
-    background: #17232b;
+    background: #0b1b2c;
     background-image: repeating-linear-gradient(0deg, transparent 0 3px, #ffffff03 3px 4px);
-    color: #f4ecd9;
+    color: #edf7ff;
     border-radius: 14px;
-    border-top: 4px solid var(--scorecard-orange);
+    border-top: 4px solid var(--scorecard-accent);
   }
 
   .bls-player-scorecard-board-heading {
@@ -135,7 +135,7 @@
 
     h2 {
       margin: 0;
-      color: #f4ecd9;
+      color: #edf7ff;
       font-size: .65rem;
       font-weight: 750;
       letter-spacing: .13em;
@@ -149,15 +149,15 @@
     width: 1.5rem;
     height: 1.5rem;
     flex: 0 0 auto;
-    border: 1px solid #f4ecd94d;
-    color: #ffb083;
+    border: 1px solid #ffffff4d;
+    color: var(--scorecard-accent);
     font-weight: 900;
     font-size: .8rem;
   }
 
   .bls-player-scorecard-board-context {
     margin: .4rem 0 0;
-    color: #bbc6ca;
+    color: #aec2db;
     font-size: .7rem;
     overflow-wrap: anywhere;
   }
@@ -174,7 +174,7 @@
       font-weight: 850;
       letter-spacing: -.07em;
       line-height: 1;
-      color: #ffb083;
+      color: var(--scorecard-accent);
     }
 
     > span {
@@ -183,7 +183,7 @@
       letter-spacing: .1em;
       text-transform: uppercase;
       line-height: 1.5;
-      color: #bbc6ca;
+      color: #aec2db;
     }
   }
 
@@ -191,7 +191,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(3.25rem, 1fr));
     margin: 0;
-    border: 1px solid #f4ecd938;
+    border: 1px solid #ffffff38;
     border-radius: 7px;
     overflow: hidden;
 
@@ -199,12 +199,12 @@
       min-width: 0;
       text-align: center;
       padding: .6rem .25rem;
-      border-inline-end: 1px solid #f4ecd938;
+      border-inline-end: 1px solid #ffffff38;
       &:last-child { border: 0; }
     }
 
     dt {
-      color: #bbc6ca;
+      color: #aec2db;
       font-size: .55rem;
       font-weight: 600;
       letter-spacing: .08em;
@@ -226,21 +226,21 @@
     gap: .3rem .8rem;
     justify-content: space-between;
     margin-top: .8rem;
-    color: #bbc6ca;
+    color: #aec2db;
     font-size: .65rem;
     line-height: 1.5;
   }
 
   .bls-player-scorecard-empty {
     margin: 2rem 0;
-    color: #bbc6ca;
+    color: #aec2db;
     line-height: 1.6;
   }
 
   .bls-player-scorecard-records {
     padding: 1rem clamp(1.2rem, 3vw, 2rem) 1.5rem;
-    border-top: 1px dashed #17232b50;
-    background: #17232b05;
+    border-top: 1px dashed #ffffff30;
+    background: #0b1b2c33;
 
     > p {
       margin: 0 0 .75rem;
@@ -248,7 +248,7 @@
       font-weight: 800;
       letter-spacing: .12em;
       text-transform: uppercase;
-      color: #48535a;
+      color: #d9e5f5;
     }
 
     dl {
@@ -261,7 +261,7 @@
     dt {
       font-size: .6rem;
       font-weight: 600;
-      color: #48535a;
+      color: #d9e5f5;
     }
 
     dd {
