@@ -50,7 +50,7 @@ export default function LeagueStandings({standings, teams, sheetDate, renderPlay
     }
 
     return <section aria-labelledby={id + "-title"} className="bls-standings">
-        <div className="bls-standings-header">
+        <header className="bls-standings-header">
             <h2 id={id + "-title"}>Division standings</h2>
             <div className="bls-standing-controls">
                 <label>
@@ -71,7 +71,7 @@ export default function LeagueStandings({standings, teams, sheetDate, renderPlay
                     </select>
                 </label>
             </div>
-        </div>
+        </header>
         <div className="bls-standing-layout">
             <div className="bls-standing-team">
                 <div aria-live="polite" aria-atomic="true">

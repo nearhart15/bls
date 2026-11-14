@@ -1,14 +1,13 @@
 .bls-nav.navbar {
-  --masthead-text: #f1f7ff;
-  --masthead-border: #347097;
+  --masthead-accent: #62baf7;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   padding: 0;
   margin-bottom: .75rem;
-  border: 1px solid var(--masthead-border);
+  border: 1px solid var(--bls-header-border);
   border-radius: var(--bls-radius-sm);
   background: #081929;
-  color: var(--masthead-text);
+  color: var(--bls-header-text);
 
   .navbar-brand {
     display: flex;
@@ -33,15 +32,17 @@
 
   .navbar-collapse { grid-column: 1 / -1; }
   .nav-link {
-    color: var(--masthead-text);
+    color: var(--bls-header-text);
     font-size: .9rem;
     font-weight: 650;
     padding: .65rem .85rem;
   }
   .nav-link.active, .bls-header-section {
-    color: var(--masthead-text);
-    background: linear-gradient(115deg, #164267, #0b578f);
-    box-shadow: inset 0 -2px #62baf7;
+    color: var(--bls-header-text);
+    background: var(--bls-header-gradient);
+  }
+  .nav-link.active, .bls-header-section:last-child {
+    box-shadow: inset 0 -2px var(--masthead-accent);
   }
   :is(a, button):focus-visible {
     outline: 2px solid #89d0ff;
@@ -56,7 +57,7 @@
   min-height: clamp(6rem, 15vw, 10.5rem);
   padding: 1rem clamp(.8rem, 3vw, 2.25rem);
   border-radius: var(--bls-radius-sm) var(--bls-radius-sm) 0 0;
-  border-bottom: 1px solid var(--masthead-border);
+  border-bottom: 1px solid var(--bls-header-border);
   background: linear-gradient(90deg, #061423 0%, #06142388 33%, transparent 65%),
     url("../assets/bowling-strike.webp") right center / cover no-repeat #061423;
 }
@@ -65,23 +66,51 @@
   grid-area: 1 / 2;
   position: relative;
   padding-inline: .45rem;
-  color: var(--masthead-text);
+  color: var(--bls-header-text);
 }
 
 .bls-header-refresh.btn {
   min-height: 44px;
   background: #081929dd;
   border: 1px solid transparent;
-  color: var(--masthead-text);
+  color: var(--bls-header-text);
 }
 
 .bls-header-section {
   grid-column: 1 / -1;
   justify-self: stretch;
-  border-radius: 0 0 var(--bls-radius-sm) var(--bls-radius-sm);
   padding: .45rem 1.5rem .45rem .85rem;
   font-size: .8rem;
   font-weight: 700;
+
+  &:last-child { border-radius: 0 0 var(--bls-radius-sm) var(--bls-radius-sm); }
+}
+
+.bls-header-sources {
+  grid-column: 1 / -1;
+  display: flex;
+  border-top: 1px solid var(--bls-header-border);
+  border-radius: 0 0 var(--bls-radius-sm) var(--bls-radius-sm);
+  overflow: hidden;
+
+  button {
+    flex: 1 1 0;
+    min-height: 44px;
+    padding: .5rem .85rem;
+    border: 0;
+    background: transparent;
+    color: #b2cce1;
+    font-size: .85rem;
+    font-weight: 650;
+    text-align: center;
+
+    + button { border-inline-start: 1px solid var(--bls-header-border); }
+    &[aria-pressed="true"] {
+      background: #153751;
+      color: var(--bls-header-text);
+      box-shadow: inset 0 -3px var(--masthead-accent);
+    }
+  }
 }
 
 @media (min-width: 992px) {
@@ -89,6 +118,11 @@
   .bls-header-links { flex: 1; justify-content: space-evenly; }
   .bls-nav .nav-link.active { border-radius: 0 .65rem 0 .65rem; }
   .bls-nav-actions { grid-area: 2 / 2; padding-inline: .75rem; }
+  .bls-header-sources {
+    justify-content: flex-end;
+
+    button { flex: 0 0 9rem; }
+  }
 }
 
 @media (max-width: 991.98px) {
