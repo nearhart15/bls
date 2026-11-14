@@ -38,7 +38,7 @@ const Layout :FC = () => {
     }
     const showDataSourceToggle = !isScoreLab && !isFullLeagueInfo && !isTeamLeagueData && !isFrameOnlyStatsPage && !isApiOnlyPlayer;
 
-    const pageTitle = isTeamLeagueData ? "Team League Data" : isFrameOnlyStatsPage ? "Handicap Guide" : location.pathname === "/player" ? "Players" : null;
+    const pageTitle = isFrameOnlyStatsPage ? "Handicap Guide" : location.pathname === "/player" ? "Players" : null;
 
     const isStats = location.pathname === "/player" || location.pathname.startsWith("/player/") || location.pathname === "/team/compare";
     const currentSection = isTeamLeagueData ? "Team League Data" : isFullLeagueInfo ? "Full League Info"
@@ -103,6 +103,7 @@ const Layout :FC = () => {
 
                 <ScrollToTop />
                 <main className="bls-main">
+                    {isTeamLeagueData && <h1 className="visually-hidden">Team League Data</h1>}
                     {pageTitle && <header className="bls-page-header"><h1>{pageTitle}</h1></header>}
                     <PageErrorBoundary page={location.key + displayedSource}>
                         <DataQualityNotice/>
