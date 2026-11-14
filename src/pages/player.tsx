@@ -26,9 +26,9 @@ import {
     type PlayerListEntry,
 } from "../data/player/player-aggregate";
 import {apiPlayerListFetcher} from "../data/player/api-player-data";
+import {findApiPlayerForFrameProfile} from "../data/player/player-source-match";
 
 const API_PLAYER_INDEX_CACHE_CATEGORY = `${PLAYER_INDEX_CACHE_CATEGORY}-api`;
-const normalizePlayerName = (name: string) => name.toLocaleLowerCase().normalize("NFKD").replace(/[^a-z0-9]/g, "");
 
 const PlayerDetailPage: FC<{playerId: string}> = ({playerId}) => {
     const fetcher = useCallback(() => aggregatePlayerData(playerId), [playerId]);
@@ -41,8 +41,7 @@ const PlayerDetailPage: FC<{playerId: string}> = ({playerId}) => {
 
     if (data.careerStats.gameStats.count === 0) {
         if (apiLoading) return <Loader />;
-        const normalizedName = normalizePlayerName(data.player.name ?? playerId);
-        const apiPlayer = apiPlayers?.find(player => normalizePlayerName(player.name) === normalizedName);
+        const apiPlayer = findApiPlayerForFrameProfile(playerId, data.player.name, apiPlayers);
         if (apiPlayer) return <Navigate replace to={`/player/${apiPlayer.id}`} />;
     }
 
@@ -66,8 +65,7 @@ const ApiPlayerDetailBridge: FC<{playerId: string}> = ({playerId}) => {
     if (frameError) return <ErrorDisplay message="Error matching this BinBin player to A.B.C. data." error={frameError} />;
     if (apiError) return <ErrorDisplay message="Error loading A.B.C. player data." error={apiError} />;
 
-    const normalizedName = normalizePlayerName(frameData?.player.name ?? playerId);
-    const apiPlayer = apiPlayers?.find(player => normalizePlayerName(player.name) === normalizedName);
+    const apiPlayer = findApiPlayerForFrameProfile(playerId, frameData?.player.name, apiPlayers);
 
     if (apiPlayer) return <Navigate replace to={`/player/${apiPlayer.id}`} />;
 
