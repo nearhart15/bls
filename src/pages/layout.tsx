@@ -8,7 +8,7 @@ import {Link, Outlet, useLocation, useNavigate} from "react-router";
 import {Button, ButtonGroup, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {ArrowClockwise} from "react-bootstrap-icons";
 
-import ImgBowlingLogo from "../assets/bowling-svgrepo-com.svg";
+import "../sass/masthead.scss";
 import ScrollToTop from "./components/scroll-to-top";
 import {ThemeToggle} from "./components/theme";
 import {type DataSource, useDataSource} from "./components/data-source";
@@ -39,6 +39,10 @@ const Layout :FC = () => {
 
     const pageTitle = isTeamLeagueData ? "Team League Data" : isFrameOnlyStatsPage ? "Handicap Guide" : location.pathname === "/player" ? "Players" : null;
 
+    const isStats = location.pathname === "/player" || location.pathname.startsWith("/player/") || location.pathname === "/team/compare";
+    const currentSection = isTeamLeagueData ? "Team League Data" : isFullLeagueInfo ? "Full League Info"
+        : isStats ? "Stats" : isScoreLab ? "Utilities" : null;
+
     const refreshApp = () => {
         window.location.reload();
     };
@@ -46,36 +50,41 @@ const Layout :FC = () => {
     return (
         <div className="bls-app">
             <div className="bls-shell">
-                <Navbar expand="lg" className="bls-nav" data-bs-theme={undefined}>
-                    <Navbar.Brand as={Link} to="/">
-                        <img src={ImgBowlingLogo} alt="" width="28" height="28" />
-                        Bowling League Stats
-                    </Navbar.Brand>
-                    <div className="bls-nav-actions d-flex align-items-center gap-2 ms-auto order-lg-last">
-                        <Button className="bls-theme-btn d-flex align-items-center gap-1" size="sm" onClick={refreshApp} aria-label="Clear cached data and refresh" title="Clear cached data and refresh">
+                <Navbar expand="lg" collapseOnSelect className="bls-nav" aria-label="Main navigation">
+                    <div className="bls-masthead">
+                        <Navbar.Brand as={Link} to="/">
+                            <svg viewBox="0 0 28 36" width="28" height="36" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                                <path d="M14 2c-4 0-6 2-6 6 0 3 2 6 2 9 0 4-5 6-5 12 0 3 2 5 5 5h8c3 0 5-2 5-5 0-6-5-8-5-12 0-3 2-6 2-9 0-4-2-6-6-6Z M10 13h8 M10 17h8"/>
+                            </svg>
+                            Bowling League Stats
+                        </Navbar.Brand>
+                    </div>
+                    <div className="bls-nav-actions d-flex align-items-center gap-2">
+                        <Button className="bls-header-refresh d-flex align-items-center gap-1" size="sm" onClick={refreshApp} aria-label="Clear cached data and refresh" title="Clear cached data and refresh">
                             <ArrowClockwise size={14} />
                             <span className="d-none d-md-inline">Refresh</span>
                         </Button>
                         <Navbar.Toggle aria-controls="bls-nav" aria-label="Toggle navigation" />
                     </div>
                     <Navbar.Collapse id="bls-nav">
-                        <Nav className="me-auto ms-lg-3 gap-lg-1">
-                            <Nav.Link as={Link} to="/league">Team League Data</Nav.Link>
-                            <Nav.Link as={Link} to="/beer-league">Full League Info</Nav.Link>
-                            <NavDropdown title="Stats" id="players-nav">
-                                <NavDropdown.Item as={Link} to="/player">Players</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="/player/leaderboard">Leaderboard</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="/player/compare">Player Compare</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="/team/compare">Team Compare</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="/player/handicap">Handicap Guide</NavDropdown.Item>
+                        <Nav className="bls-header-links">
+                            <Nav.Link as={Link} eventKey="/league" to="/league" active={isTeamLeagueData} aria-current={isTeamLeagueData ? "page" : undefined}>Team League Data</Nav.Link>
+                            <Nav.Link as={Link} eventKey="/beer-league" to="/beer-league" active={isFullLeagueInfo} aria-current={isFullLeagueInfo ? "page" : undefined}>Full League Info</Nav.Link>
+                            <NavDropdown title="Stats" active={isStats} id="players-nav">
+                                <NavDropdown.Item as={Link} eventKey="/player" to="/player">Players</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} eventKey="/player/leaderboard" to="/player/leaderboard">Leaderboard</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} eventKey="/player/compare" to="/player/compare">Player Compare</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} eventKey="/team/compare" to="/team/compare">Team Compare</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} eventKey="/player/handicap" to="/player/handicap">Handicap Guide</NavDropdown.Item>
                             </NavDropdown>
-                            <NavDropdown title="Utilities" id="utilities-nav">
-                                <NavDropdown.Item as={Link} to="/score-utils">Series Chase</NavDropdown.Item>
+                            <NavDropdown title="Utilities" active={isScoreLab} id="utilities-nav">
+                                <NavDropdown.Item as={Link} eventKey="/score-utils" to="/score-utils">Series Chase</NavDropdown.Item>
                                 <NavDropdown.Divider />
                                 <ThemeToggle />
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
+                    {currentSection && <div className="bls-header-section d-lg-none">{currentSection}</div>}
                 </Navbar>
 
                 {showDataSourceToggle && (
