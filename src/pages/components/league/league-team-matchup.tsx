@@ -112,6 +112,7 @@ const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails
     const current = scheduled.filter(matchup => !matchup.scheduledDate?.isAfter(today, "day")).slice(-1)[0] ?? scheduled[0];
     const [selectedWeek, setSelectedWeek] = useState<number>();
     const [showAllWeeks, setShowAllWeeks] = useState(false);
+    const [detailsExpanded, setDetailsExpanded] = useState(false);
     const [expandedWeeks, setExpandedWeeks] = useState<ReadonlySet<number>>(() => new Set());
     const scrollPosition = useRef<number | undefined>(undefined);
     useLayoutEffect(() => {
@@ -160,8 +161,12 @@ const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails
             <div id={matchupId} className="bls-scoreboard-matchups">
                 {(showAllWeeks ? teamDetails.matchups : [selected]).map(matchup => <MatchupDisplay
                     key={matchup.week} leagueDetails={leagueDetails} matchup={matchup}
-                    teamDetails={teamDetails} currentBreakpoint={currentBreakpoint} detailsExpanded={expandedWeeks.has(matchup.week)}
+                    teamDetails={teamDetails} currentBreakpoint={currentBreakpoint} detailsExpanded={showAllWeeks ? expandedWeeks.has(matchup.week) : detailsExpanded}
                     onToggleDetails={() => {
+                        if (!showAllWeeks) {
+                            setDetailsExpanded(expanded => !expanded);
+                            return;
+                        }
                         setExpandedWeeks(previous => {
                             const next = new Set(previous);
                             if (next.has(matchup.week)) next.delete(matchup.week);
