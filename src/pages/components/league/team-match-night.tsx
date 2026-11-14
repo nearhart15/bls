@@ -62,7 +62,6 @@ const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, leagueOngoing, c
         ["High game", team.teamStats?.highGame],
         ["Low series", team.teamStats?.lowSeries],
         ["High series", team.teamStats?.highSeries],
-        ["Scratch pins", team.teamStats?.scratchPins],
     ] as const;
 
     return <section className="bls-match-night" aria-labelledby={titleId}>
