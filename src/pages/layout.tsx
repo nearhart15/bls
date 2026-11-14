@@ -57,7 +57,7 @@ const Layout :FC = () => {
                             <svg viewBox="0 0 28 36" width="28" height="36" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                                 <path d="M14 2c-4 0-6 2-6 6 0 3 2 6 2 9 0 4-5 6-5 12 0 3 2 5 5 5h8c3 0 5-2 5-5 0-6-5-8-5-12 0-3 2-6 2-9 0-4-2-6-6-6Z M10 13h8 M10 17h8"/>
                             </svg>
-                            Bowling League Stats
+                            The Boom Board
                         </Navbar.Brand>
                     </div>
                     <div className="bls-nav-actions d-flex align-items-center gap-2">
