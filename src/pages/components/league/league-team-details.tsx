@@ -79,7 +79,7 @@ const LeagueTeamDetails : FC<LeagueTeamDetailsProps> = ({leagueOngoing, leagueDe
             </TeamMatchNight>
             <details className="bls-league-reference" key={leagueDetails?.id}>
                 <summary>League summary: rules, honor roll &amp; center info</summary>
-                <div><LeagueSummary leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/></div>
+                <div><LeagueSummary leagueDetails={leagueDetails} leagueDetailsLoading={leagueDetailsLoading}/></div>
             </details>
             <div className="bls-team-panels">
                 <LeagueTeamRoster teamDetails={teamDetails} leagueDetailsLoading={leagueDetailsLoading} currentBreakpoint={currentBreakpoint}/>

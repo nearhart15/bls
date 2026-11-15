@@ -17,14 +17,12 @@ import {safeLeagueLink} from "../../../data/utils/safe-link";
  */
 
 import type {FC, ReactNode} from "react";
-import {Badge, Card, CardBody, CardFooter, CardHeader, CardTitle, Col, Container, Row} from "react-bootstrap";
+import {Badge, Card, CardBody, CardFooter, CardHeader, CardTitle, Col, Row} from "react-bootstrap";
 import {PlayCircleFill} from "react-bootstrap-icons";
 
 import type {LeagueAccoladeType, LeagueDetails} from "../../../data/league/league-details";
 import Loader from "../loader";
-import {type Breakpoint, BS_BP_XS} from "../ui-utils";
 import {VacantOrAbsentOpponentScoring} from "../../../data/league/league-setup-config";
-import {CollapsibleContainer} from "../collapsible-container";
 
 interface CodeMaps {
     code: string;
@@ -197,7 +195,6 @@ const LeagueHonorRoll :FC<LeagueSummaryDataProps> = ({leagueDetails} : LeagueSum
     const numberFormat = Intl.NumberFormat("en-US", {style: "decimal", maximumFractionDigits: 2})
     return (<>
         <Card border="info" className="mt-1 mb-1 p-0">
-            <CardHeader className="py-1 px-2 text-white bg-info"><span className="fs-6">Honor Roll</span></CardHeader>
             {leagueDetails.leagueAccolades.map((accolade, idx) => (
                 <CardBody className="py-1 px-1 my-0 mx-2" key={"league-accolage-" + idx.toString()}>
                     <div className="rounded-1 px-2 py-1 mb-1 bg-info-subtle text-info-emphasis fw-medium">
@@ -222,54 +219,45 @@ const LeagueHonorRoll :FC<LeagueSummaryDataProps> = ({leagueDetails} : LeagueSum
 
 interface LeagueSummaryDataProps {
     leagueDetails: LeagueDetails;
-    currentBreakpoint?: Breakpoint;
 }
-const LeagueSummaryData :FC<LeagueSummaryDataProps> = ({leagueDetails, currentBreakpoint}: LeagueSummaryDataProps) => {
+const LeagueSummaryData :FC<LeagueSummaryDataProps> = ({leagueDetails}: LeagueSummaryDataProps) => {
     return (
-    <>
-        <Container fluid="true">
-            {/* Stack on phones & tablets; 3 columns only on large (lg+) screens */}
-            <Row className="g-2 g-lg-3">
-                <Col xs={12} lg={4} className="mb-2 mb-lg-0">
-                    <Card className="text-start mx-0 mb-0 h-100" border="secondary">
-                        <CollapsibleContainer divId="league-honor-roll" headerTitle="Honor Roll" currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_XS} alwaysShowToggle>
-                            <CardBody className="py-1 py-sm-2">
-                                <LeagueHonorRoll leagueDetails={leagueDetails}/>
-                            </CardBody>
-                        </CollapsibleContainer>
-                    </Card>
-                </Col>
-                <Col xs={12} lg={4} className="mb-2 mb-lg-0">
-                    <Card className="text-start mx-0 mb-0 h-100" border="secondary">
-                        <CollapsibleContainer divId="league-rules" headerTitle="League Rules" currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_XS} alwaysShowToggle>
-                            <CardBody className="py-1 py-sm-2">
-                                <LeagueRules leagueDetails={leagueDetails}/>
-                            </CardBody>
-                        </CollapsibleContainer>
-                    </Card>
-                </Col>
-                <Col xs={12} lg={4}>
-                    <Card className="text-start mx-0 mb-0 h-100" border="secondary">
-                        <CollapsibleContainer divId="league-info" headerTitle="League Info" currentBreakpoint={currentBreakpoint} hideBelowBreakpoint={BS_BP_XS} alwaysShowToggle>
-                            <CardBody className="py-1 py-sm-2">
-                                <LeagueSummaryInfo leagueDetails={leagueDetails} />
-                            </CardBody>
-                        </CollapsibleContainer>
-                    </Card>
-                </Col>
-            </Row>
-        </Container>
-    </>);
+        <Row className="g-2 g-lg-3 align-items-start">
+            <Col xs={12} lg={4}>
+                <Card id="league-honor-roll" className="text-start mx-0 mb-0" border="secondary">
+                    <CardHeader as="h5" className="py-2">Honor Roll</CardHeader>
+                    <CardBody className="py-2">
+                        <LeagueHonorRoll leagueDetails={leagueDetails}/>
+                    </CardBody>
+                </Card>
+            </Col>
+            <Col xs={12} lg={4}>
+                <Card id="league-rules" className="text-start mx-0 mb-0" border="secondary">
+                    <CardHeader as="h5" className="py-2">League Rules</CardHeader>
+                    <CardBody className="py-2">
+                        <LeagueRules leagueDetails={leagueDetails}/>
+                    </CardBody>
+                </Card>
+            </Col>
+            <Col xs={12} lg={4}>
+                <Card id="league-info" className="text-start mx-0 mb-0" border="secondary">
+                    <CardHeader as="h5" className="py-2">League Info</CardHeader>
+                    <CardBody className="py-2">
+                        <LeagueSummaryInfo leagueDetails={leagueDetails}/>
+                    </CardBody>
+                </Card>
+            </Col>
+        </Row>
+    );
 }
 
 export interface LeagueSummaryParams {
     leagueDetails: LeagueDetails | null;
     leagueDetailsLoading: boolean;
-    currentBreakpoint: Breakpoint;
     showJumpToCurrentWeek?: boolean;
     children?: ReactNode;
 }
-const LeagueSummary: FC<LeagueSummaryParams> = ({leagueDetails, leagueDetailsLoading, currentBreakpoint, showJumpToCurrentWeek = false, children}) => {
+const LeagueSummary: FC<LeagueSummaryParams> = ({leagueDetails, leagueDetailsLoading, showJumpToCurrentWeek = false, children}) => {
     return (
         <>
             <Card border="primary" className="mb-2 mx-0 px-0">
@@ -290,7 +278,7 @@ const LeagueSummary: FC<LeagueSummaryParams> = ({leagueDetails, leagueDetailsLoa
                         <CardTitle as="h4" className="pb-2 d-flex justify-content-center">
                             <div className="text-center">{leagueDetails.season} {leagueDetails.name}&nbsp;<small className="text-body-secondary">@ {leagueDetails.center}</small></div>
                         </CardTitle>
-                        <LeagueSummaryData leagueDetails={leagueDetails} currentBreakpoint={currentBreakpoint}/>
+                        <LeagueSummaryData leagueDetails={leagueDetails}/>
                     </CardBody>
                     }
             </Card>
