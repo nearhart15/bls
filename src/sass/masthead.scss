@@ -131,7 +131,7 @@
   .bls-header-links {
     display: grid;
     flex: 1;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) repeat(2, clamp(6rem, 11vw, 8rem));
+    grid-template-columns: repeat(2, minmax(0, 1.1fr)) repeat(2, minmax(0, .9fr));
 
     .nav-link {
       display: flex;
