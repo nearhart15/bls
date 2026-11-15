@@ -39,7 +39,7 @@
 
   button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid var(--bls-accent, #2997ff); outline-offset: 4px; }
 
-  .bls-match-night-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 1rem; }
+  .bls-match-night-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); align-items: start; gap: 1rem; }
 
   .bls-match-night-fixture,
   .bls-match-night-result,
@@ -52,7 +52,7 @@
   .bls-match-night-fixture,
   .bls-match-night-result {
     min-width: 0;
-    padding: clamp(1.2rem, 3vw, 2rem);
+    padding: clamp(1rem, 2vw, 1.25rem);
     border-radius: 22px;
   }
 
@@ -66,7 +66,7 @@
     > span { color: #afc8e8; font-size: .7rem; }
   }
 
-  .bls-match-night-date { color: #d9e5f5; font-size: .85rem; margin: .65rem 0 .85rem; }
+  .bls-match-night-date { color: #d9e5f5; font-size: .85rem; margin: .5rem 0 .65rem; }
 
   .bls-match-night-pairing { display: grid; grid-template-columns: minmax(0, 1fr) fit-content(40%); gap: .75rem; align-items: center; }
   .bls-match-night-opponent {
@@ -114,17 +114,11 @@
   .bls-match-night-result-date { font-size: .7rem; color: var(--night-muted); margin: 0 0 .3rem; }
   .bls-match-night-result-opponent { font-size: .85rem; margin: 0; overflow-wrap: anywhere; }
   .bls-match-night-points {
-    margin: .45rem 0 .65rem;
-    strong { display: block; font-size: clamp(2.3rem, 5vw, 4rem); line-height: 1.15; font-weight: 800; letter-spacing: -.05em; }
+    margin: .45rem 0 0;
+    strong { display: block; font-size: clamp(2.3rem, 5vw, 3.6rem); line-height: 1.15; font-weight: 800; letter-spacing: -.05em; }
     strong span { color: var(--night-muted); font-weight: 400; }
     > span { display: block; color: var(--night-muted); font-size: .65rem; }
     p { margin: 0; }
-  }
-
-  .bls-match-night-result-scores {
-    display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 0; padding-top: .6rem; border-top: 1px solid var(--night-border);
-    dt { font-size: .65rem; font-weight: 500; color: var(--night-muted); }
-    dd { font-size: 1.25rem; font-weight: 750; margin: .3rem 0 0; }
   }
 
   .bls-match-night-no-data { margin: .75rem 0 0; font-size: .85rem; line-height: 1.6; }
@@ -189,7 +183,6 @@
   .bls-match-night {
     .bls-match-night-heading { margin: 1rem 0; gap: .75rem; }
     .bls-match-night-grid { grid-template-columns: minmax(0, 1fr); gap: .75rem; }
-    .bls-match-night-fixture, .bls-match-night-result { padding: 1rem; }
     .bls-match-night-standing { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .bls-match-night-standing > div:nth-child(odd) { border: 0; }
   }
