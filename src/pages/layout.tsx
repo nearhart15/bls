@@ -5,7 +5,7 @@ import DataQualityNotice from "./components/data-quality-notice";
 
 import {Suspense, useState, type FC} from "react";
 import {Link, Outlet, useLocation, useNavigate} from "react-router";
-import {Button, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {ArrowClockwise} from "react-bootstrap-icons";
 
 import "../sass/masthead.scss";
@@ -59,11 +59,11 @@ const Layout :FC = () => {
                             The Boom Board
                         </Navbar.Brand>
                     </div>
-                    <div className="bls-nav-actions d-flex align-items-center gap-2">
-                        <Button className="bls-header-refresh d-flex align-items-center gap-1" size="sm" onClick={refreshApp} aria-label="Clear cached data and refresh" title="Clear cached data and refresh">
-                            <ArrowClockwise size={14} />
-                            <span className="d-none d-md-inline">Refresh</span>
-                        </Button>
+                    <div className="bls-nav-actions">
+                        <button type="button" className="bls-header-refresh" onClick={refreshApp} aria-label="Clear cached data and refresh" title="Clear cached data and refresh">
+                            <ArrowClockwise size={18} aria-hidden="true" />
+                            <span className="d-none d-lg-inline">Refresh</span>
+                        </button>
                         <Navbar.Toggle aria-controls="bls-nav" aria-expanded={navigationExpanded} aria-label="Toggle navigation" />
                     </div>
                     <Navbar.Collapse id="bls-nav">
