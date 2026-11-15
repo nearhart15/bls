@@ -9,7 +9,6 @@ import {Button, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {ArrowClockwise} from "react-bootstrap-icons";
 
 import "../sass/masthead.scss";
-import ScrollToTop from "./components/scroll-to-top";
 import {ThemeToggle} from "./components/theme";
 import {type DataSource, useDataSource} from "./components/data-source";
 import {DataSourceStatus} from "./components/data-source-status";
@@ -104,7 +103,6 @@ const Layout :FC = () => {
                 {isApiOnlyPlayer && <DataSourceStatus source="api"/>}
                 {isFrameOnlyStatsPage && <DataSourceStatus source="frame"/>}
 
-                <ScrollToTop />
                 <main className="bls-main">
                     {isTeamLeagueData && <h1 className="visually-hidden">Team League Data</h1>}
                     {pageTitle && <header className="bls-page-header"><h1>{pageTitle}</h1></header>}
