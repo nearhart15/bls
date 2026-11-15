@@ -1,5 +1,6 @@
 .bls-nav.navbar {
   --masthead-accent: #62baf7;
+  --masthead-action-text: #a5dfff;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   padding: 0;
@@ -25,9 +26,9 @@
   }
 
   .navbar-toggler {
-    --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 6h18M3 12h18M3 18h18' fill='none' stroke='%23f1f7ff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-    border: 0;
-    padding: .45rem;
+    --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 6h18M3 12h18M3 18h18' fill='none' stroke='%23a5dfff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+
+    .navbar-toggler-icon { width: 1.25rem; height: 1.25rem; }
   }
 
   .navbar-collapse { grid-column: 1 / -1; }
@@ -65,15 +66,27 @@
 .bls-nav-actions {
   grid-area: 1 / 2;
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
   padding-inline: .45rem;
-  color: var(--bls-header-text);
 }
 
-.bls-header-refresh.btn {
+.bls-header-refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
   min-height: 44px;
-  background: #081929dd;
-  border: 1px solid transparent;
-  color: var(--bls-header-text);
+  padding: 0 .7rem;
+  border: 0;
+  border-radius: .4rem;
+  background: transparent;
+  color: var(--masthead-action-text);
+  font-size: .9rem;
+  font-weight: 650;
+
+  &:focus-visible { background: #153751; }
 }
 
 .bls-header-section {
@@ -118,12 +131,29 @@
   .bls-header-links {
     display: grid;
     flex: 1;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(0, 1fr);
-    text-align: center;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) repeat(2, clamp(6rem, 11vw, 8rem));
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      white-space: nowrap;
+    }
   }
   .bls-nav .nav-link.active { border-radius: 0 .65rem 0 .65rem; }
-  .bls-nav-actions { grid-area: 2 / 2; padding-inline: .75rem; }
+  .bls-nav-actions {
+    grid-area: 2 / 2;
+    padding-inline: .55rem;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset-block: .55rem;
+      inset-inline-start: 0;
+      border-inline-start: 1px solid var(--bls-header-border);
+    }
+  }
   .bls-header-sources {
     justify-content: flex-end;
 
@@ -134,10 +164,21 @@
 @media (max-width: 991.98px) {
   .bls-masthead {
     min-height: clamp(5rem, 17vw, 7rem);
-    padding-right: 8rem;
+    padding-inline-end: 7rem;
     background-image: linear-gradient(90deg, #061423 4%, #061423a6 46%, #06142333 72%, #061423aa),
       url("../assets/bowling-strike.webp");
   }
 
-  .bls-nav .navbar-toggler { min-height: 44px; min-width: 44px; background: #081929dd; }
+  .bls-nav.navbar :is(.bls-header-refresh, .navbar-toggler) {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--bls-header-border);
+    border-radius: .45rem;
+    background: #081929ee;
+
+    &:focus-visible { background: #153751; }
+  }
 }
