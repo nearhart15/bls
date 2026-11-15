@@ -24,7 +24,7 @@ function render(props) {
     return new JSDOM(markup);
 }
 
-test('team briefing preserves recorded zero totals without presenting uncomputed points as a result', t => {
+test('team briefing shows recorded points without displaying pin totals', t => {
     t.mock.method(moment, 'now', () => Date.parse('2026-11-12T12:00:00Z'));
     const match = new LeagueMatchup();
     Object.assign(match, {week: 8, scheduledDate: moment('2026-10-22'), bowlDate: moment('2026-10-22'), scores: new LeagueTeamScore(), opponent: new OpponentTeam()});
@@ -35,7 +35,7 @@ test('team briefing preserves recorded zero totals without presenting uncomputed
         const result = dom.window.document.querySelector('.bls-match-night-result');
         assert.match(result.textContent, /Points not yet available/);
         assert.doesNotMatch(result.textContent, /Points won \/ lost/);
-        assert.deepEqual([...result.querySelectorAll('dd')].map(el => el.textContent), ['0', '0']);
+        assert.doesNotMatch(result.textContent, /Credited scratch|With handicap/);
     } finally { dom.window.close(); }
     match.opponent.scores = new OpponentTeamScore();
     match.opponent.scores.games = [new MatchupGameScore()];
@@ -44,6 +44,7 @@ test('team briefing preserves recorded zero totals without presenting uncomputed
         const result = dom.window.document.querySelector('.bls-match-night-result');
         assert.match(result.textContent, /0 \/ 0Points won \/ lost/);
         assert.doesNotMatch(result.textContent, /Points not yet available/);
+        assert.doesNotMatch(result.textContent, /Credited scratch|With handicap/);
     } finally { dom.window.close(); }
 });
 

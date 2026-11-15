@@ -109,15 +109,11 @@ const TeamMatchNight: FC<TeamMatchNightProps> = ({team, league, leagueOngoing, c
                 {lastMatchup ? <>
                     <p className="bls-match-night-result-date">{lastDate?.format("MMM D, YYYY")} · {league?.bowlingDays?.durationUnit === "WK" ? "Week " : "Matchup "}{lastMatchup.week}</p>
                     <p className="bls-match-night-result-opponent">vs {lastOpponent.name}</p>
-                    {hasLastScores ? <>
+                    {hasLastScores ? (
                         <div className="bls-match-night-points">
                             {hasLastPoints ? <><strong>{statValue(lastMatchup.pointsWonLost[0])}<span> / </span>{statValue(lastMatchup.pointsWonLost[1])}</strong><span>Points won / lost</span></> : <p>Points not yet available</p>}
                         </div>
-                        <dl className="bls-match-night-result-scores">
-                            <div><dt>Credited scratch</dt><dd>{statValue(lastMatchup.scores?.series.effectiveScratchScore)}</dd></div>
-                            <div><dt>With handicap</dt><dd>{statValue(lastMatchup.scores?.series.hdcpScore)}</dd></div>
-                        </dl>
-                    </> : <p className="bls-match-night-no-data">Team totals are not available.</p>}
+                    ) : <p className="bls-match-night-no-data">Team totals are not available.</p>}
                 </> : <p className="bls-match-night-no-data">No results recorded yet.</p>}
             </article>
         </div>
