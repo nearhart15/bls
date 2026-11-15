@@ -40,13 +40,8 @@ export function LeaderboardPodium({entries, metric, scope, formatValue, filters,
 
     return <div className="bls-podium">
         <header className="bls-podium-header">
-            <div>
-                <h1>Leaderboard</h1>
-                <p>{scope}</p>
-            </div>
-            <button type="button" onClick={() => {
-                document.getElementById(resultsId)?.focus();
-            }}>Full rankings <span aria-hidden="true">↓</span></button>
+            <h1>Leaderboard</h1>
+            <p>{scope}</p>
         </header>
         <div className="bls-podium-filters">{filters}</div>
         {ranked.length > 0 && <section className="bls-podium-stage" aria-label={metric + " leaders"}>
@@ -67,7 +62,7 @@ export function LeaderboardPodium({entries, metric, scope, formatValue, filters,
         </section>}
         <section className="bls-podium-results" aria-labelledby={resultsId}>
             <div className="bls-podium-results-header">
-                <h2 id={resultsId} tabIndex={-1}>Full rankings</h2>
+                <h2 id={resultsId}>Full rankings</h2>
                 <span role="status">{ranked.length.toLocaleString()} {ranked.length === 1 ? "bowler" : "bowlers"}</span>
             </div>
             {ranked.length === 0 ? <p className="bls-podium-empty">No bowlers match the selected filters.</p> : <table>

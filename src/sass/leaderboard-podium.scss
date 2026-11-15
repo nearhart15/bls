@@ -2,7 +2,6 @@
   margin-bottom: 2rem;
 }
 
-.bls-podium-header,
 .bls-podium-results-header,
 .bls-podium-stage-label {
   display: flex;
@@ -24,7 +23,6 @@
   }
 
   p { margin: .55rem 0 0; color: var(--bls-text-muted); font-size: .8rem; }
-  button { border: 0; background: none; color: var(--bls-text); font-size: .8rem; text-decoration: underline; text-underline-offset: .25rem; }
 }
 
 .bls-podium-filters {
@@ -133,7 +131,7 @@
 
 .bls-podium-results-header {
   padding: 1rem 1.1rem;
-  h2 { margin: 0; font-size: 1.1rem; scroll-margin-top: 5.5rem; }
+  h2 { margin: 0; font-size: 1.1rem; }
   > span { font-size: .75rem; color: var(--bls-text-muted); }
 }
 .bls-podium-empty { padding: .8rem 1.1rem 1rem; margin: 0; color: var(--bls-text-muted); }
