@@ -93,7 +93,7 @@ const Player: FC = () => {
 
     if (playerId === "leaderboard") return <PlayerLeaderboard />;
     if (playerId) return <PlayerDetailPage key={playerId} playerId={playerId} />;
-    return <div className="container-md"><PlayerList /></div>;
+    return <div className="container-md bls-player-directory"><PlayerList /></div>;
 };
 
 export default Player;

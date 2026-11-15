@@ -13,6 +13,31 @@
   font-size: 0.875rem;
 }
 
+.bls-player-directory {
+  --player-heading-tint: color-mix(in srgb, var(--bls-accent) 18%, var(--bls-surface-2));
+  --player-row-tint: color-mix(in srgb, var(--bls-accent) 7%, var(--bls-surface));
+
+  .bls-perf-card > .card-header {
+    background: var(--bls-header-gradient) !important;
+    border-bottom-color: var(--bls-header-border) !important;
+    color: var(--bls-header-text);
+  }
+
+  .bls-perf-table thead th {
+    background: var(--player-heading-tint) !important;
+    color: var(--bls-text);
+  }
+
+  .bls-perf-table tbody tr:nth-child(even) > td,
+  .bls-player-card:nth-child(even) {
+    background-color: var(--player-row-tint);
+  }
+
+  .bls-player-card-stat {
+    background-color: var(--player-heading-tint);
+  }
+}
+
 .bls-player-cards {
   display: none;
 }
