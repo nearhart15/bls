@@ -80,6 +80,15 @@
       "json": "fall-winter-2026-27/week-10-r2.json",
       "pdf": "fall-winter-2026-27/week-10-r2.pdf",
       "pdfSha256": "77dacf9bba2d0b20857fa6de08ac12c62aad9de7a8371e43a24215f5798b7e96"
+    },
+    {
+      "season": "Fall / Winter 2026–27",
+      "week": 11,
+      "revision": 1,
+      "date": "11/12/2026",
+      "json": "fall-winter-2026-27/week-11.json",
+      "pdf": "fall-winter-2026-27/week-11.pdf",
+      "pdfSha256": "708f5c9619a2bc178cd12ea061dc346d7d1d4e7040647dea72b8c418d457d16a"
     }
   ]
 }
