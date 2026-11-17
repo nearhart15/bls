@@ -9,7 +9,7 @@ import type {AvailableLeagues} from "../../../data/league/league-info";
 import {apiComparisonIssue} from "../../../data/league/league-comparison";
 import {useContextCache} from "../cache/context-cache";
 
-import {performanceRatingFromAverage} from "../charts/performance-rating";
+import {hasLowerHandicap} from "../../../data/league/handicap";
 
 import {useCachedFetcher} from "../cache/data-loader";
 import ErrorDisplay from "../error-display";
@@ -68,25 +68,22 @@ const TeamRosterCard: FC<{side: "a" | "b"; team: ApiStanding; players: ApiRoster
             <div className="d-flex align-items-center justify-content-between gap-2 flex-wrap p-3 border-bottom">
                 <div>
                     <div className="fw-semibold" style={{color}}>{team.name}</div>
-                    <div className="small text-body-secondary">{sortedPlayers.length} active bowler{sortedPlayers.length === 1 ? "" : "s"} · normal lineup order · player-rating edge highlighted</div>
+                    <div className="small text-body-secondary">{sortedPlayers.length} active bowler{sortedPlayers.length === 1 ? "" : "s"} · normal lineup order · lower-handicap edge highlighted</div>
                 </div>
                 <Badge pill style={{background: color, color: "#fff"}}>Roster</Badge>
             </div>
             {sortedPlayers.length > 0 ? <div className="table-responsive">
                 <Table size="sm" className="mb-0 align-middle">
-                    <thead><tr><th>Row</th><th>Bowler</th><th className="text-end">Rating</th><th className="text-end">Games</th></tr></thead>
+                    <thead><tr><th>Row</th><th>Bowler</th><th className="text-end">Handicap</th><th className="text-end">Games</th></tr></thead>
                     <tbody>{sortedPlayers.map((player, index) => {
                         const opponentPlayer = opponentPlayers.filter(opponent => opponent.games > 0)[index];
-                        const playerRating = performanceRatingFromAverage(player.average);
-                        const opponentRating = opponentPlayer ? performanceRatingFromAverage(opponentPlayer.average) : null;
-                        const rowWinner = playerRating == null || opponentRating == null
-                            ? null
-                            : playerRating === opponentRating ? "tie" : playerRating > opponentRating ? side : side === "a" ? "b" : "a";
-                        const isWinner = rowWinner === side;
+                        const handicap = Number.isFinite(player.handicap) ? player.handicap : null;
+                        const opponentHandicap = opponentPlayer && Number.isFinite(opponentPlayer.handicap) ? opponentPlayer.handicap : null;
+                        const isWinner = hasLowerHandicap(handicap, opponentHandicap);
                         return <tr key={player.name} style={isWinner ? {background: `${color}14`} : undefined}>
                         <td className="fw-semibold">{index + 1}</td>
                         <td>{player.name}{player.status === "SUBSTITUTE" && <Badge bg="secondary" className="ms-2">Sub</Badge>}{isWinner && <Badge pill className="ms-2" style={{background: color, color: "#fff"}}>Row edge</Badge>}</td>
-                        <td className="text-end">{playerRating == null ? "—" : numberFormat.format(playerRating)}</td>
+                        <td className="text-end">{handicap == null ? "—" : integerFormat.format(handicap)}</td>
                         <td className="text-end">{player.games}</td>
                     </tr>; })}</tbody>
                 </Table>
