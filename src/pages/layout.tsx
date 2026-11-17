@@ -113,7 +113,6 @@ const Layout :FC = () => {
                 </main>
                 <footer className="bls-footer">
                     <p className="mb-1">Contains fun data, empowers bragging rights, enables the nerds, and justifies adult money (well) spent at the Pro Shop.</p>
-                    <p className="mb-0">Copyright &copy; 2025{" "}<span className="text-primary-emphasis">Pins Go Boom!</span> Bowling Team.</p>
                 </footer>
             </div>
         </div>
