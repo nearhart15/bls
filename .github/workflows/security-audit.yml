@@ -32,4 +32,4 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Audit dependencies
-        run: npm audit --audit-level=moderate
+        run: node scripts/audit-dependencies.mjs

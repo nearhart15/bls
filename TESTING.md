@@ -34,6 +34,7 @@ totals, and both themes.
 ## Verification
 
 - `npm ci --ignore-scripts` installs the locked dependencies used by CI.
+- `node scripts/audit-dependencies.mjs` enforces the moderate-or-higher audit gate. It reports an exception for GHSA-fc5q-39xc-vjpf only in development dependency chains using Picomatch 4.0.7. Builds use checked-in glob patterns. Remove the exception when an upstream patch is available.
 - Pages deploys the same committed lockfile verified by CI; update dependencies on a branch and pass the audit and project checks before merging. The Minimatch override keeps lint dependencies on the patched 11.x release while their upstream ranges still select 10.x.
 - `npm run check` runs lint, all `tests/*.test.cjs` suites, the TypeScript/production build, and bundle-size budgets.
 - Lint allows at most 9 existing warnings. Existing style, defensive-guard, and React migration diagnostics remain visible; correctness/type-safety rules remain enforced.
