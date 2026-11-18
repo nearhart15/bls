@@ -176,10 +176,10 @@ export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: Pla
 
     series.forEach(serie => {
         let seriesAccum = 0;
-        let hasBlind = false;
+        let hasUnplayedGame = false;
         for (let i = 0; i < serie.length; i++) {
             const gameScore = serie[i];
-            if (!gameScore.blind && !gameScore.vacant) {
+            if (!gameScore.blind && !gameScore.vacant && (gameScore.hasRecordedScore || gameScore.scratchScore > 0 || gameScore.frames.length > 0)) {
                 gameScoresByGame[i].push(gameScore.scratchScore);
                 allGameScores.push(gameScore.scratchScore);
                 seriesAccum += gameScore.scratchScore;
@@ -190,10 +190,10 @@ export function calculatePlayerStats(series: TeamPlayerGameScore[][], stats: Pla
                 if (gameScore.frames.length > 0) frameStatsCalculator.addGame(gameScore);
                 else stats.incompleteFrameData = true;
             } else {
-                hasBlind = true
+                hasUnplayedGame = true
             }
         }
-        if (!hasBlind && serie.length > 0) {
+        if (!hasUnplayedGame && serie.length > 0) {
             seriesScores.push(seriesAccum);
             if (seriesAccum >= 600) {
                 stats.series600 += 1;
