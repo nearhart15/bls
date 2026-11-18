@@ -24,6 +24,32 @@ test('series supports two and four games and includes exactly 800', () => {
   const s=new PlayerStats();calculatePlayerStats([[300,300,200].map(makeGame)],s);assert.equal(s.series800,1);
 });
 
+test('empty source games do not count as bowled zeroes, while recorded zeroes do', () => {
+  const converter = load('src/data/utils/json-utils.ts').createJsonConverter();
+  const fromSource = value => converter.deserializeObject(value, model.TeamPlayerGameScore);
+  const absent = [fromSource({blind: true}), fromSource({}), fromSource({})];
+  const partial = [fromSource({}), makeGame(89), makeGame(87)];
+  const stats = new PlayerStats();
+  calculatePlayerStats([[200, 199, 201].map(makeGame), absent, partial], stats);
+  assert.equal(stats.gameStats.count, 5);
+  assert.equal(stats.pinfall, 776);
+  assert.equal(stats.gameStats.average, 776 / 5);
+  assert.equal(stats.seriesStats.count, 1);
+  assert.equal(stats.gameStats.min, 87);
+  assert.deepEqual(stats.gameAverageN, [1, 2, 2]);
+
+  const recordedZero = fromSource({'scratch-score': 0});
+  const frameZero = fromSource({frames: convertScore('--'.repeat(10))});
+  const series = new model.LeagueTeamPlayerScore();
+  series.games = [frameZero];
+  calc.calculatePlayerScores(series, {calculateHandicap: () => 0}, {});
+  const zeroStats = new PlayerStats();
+  calculatePlayerStats([[recordedZero, frameZero]], zeroStats);
+  assert.equal(zeroStats.gameStats.count, 2);
+  assert.equal(zeroStats.gameStats.average, 0);
+  assert.equal(converter.serializeObject(makeGame(199))['scratch-score'], 199);
+});
+
 test('vacant and absent opponent rules remain distinct', () => {
   const points=new calc.PpgPpsPointsCalculator(1,.5,1,.5,{allowed:true,scoringType:'FORFEIT'},{allowed:false,scoringType:'FORFEIT'});
   const team=new model.LeagueTeamScore();team.games=Array.from({length:3},()=>new model.MatchupGameScore());

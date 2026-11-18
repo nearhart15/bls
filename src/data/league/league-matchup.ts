@@ -22,7 +22,19 @@ import {DateConverter} from "../utils/json-utils";
 export class GameScore {
 
     @JsonProperty("scratch-score", Number)
-    scratchScore = 0;
+    private recordedScratchScore: number | undefined = undefined;
+
+    get scratchScore(): number {
+        return this.recordedScratchScore ?? 0;
+    }
+
+    set scratchScore(value: number) {
+        this.recordedScratchScore = value;
+    }
+
+    get hasRecordedScore(): boolean {
+        return this.recordedScratchScore !== undefined;
+    }
 
     /**
      * Scratch score including blinds, absent and vacant teams
