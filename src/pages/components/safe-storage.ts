@@ -16,11 +16,13 @@ export function readStorage(key: string): string | null {
     }
 }
 
-export function writeStorage(key: string, value: string): void {
-    if (!validKey(key) || value.length > MAX_VALUE_LENGTH) return;
+export function writeStorage(key: string, value: string | null): boolean {
+    if (!validKey(key) || (value !== null && value.length > MAX_VALUE_LENGTH)) return false;
     try {
-        localStorage.setItem(key, value);
+        if (value === null) localStorage.removeItem(key);
+        else localStorage.setItem(key, value);
+        return true;
     } catch {
-        /* Session preference still works without persistent storage. */
+        return false;
     }
 }

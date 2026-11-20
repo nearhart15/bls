@@ -139,10 +139,12 @@ test('scoreboard shows every week on demand and returns to the selected week', a
         await React.act(async () => root.render(React.createElement(MemoryRouter, null,
             React.createElement(Scoreboard, {teamDetails: team, leagueDetails: league}))));
         assert.deepEqual(cards(), ['WK 02']);
+        assert.equal(container.querySelector('.bls-matchup-attendance dd').textContent, 'Not recorded');
         await click(container.querySelector('.bls-scoreboard-weeks button'));
         assert.deepEqual(cards(), ['WK 01']);
         await click(container.querySelector('.bls-scoreboard-actions button'));
         assert.deepEqual(cards(), ['WK 01', 'WK 02', 'WK 03']);
+        assert.equal(container.querySelectorAll('.bls-matchup-attendance dt').length, 3);
         await click(container.querySelector('.bls-scoreboard-actions button'));
         assert.deepEqual(cards(), ['WK 01']);
     } finally {

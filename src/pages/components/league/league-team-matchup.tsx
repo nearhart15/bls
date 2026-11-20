@@ -8,7 +8,8 @@ import {isNonEmptyString} from "../../../data/utils/utils";
 import type {LeagueDetails} from "../../../data/league/league-details";
 import {TrackedLeagueTeam} from "../../../data/league/league-team-details";
 import {opponentDisplay} from "../../../data/league/opponent-display";
-import {matchupComparisonUrl} from "../../../data/league/league-comparison";
+import PamAttendance from "./pam-attendance";
+import {matchupComparisonUrl, normalizedTeamName} from "../../../data/league/league-comparison";
 import {type Breakpoint, BS_BP_XS, isBreakpointSmallerThan} from "../ui-utils";
 import Loader from "../loader";
 import {type GameScore, type LeagueMatchup, type MatchupType, SeriesScore, TeamScore} from "../../../data/league/league-matchup";
@@ -59,10 +60,11 @@ interface MatchupDisplayProps {
     matchup: LeagueMatchup;
     teamDetails: TrackedLeagueTeam;
     currentBreakpoint?: Breakpoint;
+    showPam: boolean;
     detailsExpanded: boolean;
     onToggleDetails: () => void;
 }
-const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDetails, currentBreakpoint, detailsExpanded, onToggleDetails}) => {
+const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDetails, currentBreakpoint, showPam, detailsExpanded, onToggleDetails}) => {
     const detailsId = useId();
     const showMatchupDetails = Boolean(matchup.bowlDate && !matchup.bowlDate.isAfter(moment()) && matchup.scores?.games.length);
     const isOpponentVacantOrAbsent = Boolean(matchup.opponent?.absent || matchup.opponent?.vacant);
@@ -76,6 +78,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
             <div>{weekPrefix} {twoDigitNumberFormat.format(matchup.week)}</div><div>{matchup.scheduledDate?.format("DD MMM")}</div>
             <div className="me-auto">{matchup.bowlDate && !matchup.bowlDate.isSame(matchup.scheduledDate, "day") && <>&nbsp;<small><Badge bg="light">{matchup.bowlDate.isBefore(matchup.scheduledDate, "day") ? "Pre-Bowl" : "Post-Bowl"}</Badge></small></>}</div>
             <div>Lanes {twoDigitNumberFormat.format(matchup.lanes[0])} - {twoDigitNumberFormat.format(matchup.lanes[1])}</div>
+            {showPam && leagueDetails?.id && <PamAttendance leagueId={leagueDetails.id} week={matchup.week}/>}
         </Stack></CardHeader>
         <CardBody className="py-0 px-1 mb-auto">
             {matchup.resultsUnavailable && <p className="alert alert-warning py-2 my-2 small">Results unavailable. The source scorecard has an invalid or incomplete frame.</p>}
@@ -108,6 +111,7 @@ const MatchupDisplay: FC<MatchupDisplayProps> = ({leagueDetails, matchup, teamDe
 interface LeagueTeamMatchupsProps { leagueDetails: LeagueDetails | null; teamDetails: TrackedLeagueTeam; currentBreakpoint: Breakpoint; leagueDetailsLoading: boolean; }
 const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails, leagueDetailsLoading, currentBreakpoint}) => {
     const today = moment();
+    const showPam = normalizedTeamName(teamDetails.name) === "pinsgoboom";
     const scheduled = teamDetails.matchups.filter(matchup => matchup.scheduledDate);
     const current = scheduled.filter(matchup => !matchup.scheduledDate?.isAfter(today, "day")).slice(-1)[0] ?? scheduled[0];
     const [selectedWeek, setSelectedWeek] = useState<number>();
@@ -161,7 +165,7 @@ const TeamScoreboard: FC<LeagueTeamMatchupsProps> = ({leagueDetails, teamDetails
             <div id={matchupId} className="bls-scoreboard-matchups">
                 {(showAllWeeks ? teamDetails.matchups : [selected]).map(matchup => <MatchupDisplay
                     key={matchup.week} leagueDetails={leagueDetails} matchup={matchup}
-                    teamDetails={teamDetails} currentBreakpoint={currentBreakpoint} detailsExpanded={showAllWeeks ? expandedWeeks.has(matchup.week) : detailsExpanded}
+                    teamDetails={teamDetails} currentBreakpoint={currentBreakpoint} showPam={showPam} detailsExpanded={showAllWeeks ? expandedWeeks.has(matchup.week) : detailsExpanded}
                     onToggleDetails={() => {
                         if (!showAllWeeks) {
                             setDetailsExpanded(expanded => !expanded);
